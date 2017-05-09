@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.AbstractFileCollector" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="3" info="5" lineCoverage="0" branchCoverage="0" quality="97"/>
+<source>
+<line sev="0"><diag id="314"/>package net.sf.sanity4j.workflow; </line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Arrays;</line>
+<line>import java.util.Iterator;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Set;</line>
+<line/>
+<line>import net.sf.sanity4j.util.FileUtil;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line>import net.sf.sanity4j.util.QaUtil;</line>
+<line/>
+<line>/** </line>
+<line> * AbstractFileCollector collects files from multiple directory </line>
+<line> * hierarchies and places them in a single directory hierarchy. This is </line>
+<line> * necessary, as some tools don't allow multiple directories </line>
+<line> * to be specified.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public abstract class AbstractFileCollector implements WorkUnit</line>
+<line>{</line>
+<line>    /** The file extensions to include in the collection.  */</line>
+<line>    private final Set&lt;String&gt; includedFileExtensions;</line>
+<line/>
+<line>    /** The destination directory. */</line>
+<line>    private final File destDir;</line>
+<line/>
+<line>    /** The source directories. */</line>
+<line>    private final List&lt;File&gt; sourceDirs;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a AbstractFileCollector.</line>
+<line>     * @param includedFileExtensions the file extensions to include in the copy.</line>
+<line>     * @param sourceDirs the list of source directories to copy from.</line>
+<line>     * @param destDir the destination directory to copy to.</line>
+<line>     */</line>
+<line>    public AbstractFileCollector(final Set&lt;String&gt; includedFileExtensions, final List&lt;String&gt; sourceDirs, final File destDir)</line>
+<line covered="no">    {</line>
+<line covered="no">        this.includedFileExtensions = includedFileExtensions;</line>
+<line covered="no">        this.destDir = destDir;</line>
+<line/>
+<line covered="no">        this.sourceDirs = new ArrayList&lt;File&gt;(sourceDirs.size());</line>
+<line/>
+<line covered="no">        for (String dir : sourceDirs)</line>
+<line>        {</line>
+<line sev="0" covered="no"><diag id="686"/>            this.sourceDirs.add(new File(dir));</line>
+<line>        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Indicates whether at least one file must be copied. </line>
+<line>     * This default implementation returns false. </line>
+<line>     * </line>
+<line>     * @return false</line>
+<line>     */</line>
+<line sev="1"><diag id="687"/>    protected boolean isMandatory()</line>
+<line sev="1">    {</line>
+<line sev="1" covered="no">        return false;</line>
+<line sev="1">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Performs the file copying.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line covered="no">        QaLogger.getInstance().info(&quot;Creating combined &quot; + getItemType() + &quot; directory.&quot;);        </line>
+<line covered="no">        FileUtil.createDir(destDir.getPath());</line>
+<line/>
+<line covered="no">        int count = copyFiles(sourceDirs, destDir);        </line>
+<line covered="no">        QaLogger.getInstance().info(&quot;Copied &quot; + count + &quot; files.&quot;);</line>
+<line/>
+<line covered="no">        if (count == 0 &amp;&amp; isMandatory())</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;\&quot;&quot; + getItemDescription() + &quot;\&quot; are required, but none were found.&quot;);</line>
+<line>        }        </line>
+<line covered="no">    }</line>
+<line/>
+<line>    /** @return the type of item being copied, e.g. &quot;source&quot;, &quot;class&quot;. */</line>
+<line>    protected abstract String getItemType();</line>
+<line/>
+<line>    /** @return the brief description of the type of item being copied, e.g. &quot;sources&quot;, &quot;classes&quot;. */</line>
+<line>    protected abstract String getItemDescription();</line>
+<line/>
+<line>    /**</line>
+<line>     * Copies class files to the given directory, correcting for package names</line>
+<line>     * along the way. Optionally copies all files with the given extension.</line>
+<line>     * </line>
+<line>     * The root packages is set to be the top level of the destination directory, </line>
+<line>     * regardless of where the file originated from.</line>
+<line>     * </line>
+<line>     * @param filePaths the files to copy</line>
+<line>     * @param destDir the destination directory</line>
+<line>     * </line>
+<line>     * @return the number of files copied</line>
+<line>     */</line>
+<line sev="1"><diag id="315"/>    private int copyFiles(final List&lt;File&gt; filePaths, final File destDir)</line>
+<line>    {</line>
+<line covered="no">        int count = 0;</line>
+<line/>
+<line>        // We want to copy files from arbitrary subdirectories,</line>
+<line>        // while maintaining the package structure</line>
+<line covered="no">        for (Iterator&lt;File&gt; i = filePaths.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="no">            File source = i.next();</line>
+<line/>
+<line>            // If it's a directory, recurse...</line>
+<line covered="no">            if (source.isDirectory())</line>
+<line>            {</line>
+<line covered="no">                String[] containedNames = source.list();</line>
+<line sev="0" covered="no"><diag id="688"/>                File[] containedFiles = new File[containedNames.length];</line>
+<line/>
+<line covered="no">                for (int j = 0; j &lt; containedFiles.length; j++)</line>
+<line>                {</line>
+<line sev="0" covered="no"><diag id="689"/>                    containedFiles[j] = new File(source, containedNames[j]);</line>
+<line>                }</line>
+<line/>
+<line covered="no">                count += copyFiles(Arrays.asList(containedFiles), destDir);</line>
+<line covered="no">            }           </line>
+<line>            else</line>
+<line>            {</line>
+<line>                // Check whether it is a file which we should be copying</line>
+<line covered="no">                String fileExt = source.getName().substring(source.getName().lastIndexOf('.') + 1);</line>
+<line/>
+<line covered="no">                if (includedFileExtensions.contains(fileExt.toLowerCase()))</line>
+<line>                {</line>
+<line covered="no">                    copyFile(source, destDir);</line>
+<line covered="no">                    count++;</line>
+<line>                }</line>
+<line>            }</line>
+<line covered="no">        }</line>
+<line/>
+<line covered="no">        return count;       </line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Copies a single file, placing it in the correct package.</line>
+<line>     * @param file the file to copy</line>
+<line>     * @param destDir the destination directory root.</line>
+<line>     */</line>
+<line sev="1"><diag id="316"/>    protected void copyFile(final File file, final File destDir)</line>
+<line>    {</line>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            String packageName = QaUtil.getPackageForFile(file);</line>
+<line/>
+<line covered="no">            if (packageName == null)</line>
+<line>            {</line>
+<line>                // Unable to determine package, use relative path from root.</line>
+<line covered="no">                StringBuffer relativePath = new StringBuffer(file.getName());</line>
+<line covered="no">                File parent = null;</line>
+<line/>
+<line covered="no">                for (parent = file.getParentFile(); parent != null; parent = parent.getParentFile())</line>
+<line>                {</line>
+<line covered="no">                    if (sourceDirs.contains(parent))</line>
+<line>                    {</line>
+<line>                        // We've hit one of the top-level dirs, so copy using the relative path from this dir</line>
+<line sev="0" covered="no"><diag id="690"/>                        File dest = new File(destDir, relativePath.toString());</line>
+<line covered="no">                        FileUtil.copy(file, dest);</line>
+<line covered="no">                        break;</line>
+<line>                    }</line>
+<line>                    else</line>
+<line>                    {</line>
+<line>                        // Prepend the parent directory name to the relative path</line>
+<line covered="no">                        relativePath.insert(0, File.separatorChar);</line>
+<line covered="no">                        relativePath.insert(0, parent.getName());</line>
+<line>                    }</line>
+<line>                }</line>
+<line/>
+<line>                // If we couldn't find a relative path, then just copy the file.</line>
+<line covered="no">                if (parent == null)</line>
+<line>                {</line>
+<line covered="no">                    File dest = new File(destDir, file.getName());</line>
+<line covered="no">                    FileUtil.copy(file, dest);</line>
+<line>                }</line>
+<line covered="no">            }</line>
+<line>            else</line>
+<line>            {                    </line>
+<line covered="no">                String destPath = packageName.replace('.', File.separatorChar) + File.separatorChar + file.getName();</line>
+<line covered="no">                File destFile = new File(destDir, destPath);</line>
+<line/>
+<line covered="no">                if (destFile.exists())</line>
+<line>                {</line>
+<line covered="no">                    String msg = &quot;Duplicate file, analysis may be innaccurate: &quot; + destPath;</line>
+<line covered="no">                    QaLogger.getInstance().warn(msg); </line>
+<line covered="no">                }</line>
+<line>                else</line>
+<line>                {</line>
+<line covered="no">                    FileUtil.copy(file, destFile);</line>
+<line>                }</line>
+<line>            }</line>
+<line>        }</line>
+<line covered="no">        catch (IOException e)</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;Failed to copy file&quot;, e);</line>
+<line covered="no">        }           </line>
+<line covered="no">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="314" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="686" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="687" sev="1" tool="PMD" rule="EmptyMethodInAbstractClassShouldBeAbstract">
+An empty method in an abstract class should be abstract instead
+</diag>
+<diag id="315" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'destDir' hides a field.</diag>
+<diag id="688" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="689" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="316" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'destDir' hides a field.</diag>
+<diag id="690" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+</diags>
+</classDetails>

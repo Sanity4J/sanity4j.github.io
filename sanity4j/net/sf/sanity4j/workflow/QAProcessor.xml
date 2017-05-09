@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.QAProcessor" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="2" info="0" lineCoverage="0" branchCoverage="0" quality="98"/>
+<source>
+<line>package net.sf.sanity4j.workflow;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.util.Arrays;</line>
+<line>import java.util.List;</line>
+<line/>
+<line>import net.sf.sanity4j.util.ExtractStats;</line>
+<line>import net.sf.sanity4j.util.FileUtil;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line>import net.sf.sanity4j.util.StringUtil;</line>
+<line>import net.sf.sanity4j.workflow.tool.ToolRunnerGroup;</line>
+<line/>
+<line>/**</line>
+<line> * QAProcessor handles the various tasks that need to be performed in the QA process.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line covered="no">public class QAProcessor implements Runnable</line>
+<line>{</line>
+<line>    /** The current Sanity4J version number. This is the version number which is logged, embedded in reports, etc. */</line>
+<line>    public static final String QA_VERSION = &quot;1.1.1&quot;;</line>
+<line/>
+<line>    /** The default Java runtime to use when running external tasks. */</line>
+<line>    public static final String DEFAULT_JAVA_RUNTIME = &quot;java&quot;;</line>
+<line/>
+<line>    /** The maximum heap size to use when running external tasks. */</line>
+<line>    public static final String JAVA_RUNTIME_MAX_MEMORY = &quot;-Xmx768M&quot;;</line>
+<line/>
+<line>    /** The number of milliseconds in a second. */</line>
+<line>    private static final int MILLIS = 1000;</line>
+<line/>
+<line>    /**</line>
+<line>     * The QA configuration for the current run.</line>
+<line>     */</line>
+<line covered="no">    private final QAConfig config = new QAConfig();</line>
+<line/>
+<line>    /**</line>
+<line>     * The ExtractStats instance which will hold the results of the current run.</line>
+<line>     */</line>
+<line>    private ExtractStats stats;</line>
+<line/>
+<line>    /** @return the QA configuration for the current run. */</line>
+<line>    public QAConfig getConfig()</line>
+<line>    {</line>
+<line covered="no">        return config;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Executes the QA process.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            validateConfig();</line>
+<line covered="no">            doExecute();</line>
+<line>        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line covered="no">            cleanUp();</line>
+<line covered="no">        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Runs the given work.</line>
+<line>     * @param workUnits a list of WorkUnits</line>
+<line>     */</line>
+<line>    protected void runWork(final List&lt;WorkUnit&gt; workUnits)</line>
+<line>    {</line>
+<line covered="no">        for (int i = 0; i &lt; workUnits.size(); i++)</line>
+<line>        {</line>
+<line covered="no">            WorkUnit work = workUnits.get(i);</line>
+<line covered="no">            QaLogger.getInstance().debug(work.getDescription());</line>
+<line covered="no">            work.run();</line>
+<line>        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * &lt;p&gt;Validates the QA run configuration.</line>
+<line>     * Will throw a QAException if the configuration is invalid.&lt;/p&gt;</line>
+<line>     *</line>
+<line>     * &lt;p&gt;At least one source and class file entry must have been added</line>
+<line>     * for this task to run. We allow no libaries to be specified,</line>
+<line>     * as it's quite possible that the only dependencies are on</line>
+<line>     * the java runtime.&lt;/p&gt;</line>
+<line>     */</line>
+<line>    private void validateConfig()</line>
+<line>    {</line>
+<line covered="no">        if (config.getSourceDirs().isEmpty())</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;No source files specified&quot;);</line>
+<line>        }</line>
+<line/>
+<line covered="no">        if (config.getClassDirs().isEmpty())</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;No class files specified&quot;);</line>
+<line>        }</line>
+<line/>
+<line covered="no">        FileUtil.createDir(config.getTempDir().getPath());</line>
+<line covered="no">        config.getTempDir().deleteOnExit();</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            String combinedSourcePath = config.getCombinedSourceDir().getPath();</line>
+<line covered="no">            FileUtil.createDir(combinedSourcePath);</line>
+<line covered="no">            stats = new ExtractStats(combinedSourcePath);</line>
+<line>        }</line>
+<line covered="no">        catch (IOException e)</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;Unable to determine canonical source path&quot;, e);</line>
+<line covered="no">        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Cleans up after the task has executed.</line>
+<line>     * Currently, only the temporary directory is deleted.</line>
+<line>     */</line>
+<line>    private void cleanUp()</line>
+<line>    {</line>
+<line covered="no">        File tempDir = config.getTempDir();</line>
+<line/>
+<line covered="no">        if (tempDir != null &amp;&amp; tempDir.exists())</line>
+<line>        {</line>
+<line>            try</line>
+<line>            {</line>
+<line covered="no">                FileUtil.delete(new File(tempDir.getPath()));</line>
+<line covered="no">                tempDir = null;</line>
+<line>            }</line>
+<line covered="no">            catch (IOException e)</line>
+<line>            {</line>
+<line covered="no">                QaLogger.getInstance().warn(&quot;Failed to delete temp dir&quot;, e);</line>
+<line covered="no">            }</line>
+<line>        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates the work unit which runs the tools against the combined</line>
+<line>     * source/class/library directories.</line>
+<line>     *</line>
+<line>     * @param stats the stats which will hold the analysis results.</line>
+<line>     * @return a WorkUnit which will run the analysis tools.</line>
+<line>     */</line>
+<line sev="1"><diag id="323"/>    private WorkUnit getToolsWork(final ExtractStats stats)</line>
+<line>    {</line>
+<line covered="no">        WorkUnitGroup tools = new WorkUnitGroup(true, &quot;Performing analysis&quot;)</line>
+<line covered="no">        {</line>
+<line>            @Override</line>
+<line>            public void run()</line>
+<line>            {</line>
+<line covered="no">                long start = System.currentTimeMillis();</line>
+<line/>
+<line covered="no">                super.run();</line>
+<line/>
+<line covered="no">                long elapsed = System.currentTimeMillis() - start;</line>
+<line covered="no">                QaLogger.getInstance().info(&quot;Combined analysis completed in &quot; + (elapsed / MILLIS) + &quot;s.&quot;);</line>
+<line covered="no">            }</line>
+<line>        };</line>
+<line/>
+<line covered="no">        tools.add(new ToolRunnerGroup(config, stats));</line>
+<line covered="no">        return tools;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Executes the main part of this task.</line>
+<line>     * @throws QAException if an error occurs</line>
+<line>     */</line>
+<line sev="1"><diag id="324"/>    private void doExecute() throws QAException</line>
+<line>    {</line>
+<line covered="no">        QaLogger.getInstance().info(&quot;Sanity4J version &quot; + QA_VERSION);</line>
+<line covered="no">        long start = System.currentTimeMillis();</line>
+<line/>
+<line covered="no">        WorkUnitGroup work = new WorkUnitGroup(&quot;Performing analysis&quot;);</line>
+<line/>
+<line>        // Check configuration</line>
+<line covered="no">        work.add(new JavaVersionCheck(config));</line>
+<line/>
+<line>        // Collect the various files necessary for analysis</line>
+<line covered="no">        work.add(new SourceFileCollector(config));</line>
+<line covered="no">        work.add(new ClassFileCollector(config));</line>
+<line covered="no">        work.add(new LibraryFileCollector(config));</line>
+<line/>
+<line>        // Run the various tools</line>
+<line covered="no">        work.add(getToolsWork(stats));</line>
+<line/>
+<line>        // Determine line counts (for quality metric).</line>
+<line covered="no">        work.add(new WorkUnit()</line>
+<line covered="no">        {</line>
+<line>            public String getDescription()</line>
+<line>            {</line>
+<line covered="no">                return &quot;Reading line counts&quot;;</line>
+<line>            }</line>
+<line/>
+<line>            public void run()</line>
+<line>            {</line>
+<line>                try</line>
+<line>                {</line>
+<line covered="no">                    stats.extractLineCounts();</line>
+<line>                }</line>
+<line covered="no">                catch (IOException e)</line>
+<line>                {</line>
+<line covered="no">                    throw new QAException(&quot;Unable to determine line counts&quot;, e);</line>
+<line covered="no">                }</line>
+<line covered="no">            }</line>
+<line>        });</line>
+<line/>
+<line>        // Summarise run (if applicable)</line>
+<line covered="no">        if (!StringUtil.empty(config.getSummaryDataFile()))</line>
+<line>        {</line>
+<line covered="no">            work.add(new SummariseRun(stats, config));</line>
+<line>        }</line>
+<line/>
+<line>        // Produce the report</line>
+<line covered="no">        work.add(new ReportProducer(config, stats));</line>
+<line/>
+<line>        // RunWork is called rather than work.run so that we can indicate progress</line>
+<line covered="no">        runWork(Arrays.asList(new WorkUnit[]{work}));</line>
+<line/>
+<line covered="no">        long elapsed = System.currentTimeMillis() - start;</line>
+<line covered="no">        QaLogger.getInstance().info(&quot;Analysis completed in &quot; + (elapsed / MILLIS) + &quot;s.&quot;);</line>
+<line covered="no">        QaLogger.getInstance().info(&quot;Done!&quot;);</line>
+<line covered="no">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="323" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'stats' hides a field.</diag>
+<diag id="324" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for QAException.</diag>
+</diags>
+</classDetails>

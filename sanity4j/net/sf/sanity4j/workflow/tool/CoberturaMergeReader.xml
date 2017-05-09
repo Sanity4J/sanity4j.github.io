@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.tool.CoberturaMergeReader" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="0" branchCoverage="100" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.workflow.tool; </line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.util.Properties;</line>
+<line/>
+<line>import net.sf.sanity4j.util.ExtractStats;</line>
+<line/>
+<line>/**</line>
+<line> * CoberturaMergeReader - The result of the Cobertura Merge doesn't require reading,</line>
+<line> * therefore, this class does nothing.</line>
+<line> *</line>
+<line> * @author Darian Bridge</line>
+<line> * @since Sanity4J 1.0.4</line>
+<line> */</line>
+<line covered="no">public class CoberturaMergeReader implements ResultReader</line>
+<line>{</line>
+<line>	/** The properties used to configure this {@link ResultReader}. */</line>
+<line covered="no">	private final Properties properties = new Properties();</line>
+<line/>
+<line>	/** {@inheritDoc} */</line>
+<line>	public void setProperties(final Properties properties) </line>
+<line>	{</line>
+<line covered="no">		this.properties.putAll(properties);</line>
+<line covered="no">	}</line>
+<line/>
+<line>    /**</line>
+<line>     * Do nothing.</line>
+<line>     * @param resultFile the result file.</line>
+<line>     */</line>
+<line>    public void setResultFile(final File resultFile)</line>
+<line>    {</line>
+<line>        // Do nothing.</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Do nothing.</line>
+<line>     * @param stats the extract stats.</line>
+<line>     */</line>
+<line>    public void setStats(final ExtractStats stats)</line>
+<line>    {</line>
+<line>        // Do nothing.</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return null</line>
+<line>     */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line covered="no">        return null;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Do nothing.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line>        // Do nothing.</line>
+<line covered="no">    }</line>
+<line>}</line>
+</source>
+</classDetails>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.util.QaLoggerMavenImpl" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="0" branchCoverage="100" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.util; </line>
+<line/>
+<line>import net.sf.sanity4j.maven.plugin.RunQAMojo;</line>
+<line/>
+<line>/**</line>
+<line> * This class acts as wrapper for a Maven QA Mojo, so that the bulk </line>
+<line> * of the classes can avoid a direct dependence on Maven. </line>
+<line> * </line>
+<line> * @author Darian Bridge</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class QaLoggerMavenImpl extends QaLogger</line>
+<line>{</line>
+<line>    /** The current Maven QA mojo, whose project is used for the logging. */</line>
+<line>    private final RunQAMojo qaMojo;</line>
+<line/>
+<line>    /** </line>
+<line>     * Creates a QaLoggerMavenImpl. The constructor is hidden, as</line>
+<line>     * instances must be obtained using getInstance.</line>
+<line>     *</line>
+<line>     * @param qaMojo the current Maven QA mojo</line>
+<line>     */</line>
+<line>    public QaLoggerMavenImpl(final RunQAMojo qaMojo)</line>
+<line covered="no">    {</line>
+<line covered="no">        this.qaMojo = qaMojo;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of DEBUG .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     */</line>
+<line>    public void debug(final String message)</line>
+<line>    {</line>
+<line covered="no">        qaMojo.getLog().debug(message);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of DEBUG .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     * @param throwable the throwable, presumably caught in a catch block.</line>
+<line>     */</line>
+<line>    public void debug(final String message, final Throwable throwable)</line>
+<line>    {</line>
+<line>        //String messageWithStrackTrace = stackTraceToString(message, throwable);        </line>
+<line covered="no">        qaMojo.getLog().debug(message, throwable);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of INFO .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     */</line>
+<line>    public void info(final String message)</line>
+<line>    {</line>
+<line covered="no">        qaMojo.getLog().info(message);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of WARN .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     */</line>
+<line>    public void warn(final String message)</line>
+<line>    {</line>
+<line covered="no">        qaMojo.getLog().warn(message);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of WARN .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     * @param throwable the throwable, presumably caught in a catch block.</line>
+<line>     */</line>
+<line>    public void warn(final String message, final Throwable throwable)</line>
+<line>    {</line>
+<line>        //String messageWithStrackTrace = stackTraceToString(message, throwable);        </line>
+<line covered="no">        qaMojo.getLog().warn(message, throwable);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of ERROR .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     */</line>
+<line>    public void error(final String message)</line>
+<line>    {</line>
+<line covered="no">        qaMojo.getLog().error(message);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of ERROR .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     * @param throwable the throwable, presumably caught in a catch block.</line>
+<line>     */</line>
+<line>    public void error(final String message, final Throwable throwable)</line>
+<line>    {</line>
+<line>        //String messageWithStrackTrace = stackTraceToString(message, throwable);        </line>
+<line covered="no">        qaMojo.getLog().error(message, throwable);</line>
+<line covered="no">    }</line>
+<line>}</line>
+</source>
+</classDetails>

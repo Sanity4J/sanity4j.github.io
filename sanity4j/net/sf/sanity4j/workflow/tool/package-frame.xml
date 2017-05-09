@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-frame.xsl"?>
+<packageClasses packageName="net.sf.sanity4j.workflow.tool" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<class name="net.sf.sanity4j.workflow.tool.AbstractToolRunner" high="0" significant="0" moderate="0" low="1" info="1"/>
+<class name="net.sf.sanity4j.workflow.tool.CheckStyleResultReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="net.sf.sanity4j.workflow.tool.CheckStyleRunner" high="0" significant="0" moderate="0" low="0" info="4"/>
+<class name="net.sf.sanity4j.workflow.tool.CoberturaMergeReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="net.sf.sanity4j.workflow.tool.CoberturaMergeRunner" high="0" significant="0" moderate="0" low="1" info="4"/>
+<class name="net.sf.sanity4j.workflow.tool.CoberturaReportRunner" high="0" significant="0" moderate="0" low="2" info="4"/>
+<class name="net.sf.sanity4j.workflow.tool.CoberturaResultReader" high="0" significant="0" moderate="0" low="1" info="1"/>
+<class name="net.sf.sanity4j.workflow.tool.FindBugsResultReader" high="0" significant="0" moderate="0" low="2" info="1"/>
+<class name="net.sf.sanity4j.workflow.tool.FindBugsRunner" high="0" significant="0" moderate="0" low="2" info="4"/>
+<class name="net.sf.sanity4j.workflow.tool.Pmd4Runner" high="0" significant="0" moderate="0" low="0" info="2"/>
+<class name="net.sf.sanity4j.workflow.tool.Pmd5Runner" high="0" significant="0" moderate="0" low="0" info="2"/>
+<class name="net.sf.sanity4j.workflow.tool.PmdCpd4ResultReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="net.sf.sanity4j.workflow.tool.PmdCpd4Runner" high="0" significant="0" moderate="0" low="0" info="2"/>
+<class name="net.sf.sanity4j.workflow.tool.PmdCpd5ResultReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="net.sf.sanity4j.workflow.tool.PmdCpd5Runner" high="0" significant="0" moderate="0" low="1" info="2"/>
+<class name="net.sf.sanity4j.workflow.tool.PmdCpdResultReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="net.sf.sanity4j.workflow.tool.PmdCpdRunner" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="net.sf.sanity4j.workflow.tool.PmdResultReader" high="0" significant="0" moderate="1" low="1" info="3"/>
+<class name="net.sf.sanity4j.workflow.tool.PmdRunner" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="net.sf.sanity4j.workflow.tool.ResultReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="net.sf.sanity4j.workflow.tool.ToolRunnerGroup" high="0" significant="0" moderate="0" low="0" info="2"/>
+</packageClasses>

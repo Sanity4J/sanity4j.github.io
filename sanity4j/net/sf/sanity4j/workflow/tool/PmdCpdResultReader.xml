@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.tool.PmdCpdResultReader" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="100" branchCoverage="100" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.workflow.tool;</line>
+<line/>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line/>
+<line>/**</line>
+<line> * PmdCpdResultReader - Translates PMD CPD results into the common format used by the QA tool.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line>* @deprecated use PmdCpd4ResultReader</line>
+<line>*/</line>
+<line>@Deprecated</line>
+<line>public final class PmdCpdResultReader extends PmdCpd4ResultReader</line>
+<line>{</line>
+<line>   /**</line>
+<line>    * Creates a PmdCpdResultReader.</line>
+<line>    */</line>
+<line>   public PmdCpdResultReader()</line>
+<line covered="yes">   {</line>
+<line covered="yes">       QaLogger.getInstance().warn(&quot;PmdCpdResultReader is deprecated, use PmdCpd4ResultReader for PMD 4.x or PmdCpd5ResultReader for PMD 5.x&quot;);</line>
+<line covered="yes">   }</line>
+<line>}</line>
+</source>
+</classDetails>

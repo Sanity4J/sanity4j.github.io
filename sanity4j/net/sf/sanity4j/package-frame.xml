@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../xslt/package-frame.xsl"?>
+<packageClasses packageName="net.sf.sanity4j" pathToRoot="../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<class name="net.sf.sanity4j.Sanity4J_Suite" high="0" significant="0" moderate="0" low="0" info="1"/>
+</packageClasses>

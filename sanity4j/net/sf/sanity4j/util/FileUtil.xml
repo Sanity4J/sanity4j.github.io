@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.util.FileUtil" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="1" low="0" info="0" lineCoverage="32" branchCoverage="37" quality="97"/>
+<source>
+<line>package net.sf.sanity4j.util; </line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.FileInputStream;</line>
+<line>import java.io.FileOutputStream;</line>
+<line>import java.io.IOException;</line>
+<line>import java.util.List;</line>
+<line/>
+<line/>
+<line>/**</line>
+<line> * FileUtil - File related utility methods.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public final class FileUtil</line>
+<line>{</line>
+<line>    /** The buffer size to use for copy operations. */</line>
+<line>    private static final int BUFFER_SIZE = 4096;</line>
+<line/>
+<line>    /** No instance methods here. */</line>
+<line>    private FileUtil()</line>
+<line covered="no">    {</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a directory if it doesn't exist.</line>
+<line>     * @param path the directory path.</line>
+<line>     * </line>
+<line>     * @return a File Object representing the directory.</line>
+<line>     */</line>
+<line>    public static File createDir(final String path)</line>
+<line>    {</line>
+<line covered="yes">        File dir = new File(path);</line>
+<line/>
+<line covered="partial">        if (!dir.exists() &amp;&amp; !dir.mkdirs())</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;Failed to create directory: &quot; + path);</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        return dir;</line>
+<line>    }    </line>
+<line/>
+<line>    /** </line>
+<line>     * Searches for jar files within the given directory.</line>
+<line>     * The full path of each jar will be added to the given list.</line>
+<line>     * </line>
+<line>     * @param base the base directory</line>
+<line>     * @param jars the list of jars to add to</line>
+<line>     */</line>
+<line>    public static void findJars(final File base, final List&lt;String&gt; jars)</line>
+<line>    {</line>
+<line>        // Does this directory contain a subdir that contains class files?</line>
+<line covered="yes">        File[] files = base.listFiles();</line>
+<line/>
+<line covered="partial">        if (files != null)</line>
+<line>        {</line>
+<line covered="yes">            for (int i = 0; i &lt; files.length; i++)</line>
+<line>            {</line>
+<line covered="yes">                if (files[i].isDirectory())</line>
+<line>                {</line>
+<line covered="yes">                    findJars(files[i], jars);</line>
+<line>                }</line>
+<line covered="partial">                else if (files[i].isFile() &amp;&amp; files[i].getName().toLowerCase().endsWith(&quot;.jar&quot;))</line>
+<line>                {</line>
+<line covered="yes">                    jars.add(files[i].getPath());</line>
+<line>                }</line>
+<line>            }           </line>
+<line>        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Deletes a file/directory and all its contents.</line>
+<line>     * </line>
+<line>     * @param file the file to delete.</line>
+<line>     * @throws IOException if the delete fails.</line>
+<line>     */</line>
+<line>    public static void delete(final File file) throws IOException</line>
+<line>    {</line>
+<line covered="yes">        if (file.isDirectory())</line>
+<line>        {</line>
+<line covered="yes">            File[] files = file.listFiles();</line>
+<line/>
+<line covered="yes">            for (int i = 0; i &lt; files.length; i++)</line>
+<line>            {</line>
+<line covered="yes">                delete(files[i]);</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line covered="partial">        if (file.exists() &amp;&amp; !file.delete())</line>
+<line>        {</line>
+<line covered="no">            throw new IOException(&quot;Failed to delete &quot; + file);</line>
+<line>        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Copies a file.</line>
+<line>     * </line>
+<line>     * @param source the source file</line>
+<line>     * @param dest the destination file</line>
+<line>     * @throws IOException if there is an error during the copy.</line>
+<line>     */</line>
+<line>    public static void copy(final File source, final File dest) throws IOException</line>
+<line>    {</line>
+<line covered="no">        if (!source.canRead())</line>
+<line>        {</line>
+<line covered="no">            throw new IOException(&quot;Unable to read from file: &quot; + source.getPath());</line>
+<line>        }</line>
+<line/>
+<line covered="no">        if (dest.exists() &amp;&amp; !dest.canWrite())</line>
+<line>        {</line>
+<line covered="no">            throw new IOException(&quot;Unable to read to file: &quot; + dest.getPath());</line>
+<line>        }</line>
+<line/>
+<line covered="no">        if (!dest.getParentFile().exists() &amp;&amp; !dest.getParentFile().mkdirs())</line>
+<line>        {</line>
+<line covered="no">            throw new IOException(&quot;Unable to create parent directory&quot; + dest.getParentFile().getPath());</line>
+<line>        }</line>
+<line/>
+<line covered="no">        FileInputStream inStream = null;</line>
+<line covered="no">        FileOutputStream outStream = null;</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            inStream = new FileInputStream(source);</line>
+<line covered="no">            outStream = new FileOutputStream(dest);</line>
+<line/>
+<line covered="no">            final byte[] buf = new byte[BUFFER_SIZE];</line>
+<line covered="no">            int bytesRead = inStream.read(buf);</line>
+<line/>
+<line covered="no">            while (bytesRead != -1)</line>
+<line>            {</line>
+<line covered="no">                outStream.write(buf, 0, bytesRead);</line>
+<line covered="no">                bytesRead = inStream.read(buf);</line>
+<line>            }</line>
+<line/>
+<line covered="no">            outStream.flush();</line>
+<line>        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line covered="no">            QaUtil.safeClose(inStream);</line>
+<line covered="no">            QaUtil.safeClose(outStream);</line>
+<line covered="no">        }        </line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Reads the entire binary contents of the given file.</line>
+<line>     * </line>
+<line>     * @param file the file to read from</line>
+<line>     * @return the binary content of the given file.</line>
+<line>     * @throws IOException if there is an error reading from the file.</line>
+<line>     */</line>
+<line>    public static byte[] read(final File file) throws IOException</line>
+<line>    {</line>
+<line covered="no">        byte[] data = new byte[(int) file.length()];</line>
+<line/>
+<line covered="no">        FileInputStream stream = null;</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            stream = new FileInputStream(file);</line>
+<line covered="no">            int pos = 0;</line>
+<line covered="no">            int bytesRead = stream.read(data);</line>
+<line/>
+<line covered="no">            while (bytesRead != -1 &amp;&amp; pos &lt; data.length)</line>
+<line>            {</line>
+<line covered="no">                pos += bytesRead;</line>
+<line covered="no">                bytesRead = stream.read(data, pos, data.length - pos);</line>
+<line>            }</line>
+<line>        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line covered="no">            QaUtil.safeClose(stream);</line>
+<line covered="no">        }</line>
+<line/>
+<line covered="no">        return data;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Writes a string to a file in UTF-8. Parent directories will be created.</line>
+<line>     * </line>
+<line>     * @param string the String to write</line>
+<line>     * @param file the File to write to</line>
+<line>     * </line>
+<line>     * @throws IOException if there is an error writing to the file</line>
+<line>     */</line>
+<line>    public static void writeToFile(final String string, final File file) throws IOException</line>
+<line>    {</line>
+<line covered="partial">        if (!file.getParentFile().exists() &amp;&amp; !file.getParentFile().mkdirs())</line>
+<line>        {</line>
+<line covered="no">            throw new IOException(&quot;Failed to create parent directory for &quot; + file);</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        FileOutputStream fos = new FileOutputStream(file);</line>
+<line covered="yes">        fos.write(string.getBytes(&quot;UTF-8&quot;));</line>
+<line covered="yes">        fos.close();</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Flattens a list of jars into a classpth.</line>
+<line>     * If an exitsing classpath is provided, then the new list is </line>
+<line>     * appended to the end of the old classpath.</line>
+<line>     * </line>
+<line>     * @param jarList the list of jars to flatten.</line>
+<line>     * @param classpath an existing classpath to append to, can be null.</line>
+<line>     * @return the flattened classpath.</line>
+<line>     */</line>
+<line>    public static String flattenClasspath(final List&lt;String&gt; jarList, final String classpath)</line>
+<line>    {</line>
+<line covered="no">        if (jarList.isEmpty())</line>
+<line>        {</line>
+<line covered="no">        	return &quot;&quot;;</line>
+<line>        }</line>
+<line>        else</line>
+<line>        {</line>
+<line covered="no">	        StringBuffer buf = new StringBuffer(); </line>
+<line/>
+<line covered="no">        	if (classpath != null)</line>
+<line>        	{</line>
+<line covered="no">	        	buf.append(classpath);</line>
+<line>        	}</line>
+<line/>
+<line covered="no">        	String separator = System.getProperty(&quot;path.separator&quot;);</line>
+<line covered="no">        	for (String toolJar : jarList)</line>
+<line>        	{</line>
+<line covered="no">        		buf.append(separator).append(toolJar);</line>
+<line>        	}</line>
+<line/>
+<line covered="no">        	if (classpath == null)</line>
+<line>        	{</line>
+<line covered="no">        		buf.delete(0, separator.length());</line>
+<line>        	}</line>
+<line/>
+<line covered="no">        	return buf.toString();</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Evaluates a string for emptiness.</line>
+<line>     * </line>
+<line>     * @param str the string to evaluate.</line>
+<line>     * @return true if the string is non-null and has a trimmed length greater than zero.</line>
+<line>     */</line>
+<line>    public static boolean hasValue(final String str)</line>
+<line>    {</line>
+<line sev="2" covered="partial"><diag id="624"/>    	return str == null ? false : str.trim().length() &gt; 0;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="624" sev="2" tool="PMD" rule="InefficientEmptyStringCheck">
+String.trim().length()==0 is an inefficient way to validate an empty String.
+</diag>
+</diags>
+</classDetails>

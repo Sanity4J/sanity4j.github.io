@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/package-summary.xsl"?>
+<packageSummary packageName="net.sf.sanity4j.report" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<issueSummary high="0" significant="0" moderate="3" low="54" info="31">
+<category name="All categories" high="0" significant="0" moderate="1" low="0" info="2">
+<category name="Correctness" high="0" significant="0" moderate="2" low="0" info="0"/>
+<category name="Code style" high="0" significant="0" moderate="2" low="10" info="20"/>
+<category name="Performance" high="0" significant="0" moderate="0" low="26" info="19"/>
+<category name="Complexity" high="0" significant="0" moderate="0" low="6" info="5">
+<category name="Code size" high="0" significant="0" moderate="0" low="0" info="2"/>
+</category>
+</category>
+<tool name="Findbugs" high="0" significant="0" moderate="2" low="0" info="4"/>
+<tool name="PMD" high="0" significant="0" moderate="1" low="42" info="26"/>
+<tool name="PMD-CPD" high="0" significant="0" moderate="0" low="12" info="0"/>
+<tool name="Checkstyle" high="0" significant="0" moderate="0" low="0" info="1"/>
+</issueSummary>
+<qualitySummary>
+<package name="net.sf.sanity4j.report" classes="12" lineCount="2964" high="0" significant="0" moderate="3" low="54" info="31" quality="95">
+<testCoverage lineCoveragePct="10" branchCoveragePct="8" lineCount="834" coveredLineCount="86" branchCount="140" coveredBranchCount="12"/>
+</package>
+<class name="CategoryWriter" high="0" significant="0" moderate="0" low="5" info="3" quality="94">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="58" coveredLineCount="0" branchCount="12" coveredBranchCount="0"/>
+</class>
+<class name="ChartFactory" high="0" significant="0" moderate="0" low="1" info="1" quality="98">
+<testCoverage lineCoveragePct="93" branchCoveragePct="66" lineCount="43" coveredLineCount="40" branchCount="5" coveredBranchCount="5"/>
+</class>
+<class name="ChartFactory_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<class name="CrossProjectChartCreator" high="0" significant="0" moderate="0" low="1" info="7" quality="99">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="61" coveredLineCount="0" branchCount="7" coveredBranchCount="0"/>
+</class>
+<class name="ExportWriter" high="0" significant="0" moderate="0" low="9" info="2" quality="93">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="94" coveredLineCount="0" branchCount="16" coveredBranchCount="0"/>
+</class>
+<class name="ExtractStaticContent" high="0" significant="0" moderate="2" low="0" info="5" quality="96">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="82" coveredLineCount="0" branchCount="16" coveredBranchCount="0"/>
+</class>
+<class name="JavaSourceWriter" high="0" significant="0" moderate="0" low="5" info="4" quality="96">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="85" coveredLineCount="0" branchCount="19" coveredBranchCount="0"/>
+</class>
+<class name="PackageWriter" high="0" significant="0" moderate="0" low="32" info="4" quality="90">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="214" coveredLineCount="0" branchCount="39" coveredBranchCount="0"/>
+</class>
+<class name="ReportUtil" high="0" significant="0" moderate="1" low="0" info="1" quality="97">
+<testCoverage lineCoveragePct="77" branchCoveragePct="135" lineCount="59" coveredLineCount="46" branchCount="7" coveredBranchCount="7"/>
+</class>
+<class name="ReportUtil_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<class name="ReportWriter" high="0" significant="0" moderate="0" low="1" info="2" quality="99">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="71" coveredLineCount="0" branchCount="10" coveredBranchCount="0"/>
+</class>
+<class name="RuleCatalogueWriter" high="0" significant="0" moderate="0" low="0" info="2" quality="100">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="67" coveredLineCount="0" branchCount="9" coveredBranchCount="0"/>
+</class>
+</qualitySummary>
+<graphs>
+</graphs>
+</packageSummary>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.ClassFileCollector" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="0" branchCoverage="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.workflow; </line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.util.Arrays;</line>
+<line>import java.util.HashSet;</line>
+<line>import java.util.Set;</line>
+<line/>
+<line>import net.sf.sanity4j.util.FileUtil;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line/>
+<line/>
+<line>/** </line>
+<line> * ClassFileCollector collects class files from multiple directory </line>
+<line> * hierarchies and places them in a single directory hierarchy. This is </line>
+<line> * necessary, as some tools don't allow multiple class directories </line>
+<line> * to be specified.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class ClassFileCollector extends AbstractFileCollector</line>
+<line>{</line>
+<line>    /** The file extensions to include in the collection.  */</line>
+<line covered="no">    private static final Set&lt;String&gt; FILE_EXTS = new HashSet&lt;String&gt;(Arrays.asList(new String[]{&quot;class&quot;, &quot;jar&quot;}));</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a ClassFileCollector.</line>
+<line>     * @param config the current QA run's configuration.</line>
+<line>     */</line>
+<line>    public ClassFileCollector(final QAConfig config)</line>
+<line>    {</line>
+<line covered="no">        super(FILE_EXTS, config.getClassDirs(), config.getCombinedClassDir());</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line covered="no">        return &quot;Collecting class files&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Returns the item type being copied. </line>
+<line>     * @return &quot;class&quot; </line>
+<line>     */</line>
+<line>    @Override</line>
+<line>    protected String getItemType()</line>
+<line>    {</line>
+<line covered="no">        return &quot;class&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Returns the brief description of the item type being copied. </line>
+<line>     * @return &quot;classes&quot; </line>
+<line>     */</line>
+<line>    @Override</line>
+<line>    protected String getItemDescription() </line>
+<line>    {</line>
+<line covered="no">        return &quot;classes&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Copies a single source file, placing it in the correct package.</line>
+<line>     * @param source the source file</line>
+<line>     * @param destDir the destination directory root.</line>
+<line>     */</line>
+<line>    protected void copyFile(final File source, final File destDir)</line>
+<line>    {</line>
+<line>        // Just copy jar archives to the top level</line>
+<line covered="no">        if (source.getName().endsWith(&quot;.jar&quot;))</line>
+<line>        {</line>
+<line covered="no">            File dest = new File(destDir, source.getName());</line>
+<line/>
+<line covered="no">            if (dest.exists())</line>
+<line>            {</line>
+<line covered="no">                String msg = &quot;Duplicate file, analysis may be innaccurate: &quot; + dest;</line>
+<line covered="no">                QaLogger.getInstance().warn(msg); </line>
+<line covered="no">            }</line>
+<line>            else</line>
+<line>            {</line>
+<line>                try</line>
+<line>                {</line>
+<line covered="no">                    FileUtil.copy(source, dest);</line>
+<line>                }</line>
+<line covered="no">                catch (IOException e)</line>
+<line>                {</line>
+<line covered="no">                    throw new QAException(&quot;Failed to copy file&quot;, e);</line>
+<line covered="no">                }           </line>
+<line>            }</line>
+<line covered="no">        }</line>
+<line>        else</line>
+<line>        {</line>
+<line covered="no">            super.copyFile(source, destDir);</line>
+<line>        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /** @return true, at least one class file must exist. */</line>
+<line>    @Override</line>
+<line>    protected boolean isMandatory()</line>
+<line>    {</line>
+<line covered="no">        return true;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

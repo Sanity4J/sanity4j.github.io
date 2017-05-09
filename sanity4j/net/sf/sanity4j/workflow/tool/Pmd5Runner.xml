@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.tool.Pmd5Runner" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="2" lineCoverage="0" branchCoverage="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.ByteArrayOutputStream;</line>
+<line>import java.io.File;</line>
+<line/>
+<line>import net.sf.sanity4j.util.ExternalProcessRunner;</line>
+<line>import net.sf.sanity4j.util.FileUtil;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line>import net.sf.sanity4j.util.QaUtil;</line>
+<line>import net.sf.sanity4j.util.Tool;</line>
+<line/>
+<line>/**</line>
+<line> * PmdRunner - a work unit that runs PMD 5.x.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.1</line>
+<line> */</line>
+<line>public class Pmd5Runner extends AbstractToolRunner</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a Pmd5Runner.</line>
+<line>     */</line>
+<line>    public Pmd5Runner()</line>
+<line>    {</line>
+<line covered="no">        super(Tool.PMD);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Runs PMD.</line>
+<line>     * @param commandLine the PMD command line.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>    public void runTool(final String commandLine)</line>
+<line>    {</line>
+<line covered="no">        File resultFile = getConfig().getToolResultFile(Tool.PMD);</line>
+<line covered="no">        FileUtil.createDir(resultFile.getParentFile().getPath());</line>
+<line/>
+<line>        // Run the process</line>
+<line covered="no">        ByteArrayOutputStream stdout = null;</line>
+<line covered="no">        ByteArrayOutputStream stderr = null;</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            stdout = new ByteArrayOutputStream();</line>
+<line covered="no">            stderr = new ByteArrayOutputStream();</line>
+<line/>
+<line>            // Run the process</line>
+<line covered="no">            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</line>
+<line/>
+<line sev="0" covered="no"><diag id="370"/>            String stderrString = new String(stderr.toByteArray());</line>
+<line/>
+<line covered="no">            if (FileUtil.hasValue(stderrString))</line>
+<line>            {</line>
+<line covered="no">                QaLogger.getInstance().error(stderrString);</line>
+<line>            }</line>
+<line/>
+<line covered="no">            if (result != 0)</line>
+<line>            {</line>
+<line sev="0" covered="no"><diag id="371"/>                String err = new String(stderr.toByteArray());</line>
+<line covered="no">                throw new QAException(&quot;PMD Command [&quot; + commandLine + &quot;] failed to generate output: [&quot; + err + &quot;]&quot;);</line>
+<line>            }</line>
+<line>        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line covered="no">            QaUtil.safeClose(stdout);</line>
+<line covered="no">            QaUtil.safeClose(stderr);</line>
+<line covered="no">        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the description of this WorkUnit</line>
+<line>     */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line covered="no">        return &quot;Running PMD&quot;;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="370" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.Pmd5Runner.runTool(String): new String(byte[])</diag>
+<diag id="371" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.Pmd5Runner.runTool(String): new String(byte[])</diag>
+</diags>
+</classDetails>

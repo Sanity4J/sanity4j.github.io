@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.maven.plugin.Coordinate" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="7" info="1" lineCoverage="0" branchCoverage="0" quality="95"/>
+<source>
+<line sev="0"><diag id="3"/>package net.sf.sanity4j.maven.plugin;</line>
+<line/>
+<line>import java.util.regex.Matcher;</line>
+<line>import java.util.regex.Pattern;</line>
+<line/>
+<line>/**</line>
+<line> * A Maven Coordinate.</line>
+<line> * </line>
+<line> * A Coordinate can be constructed by parsing a String of the form:</line>
+<line> * &lt;pre&gt;&lt;code&gt;</line>
+<line> * [groupId:]artifactId[:version][:packaging][:classifier][:scope]</line>
+<line> * &lt;/code&gt;&lt;/pre&gt;</line>
+<line> * @author Darian Bridge.</line>
+<line> * @since Sanity4J 1.1.1</line>
+<line> */</line>
+<line>public class Coordinate</line>
+<line>{</line>
+<line>    /** The GroupId. */</line>
+<line>    private String groupId;</line>
+<line>    /** The Artifact Id. */</line>
+<line>    private String artifactId;</line>
+<line>    /** The Version. */</line>
+<line>    private String version;</line>
+<line>    /** The Packaging. */</line>
+<line>    private String packaging;</line>
+<line>    /** The Classifier. */</line>
+<line>    private String classifier;</line>
+<line>    /** The Scope. */</line>
+<line>    private String scope;</line>
+<line/>
+<line>    /**</line>
+<line>     * Default Constructor.</line>
+<line>     */</line>
+<line>    public Coordinate()</line>
+<line covered="no">    {</line>
+<line>        // Default Constructor.</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Construct a Coordinate by parsing the specified line and/or file.</line>
+<line>     * </line>
+<line>     * @param line The line to parse.</line>
+<line>     */</line>
+<line>    public Coordinate(final String line)</line>
+<line covered="no">    {</line>
+<line covered="no">        parse(line);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Copy Constructor.</line>
+<line>     * </line>
+<line>     * @param coordinate The Coordinate to copy.</line>
+<line>     */</line>
+<line>    public Coordinate(final Coordinate coordinate)</line>
+<line covered="no">    {</line>
+<line covered="no">        setGroupId(coordinate.getGroupId());</line>
+<line covered="no">        setArtifactId(coordinate.getArtifactId());</line>
+<line covered="no">        setVersion(coordinate.getVersion());</line>
+<line covered="no">        setPackaging(coordinate.getPackaging());</line>
+<line covered="no">        setClassifier(coordinate.getClassifier());</line>
+<line covered="no">        setScope(coordinate.getScope());</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return The GroupId. </line>
+<line>     */</line>
+<line>    public String getGroupId() </line>
+<line>    {</line>
+<line covered="no">        return groupId;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param groupId The GroupId. </line>
+<line>     */</line>
+<line>    public void setGroupId(final String groupId) </line>
+<line>    {</line>
+<line covered="no">        this.groupId = groupId;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return The Artifact Id. </line>
+<line>     */</line>
+<line>    public String getArtifactId() </line>
+<line>    {</line>
+<line covered="no">        return artifactId;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param artifactId The Artifact Id. </line>
+<line>     */</line>
+<line>    public void setArtifactId(final String artifactId) </line>
+<line>    {</line>
+<line covered="no">        this.artifactId = artifactId;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return The Version. </line>
+<line>     */</line>
+<line>    public String getVersion() </line>
+<line>    {</line>
+<line covered="no">        return version;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param version The Version. </line>
+<line>     */</line>
+<line>    public void setVersion(final String version) </line>
+<line>    {</line>
+<line covered="no">        this.version = version;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return The Packaging.</line>
+<line>     */</line>
+<line>    public String getPackaging() </line>
+<line>    {</line>
+<line covered="no">        return packaging;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param packaging The Packaging.</line>
+<line>     */</line>
+<line>    public void setPackaging(final String packaging) </line>
+<line>    {</line>
+<line covered="no">        this.packaging = packaging;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return The Classifier.</line>
+<line>     */</line>
+<line>    public String getClassifier() </line>
+<line>    {</line>
+<line covered="no">        return classifier;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param classifier The Classifier.</line>
+<line>     */</line>
+<line>    public void setClassifier(final String classifier) </line>
+<line>    {</line>
+<line covered="no">        this.classifier = classifier;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param scope The Scope.</line>
+<line>     */</line>
+<line>    public void setScope(final String scope) </line>
+<line>    {</line>
+<line covered="no">        this.scope = scope;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return The Scope.</line>
+<line>     */</line>
+<line>    public String getScope() </line>
+<line>    {</line>
+<line covered="no">        return scope;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * The Pattern for parsing the Maven Coordinate.</line>
+<line>     */</line>
+<line>    private static final String COORDINATE_PATTERN = &quot;(?:([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?&quot;;</line>
+<line/>
+<line>    /**</line>
+<line>     * Parse a line interpreting it as a Maven artifact.</line>
+<line>     * </line>
+<line>     * @param line The line to parse.</line>
+<line>     */</line>
+<line>    protected void parse(final String line) </line>
+<line>    {</line>
+<line covered="no">        if (line != null)</line>
+<line>        {</line>
+<line covered="no">            Pattern pattern = Pattern.compile(COORDINATE_PATTERN);</line>
+<line covered="no">            Matcher matcher = pattern.matcher(line.trim());</line>
+<line/>
+<line covered="no">            if (matcher.matches()) </line>
+<line>            {</line>
+<line covered="no">                String position1 = matcher.group(1);</line>
+<line covered="no">                String position2 = matcher.group(2);</line>
+<line sev="1" covered="no"><diag id="4"/>                String position3 = matcher.group(3);</line>
+<line sev="1" covered="no"><diag id="5"/>                String position4 = matcher.group(4);</line>
+<line sev="1" covered="no"><diag id="6"/>                String position5 = matcher.group(5);</line>
+<line sev="1" covered="no"><diag id="7"/>                String position6 = matcher.group(6);</line>
+<line/>
+<line covered="no">                int colons = occurrences(line, ':');</line>
+<line/>
+<line covered="no">                switch (colons) </line>
+<line>                {</line>
+<line>                    case 0:</line>
+<line covered="no">                        setArtifactId(position1);</line>
+<line covered="no">                        break;</line>
+<line>                    case 1:</line>
+<line covered="no">                        setGroupId(position1);</line>
+<line covered="no">                        setArtifactId(position2);</line>
+<line covered="no">                        break;</line>
+<line>                    case 2:</line>
+<line covered="no">                        setGroupId(position1);</line>
+<line covered="no">                        setArtifactId(position2);</line>
+<line covered="no">                        setVersion(position3);</line>
+<line covered="no">                        break;</line>
+<line sev="1"><diag id="8"/>                    case 3:</line>
+<line covered="no">                        setGroupId(position1);</line>
+<line covered="no">                        setArtifactId(position2);</line>
+<line covered="no">                        setVersion(position3);</line>
+<line covered="no">                        setPackaging(position4);</line>
+<line covered="no">                        break;</line>
+<line sev="1"><diag id="9"/>                    case 4:</line>
+<line covered="no">                        setGroupId(position1);</line>
+<line covered="no">                        setArtifactId(position2);</line>
+<line covered="no">                        setVersion(position3);</line>
+<line covered="no">                        setPackaging(position4);</line>
+<line covered="no">                        setClassifier(position5);</line>
+<line covered="no">                        break;</line>
+<line sev="1"><diag id="10"/>                    case 5:</line>
+<line covered="no">                        setGroupId(position1);</line>
+<line covered="no">                        setArtifactId(position2);</line>
+<line covered="no">                        setVersion(position3);</line>
+<line covered="no">                        setPackaging(position4);</line>
+<line covered="no">                        setClassifier(position5);</line>
+<line covered="no">                        setScope(position6);</line>
+<line covered="no">                        break;</line>
+<line>                    default:</line>
+<line>                        break;</line>
+<line>                }</line>
+<line>            }</line>
+<line>        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Count the number of occurrences of the specified item within the character sequence.</line>
+<line>     *  </line>
+<line>     * @param sequence The character sequence within to count. </line>
+<line>     * @param item The item to count occurrences of.</line>
+<line>     * @return The count of the number of occurrences of the specified item within the character sequence.</line>
+<line>     */</line>
+<line>    private static int occurrences(final CharSequence sequence, final char item) </line>
+<line>    {</line>
+<line covered="no">        int counter = 0;</line>
+<line covered="no">        for (int i = 0; i &lt; sequence.length(); i++) </line>
+<line>        {</line>
+<line covered="no">            if (sequence.charAt(i) == item) </line>
+<line>            {</line>
+<line covered="no">                counter++;</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line covered="no">        return counter;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return A String representing the Coordinate. </line>
+<line>     */</line>
+<line>    @Override</line>
+<line>    public String toString()</line>
+<line>    {</line>
+<line covered="no">        return getArtifact();</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return A String representing the Maven Coordinate. </line>
+<line>     */</line>
+<line>    public String getArtifact()</line>
+<line>    {</line>
+<line covered="no">        StringBuilder buf = new StringBuilder();</line>
+<line/>
+<line covered="no">        append(buf, null, groupId);</line>
+<line covered="no">        append(buf, &quot;:&quot;, artifactId);</line>
+<line covered="no">        append(buf, &quot;:&quot;, version);</line>
+<line covered="no">        append(buf, &quot;:&quot;, packaging);</line>
+<line covered="no">        append(buf, &quot;:&quot;, classifier);</line>
+<line covered="no">        append(buf, &quot;:&quot;, scope);</line>
+<line/>
+<line covered="no">        return buf.toString();</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Appends a delimiter and then an item to a StringBuilder.</line>
+<line>     * Does nothing if the item is null.</line>
+<line>     * </line>
+<line>     * @param buf The StringBuilder to append to.</line>
+<line>     * @param delim A delimiter to append first (if not null).</line>
+<line>     * @param item The item to append.</line>
+<line>     */</line>
+<line>    private void append(final StringBuilder buf, final String delim, final String item)</line>
+<line>    {</line>
+<line covered="no">        if (item != null) </line>
+<line>        {</line>
+<line covered="no">            if (buf.length() &gt; 0 &amp;&amp; delim != null)</line>
+<line>            {</line>
+<line covered="no">                buf.append(delim);</line>
+<line>            }</line>
+<line/>
+<line covered="no">            buf.append(item);</line>
+<line>        }</line>
+<line covered="no">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="3" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="4" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'3' is a magic number.</diag>
+<diag id="5" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'4' is a magic number.</diag>
+<diag id="6" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'5' is a magic number.</diag>
+<diag id="7" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'6' is a magic number.</diag>
+<diag id="8" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'3' is a magic number.</diag>
+<diag id="9" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'4' is a magic number.</diag>
+<diag id="10" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'5' is a magic number.</diag>
+</diags>
+</classDetails>

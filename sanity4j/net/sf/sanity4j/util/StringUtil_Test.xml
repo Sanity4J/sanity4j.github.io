@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.util.StringUtil_Test" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.util; </line>
+<line/>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Collections;</line>
+<line>import java.util.List;</line>
+<line/>
+<line>import junit.framework.TestCase;</line>
+<line/>
+<line>/**</line>
+<line> * StringUtil_Test - unit tests for {@link StringUtil}.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class StringUtil_Test extends TestCase</line>
+<line>{</line>
+<line>    public void testConcatList()</line>
+<line>    {</line>
+<line>        assertEquals(&quot;Incorrect result for empty list&quot;, </line>
+<line>                     &quot;&quot;, StringUtil.concatList(Collections.EMPTY_LIST, &quot;,&quot;));</line>
+<line/>
+<line>        List&lt;String&gt; list = new ArrayList&lt;String&gt;();</line>
+<line>        list.add(&quot;testConcatList.1&quot;);</line>
+<line/>
+<line>        assertEquals(&quot;Incorrect result for list with 1 element&quot;, </line>
+<line>                     list.get(0), StringUtil.concatList(list, &quot;,&quot;));</line>
+<line/>
+<line>        list.add(&quot;testConcatList.2&quot;);</line>
+<line/>
+<line>        assertEquals(&quot;Incorrect result for list with 2 elements&quot;, </line>
+<line>                     list.get(0) + &quot;,&quot; + list.get(1), </line>
+<line>                     StringUtil.concatList(list, &quot;,&quot;));</line>
+<line/>
+<line>        list.add(&quot;&quot;);</line>
+<line/>
+<line>        assertEquals(&quot;Incorrect result for list with empty string&quot;, </line>
+<line>                     list.get(0) + &quot;!@#&quot; + list.get(1) + &quot;!@#&quot; + list.get(2), </line>
+<line>                     StringUtil.concatList(list, &quot;!@#&quot;));</line>
+<line>    }</line>
+<line/>
+<line>    /** String with non-whitespace should not be empty. */</line>
+<line>    private static final String NON_WHITE_SPAGE_MSG = &quot;String with non-whitespace should not be empty&quot;;</line>
+<line/>
+<line>    /** String with whitespace should be empty. */</line>
+<line>    private static final String WHITE_SPAGE_MSG = &quot;String with whitespace should be empty&quot;;</line>
+<line/>
+<line>    public void testEmpty()</line>
+<line>    {</line>
+<line>        assertTrue(&quot;Null string should be empty&quot;, StringUtil.empty(null));</line>
+<line>        assertTrue(&quot;Empty string should be empty&quot;, StringUtil.empty(&quot;&quot;));</line>
+<line>        assertTrue(WHITE_SPAGE_MSG, StringUtil.empty(&quot; &quot;));</line>
+<line>        assertTrue(WHITE_SPAGE_MSG, StringUtil.empty(&quot; \n\r\t&quot;));</line>
+<line>        assertFalse(NON_WHITE_SPAGE_MSG, StringUtil.empty(&quot;x&quot;));</line>
+<line>        assertFalse(NON_WHITE_SPAGE_MSG, StringUtil.empty(&quot; x&quot;));</line>
+<line>        assertFalse(NON_WHITE_SPAGE_MSG, StringUtil.empty(&quot;x &quot;));</line>
+<line>        assertFalse(NON_WHITE_SPAGE_MSG, StringUtil.empty(&quot;\tx\n&quot;));</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

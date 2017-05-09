@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.report.ChartFactory_Test" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.report; </line>
+<line/>
+<line>import java.awt.image.BufferedImage;</line>
+<line>import java.awt.image.PixelGrabber;</line>
+<line>import java.util.Arrays;</line>
+<line>import java.util.Date;</line>
+<line/>
+<line>import junit.framework.TestCase;</line>
+<line>import net.sf.sanity4j.model.summary.PackageSummary;</line>
+<line/>
+<line>/**</line>
+<line> * &lt;p&gt;ChartFactory_Test - unit tests for ChartFactory.&lt;/p&gt;</line>
+<line> * </line>
+<line> * &lt;p&gt;Because it's hard to actually interpret the resultant image, we just look at</line>
+<line> * the image data coming back and ensure that it is identical or different </line>
+<line> * (somewhere) where it should be.&lt;/p&gt;</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class ChartFactory_Test extends TestCase</line>
+<line>{</line>
+<line>    /** An empty set of package summaries, to ensure that there are no NPE, OOB etc. errors. */</line>
+<line>    private final PackageSummary[] noSummary = new PackageSummary[0];</line>
+<line>    /** A set of two package summaries, for producing chart data. */</line>
+<line>    private PackageSummary[] twoSummary;</line>
+<line/>
+<line>    public void setUp()</line>
+<line>    {</line>
+<line>        Date runDate1 = new Date();</line>
+<line>        Date runDate2 = new Date(runDate1.getTime() + 1000 * 60);</line>
+<line/>
+<line>        PackageSummary summary1 = new PackageSummary();</line>
+<line>        summary1.setPackageName(null);</line>
+<line>        summary1.setBranchCoverage(0.10);</line>
+<line>        summary1.setLineCoverage(0.13);</line>
+<line>        summary1.setHighCount(10);</line>
+<line>        summary1.setRunDate(runDate1);</line>
+<line>        PackageSummary summary2 = new PackageSummary();</line>
+<line>        summary2.setPackageName(null);</line>
+<line>        summary2.setBranchCoverage(0.2);</line>
+<line>        summary2.setLineCoverage(0.23);</line>
+<line>        summary1.setHighCount(20);</line>
+<line>        summary2.setRunDate(runDate2);</line>
+<line/>
+<line>        twoSummary = new PackageSummary[] { summary1, summary2 };</line>
+<line>    }</line>
+<line/>
+<line>    public void testCreateImageNoSummaryIdentical()</line>
+<line>    {        </line>
+<line>        int[] noSummaryAllPackages1 = createImage(noSummary, &quot;&quot;);</line>
+<line>        int[] noSummaryAllPackages2 = createImage(noSummary, &quot;&quot;);</line>
+<line/>
+<line>        assertTrue(&quot;Images with identical data should be identical&quot;, </line>
+<line>                   Arrays.equals(noSummaryAllPackages1, noSummaryAllPackages2));</line>
+<line>    }</line>
+<line/>
+<line>    public void testCreateImageNoSummaryDifferentPackages()</line>
+<line>    {</line>
+<line>        int[] noSummaryAllPackages = createImage(noSummary, &quot;&quot;);</line>
+<line>        int[] noSummaryAuPackage = createImage(noSummary, &quot;au&quot;);</line>
+<line/>
+<line>        assertFalse(&quot;Images for different packages should never be identical&quot;, </line>
+<line>                   Arrays.equals(noSummaryAuPackage, noSummaryAllPackages));</line>
+<line>    }</line>
+<line/>
+<line>    public void testCreateImmageTwoSummaryIdentical()</line>
+<line>    {</line>
+<line>        int[] twoSummaryAllPackages1 = createImage(twoSummary, &quot;&quot;);</line>
+<line>        int[] twoSummaryAllPackages2 = createImage(twoSummary, &quot;&quot;);</line>
+<line/>
+<line>        assertTrue(&quot;Images with identical data should be identical&quot;, </line>
+<line>                   Arrays.equals(twoSummaryAllPackages1, twoSummaryAllPackages2));</line>
+<line>    }</line>
+<line/>
+<line>    public void testCreateImageTwoSummaryDifferentData()</line>
+<line>    {</line>
+<line>        // No data vs some data</line>
+<line>        int[] noSummaryAllPackages = createImage(noSummary, &quot;&quot;);</line>
+<line>        int[] twoSummaryAllPackages = createImage(twoSummary, &quot;&quot;);</line>
+<line/>
+<line>        assertFalse(&quot;Images with different data should not be identical&quot;, </line>
+<line>                    Arrays.equals(noSummaryAllPackages, twoSummaryAllPackages));</line>
+<line/>
+<line>        // Data vs changed data</line>
+<line>        twoSummary[1].setHighCount(twoSummary[1].getHighCount() + 100);</line>
+<line>        int[] twoSummaryAllPackages2 = createImage(twoSummary, &quot;&quot;);</line>
+<line/>
+<line>        assertFalse(&quot;Images with different data should not be identical&quot;, </line>
+<line>                    Arrays.equals(twoSummaryAllPackages, twoSummaryAllPackages2));        </line>
+<line>    }</line>
+<line/>
+<line>    private int[] createImage(final PackageSummary[] summaries, final String packageName)</line>
+<line>    {</line>
+<line>        BufferedImage image = ChartFactory.createImage(summaries, packageName);</line>
+<line>        image.flush();</line>
+<line/>
+<line>        assertNotNull(&quot;Image should not be null&quot;, image);</line>
+<line>        return imageToBytes(image);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Converts a BufferedImage into an ARGB int array.</line>
+<line>     * </line>
+<line>     * @param image the image to convert</line>
+<line>     * @return the image data as an ARGB array</line>
+<line>     */</line>
+<line>    private int[] imageToBytes(final BufferedImage image)</line>
+<line>    {</line>
+<line>        final int width = image.getWidth();</line>
+<line>        final int height = image.getHeight();</line>
+<line/>
+<line>        int[] rgba = new int[image.getWidth() * image.getHeight()];</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line>            PixelGrabber pixelGrabber = new PixelGrabber(image, 0, 0, width, height, rgba, 0, width);</line>
+<line>            pixelGrabber.grabPixels();</line>
+<line>        }</line>
+<line>        catch (InterruptedException e)</line>
+<line>        {</line>
+<line>            fail(&quot;Test interrupted whilst grabbing pixels&quot;);</line>
+<line>        }</line>
+<line/>
+<line>        return rgba;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

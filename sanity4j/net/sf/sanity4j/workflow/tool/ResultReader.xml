@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.tool.ResultReader" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="100" branchCoverage="100" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.util.Properties;</line>
+<line/>
+<line>import net.sf.sanity4j.util.ExtractStats;</line>
+<line>import net.sf.sanity4j.workflow.WorkUnit;</line>
+<line/>
+<line>/**</line>
+<line> * ResultReader provides a common interface which tool result readers must implement.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public interface ResultReader extends WorkUnit</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Set the properties used to configure the {@link ResultReader}.</line>
+<line>     * </line>
+<line>     * @param properties The properties used to configure the {@link ResulReader}.</line>
+<line>     */</line>
+<line>    void setProperties(Properties properties);</line>
+<line/>
+<line>    /**</line>
+<line>     * Sets the stats to store the results in.</line>
+<line>     * </line>
+<line>     * @param stats the stats to set</line>
+<line>     */</line>
+<line>    void setStats(ExtractStats stats);</line>
+<line/>
+<line>    /**</line>
+<line>     * Sets the file to read the results from.</line>
+<line>     * </line>
+<line>     * @param resultFile the resultFile to set</line>
+<line>     */</line>
+<line>    void setResultFile(File resultFile);</line>
+<line>}</line>
+</source>
+</classDetails>

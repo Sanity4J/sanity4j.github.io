@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.tool.CheckStyleRunner" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="4" lineCoverage="0" branchCoverage="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.ByteArrayOutputStream;</line>
+<line>import java.io.File;</line>
+<line/>
+<line>import net.sf.sanity4j.util.ExternalProcessRunner;</line>
+<line>import net.sf.sanity4j.util.FileUtil;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line>import net.sf.sanity4j.util.QaUtil;</line>
+<line>import net.sf.sanity4j.util.Tool;</line>
+<line/>
+<line>/**</line>
+<line> * CheckStyleRunner - a work unit that runs CheckStyle.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class CheckStyleRunner extends AbstractToolRunner</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a CheckStyleRunner.</line>
+<line>     */</line>
+<line>    public CheckStyleRunner()</line>
+<line>    {</line>
+<line covered="no">        super(Tool.CHECKSTYLE);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Runs CheckStyle.</line>
+<line>     * @param commandLine the CheckStyle command line.</line>
+<line>     */</line>
+<line>    protected void runTool(final String commandLine)</line>
+<line>    {</line>
+<line covered="no">        File resultFile = getConfig().getToolResultFile(Tool.CHECKSTYLE);</line>
+<line covered="no">        FileUtil.createDir(resultFile.getParentFile().getPath());</line>
+<line/>
+<line>        // Run the process</line>
+<line covered="no">        ByteArrayOutputStream stdout = null; </line>
+<line covered="no">        ByteArrayOutputStream stderr = null; </line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            stdout = new ByteArrayOutputStream();</line>
+<line covered="no">            stderr = new ByteArrayOutputStream();</line>
+<line/>
+<line covered="no">            ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</line>
+<line/>
+<line sev="0" covered="no"><diag id="352"/>            String stdoutString = new String(stdout.toByteArray());</line>
+<line/>
+<line covered="no">            if (FileUtil.hasValue(stdoutString))</line>
+<line>            {</line>
+<line covered="no">                QaLogger.getInstance().info(stdoutString);</line>
+<line>            }</line>
+<line/>
+<line sev="0" covered="no"><diag id="353"/>            String stderrString = new String(stderr.toByteArray());</line>
+<line/>
+<line covered="no">            if (FileUtil.hasValue(stderrString))</line>
+<line>            {</line>
+<line covered="no">                QaLogger.getInstance().error(stderrString);</line>
+<line>            }</line>
+<line>        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line covered="no">            QaUtil.safeClose(stdout);</line>
+<line covered="no">            QaUtil.safeClose(stderr);</line>
+<line covered="no">        }</line>
+<line/>
+<line>        // The checkstyle result is the number of errors found, so</line>
+<line>        // the only way to determine if it succeeded is to check if</line>
+<line>        // the output file has been created successfully</line>
+<line covered="no">        if (!resultFile.exists() || resultFile.length() == 0)</line>
+<line>        {</line>
+<line sev="0" covered="no"><diag id="354"/>            String out = new String(stdout.toByteArray());</line>
+<line sev="0" covered="no"><diag id="355"/>            String err = new String(stderr.toByteArray());</line>
+<line covered="no">            throw new QAException(&quot;Checkstyle Command [&quot; + commandLine + &quot;] failed to generate output: [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</line>
+<line>        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the description of this WorkUnit</line>
+<line>     */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line covered="no">        return &quot;Running CheckStyle&quot;;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="352" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CheckStyleRunner.runTool(String): new String(byte[])</diag>
+<diag id="353" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CheckStyleRunner.runTool(String): new String(byte[])</diag>
+<diag id="354" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CheckStyleRunner.runTool(String): new String(byte[])</diag>
+<diag id="355" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CheckStyleRunner.runTool(String): new String(byte[])</diag>
+</diags>
+</classDetails>

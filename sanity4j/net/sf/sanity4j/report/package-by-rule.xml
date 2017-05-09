@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/package-by-rule.xsl"?>
+<packageByRule packageName="net.sf.sanity4j.report" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<rule name="AssignmentInOperand" tool="PMD" severity="2">
+<class name="net.sf.sanity4j.report.ReportUtil">
+<diag id="555"/>
+</class>
+</rule>
+<rule name="AvoidDeeplyNestedIfStmts" tool="PMD" severity="0">
+<class name="net.sf.sanity4j.report.ReportWriter">
+<diag id="563"/>
+</class>
+</rule>
+<rule name="AvoidDuplicateLiterals" tool="PMD" severity="1">
+<class name="net.sf.sanity4j.report.CategoryWriter">
+<diag id="482"/>
+</class>
+<class name="net.sf.sanity4j.report.ExportWriter">
+<diag id="504"/>
+</class>
+<class name="net.sf.sanity4j.report.PackageWriter">
+<diag id="526"/>
+<diag id="530"/>
+<diag id="531"/>
+<diag id="532"/>
+<diag id="533"/>
+<diag id="534"/>
+<diag id="535"/>
+<diag id="536"/>
+</class>
+</rule>
+<rule name="AvoidInstantiatingObjectsInLoops" tool="PMD" severity="0">
+<class name="net.sf.sanity4j.report.CategoryWriter">
+<diag id="483"/>
+<diag id="484"/>
+</class>
+<class name="net.sf.sanity4j.report.ChartFactory">
+<diag id="485"/>
+</class>
+<class name="net.sf.sanity4j.report.CrossProjectChartCreator">
+<diag id="488"/>
+<diag id="489"/>
+<diag id="490"/>
+<diag id="491"/>
+<diag id="492"/>
+<diag id="493"/>
+<diag id="494"/>
+</class>
+<class name="net.sf.sanity4j.report.ExtractStaticContent">
+<diag id="506"/>
+<diag id="507"/>
+<diag id="508"/>
+<diag id="510"/>
+</class>
+<class name="net.sf.sanity4j.report.PackageWriter">
+<diag id="542"/>
+<diag id="543"/>
+</class>
+<class name="net.sf.sanity4j.report.ReportUtil">
+<diag id="556"/>
+</class>
+<class name="net.sf.sanity4j.report.ReportWriter">
+<diag id="564"/>
+</class>
+<class name="net.sf.sanity4j.report.RuleCatalogueWriter">
+<diag id="567"/>
+</class>
+</rule>
+<rule name="ConsecutiveLiteralAppends" tool="PMD" severity="1">
+<class name="net.sf.sanity4j.report.CategoryWriter">
+<diag id="480"/>
+<diag id="481"/>
+</class>
+<class name="net.sf.sanity4j.report.ExportWriter">
+<diag id="500"/>
+</class>
+<class name="net.sf.sanity4j.report.JavaSourceWriter">
+<diag id="515"/>
+<diag id="516"/>
+<diag id="517"/>
+</class>
+<class name="net.sf.sanity4j.report.PackageWriter">
+<diag id="528"/>
+<diag id="529"/>
+<diag id="540"/>
+<diag id="541"/>
+<diag id="545"/>
+<diag id="546"/>
+<diag id="547"/>
+<diag id="548"/>
+<diag id="549"/>
+<diag id="550"/>
+<diag id="551"/>
+<diag id="552"/>
+<diag id="553"/>
+<diag id="554"/>
+</class>
+</rule>
+<rule name="CyclomaticComplexity" tool="PMD" severity="1">
+<class name="net.sf.sanity4j.report.ExportWriter">
+<diag id="495"/>
+<diag id="502"/>
+</class>
+<class name="net.sf.sanity4j.report.JavaSourceWriter">
+<diag id="511"/>
+<diag id="519"/>
+</class>
+<class name="net.sf.sanity4j.report.PackageWriter">
+<diag id="521"/>
+<diag id="537"/>
+</class>
+</rule>
+<rule name="DM_DEFAULT_ENCODING" tool="Findbugs" severity="0">
+<class name="net.sf.sanity4j.report.JavaSourceWriter">
+<diag id="342"/>
+</class>
+</rule>
+<rule name="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED" tool="Findbugs" severity="2">
+<class name="net.sf.sanity4j.report.ExtractStaticContent">
+<diag id="338"/>
+</class>
+</rule>
+<rule name="DoNotCopyAndPasteCode" tool="PMD-CPD" severity="1">
+<class name="net.sf.sanity4j.report.CategoryWriter">
+<diag id="771"/>
+</class>
+<class name="net.sf.sanity4j.report.ChartFactory">
+<diag id="755"/>
+</class>
+<class name="net.sf.sanity4j.report.CrossProjectChartCreator">
+<diag id="756"/>
+</class>
+<class name="net.sf.sanity4j.report.ExportWriter">
+<diag id="757"/>
+<diag id="761"/>
+<diag id="762"/>
+<diag id="763"/>
+</class>
+<class name="net.sf.sanity4j.report.PackageWriter">
+<diag id="758"/>
+<diag id="759"/>
+<diag id="760"/>
+<diag id="764"/>
+<diag id="772"/>
+</class>
+</rule>
+<rule name="ExcessiveMethodLength" tool="PMD" severity="0">
+<class name="net.sf.sanity4j.report.ExportWriter">
+<diag id="501"/>
+</class>
+<class name="net.sf.sanity4j.report.JavaSourceWriter">
+<diag id="518"/>
+</class>
+</rule>
+<rule name="InsufficientStringBufferDeclaration" tool="PMD" severity="1">
+<class name="net.sf.sanity4j.report.CategoryWriter">
+<diag id="479"/>
+</class>
+<class name="net.sf.sanity4j.report.ExportWriter">
+<diag id="499"/>
+</class>
+<class name="net.sf.sanity4j.report.PackageWriter">
+<diag id="527"/>
+<diag id="539"/>
+<diag id="544"/>
+</class>
+<class name="net.sf.sanity4j.report.ReportWriter">
+<diag id="565"/>
+</class>
+</rule>
+<rule name="JavadocPackageCheck" tool="Checkstyle" severity="0">
+<class name="net.sf.sanity4j.report.CategoryWriter">
+<diag id="231"/>
+</class>
+</rule>
+<rule name="NPathComplexity" tool="PMD" severity="0">
+<class name="net.sf.sanity4j.report.ExportWriter">
+<diag id="503"/>
+</class>
+<class name="net.sf.sanity4j.report.JavaSourceWriter">
+<diag id="520"/>
+</class>
+<class name="net.sf.sanity4j.report.PackageWriter">
+<diag id="538"/>
+</class>
+</rule>
+<rule name="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE" tool="Findbugs" severity="0">
+<class name="net.sf.sanity4j.report.RuleCatalogueWriter">
+<diag id="344"/>
+</class>
+</rule>
+<rule name="OS_OPEN_STREAM" tool="Findbugs" severity="0">
+<class name="net.sf.sanity4j.report.ExtractStaticContent">
+<diag id="340"/>
+</class>
+<class name="net.sf.sanity4j.report.JavaSourceWriter">
+<diag id="343"/>
+</class>
+</rule>
+<rule name="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" tool="Findbugs" severity="2">
+<class name="net.sf.sanity4j.report.ExtractStaticContent">
+<diag id="341"/>
+</class>
+</rule>
+<rule name="TooManyMethods" tool="PMD" severity="0">
+<class name="net.sf.sanity4j.report.PackageWriter">
+<diag id="522"/>
+</class>
+</rule>
+</packageByRule>

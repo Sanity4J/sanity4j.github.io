@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.tool.CoberturaMergeRunner" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="1" info="4" lineCoverage="0" branchCoverage="0" quality="97"/>
+<source>
+<line>package net.sf.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.ByteArrayOutputStream;</line>
+<line/>
+<line>import net.sf.sanity4j.util.ExternalProcessRunner;</line>
+<line>import net.sf.sanity4j.util.FileUtil;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line>import net.sf.sanity4j.util.QaUtil;</line>
+<line>import net.sf.sanity4j.util.Tool;</line>
+<line/>
+<line>/**</line>
+<line> * CoberturaMergeRunner - a work unit that merges Cobertura data files.</line>
+<line> * </line>
+<line> * @author Darian Bridge</line>
+<line> * @since Sanity4J 1.0.4</line>
+<line> */</line>
+<line>public class CoberturaMergeRunner extends AbstractToolRunner</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a CoberturaReportRunner.</line>
+<line>     */</line>
+<line>    public CoberturaMergeRunner()</line>
+<line>    {</line>
+<line covered="no">        super(Tool.COBERTURA_MERGE);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Produces the Merged Cobertura data file.</line>
+<line>     * </line>
+<line>     * @param commandLine the Merge Cobertura data file command line.</line>
+<line>     */</line>
+<line>    public void runTool(final String commandLine)</line>
+<line>    {</line>
+<line>        // Run the process</line>
+<line sev="1" covered="no"><diag id="767"/>        ByteArrayOutputStream stdout = null;</line>
+<line sev="1" covered="no">        ByteArrayOutputStream stderr = null;</line>
+<line sev="1"/>
+<line sev="1">        try</line>
+<line sev="1">        {</line>
+<line sev="1" covered="no">            stdout = new ByteArrayOutputStream();</line>
+<line sev="1" covered="no">            stderr = new ByteArrayOutputStream();</line>
+<line sev="1"/>
+<line sev="1">            // Run the process</line>
+<line sev="1" covered="no">            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</line>
+<line sev="1"/>
+<line sev="1" covered="no"><diag id="356"/>            String stdoutString = new String(stdout.toByteArray());</line>
+<line sev="1"/>
+<line sev="1" covered="no">            if (FileUtil.hasValue(stdoutString))</line>
+<line sev="1">            {</line>
+<line sev="1" covered="no">                QaLogger.getInstance().info(stdoutString);</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1" covered="no"><diag id="357"/>            String stderrString = new String(stderr.toByteArray());</line>
+<line sev="1"/>
+<line sev="1" covered="no">            if (FileUtil.hasValue(stderrString))</line>
+<line sev="1">            {</line>
+<line sev="1" covered="no">                QaLogger.getInstance().error(stderrString);</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1" covered="no">            if (result != 0)</line>
+<line sev="1">            {</line>
+<line sev="1" covered="no"><diag id="358"/>                String out = new String(stdout.toByteArray());</line>
+<line sev="1" covered="no"><diag id="359"/>                String err = new String(stderr.toByteArray());</line>
+<line sev="1" covered="no">                throw new QAException(&quot;Cobertura Merge Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</line>
+<line sev="1">            }</line>
+<line>        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line covered="no">            QaUtil.safeClose(stdout);</line>
+<line covered="no">            QaUtil.safeClose(stderr);</line>
+<line covered="no">        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the file path where the tool should place it's output.</line>
+<line>     */</line>
+<line>    protected String getToolResultFile()</line>
+<line>    {</line>
+<line covered="no">        return null;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the description of this WorkUnit.</line>
+<line>     */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line covered="no">        return &quot;Running Cobertura Data File Merge&quot;;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="767" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\workflow\tool\CoberturaReportRunner.java:
+        ByteArrayOutputStream stdout = null;
+        ByteArrayOutputStream stderr = null;
+
+        try
+        {
+            stdout = new ByteArrayOutputStream();
+            stderr = new ByteArrayOutputStream();
+
+            // Run the process
+            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);
+
+            String stdoutString = new String(stdout.toByteArray());
+
+            if (FileUtil.hasValue(stdoutString))
+            {
+                QaLogger.getInstance().info(stdoutString);
+            }
+
+            String stderrString = new String(stderr.toByteArray());
+
+            if (FileUtil.hasValue(stderrString))
+            {
+                QaLogger.getInstance().error(stderrString);
+            }
+            
+            if (result != 0)
+            {
+                String out = new String(stdout.toByteArray());
+                String err = new String(stderr.toByteArray());
+                throw new QAException(&quot;Cobertura Merge Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</diag>
+<diag id="356" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaMergeRunner.runTool(String): new String(byte[])</diag>
+<diag id="357" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaMergeRunner.runTool(String): new String(byte[])</diag>
+<diag id="358" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaMergeRunner.runTool(String): new String(byte[])</diag>
+<diag id="359" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaMergeRunner.runTool(String): new String(byte[])</diag>
+</diags>
+</classDetails>

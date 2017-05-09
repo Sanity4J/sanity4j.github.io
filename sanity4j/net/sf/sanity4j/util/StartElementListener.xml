@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.util.StartElementListener" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="100" branchCoverage="100" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.util;</line>
+<line/>
+<line>import javax.xml.bind.JAXBException;</line>
+<line>import javax.xml.bind.Unmarshaller;</line>
+<line>import javax.xml.stream.XMLEventReader;</line>
+<line>import javax.xml.stream.events.StartElement;</line>
+<line/>
+<line>/**</line>
+<line> * StartElementListener - listener interface called by {@link JaxbMarshaller} </line>
+<line> * when iterating through an XML document. This allows readers to unmarshall</line>
+<line> * sections of the large documents that would otherwise consume excess amounts</line>
+<line> * of memory.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public interface StartElementListener </line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Called whenever a start element is encountered during traversal of an XML document.</line>
+<line>     * </line>
+<line>     * @param element the start element which was found</line>
+<line>     * @param reader the XML event reader that is in use</line>
+<line>     * @param unmarshaller the current JAXB unmarshaller in use.</line>
+<line>     * @throws JAXBException if there is an error during unmarshalling.</line>
+<line>     */</line>
+<line>    void foundElement(StartElement element, XMLEventReader reader, Unmarshaller unmarshaller) throws JAXBException;</line>
+<line>}</line>
+</source>
+</classDetails>

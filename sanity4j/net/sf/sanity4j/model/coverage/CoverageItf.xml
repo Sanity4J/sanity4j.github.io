@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.model.coverage.CoverageItf" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="100" branchCoverage="100" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.model.coverage;</line>
+<line/>
+<line>/** </line>
+<line> * CoverageItf - coverage interface. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public interface CoverageItf</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * @return Returns the branchCoverage.</line>
+<line>     */</line>
+<line>    double getBranchCoverage();</line>
+<line/>
+<line>    /**</line>
+<line>     * @return Returns the lineCoverage.</line>
+<line>     */</line>
+<line>    double getLineCoverage();</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the number of executable lines in this package.</line>
+<line>     */</line>
+<line>    int getLineCount();</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the number of covered lines in this package.</line>
+<line>     */</line>
+<line>    int getCoveredLineCount();</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the number of branches in this package.</line>
+<line>     */</line>
+<line>    int getBranchCount();</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the number of covered branches in this package.</line>
+<line>     */</line>
+<line>    int getCoveredBranchCount();</line>
+<line>}</line>
+</source>
+</classDetails>

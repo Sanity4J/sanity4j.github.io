@@ -1,0 +1,16 @@
+net.sf.sanity4j.ant.taskdef
+net.sf.sanity4j.gen.checkstyle_4_4
+net.sf.sanity4j.gen.cobertura_1_9_2
+net.sf.sanity4j.gen.findbugs_1_3_9
+net.sf.sanity4j.gen.pmd_4_2_1
+net.sf.sanity4j.gen.pmdcpd_4_2_1
+net.sf.sanity4j.maven.plugin
+net.sf.sanity4j.model.coverage
+net.sf.sanity4j.model.diagnostic
+net.sf.sanity4j.model.summary
+net.sf.sanity4j.report
+net.sf.sanity4j.ui
+net.sf.sanity4j.util
+net.sf.sanity4j.util.math
+net.sf.sanity4j.workflow
+net.sf.sanity4j.workflow.tool

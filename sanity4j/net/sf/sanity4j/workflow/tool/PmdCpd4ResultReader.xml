@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.tool.PmdCpd4ResultReader" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="86" branchCoverage="75" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Properties;</line>
+<line/>
+<line>import net.sf.sanity4j.gen.pmdcpd_4_2_1.Duplication;</line>
+<line>import net.sf.sanity4j.gen.pmdcpd_4_2_1.PmdCpd;</line>
+<line>import net.sf.sanity4j.model.diagnostic.Diagnostic;</line>
+<line>import net.sf.sanity4j.model.diagnostic.DiagnosticFactory;</line>
+<line>import net.sf.sanity4j.model.diagnostic.DiagnosticSet;</line>
+<line>import net.sf.sanity4j.util.ExtractStats;</line>
+<line>import net.sf.sanity4j.util.JaxbMarshaller;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line/>
+<line>/**</line>
+<line> * PmdCpdResultReader - Translates PMD CPD results into the common format used by the QA tool.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line covered="yes">public class PmdCpd4ResultReader implements ResultReader</line>
+<line>{</line>
+<line>    /** The rule name to use for Diagnostics, as PMD-CPD doesn't have rules. */</line>
+<line>    private static final String PMD_CPD_RULE_NAME = &quot;DoNotCopyAndPasteCode&quot;;</line>
+<line/>
+<line>    /** The properties used to configure this {@link ResultReader}. */</line>
+<line covered="yes">    private final Properties properties = new Properties();</line>
+<line/>
+<line>    /** The ExtractStats to add the results to. */</line>
+<line>    private ExtractStats stats;</line>
+<line/>
+<line>    /** The PMD CPD XML result file to read from. */</line>
+<line>    private File pmdCpdResultFile;</line>
+<line/>
+<line>    /** The threshold for severity. */</line>
+<line>    private static final int SEVERITY_THRESHOLD = 100;</line>
+<line/>
+<line>	/** {@inheritDoc} */</line>
+<line>	public void setProperties(final Properties properties) </line>
+<line>	{</line>
+<line covered="no">		this.properties.putAll(properties);</line>
+<line covered="no">	}</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public final void setResultFile(final File resultFile)</line>
+<line>    {</line>
+<line covered="yes">        this.pmdCpdResultFile = resultFile;</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Retrieves the result file. </line>
+<line>     * @return the result file.</line>
+<line>     */</line>
+<line>    protected final File getResultFile()</line>
+<line>    {</line>
+<line covered="no">        return pmdCpdResultFile;</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public void setStats(final ExtractStats stats)</line>
+<line>    {</line>
+<line covered="yes">        this.stats = stats;</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Extracts PMD statistics from the pmdCpdResultFile.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticFactory diagnosticFactory = DiagnosticFactory.getInstance(properties);</line>
+<line covered="yes">        DiagnosticSet diagnostics = stats.getDiagnostics();</line>
+<line/>
+<line covered="yes">        PmdCpd result = (PmdCpd)</line>
+<line>            JaxbMarshaller.unmarshal(pmdCpdResultFile, &quot;net.sf.sanity4j.gen.pmdcpd_4_2_1&quot;, &quot;http://net.sf.sanity4j/namespace/pmdcpd-4.2.1&quot;);</line>
+<line/>
+<line covered="yes">        List&lt;Duplication&gt; duplications = result.getDuplication();</line>
+<line/>
+<line covered="yes">        for (Duplication duplication : duplications)</line>
+<line>        {</line>
+<line>            try</line>
+<line>            {</line>
+<line covered="yes">                net.sf.sanity4j.gen.pmdcpd_4_2_1.File file1 = duplication.getFile().get(0);</line>
+<line covered="yes">                net.sf.sanity4j.gen.pmdcpd_4_2_1.File file2 = duplication.getFile().get(1);</line>
+<line covered="yes">                String fileName1 = stats.getCanonicalPath(file1.getPath()).substring(stats.getSourceDirectory().length() + 1);</line>
+<line covered="yes">                String fileName2 = stats.getCanonicalPath(file2.getPath()).substring(stats.getSourceDirectory().length() + 1);</line>
+<line/>
+<line>                // severity is based on the size of the duplication</line>
+<line covered="partial">                int severity = duplication.getLines().intValue() &lt; SEVERITY_THRESHOLD</line>
+<line>                               ? Diagnostic.SEVERITY_LOW</line>
+<line>                               : Diagnostic.SEVERITY_MODERATE;</line>
+<line/>
+<line covered="yes">                Diagnostic diagnostic = diagnosticFactory.getDiagnostic();</line>
+<line covered="yes">                diagnostic.setSource(Diagnostic.SOURCE_PMD_CPD);</line>
+<line covered="yes">                diagnostic.setRuleName(PMD_CPD_RULE_NAME);</line>
+<line covered="yes">                diagnostic.setSeverity(severity);</line>
+<line covered="yes">                diagnostic.setFileName(stats.getCanonicalPath(file1.getPath()));</line>
+<line covered="yes">                diagnostic.setStartLine(file1.getLine().intValue());</line>
+<line covered="yes">                diagnostic.setEndLine(file1.getLine().intValue() + duplication.getLines().intValue());</line>
+<line covered="yes">                diagnostic.setMessage(&quot;Duplicate of &quot; + fileName2 + &quot;:\n&quot; + duplication.getCodefragment());</line>
+<line/>
+<line>                // CPD is source file based, so guess the class name</line>
+<line covered="yes">                diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</line>
+<line/>
+<line covered="yes">                diagnostics.add(diagnostic);</line>
+<line/>
+<line covered="yes">                diagnostic = diagnosticFactory.getDiagnostic();</line>
+<line covered="yes">                diagnostic.setSource(Diagnostic.SOURCE_PMD_CPD);</line>
+<line covered="yes">                diagnostic.setRuleName(PMD_CPD_RULE_NAME);</line>
+<line covered="yes">                diagnostic.setSeverity(severity);</line>
+<line covered="yes">                diagnostic.setFileName(stats.getCanonicalPath(file2.getPath()));</line>
+<line covered="yes">                diagnostic.setStartLine(file2.getLine().intValue());</line>
+<line covered="yes">                diagnostic.setEndLine(file2.getLine().intValue() + duplication.getLines().intValue());</line>
+<line covered="yes">                diagnostic.setMessage(&quot;Duplicate of &quot; + fileName1 + &quot;:\n&quot; + duplication.getCodefragment());</line>
+<line covered="yes">                diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</line>
+<line/>
+<line>                // CPD is source file based, so guess the class name</line>
+<line covered="yes">                diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</line>
+<line/>
+<line covered="yes">                diagnostics.add(diagnostic);</line>
+<line>            }</line>
+<line covered="no">            catch (IOException e)</line>
+<line>            {</line>
+<line covered="no">                throw new QAException(&quot;Failed to obtain canonical path&quot;, e);</line>
+<line covered="yes">            }</line>
+<line>        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the description of this WorkUnit</line>
+<line>     */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line covered="no">        return &quot;Reading PMD CPD results&quot;;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

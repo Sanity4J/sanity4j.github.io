@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.model.diagnostic.DiagnosticCategory" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="1" info="1" lineCoverage="100" branchCoverage="100" quality="99"/>
+<source>
+<line>package net.sf.sanity4j.model.diagnostic;</line>
+<line/>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Iterator;</line>
+<line>import java.util.List;</line>
+<line>import java.util.StringTokenizer;</line>
+<line/>
+<line>/**</line>
+<line> * DiagnosticCategory - used for categorising {@link Diagnostic}s.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class DiagnosticCategory </line>
+<line>{</line>
+<line>    /** The parent category, or null if this is the root category. */</line>
+<line>	private final DiagnosticCategory parent;    </line>
+<line>    /** The list of diagnostics for this category. */</line>
+<line covered="yes">	private final List&lt;Diagnostic&gt; diagnostics = new ArrayList&lt;Diagnostic&gt;();</line>
+<line>    /** A list of DiagnosticCategory objects that are sub-categories. */</line>
+<line covered="yes">	private final List&lt;DiagnosticCategory&gt; subCategories = new ArrayList&lt;DiagnosticCategory&gt;();</line>
+<line>    /** The name of this category. */</line>
+<line>	private final String name;</line>
+<line/>
+<line>	/**</line>
+<line>	 * Creates a root DiagnosticCategory.</line>
+<line>	 */</line>
+<line>	public DiagnosticCategory()</line>
+<line>	{</line>
+<line covered="yes">		this(&quot;All categories&quot;, null);</line>
+<line covered="yes">	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * Creates a sub-category with the given name and parent.</line>
+<line>	 * </line>
+<line>	 * @param name the sub-category's name</line>
+<line>	 * @param parent the sub-category's parent</line>
+<line>	 */</line>
+<line>	private DiagnosticCategory(final String name, final DiagnosticCategory parent)</line>
+<line covered="yes">	{</line>
+<line covered="yes">		this.name = name;</line>
+<line covered="yes">		this.parent = parent;</line>
+<line covered="yes">	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * Adds the given diagnostic to this category, allocating sub-categories</line>
+<line>	 * as necessary.</line>
+<line>	 * </line>
+<line>	 * @param diagnostic the Diagnostic to add</line>
+<line>	 */</line>
+<line>	public void addDiagnostic(final Diagnostic diagnostic)</line>
+<line>	{</line>
+<line covered="yes">		String[] categories = diagnostic.getCategories();</line>
+<line/>
+<line covered="yes">		for (int i = 0; i &lt; categories.length; i++)</line>
+<line>		{</line>
+<line covered="yes">			String category = categories[i]; </line>
+<line covered="yes">			DiagnosticCategory targetCategory = this;</line>
+<line/>
+<line>			// The category string will be in the form category[/subcategory[/...]]			</line>
+<line sev="0" covered="yes"><diag id="465"/>			for (StringTokenizer pathTok = new StringTokenizer(category, &quot;/&quot;); pathTok.hasMoreTokens();)</line>
+<line>			{</line>
+<line covered="yes">				String pathElement = pathTok.nextToken();</line>
+<line covered="yes">				targetCategory = targetCategory.getCategory(pathElement);</line>
+<line covered="yes">			}</line>
+<line/>
+<line covered="yes">			targetCategory.diagnostics.add(diagnostic);</line>
+<line>		}</line>
+<line covered="yes">	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * @return this category's name</line>
+<line>	 */</line>
+<line>	public String getName()</line>
+<line>	{</line>
+<line covered="yes">		return name;</line>
+<line>	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * @return the list of sub-categories</line>
+<line>	 */</line>
+<line>	public List&lt;DiagnosticCategory&gt; getSubCategories()</line>
+<line>	{</line>
+<line covered="yes">		return subCategories;</line>
+<line>	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * @return the list of Diagnostics for this category only</line>
+<line>	 */</line>
+<line>	public List&lt;Diagnostic&gt; getDiagnostics()</line>
+<line>	{</line>
+<line covered="yes">		return diagnostics;</line>
+<line>	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * @return the total number of diagnostics for this category </line>
+<line>	 * and all sub-categories.</line>
+<line>	 */</line>
+<line>	public int getDiagnosticCount()</line>
+<line>	{</line>
+<line covered="yes">		int count = diagnostics.size();</line>
+<line/>
+<line covered="yes">		for (int i = 0; i &lt; subCategories.size(); i++)</line>
+<line>		{</line>
+<line covered="yes">			DiagnosticCategory category = subCategories.get(i); </line>
+<line covered="yes">			count += category.getDiagnosticCount();</line>
+<line>		}</line>
+<line/>
+<line covered="yes">		return count;</line>
+<line>	}</line>
+<line/>
+<line>	/**</line>
+<line>     * Retrieves the total number of diagnostics for this category </line>
+<line>     * and all sub-categories, that have the given severity.</line>
+<line>     * </line>
+<line>     * @param severity the severity of diagnostics to include in the count</line>
+<line>	 * @return the count of diagnostics</line>
+<line>	 */</line>
+<line>	public int getDiagnosticCount(final int severity)</line>
+<line>	{</line>
+<line covered="yes">		int count = 0;</line>
+<line/>
+<line covered="yes">	    if (severity == Diagnostic.SEVERITY_ALL)</line>
+<line>	    {</line>
+<line>		    // Simple case for all severities</line>
+<line covered="yes">	        count += diagnostics.size();</line>
+<line>	    }</line>
+<line>	    else</line>
+<line>	    {</line>
+<line covered="yes">			for (int i = 0; i &lt; diagnostics.size(); i++)</line>
+<line>			{</line>
+<line covered="yes">				Diagnostic diagnostic = diagnostics.get(i);</line>
+<line/>
+<line covered="yes">				if (diagnostic.getSeverity() == severity)</line>
+<line>				{</line>
+<line covered="yes">					count++;</line>
+<line>				}</line>
+<line>			}</line>
+<line>	    }</line>
+<line/>
+<line covered="yes">		for (int i = 0; i &lt; subCategories.size(); i++)</line>
+<line>		{</line>
+<line covered="yes">			DiagnosticCategory category = subCategories.get(i); </line>
+<line covered="yes">			count += category.getDiagnosticCount(severity);</line>
+<line>		}</line>
+<line/>
+<line covered="yes">		return count;</line>
+<line>	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * @return an iterator of sub-categories</line>
+<line>	 */</line>
+<line>	public Iterator&lt;DiagnosticCategory&gt; subCategoriesIterator()</line>
+<line>	{</line>
+<line covered="yes">		return subCategories.iterator();</line>
+<line>	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * @return the parent DiagnosticCategory</line>
+<line>	 */</line>
+<line>	public DiagnosticCategory getParent()</line>
+<line>	{</line>
+<line covered="yes">		return parent;</line>
+<line>	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * Returns the level of this node; 0 for the root node, </line>
+<line>	 * 1 for it's children, 2 for grand-children, etc.</line>
+<line>	 * </line>
+<line>	 * @return the level of this node</line>
+<line>	 */</line>
+<line>	public int getLevel()</line>
+<line>	{</line>
+<line covered="yes">		int level = 0;</line>
+<line/>
+<line covered="yes">		for (DiagnosticCategory c = getParent(); c != null; c = c.getParent())</line>
+<line>		{</line>
+<line covered="yes">			level++;</line>
+<line>		}</line>
+<line/>
+<line covered="yes">		return level;</line>
+<line>	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * @return true if this DiagnosticCategory is the root category</line>
+<line>	 */</line>
+<line>	public boolean isRoot()</line>
+<line>	{</line>
+<line covered="yes">		return parent == null;</line>
+<line>	}</line>
+<line/>
+<line>	/**</line>
+<line>	 * Returns the category with the given name, or creates one if it isn't found.</line>
+<line>	 *  </line>
+<line>	 * @param name the name of the category</line>
+<line>	 * @return a subcategory with the given name</line>
+<line>	 */</line>
+<line sev="1"><diag id="89"/>	private DiagnosticCategory getCategory(final String name)</line>
+<line>	{</line>
+<line covered="yes">		for (int i = 0; i &lt; subCategories.size(); i++)</line>
+<line>		{</line>
+<line covered="yes">			DiagnosticCategory category = subCategories.get(i); </line>
+<line/>
+<line covered="yes">			if (name.equals(category.name))</line>
+<line>			{</line>
+<line covered="yes">				return category;</line>
+<line>			}</line>
+<line>		}</line>
+<line/>
+<line covered="yes">		DiagnosticCategory category = new DiagnosticCategory(name, this);</line>
+<line covered="yes">		subCategories.add(category);</line>
+<line/>
+<line covered="yes">		return category;</line>
+<line>	}</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="465" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="89" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'name' hides a field.</diag>
+</diags>
+</classDetails>

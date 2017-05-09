@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/package-by-rule.xsl"?>
+<packageByRule packageName="net.sf.sanity4j.util" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<rule name="AbstractNaming" tool="PMD" severity="1">
+<class name="net.sf.sanity4j.util.QaLogger">
+<diag id="635"/>
+</class>
+</rule>
+<rule name="AssignmentInOperand" tool="PMD" severity="2">
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="639"/>
+</class>
+</rule>
+<rule name="AvoidDeeplyNestedIfStmts" tool="PMD" severity="0">
+<class name="net.sf.sanity4j.util.RegexpReplaceInputStream">
+<diag id="669"/>
+<diag id="670"/>
+</class>
+</rule>
+<rule name="AvoidInstantiatingObjectsInLoops" tool="PMD" severity="0">
+<class name="net.sf.sanity4j.util.ExtractStats">
+<diag id="621"/>
+<diag id="622"/>
+</class>
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="650"/>
+<diag id="651"/>
+<diag id="652"/>
+<diag id="653"/>
+</class>
+<class name="net.sf.sanity4j.util.math.InfixExpression">
+<diag id="677"/>
+</class>
+<class name="net.sf.sanity4j.util.math.PostfixExpression">
+<diag id="681"/>
+<diag id="682"/>
+</class>
+</rule>
+<rule name="CompareObjectsWithEquals" tool="PMD" severity="3">
+<class name="net.sf.sanity4j.util.JaxbMarshaller">
+<diag id="627"/>
+</class>
+</rule>
+<rule name="ConfusingTernary" tool="PMD" severity="1">
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="644"/>
+</class>
+</rule>
+<rule name="CyclomaticComplexity" tool="PMD" severity="1">
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="638"/>
+<diag id="641"/>
+<diag id="642"/>
+<diag id="646"/>
+</class>
+<class name="net.sf.sanity4j.util.math.InfixExpression">
+<diag id="673"/>
+<diag id="676"/>
+</class>
+<class name="net.sf.sanity4j.util.math.PostfixExpression">
+<diag id="678"/>
+<diag id="680"/>
+</class>
+</rule>
+<rule name="DM_DEFAULT_ENCODING" tool="Findbugs" severity="0">
+<class name="net.sf.sanity4j.util.JaxbMarshaller$1">
+<diag id="347"/>
+</class>
+</rule>
+<rule name="EI_EXPOSE_REP" tool="Findbugs" severity="0">
+<class name="net.sf.sanity4j.util.ExtractStats">
+<diag id="346"/>
+</class>
+</rule>
+<rule name="EmptyBlockCheck" tool="Checkstyle" severity="1">
+<class name="net.sf.sanity4j.util.PipeInputThread">
+<diag id="306"/>
+<diag id="307"/>
+</class>
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="310"/>
+</class>
+<class name="net.sf.sanity4j.util.RegexpReplaceInputStream">
+<diag id="311"/>
+</class>
+</rule>
+<rule name="EmptyCatchBlock" tool="PMD" severity="2">
+<class name="net.sf.sanity4j.util.PipeInputThread">
+<diag id="633"/>
+<diag id="634"/>
+</class>
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="654"/>
+</class>
+<class name="net.sf.sanity4j.util.RegexpReplaceInputStream">
+<diag id="668"/>
+</class>
+</rule>
+<rule name="ExcessiveMethodLength" tool="PMD" severity="0">
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="645"/>
+</class>
+<class name="net.sf.sanity4j.util.math.InfixExpression">
+<diag id="675"/>
+</class>
+</rule>
+<rule name="InefficientEmptyStringCheck" tool="PMD" severity="2">
+<class name="net.sf.sanity4j.util.FileUtil">
+<diag id="624"/>
+</class>
+</rule>
+<rule name="JavadocPackageCheck" tool="Checkstyle" severity="0">
+<class name="net.sf.sanity4j.util.ExternalProcessRunner">
+<diag id="254"/>
+</class>
+<class name="net.sf.sanity4j.util.math.InfixExpression">
+<diag id="296"/>
+</class>
+</rule>
+<rule name="MethodReturnsInternalArray" tool="PMD" severity="1">
+<class name="net.sf.sanity4j.util.ExtractStats">
+<diag id="620"/>
+</class>
+</rule>
+<rule name="NPathComplexity" tool="PMD" severity="0">
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="643"/>
+<diag id="647"/>
+</class>
+</rule>
+<rule name="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" tool="Findbugs" severity="2">
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="348"/>
+<diag id="349"/>
+</class>
+</rule>
+<rule name="REC_CATCH_EXCEPTION" tool="Findbugs" severity="3">
+<class name="net.sf.sanity4j.util.ExternalProcessRunner">
+<diag id="345"/>
+</class>
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="350"/>
+</class>
+</rule>
+<rule name="RedundantThrowsCheck" tool="Checkstyle" severity="1">
+<class name="net.sf.sanity4j.util.JaxbMarshaller">
+<diag id="288"/>
+<diag id="289"/>
+</class>
+<class name="net.sf.sanity4j.util.math.InfixExpression">
+<diag id="297"/>
+<diag id="298"/>
+<diag id="299"/>
+<diag id="300"/>
+<diag id="301"/>
+</class>
+<class name="net.sf.sanity4j.util.math.PostfixExpression">
+<diag id="302"/>
+<diag id="303"/>
+<diag id="304"/>
+<diag id="305"/>
+</class>
+</rule>
+<rule name="SimplifyStartsWith" tool="PMD" severity="1">
+<class name="net.sf.sanity4j.util.QaUtil">
+<diag id="640"/>
+</class>
+</rule>
+</packageByRule>

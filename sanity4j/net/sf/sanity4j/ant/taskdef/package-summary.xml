@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
+<packageSummary packageName="net.sf.sanity4j.ant.taskdef" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<issueSummary high="0" significant="0" moderate="0" low="1" info="1">
+<category name="All categories" high="0" significant="0" moderate="0" low="0" info="0"/>
+<tool name="Checkstyle" high="0" significant="0" moderate="0" low="1" info="1"/>
+</issueSummary>
+<qualitySummary>
+<package name="net.sf.sanity4j.ant.taskdef" classes="1" lineCount="366" high="0" significant="0" moderate="0" low="1" info="1" quality="99">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="86" coveredLineCount="0" branchCount="9" coveredBranchCount="0"/>
+</package>
+<class name="RunQA" high="0" significant="0" moderate="0" low="1" info="1" quality="99">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="86" coveredLineCount="0" branchCount="9" coveredBranchCount="0"/>
+</class>
+</qualitySummary>
+<graphs>
+</graphs>
+</packageSummary>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
+<packageSummary packageName="net.sf.sanity4j.maven.plugin" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<issueSummary high="0" significant="0" moderate="0" low="36" info="28">
+<category name="All categories" high="0" significant="0" moderate="0" low="0" info="0">
+<category name="Code style" high="0" significant="0" moderate="0" low="5" info="20"/>
+<category name="Complexity" high="0" significant="0" moderate="0" low="2" info="5">
+<category name="Code size" high="0" significant="0" moderate="0" low="0" info="2"/>
+</category>
+<category name="Performance" high="0" significant="0" moderate="0" low="0" info="14"/>
+</category>
+<tool name="Findbugs" high="0" significant="0" moderate="0" low="0" info="6"/>
+<tool name="PMD" high="0" significant="0" moderate="0" low="7" info="21"/>
+<tool name="Checkstyle" high="0" significant="0" moderate="0" low="29" info="1"/>
+</issueSummary>
+<qualitySummary>
+<package name="net.sf.sanity4j.maven.plugin" classes="2" lineCount="1566" high="0" significant="0" moderate="0" low="36" info="28" quality="95">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="333" coveredLineCount="0" branchCount="66" coveredBranchCount="0"/>
+</package>
+<class name="Coordinate" high="0" significant="0" moderate="0" low="7" info="1" quality="95">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="90" coveredLineCount="0" branchCount="7" coveredBranchCount="0"/>
+</class>
+<class name="RunQAMojo" high="0" significant="0" moderate="0" low="29" info="27" quality="95">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="243" coveredLineCount="0" branchCount="59" coveredBranchCount="0"/>
+</class>
+</qualitySummary>
+<graphs>
+</graphs>
+</packageSummary>

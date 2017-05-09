@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.util.StringUtil" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="85" branchCoverage="100" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.util; </line>
+<line/>
+<line>import java.util.List;</line>
+<line/>
+<line>/**</line>
+<line> * StringUtil - String related utility methods.  </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public final class StringUtil</line>
+<line>{</line>
+<line>    /** No instance methods here. */</line>
+<line>    private StringUtil()</line>
+<line covered="no">    {</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Concatenates the elements of a list into a single String, </line>
+<line>     * separating entries with the supplied separator.</line>
+<line>     * </line>
+<line>     * @param list the list to concatenate</line>
+<line>     * @param separator the separator to use</line>
+<line>     * @return the concatenated string</line>
+<line>     */</line>
+<line>    public static String concatList(final List&lt;?&gt; list, final String separator)</line>
+<line>    {</line>
+<line covered="yes">        StringBuffer buf = new StringBuffer();</line>
+<line/>
+<line covered="yes">        for (int i = 0; i &lt; list.size(); i++)</line>
+<line>        {</line>
+<line covered="yes">            if (i &gt; 0)</line>
+<line>            {</line>
+<line covered="yes">                buf.append(separator);</line>
+<line>            }</line>
+<line/>
+<line covered="yes">            buf.append(list.get(i));</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        return buf.toString();</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Determines whether the given string is null or &quot;empty&quot;.</line>
+<line>     * </line>
+<line>     * @param aString the string to check.</line>
+<line>     * @return true if the given String is null or contains only whitespace.</line>
+<line>     */</line>
+<line>    public static boolean empty(final String aString)</line>
+<line>    {</line>
+<line covered="yes">        if (aString != null)</line>
+<line>        {</line>
+<line covered="yes">            final int len = aString.length();</line>
+<line/>
+<line covered="yes">            for (int i = 0; i &lt; len; i++)</line>
+<line>            {</line>
+<line>                // This mirrors String.trim(), which removes ASCII</line>
+<line>                // control characters as well as whitespace.</line>
+<line covered="yes">                if (aString.charAt(i) &gt; ' ')</line>
+<line>                {</line>
+<line covered="yes">                    return false;</line>
+<line>                }</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        return true;</line>
+<line>    }    </line>
+<line>}</line>
+</source>
+</classDetails>

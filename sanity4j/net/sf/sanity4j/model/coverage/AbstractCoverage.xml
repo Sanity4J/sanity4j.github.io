@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.model.coverage.AbstractCoverage" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="1" lineCoverage="100" branchCoverage="100" quality="100"/>
+<source>
+<line sev="0"><diag id="33"/>package net.sf.sanity4j.model.coverage; </line>
+<line/>
+<line>/** </line>
+<line> * Abstract implementation of Coverage.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line covered="yes">public abstract class AbstractCoverage implements CoverageItf</line>
+<line>{</line>
+<line>    /** Branch coverage ratio, from 0.0 (none) to 1.0 (all). */</line>
+<line>    private double branchCoverage;</line>
+<line/>
+<line>    /** Line coverage ratio, from 0.0 (none) to 1.0 (all). */</line>
+<line>    private double lineCoverage;</line>
+<line/>
+<line>    /**</line>
+<line>     * @return Returns the branchCoverage.</line>
+<line>     */</line>
+<line>    public double getBranchCoverage()</line>
+<line>    {</line>
+<line covered="yes">        return branchCoverage;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param branchCoverage The branchCoverage to set.</line>
+<line>     */</line>
+<line>    public void setBranchCoverage(final double branchCoverage)</line>
+<line>    {</line>
+<line covered="yes">        this.branchCoverage = branchCoverage;</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return Returns the lineCoverage.</line>
+<line>     */</line>
+<line>    public double getLineCoverage()</line>
+<line>    {</line>
+<line covered="yes">        return lineCoverage;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param lineCoverage The lineCoverage to set.</line>
+<line>     */</line>
+<line>    public void setLineCoverage(final double lineCoverage)</line>
+<line>    {</line>
+<line covered="yes">        this.lineCoverage = lineCoverage;</line>
+<line covered="yes">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="33" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+</diags>
+</classDetails>

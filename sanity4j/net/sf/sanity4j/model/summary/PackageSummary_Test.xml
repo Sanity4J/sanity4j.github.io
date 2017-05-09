@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.model.summary.PackageSummary_Test" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.model.summary; </line>
+<line/>
+<line>import java.util.Date;</line>
+<line/>
+<line>import junit.framework.TestCase;</line>
+<line/>
+<line>/** </line>
+<line> * PackageSummary_Test - jUnit tests for {@link PackageSummary}. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class PackageSummary_Test extends TestCase</line>
+<line>{</line>
+<line>    public void testSetRunDate()</line>
+<line>    {</line>
+<line>        Date date = new Date(System.currentTimeMillis() - 123456);</line>
+<line/>
+<line>        PackageSummary packageSummary = new PackageSummary();</line>
+<line>        packageSummary.setRunDate(date);</line>
+<line>        assertEquals(&quot;runDate accessor incorrect&quot;, date, packageSummary.getRunDate());</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetPackageName()</line>
+<line>    {</line>
+<line>        String packageName = &quot;package.subpackage&quot;;</line>
+<line/>
+<line>        PackageSummary packageSummary = new PackageSummary();</line>
+<line>        packageSummary.setPackageName(packageName);</line>
+<line>        assertEquals(&quot;packageName accessor incorrect&quot;, packageName, packageSummary.getPackageName());        </line>
+<line>    }</line>
+<line/>
+<line>    public void testSetLineCoverage()</line>
+<line>    {</line>
+<line>        double coverage = 0.123;</line>
+<line/>
+<line>        PackageSummary packageSummary = new PackageSummary();</line>
+<line>        packageSummary.setLineCoverage(coverage);</line>
+<line>        assertEquals(&quot;lineCoverage accessor incorrect&quot;, coverage, packageSummary.getLineCoverage(), 0.0);</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetBranchCoverage()</line>
+<line>    {</line>
+<line>        double coverage = 0.123;</line>
+<line/>
+<line>        PackageSummary packageSummary = new PackageSummary();</line>
+<line>        packageSummary.setBranchCoverage(coverage);</line>
+<line>        assertEquals(&quot;branchCoverage accessor incorrect&quot;, coverage, packageSummary.getBranchCoverage(), 0.0);</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetInfoCount()</line>
+<line>    {</line>
+<line>        int count = 123;</line>
+<line/>
+<line>        PackageSummary packageSummary = new PackageSummary();</line>
+<line>        packageSummary.setInfoCount(count);</line>
+<line>        assertEquals(&quot;InfoCount accessor incorrect&quot;, count, packageSummary.getInfoCount(), 0.0);</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetLowCount()</line>
+<line>    {</line>
+<line>        int count = 123;</line>
+<line/>
+<line>        PackageSummary packageSummary = new PackageSummary();</line>
+<line>        packageSummary.setLowCount(count);</line>
+<line>        assertEquals(&quot;LowCount accessor incorrect&quot;, count, packageSummary.getLowCount(), 0.0);</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetModerateCount()</line>
+<line>    {</line>
+<line>        int count = 123;</line>
+<line/>
+<line>        PackageSummary packageSummary = new PackageSummary();</line>
+<line>        packageSummary.setModerateCount(count);</line>
+<line>        assertEquals(&quot;ModerateCount accessor incorrect&quot;, count, packageSummary.getModerateCount(), 0.0);</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetSignificantCount()</line>
+<line>    {</line>
+<line>        int count = 123;</line>
+<line/>
+<line>        PackageSummary packageSummary = new PackageSummary();</line>
+<line>        packageSummary.setSignificantCount(count);</line>
+<line>        assertEquals(&quot;SignificantCount accessor incorrect&quot;, count, packageSummary.getSignificantCount(), 0.0);</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetHighCount()</line>
+<line>    {</line>
+<line>        int count = 123;</line>
+<line/>
+<line>        PackageSummary packageSummary = new PackageSummary();</line>
+<line>        packageSummary.setHighCount(count);</line>
+<line>        assertEquals(&quot;HighCount accessor incorrect&quot;, count, packageSummary.getHighCount(), 0.0);</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetLineCount()</line>
+<line>    {</line>
+<line>        int count = 123;</line>
+<line/>
+<line>        PackageSummary packageSummary = new PackageSummary();</line>
+<line>        packageSummary.setLineCount(count);</line>
+<line>        assertEquals(&quot;LineCount accessor incorrect&quot;, count, packageSummary.getLineCount(), 0.0);</line>
+<line>    }    </line>
+<line>}</line>
+</source>
+</classDetails>

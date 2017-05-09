@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.util.math.SyntaxException" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="0" branchCoverage="100" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.util.math;</line>
+<line/>
+<line>/**</line>
+<line> * Thrown by {@link PostfixExpression} and {@link InfixExpression} when a </line>
+<line> * malformed expression produces an error when executed.</line>
+<line> * </line>
+<line> * @version 1.0 02/01/2008</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> */ </line>
+<line>public final class SyntaxException extends Exception</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a SyntaxException with the specified message.</line>
+<line>     * @param message the error message.</line>
+<line>     */</line>
+<line>    public SyntaxException(final String message)</line>
+<line>    { </line>
+<line covered="no">        super(message); </line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a SyntaxException with the specified message.</line>
+<line>     * </line>
+<line>     * @param message the error message.</line>
+<line>     * @param cause the cause of the exception.</line>
+<line>     */</line>
+<line>    public SyntaxException(final String message, final Throwable cause)</line>
+<line>    { </line>
+<line covered="no">        super(message, cause); </line>
+<line covered="no">    }</line>
+<line>}</line>
+</source>
+</classDetails>

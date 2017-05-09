@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.report.ExportWriter" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="9" info="2" lineCoverage="0" branchCoverage="0" quality="93"/>
+<source>
+<line>package net.sf.sanity4j.report;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Date;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Map;</line>
+<line/>
+<line>import net.sf.sanity4j.model.coverage.CoverageItf;</line>
+<line>import net.sf.sanity4j.model.diagnostic.Diagnostic;</line>
+<line>import net.sf.sanity4j.model.diagnostic.DiagnosticSet;</line>
+<line>import net.sf.sanity4j.util.ExtractStats;</line>
+<line>import net.sf.sanity4j.util.FileUtil;</line>
+<line>import net.sf.sanity4j.util.StringUtil;</line>
+<line>import net.sf.sanity4j.workflow.QAProcessor;</line>
+<line/>
+<line/>
+<line>/**</line>
+<line> * ExportWriter writes an export of the entire run to a single XML file. </line>
+<line> * The output file is &lt;code&gt;export.xml&lt;/code&gt;, in the report directory.</line>
+<line> *  </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line sev="1"><diag id="495"/>public class ExportWriter </line>
+<line sev="1">{</line>
+<line sev="1">    /** Source file paths, keyed by package name. */</line>
+<line sev="1">	private final Map&lt;String, List&lt;String&gt;&gt; sourcesByPackage;</line>
+<line sev="1"/>
+<line sev="1">    /** The diagnostics that we are writing. */</line>
+<line sev="1">    private final ExtractStats stats;</line>
+<line sev="1"/>
+<line sev="1">    /** The destination directory. */</line>
+<line sev="1">    private final File reportDir;</line>
+<line sev="1"/>
+<line sev="1">    /** One hundred. */</line>
+<line sev="1">    private static final double HUNDRED = 100.0;</line>
+<line sev="1"/>
+<line sev="1">    /** One hundred. */</line>
+<line sev="1">    private static final int ONE_HUNDRED = 100;</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Creates a ExportWriter.</line>
+<line sev="1">     * </line>
+<line sev="1">     * @param stats the stats utility containing the results</line>
+<line sev="1">     * @param reportDir the base directory for the report</line>
+<line sev="1">     * @param sourcesByPackage a map of source files by package name</line>
+<line sev="1">     */</line>
+<line sev="1">	public ExportWriter(final ExtractStats stats, final File reportDir, </line>
+<line sev="1">                         final Map&lt;String, List&lt;String&gt;&gt; sourcesByPackage)</line>
+<line sev="1" covered="no">	{</line>
+<line sev="1" covered="no">        this.stats = stats;</line>
+<line sev="1" covered="no">        this.reportDir = reportDir;        </line>
+<line sev="1" covered="no">		this.sourcesByPackage = sourcesByPackage;</line>
+<line sev="1" covered="no">	}</line>
+<line sev="1"/>
+<line sev="1">	/**</line>
+<line sev="1">	 * Writes the export file to the report directory.</line>
+<line sev="1">	 * @throws IOException if there is an error writing any file</line>
+<line sev="1">	 */</line>
+<line sev="1">	public void writeExport() throws IOException</line>
+<line sev="1">	{</line>
+<line sev="1" covered="no"><diag id="499"/>        StringBuffer xml = new StringBuffer();</line>
+<line sev="1"/>
+<line sev="1">        // Write top-level package summary info        </line>
+<line sev="1" covered="no"><diag id="500"/>        xml.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</line>
+<line sev="1">            .append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;xslt/package-frame.xsl\&quot;?&gt;\n&quot;)        </line>
+<line sev="1">            .append(&quot;&lt;export qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</line>
+<line sev="1">            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line sev="1"/>
+<line sev="1">        // Recursively write all packages</line>
+<line sev="1" covered="no">        writePackage(&quot;&quot;, xml);</line>
+<line sev="1"/>
+<line sev="1" covered="no">        xml.append(&quot;&lt;/export&gt;\n&quot;);</line>
+<line sev="1"/>
+<line sev="1" covered="no">        FileUtil.writeToFile(xml.toString(), new File(reportDir, &quot;export.xml&quot;));</line>
+<line sev="1" covered="no">	}</line>
+<line sev="1"/>
+<line sev="1">	/**</line>
+<line sev="1">	 * Writes out the findings for a single package.</line>
+<line sev="1">	 * </line>
+<line sev="1">	 * @param packageName the name of the package to write</line>
+<line sev="1">	 * @param xml the StringBuffer to write the XML to.</line>
+<line sev="1">	 */</line>
+<line sev="1"><diag id="501"/><diag id="502"/><diag id="503"/><diag id="757"/>	private void writePackage(final String packageName, final StringBuffer xml)</line>
+<line sev="1">	{</line>
+<line sev="1" covered="no">        boolean allPackages = &quot;&quot;.equals(packageName);</line>
+<line sev="1"/>
+<line sev="1" covered="no">        DiagnosticSet diags = null;</line>
+<line sev="1" covered="no">        CoverageItf coverage = null;</line>
+<line sev="1" covered="no">        int numLines = 0;</line>
+<line sev="1" covered="no">        int numExecutableLines = 0;</line>
+<line sev="1" covered="no">        int coveredLines = 0;</line>
+<line sev="1" covered="no">        int coveredLinePct = 0;</line>
+<line sev="1" covered="no">        int coveredBranchPct = 0;</line>
+<line sev="1" covered="no">        int branchCount = 0;</line>
+<line sev="1" covered="no">        int coveredBranchCount = 0;</line>
+<line sev="1" covered="no">        int classCount = 0;</line>
+<line sev="1"/>
+<line sev="1" covered="no">        if (allPackages)</line>
+<line sev="1">        {</line>
+<line sev="1" covered="no">            coverage = stats.getCoverage();</line>
+<line sev="1" covered="no">            diags = stats.getDiagnostics();</line>
+<line sev="1" covered="no">            numLines = stats.getLineCount();</line>
+<line sev="1" covered="no">            classCount = stats.getClassCount();</line>
+<line sev="1">        }</line>
+<line sev="1">        else</line>
+<line sev="1">        {</line>
+<line sev="1" covered="no">            coverage = stats.getCoverage().getPackageCoverage(packageName);</line>
+<line sev="1" covered="no">            diags = stats.getDiagnostics().getDiagnosticsForPackage(packageName, false);</line>
+<line sev="1"/>
+<line sev="1" covered="no">            numLines = stats.getPackageLineCount(packageName);</line>
+<line sev="1" covered="no">            classCount = stats.getPackageClassCount(packageName);</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1" covered="no">        if (coverage != null)</line>
+<line sev="1">        {</line>
+<line sev="1" covered="no">            coveredLines = (int) Math.round(numLines * coverage.getLineCoverage());</line>
+<line sev="1" covered="no">            coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);</line>
+<line sev="1" covered="no">            coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);</line>
+<line sev="1" covered="no">            coveredLines = coverage.getCoveredLineCount();</line>
+<line sev="1" covered="no">            branchCount = coverage.getBranchCount();</line>
+<line sev="1" covered="no">            coveredBranchCount = coverage.getCoveredBranchCount();</line>
+<line sev="1" covered="no">            numExecutableLines = coverage.getLineCount();</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1" covered="no">        xml.append(&quot;&lt;package name=\&quot;&quot;).append(packageName);</line>
+<line sev="1" covered="no">        xml.append(&quot;\&quot; classes=\&quot;&quot;).append(classCount)</line>
+<line sev="1"><diag id="504"/>           .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numLines);</line>
+<line sev="1"/>
+<line sev="1">        // Quality</line>
+<line sev="1" covered="no">        int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</line>
+<line sev="1"/>
+<line sev="1" covered="no"><diag id="761"/>        xml.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</line>
+<line sev="1">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</line>
+<line sev="1">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</line>
+<line sev="1">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</line>
+<line sev="1">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))</line>
+<line sev="1">            .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)</line>
+<line sev="1">            .append(&quot;\&quot;&gt;\n&quot;);</line>
+<line sev="1"/>
+<line sev="1">        // Test coverage</line>
+<line sev="1" covered="no">        if (numExecutableLines != 0)</line>
+<line sev="1">        {</line>
+<line sev="1" covered="no">            xml.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)</line>
+<line sev="1">                .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)</line>
+<line sev="1">                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)</line>
+<line sev="1">                .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)</line>
+<line sev="1">                .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)</line>
+<line sev="1">                .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)</line>
+<line sev="1">                .append(&quot;\&quot;/&gt;\n&quot;);</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        // Classes</line>
+<line sev="1"/>
+<line sev="1" covered="no">        if (sourcesByPackage.containsKey(packageName))</line>
+<line sev="1">        {</line>
+<line sev="1" covered="no">            writePackageClasses(packageName, xml);        </line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        // Sub-packages</line>
+<line sev="1" covered="no">        String packagePrefix = StringUtil.empty(packageName) ? &quot;&quot; : packageName + '.';</line>
+<line sev="1" covered="no">        List&lt;String&gt; allSubPackages = new ArrayList&lt;String&gt;();</line>
+<line sev="1"/>
+<line sev="1" covered="no">        for (String otherPackageName : sourcesByPackage.keySet())</line>
+<line sev="1">        {</line>
+<line sev="1">            // Find all sub-packages.</line>
+<line sev="1" covered="no">            if (!otherPackageName.equals(packageName) &amp;&amp; otherPackageName.startsWith(packagePrefix))</line>
+<line sev="1">            {</line>
+<line sev="1" covered="no">                allSubPackages.add(otherPackageName);</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        // Only write sub-packages without any intermediate packages between them and this package.</line>
+<line sev="1" covered="no">        for (String subPackage : allSubPackages)</line>
+<line sev="1">        {</line>
+<line sev="1" covered="no">            boolean hasIntermediatePackage = false;</line>
+<line sev="1"/>
+<line sev="1" covered="no">            for (String otherSubPackage : allSubPackages)</line>
+<line sev="1">            {</line>
+<line sev="1" covered="no">                if (!subPackage.equals(otherSubPackage) &amp;&amp; subPackage.startsWith(otherSubPackage))</line>
+<line sev="1">                {</line>
+<line sev="1" covered="no">                    hasIntermediatePackage = true;</line>
+<line sev="1" covered="no">                    break;</line>
+<line sev="1">                }   </line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1" covered="no">            if (!hasIntermediatePackage)</line>
+<line sev="1">            {</line>
+<line sev="1" covered="no">                writePackage(subPackage, xml);</line>
+<line sev="1">            }</line>
+<line sev="1" covered="no">        }</line>
+<line sev="1"/>
+<line sev="1" covered="no">        xml.append(&quot;&lt;/package&gt;\n&quot;);</line>
+<line sev="1" covered="no">	}</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Writes out the findings for the classes in a single package.</line>
+<line sev="1">     * </line>
+<line sev="1">     * @param packageName the name of the package to write</line>
+<line sev="1">     * @param xml the StringBuffer to write the XML to.</line>
+<line sev="1">     */</line>
+<line sev="1">    private void writePackageClasses(final String packageName, final StringBuffer xml)</line>
+<line sev="1">    {</line>
+<line sev="1" covered="no">        List&lt;String&gt; packageSources = sourcesByPackage.get(packageName);</line>
+<line sev="1"/>
+<line sev="1" covered="no"><diag id="763"/>        for (String sourcePath : packageSources)</line>
+<line sev="1">        {</line>
+<line sev="1" covered="no">            DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</line>
+<line sev="1" covered="no">            String className = stats.getClassNameForSourcePath(sourcePath);     </line>
+<line sev="1" covered="no">            CoverageItf coverage = stats.getCoverage().getClassCoverage(className);</line>
+<line sev="1"/>
+<line sev="1" covered="no">            int numLines = stats.getClassLineCount(className);</line>
+<line sev="1" covered="no">            int numExecutableLines = 0;</line>
+<line sev="1" covered="no">            int coveredLines = 0;</line>
+<line sev="1" covered="no">            int coveredLinePct = 0;</line>
+<line sev="1" covered="no">            int coveredBranchPct = 0;</line>
+<line sev="1" covered="no">            int branchCount = 0;</line>
+<line sev="1" covered="no">            int coveredBranchCount = 0;</line>
+<line sev="1"/>
+<line sev="1" covered="no">            if (coverage != null)</line>
+<line sev="1">            {</line>
+<line sev="1" covered="no">                numExecutableLines = coverage.getLineCount();</line>
+<line sev="1" covered="no">                coveredLines = coverage.getCoveredLineCount();</line>
+<line sev="1" covered="no">                branchCount = coverage.getBranchCount();</line>
+<line sev="1" covered="no">                coveredBranchCount = coverage.getCoveredBranchCount();</line>
+<line sev="1" covered="no">                coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);</line>
+<line sev="1" covered="no">                coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1"/>
+<line sev="1">            // Quality</line>
+<line sev="1" covered="no">            int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</line>
+<line sev="1"/>
+<line sev="1" covered="no">            xml.append(&quot;&lt;class name=\&quot;&quot;).append(className.substring(className.lastIndexOf('.') + 1))</line>
+<line sev="1">                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numLines)</line>
+<line sev="1"><diag id="762"/>                .append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</line>
+<line sev="1">                .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</line>
+<line sev="1">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</line>
+<line sev="1">                .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</line>
+<line sev="1">                .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))</line>
+<line sev="1">                .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)</line>
+<line sev="1">                .append(&quot;\&quot;&gt;\n&quot;);</line>
+<line sev="1"/>
+<line sev="1">            // Test coverage</line>
+<line sev="1" covered="no">            if (numExecutableLines != 0)</line>
+<line sev="1">            {</line>
+<line sev="1" covered="no">                xml.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)</line>
+<line sev="1">                    .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)</line>
+<line sev="1">                    .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)</line>
+<line sev="1">                    .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)</line>
+<line sev="1">                    .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)</line>
+<line sev="1">                    .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)</line>
+<line sev="1">                    .append(&quot;\&quot;/&gt;\n&quot;);</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1">            // Write diagnostics for class</line>
+<line sev="1" covered="no">            for (Diagnostic diagnostic : diags)</line>
+<line sev="1">            {</line>
+<line sev="1" covered="no">                xml.append(&quot;&lt;diag id=\&quot;&quot;).append(diagnostic.getId())</line>
+<line sev="1">                                          .append(&quot;\&quot; sev=\&quot;&quot;).append(diagnostic.getSeverity())</line>
+<line sev="1">                                          .append(&quot;\&quot; tool=\&quot;&quot;).append(diagnostic.getSourceDescription())</line>
+<line sev="1">                                          .append(&quot;\&quot; rule=\&quot;&quot;).append(diagnostic.getRuleName())</line>
+<line sev="1">                                          .append(&quot;\&quot;&gt;&quot;);</line>
+<line sev="1"/>
+<line sev="1" covered="no">                if (diagnostic.getMessage() != null)</line>
+<line sev="1">                {</line>
+<line sev="1" covered="no">                    xml.append(ReportUtil.htmlEscape(diagnostic.getMessage().trim()));</line>
+<line sev="1">                }</line>
+<line sev="1"/>
+<line sev="1" covered="no">                xml.append(&quot;&lt;/diag&gt;\n&quot;);</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1" covered="no">            xml.append(&quot;&lt;/class&gt;\n&quot;);</line>
+<line sev="1" covered="no">        }</line>
+<line sev="1" covered="no">    }	</line>
+<line sev="1">}</line>
+</source>
+<diags first="false">
+<diag id="495" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The class 'ExportWriter' has a Cyclomatic Complexity of 6 (Highest = 14).
+</diag>
+<diag id="499" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">
+StringBuffer constructor is initialized with size 16, but has at least 163 characters appended.
+</diag>
+<diag id="500" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 3 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="501" sev="0" tool="PMD" rule="ExcessiveMethodLength">
+Avoid really long methods.
+</diag>
+<diag id="502" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The method 'writePackage' has a Cyclomatic Complexity of 14.
+</diag>
+<diag id="503" sev="0" tool="PMD" rule="NPathComplexity">
+The method writePackage() has an NPath complexity of 2880
+</diag>
+<diag id="757" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\PackageWriter.java:
+	private void writePackage(final String packageName, final StringBuffer xml)
+	{
+        boolean allPackages = &quot;&quot;.equals(packageName);
+
+        DiagnosticSet diags = null;
+        CoverageItf coverage = null;
+        int numLines = 0;
+        int numExecutableLines = 0;
+        int coveredLines = 0;
+        int coveredLinePct = 0;
+        int coveredBranchPct = 0;
+        int branchCount = 0;
+        int coveredBranchCount = 0;
+        int classCount = 0;
+
+        if (allPackages)
+        {
+            coverage = stats.getCoverage();
+            diags = stats.getDiagnostics();
+            numLines = stats.getLineCount();
+            classCount = stats.getClassCount();
+        }
+        else
+        {
+            coverage = stats.getCoverage().getPackageCoverage(packageName);
+            diags = stats.getDiagnostics().getDiagnosticsForPackage(packageName, false);
+
+            numLines = stats.getPackageLineCount(packageName);
+            classCount = stats.getPackageClassCount(packageName);
+        }
+
+        if (coverage != null)
+        {
+            coveredLines = (int) Math.round(numLines * coverage.getLineCoverage());
+            coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);
+            coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);
+            coveredLines = coverage.getCoveredLineCount();
+            branchCount = coverage.getBranchCount();
+            coveredBranchCount = coverage.getCoveredBranchCount();
+            numExecutableLines = coverage.getLineCount();
+        }</diag>
+<diag id="504" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;\&quot; lineCount=\&quot;&quot; appears 4 times in this file; the first occurrence is on line 130
+</diag>
+<diag id="761" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\ExportWriter.java:
+        xml.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))
+            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))
+            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))
+            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))
+            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))
+            .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)
+            .append(&quot;\&quot;&gt;\n&quot;);
+        
+        // Test coverage
+        if (numExecutableLines != 0)
+        {
+            xml.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)
+                .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)
+                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)
+                .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)
+                .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)
+                .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)
+                .append(&quot;\&quot;/&gt;\n&quot;);
+        }</diag>
+<diag id="763" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\PackageWriter.java:
+        for (String sourcePath : packageSources)
+        {
+            DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);
+            String className = stats.getClassNameForSourcePath(sourcePath);     
+            CoverageItf coverage = stats.getCoverage().getClassCoverage(className);
+            
+            int numLines = stats.getClassLineCount(className);
+            int numExecutableLines = 0;
+            int coveredLines = 0;
+            int coveredLinePct = 0;
+            int coveredBranchPct = 0;
+            int branchCount = 0;
+            int coveredBranchCount = 0;
+            
+            if (coverage != null)
+            {
+                numExecutableLines = coverage.getLineCount();
+                coveredLines = coverage.getCoveredLineCount();
+                branchCount = coverage.getBranchCount();
+                coveredBranchCount = coverage.getCoveredBranchCount();
+                coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);
+                coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);
+            }
+            
+            
+            // Quality
+            int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</diag>
+<diag id="762" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\ExportWriter.java:
+        xml.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))
+            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))
+            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))
+            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))
+            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))
+            .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)
+            .append(&quot;\&quot;&gt;\n&quot;);
+        
+        // Test coverage
+        if (numExecutableLines != 0)
+        {
+            xml.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)
+                .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)
+                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)
+                .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)
+                .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)
+                .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)
+                .append(&quot;\&quot;/&gt;\n&quot;);
+        }</diag>
+</diags>
+</classDetails>

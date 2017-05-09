@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.SummariseRun" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="0" branchCoverage="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.workflow; </line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line/>
+<line>import net.sf.sanity4j.model.summary.SummaryCsvMarshaller;</line>
+<line>import net.sf.sanity4j.util.ExtractStats;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line/>
+<line>/**</line>
+<line> * Summarises the current run, and reads in the old summary data (if available).</line>
+<line> * Should only be run once all results have been read in, line counts calculated etc. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class SummariseRun implements WorkUnit</line>
+<line>{</line>
+<line>    /** The ExtractStats which holds the summary data. */</line>
+<line>    private final ExtractStats stats;</line>
+<line/>
+<line>    /** The current QA run's configuration. */</line>
+<line>    private final QAConfig config;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a SummariseRun.</line>
+<line>     * </line>
+<line>     * @param stats the stats which holds the summary data.</line>
+<line>     * @param config the current QA run's configuration.</line>
+<line>     */</line>
+<line>    public SummariseRun(final ExtractStats stats, final QAConfig config)</line>
+<line covered="no">    {</line>
+<line covered="no">        this.stats = stats;</line>
+<line covered="no">        this.config = config;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line covered="no">        return &quot;Summarising run&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Reads in the existing summary data file (if available),</line>
+<line>     * and records the current run summary.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line covered="no">        String summaryDataFileName = config.getSummaryDataFile();</line>
+<line/>
+<line>        // Read the existing summary</line>
+<line covered="no">        File summaryDataFile = new File(summaryDataFileName);</line>
+<line/>
+<line covered="no">        if (summaryDataFile.exists())</line>
+<line>        {</line>
+<line covered="no">            QaLogger.getInstance().debug(&quot;Reading previous run summaries&quot;);</line>
+<line/>
+<line>            try</line>
+<line>            {</line>
+<line covered="no">                stats.extractHistoricalSummary(summaryDataFile);</line>
+<line>            }</line>
+<line covered="no">            catch (IOException e)</line>
+<line>            {</line>
+<line covered="no">                throw new QAException(&quot;Unable to read previous run summary&quot;, e);</line>
+<line covered="no">            }</line>
+<line>        }</line>
+<line/>
+<line>        // Save the current run summary</line>
+<line covered="no">        if (!summaryDataFile.exists() || summaryDataFile.canWrite())</line>
+<line>        {</line>
+<line covered="no">            String msg = &quot;Saving run summary data to &quot; + summaryDataFile;</line>
+<line covered="no">            QaLogger.getInstance().info(msg);</line>
+<line/>
+<line covered="no">            SummaryCsvMarshaller marshaller = new SummaryCsvMarshaller();</line>
+<line covered="no">            marshaller.write(stats.getRunSummary(), summaryDataFile);</line>
+<line covered="no">        }</line>
+<line>        else</line>
+<line>        {</line>
+<line covered="no">            QaLogger.getInstance().warn(&quot;Unalbe to update run summary file: &quot; + summaryDataFileName);</line>
+<line>        }</line>
+<line covered="no">    }</line>
+<line>}</line>
+</source>
+</classDetails>

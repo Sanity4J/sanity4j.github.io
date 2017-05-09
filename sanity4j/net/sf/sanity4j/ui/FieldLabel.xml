@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.ui.FieldLabel" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="1" lineCoverage="0" branchCoverage="0" quality="100"/>
+<source>
+<line sev="0"><diag id="253"/>package net.sf.sanity4j.ui; </line>
+<line/>
+<line>import javax.swing.JLabel;</line>
+<line/>
+<line>/**</line>
+<line> * A Label for an input field.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class FieldLabel extends JLabel</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a FieldLabel.</line>
+<line>     * </line>
+<line>     * @param text the field label text.</line>
+<line>     * @param mandatory whether the associated field is mandatory. </line>
+<line>     */</line>
+<line>    public FieldLabel(final String text, final boolean mandatory)</line>
+<line>    {</line>
+<line covered="no">        super(mandatory ? (&quot;&lt;html&gt;&lt;em style='color: red;'&gt;* &lt;/em&gt;&quot; + text + &quot;: &lt;/html&gt;&quot;)</line>
+<line>                         : (text + &quot;: &quot;));</line>
+<line covered="no">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="253" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+</diags>
+</classDetails>

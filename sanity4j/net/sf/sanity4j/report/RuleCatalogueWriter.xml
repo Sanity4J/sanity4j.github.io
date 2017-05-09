@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.report.RuleCatalogueWriter" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="2" lineCoverage="0" branchCoverage="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.report;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.io.InputStream;</line>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Collections;</line>
+<line>import java.util.Comparator;</line>
+<line>import java.util.Date;</line>
+<line>import java.util.HashMap;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Map;</line>
+<line>import java.util.Map.Entry;</line>
+<line>import java.util.Properties;</line>
+<line/>
+<line>import net.sf.sanity4j.model.diagnostic.Diagnostic;</line>
+<line>import net.sf.sanity4j.model.diagnostic.DiagnosticFactory;</line>
+<line>import net.sf.sanity4j.util.FileUtil;</line>
+<line>import net.sf.sanity4j.workflow.QAProcessor;</line>
+<line/>
+<line>/**</line>
+<line> * RuleCatalogueWriter writes the rule catalogue.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class RuleCatalogueWriter</line>
+<line>{</line>
+<line>    /** The destination directory. */</line>
+<line>    private final File reportDir;</line>
+<line/>
+<line>    /** Initial buffer size. */</line>
+<line>    private static final int INITIAL_BUF_SIZE = 256;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a RuleCatalogueWriter.</line>
+<line>     * </line>
+<line>     * @param reportDir the report directory</line>
+<line>     */</line>
+<line>    public RuleCatalogueWriter(final File reportDir)</line>
+<line covered="no">    {</line>
+<line covered="no">        this.reportDir = reportDir;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Writes the rule catalogue to the report directory.</line>
+<line>     * </line>
+<line>     * @throws IOException if there is an error writing any file</line>
+<line>     */</line>
+<line>    public void writeRuleCatalogue() throws IOException</line>
+<line>    {</line>
+<line covered="no">        StringBuffer xml = new StringBuffer(INITIAL_BUF_SIZE);</line>
+<line/>
+<line covered="no">        xml.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;</line>
+<line>                       + &quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;xslt/rule-catalogue.xsl\&quot;?&gt;\n&quot;</line>
+<line>                       + &quot;&lt;rules qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION).append(&quot;\&quot; runDate=\&quot;&quot;)</line>
+<line>            .append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line/>
+<line covered="no">        DiagnosticFactory diagnosticFactory = DiagnosticFactory.getInstance();</line>
+<line/>
+<line covered="no">        List&lt;DiagnosticProperty&gt; diagnosticProperties = getDiagnosticProperties();</line>
+<line/>
+<line covered="no">        for (DiagnosticProperty property : diagnosticProperties)</line>
+<line>        {</line>
+<line>            // Create a diagnostic, to get e.g. default severities.</line>
+<line covered="no">            Diagnostic diag = diagnosticFactory.getDiagnostic();</line>
+<line/>
+<line covered="no">            diag.setSource(getDiagnosticSource(property.getTool()));</line>
+<line covered="no">            diag.setRuleName(property.getRule());</line>
+<line covered="no">            diag.setSeverity(property.getSeverity());</line>
+<line/>
+<line covered="no">            if (diag.getSeverity() &gt;= Diagnostic.SEVERITY_INFO &amp;&amp; diag.getSeverity() &lt;= Diagnostic.SEVERITY_HIGH)</line>
+<line>            {</line>
+<line covered="no">                xml.append(&quot;&lt;rule name=\&quot;&quot;).append(diag.getRuleName()).append(&quot;\&quot; tool=\&quot;&quot;)</line>
+<line>                    .append(diag.getSourceDescription()).append(&quot;\&quot; severity=\&quot;&quot;).append(diag.getSeverity())</line>
+<line>                    .append(&quot;\&quot;/&gt;\n&quot;);</line>
+<line>            }</line>
+<line covered="no">        }</line>
+<line/>
+<line covered="no">        xml.append(&quot;&lt;/rules&gt;&quot;);</line>
+<line/>
+<line covered="no">        FileUtil.writeToFile(xml.toString(), new File(reportDir, &quot;rule-catalogue.xml&quot;));</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Retrieves the diagnostic properties file.</line>
+<line>     * </line>
+<line>     * @return a list of DiagnosticProperty objects</line>
+<line>     * @throws IOException if there is an error reading the properties file</line>
+<line>     */</line>
+<line>    private List&lt;DiagnosticProperty&gt; getDiagnosticProperties() throws IOException</line>
+<line>    {</line>
+<line covered="no">        Properties properties = new Properties();</line>
+<line covered="no">        InputStream diagnosticStream = Diagnostic.class.getResourceAsStream(&quot;Diagnostic.properties&quot;);</line>
+<line/>
+<line covered="no">        if (diagnosticStream != null)</line>
+<line>        {</line>
+<line sev="0" covered="no"><diag id="344"/>            properties.load(diagnosticStream);</line>
+<line covered="no">            diagnosticStream.close();</line>
+<line>        }</line>
+<line/>
+<line covered="no">        Map&lt;String, DiagnosticProperty&gt; keyedProperties = new HashMap&lt;String, DiagnosticProperty&gt;();</line>
+<line/>
+<line covered="no">        for (Entry&lt;Object, Object&gt; entry : properties.entrySet())</line>
+<line>        {</line>
+<line covered="no">            String propertyName = (String) entry.getKey();</line>
+<line covered="no">            String propertyValue = (String) entry.getValue();</line>
+<line/>
+<line>            // each property in the properties file is in the following format:</line>
+<line>            // &lt;source&gt;.&lt;ruleName&gt;.&lt;option&gt;=&lt;value&gt;</line>
+<line covered="no">            String[] parts = propertyName.split(&quot;\\.&quot;);</line>
+<line covered="no">            String tool = parts[0];</line>
+<line covered="no">            String rule = parts[1];</line>
+<line covered="no">            String option = parts[2];</line>
+<line covered="no">            String key = parts[0] + '.' + parts[1];</line>
+<line/>
+<line covered="no">            DiagnosticProperty property = keyedProperties.get(key);</line>
+<line/>
+<line covered="no">            if (property == null)</line>
+<line>            {</line>
+<line sev="0" covered="no"><diag id="567"/>                property = new DiagnosticProperty(tool, rule);</line>
+<line covered="no">                keyedProperties.put(key, property);</line>
+<line>            }</line>
+<line/>
+<line covered="no">            if (&quot;severity&quot;.equalsIgnoreCase(option))</line>
+<line>            {</line>
+<line covered="no">                property.setSeverity(Integer.parseInt(propertyValue.trim()));</line>
+<line>            }</line>
+<line covered="no">        }</line>
+<line/>
+<line covered="no">        List&lt;DiagnosticProperty&gt; result = new ArrayList&lt;DiagnosticProperty&gt;();</line>
+<line covered="no">        result.addAll(keyedProperties.values());</line>
+<line/>
+<line covered="no">        Collections.sort(result, new Comparator&lt;DiagnosticProperty&gt;()</line>
+<line covered="no">        {</line>
+<line>            public int compare(final DiagnosticProperty prop1, final DiagnosticProperty prop2)</line>
+<line>            {</line>
+<line covered="no">                int diff = prop2.severity - prop1.severity;</line>
+<line/>
+<line covered="no">                if (diff == 0)</line>
+<line>                {</line>
+<line covered="no">                    diff = prop1.rule.toLowerCase().compareTo(prop2.rule.toLowerCase());</line>
+<line>                }</line>
+<line/>
+<line covered="no">                return diff;</line>
+<line>            }</line>
+<line>        });</line>
+<line/>
+<line covered="no">        return result;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Return the source of a Diagnostic, given a tool name. This is the reverse of Diagnostic.getSourceDescription.</line>
+<line>     * </line>
+<line>     * @param toolName the tool name, e.g. &quot;Checkstyle&quot;.</line>
+<line>     * @return the code for the given tool</line>
+<line>     */</line>
+<line>    private int getDiagnosticSource(final String toolName)</line>
+<line>    {</line>
+<line covered="no">        for (int i = Diagnostic.SOURCE_OTHER; i &lt;= Diagnostic.SOURCE_CHECKSTYLE; i++)</line>
+<line>        {</line>
+<line covered="no">            if (Diagnostic.getSourceDescription(i).equals(toolName))</line>
+<line>            {</line>
+<line covered="no">                return i;</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line covered="no">        return Diagnostic.SOURCE_OTHER;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Encapsulates entries in the Diagnostic properties file.</line>
+<line>     */</line>
+<line covered="no">    private static final class DiagnosticProperty</line>
+<line>    {</line>
+<line>        /** The tool name. */</line>
+<line>        private String tool;</line>
+<line/>
+<line>        /** The rule name. */</line>
+<line>        private String rule;</line>
+<line/>
+<line>        /** The severity of the diagnostic. */</line>
+<line covered="no">        private int severity = Diagnostic.SEVERITY_INFO;</line>
+<line/>
+<line>        /**</line>
+<line>         * Creates a DiagnosticProperty.</line>
+<line>         * </line>
+<line>         * @param tool the tool name</line>
+<line>         * @param rule the rule name</line>
+<line>         */</line>
+<line>        public DiagnosticProperty(final String tool, final String rule)</line>
+<line covered="no">        {</line>
+<line covered="no">            this.tool = tool;</line>
+<line covered="no">            this.rule = rule;</line>
+<line covered="no">        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @return Returns the rule.</line>
+<line>         */</line>
+<line>        public String getRule()</line>
+<line>        {</line>
+<line covered="no">            return rule;</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @param rule The rule to set.</line>
+<line>         */</line>
+<line>        public void setRule(final String rule)</line>
+<line>        {</line>
+<line covered="no">            this.rule = rule;</line>
+<line covered="no">        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @return Returns the severity.</line>
+<line>         */</line>
+<line>        public int getSeverity()</line>
+<line>        {</line>
+<line covered="no">            return severity;</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @param severity The severity to set.</line>
+<line>         */</line>
+<line>        public void setSeverity(final int severity)</line>
+<line>        {</line>
+<line covered="no">            this.severity = severity;</line>
+<line covered="no">        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @return Returns the tool.</line>
+<line>         */</line>
+<line>        public String getTool()</line>
+<line>        {</line>
+<line covered="no">            return tool;</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @param tool The tool to set.</line>
+<line>         */</line>
+<line>        public void setTool(final String tool)</line>
+<line>        {</line>
+<line covered="no">            this.tool = tool;</line>
+<line covered="no">        }</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="344" sev="0" tool="Findbugs" rule="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE">net.sf.sanity4j.report.RuleCatalogueWriter.getDiagnosticProperties() may fail to clean up java.io.InputStream on checked exception</diag>
+<diag id="567" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+</diags>
+</classDetails>

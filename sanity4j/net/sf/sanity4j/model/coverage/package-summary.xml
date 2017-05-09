@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
+<packageSummary packageName="net.sf.sanity4j.model.coverage" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<issueSummary high="0" significant="0" moderate="0" low="0" info="1">
+<category name="All categories" high="0" significant="0" moderate="0" low="0" info="0"/>
+<tool name="Checkstyle" high="0" significant="0" moderate="0" low="0" info="1"/>
+</issueSummary>
+<qualitySummary>
+<package name="net.sf.sanity4j.model.coverage" classes="8" lineCount="842" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
+<testCoverage lineCoveragePct="95" branchCoveragePct="90" lineCount="85" coveredLineCount="81" branchCount="15" coveredBranchCount="14"/>
+</package>
+<class name="AbstractCoverage" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
+<testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="7" coveredLineCount="7" branchCount="0" coveredBranchCount="0"/>
+</class>
+<class name="ClassCoverage" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="83" branchCoveragePct="80" lineCount="24" coveredLineCount="20" branchCount="5" coveredBranchCount="4"/>
+</class>
+<class name="ClassCoverage_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<class name="Coverage" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="100" branchCoveragePct="91" lineCount="29" coveredLineCount="29" branchCount="6" coveredBranchCount="6"/>
+</class>
+<class name="CoverageItf" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<class name="Coverage_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<class name="PackageCoverage" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="25" coveredLineCount="25" branchCount="4" coveredBranchCount="4"/>
+</class>
+<class name="PackageCoverage_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+</qualitySummary>
+<graphs>
+</graphs>
+</packageSummary>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.tool.ToolRunnerGroup" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="2" lineCoverage="0" branchCoverage="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.File;</line>
+<line/>
+<line>import net.sf.sanity4j.util.ExtractStats;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line>import net.sf.sanity4j.util.Tool;</line>
+<line>import net.sf.sanity4j.workflow.FileCopier;</line>
+<line>import net.sf.sanity4j.workflow.QAConfig;</line>
+<line>import net.sf.sanity4j.workflow.WorkUnitGroup;</line>
+<line/>
+<line>/**</line>
+<line> * ToolRunnerGroup is responsible for running the tools to be used in the analysis.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public final class ToolRunnerGroup extends WorkUnitGroup</line>
+<line>{</line>
+<line>    /** The configuration for the current run. */</line>
+<line>    private final QAConfig config;</line>
+<line/>
+<line>    /** The stats to store the results in. */</line>
+<line>    private final ExtractStats stats;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a ToolRunnerGroup.</line>
+<line>     * </line>
+<line>     * @param config the configuration for the current run.</line>
+<line>     * @param stats the stats to store the results in.</line>
+<line>     */</line>
+<line>    public ToolRunnerGroup(final QAConfig config, final ExtractStats stats)</line>
+<line>    {</line>
+<line covered="no">        super(config.getNumThreads() &gt; 1, &quot;Running tools&quot;);</line>
+<line covered="no">        this.config = config;</line>
+<line covered="no">        this.stats = stats;</line>
+<line/>
+<line covered="no">        String[] toolsToRun = config.getToolsToRun();</line>
+<line/>
+<line covered="no">        for (String toolId : toolsToRun)</line>
+<line>        {</line>
+<line covered="no">            Tool tool = Tool.get(toolId.trim());</line>
+<line/>
+<line>            // Special case for coverage targets - only run them if a coverage data file has been provided</line>
+<line>            // TODO: Generalise this to properties file to include cases where source and/or classes are not available</line>
+<line>            // ie. CheckStyle, PMD &amp; PMD-CPD require source, FindBugs requires classes &amp; libs.</line>
+<line covered="no">            if (Tool.COBERTURA.equals(tool) &amp;&amp; config.getCoverageDataFile() == null)</line>
+<line>            {</line>
+<line covered="no">                String message = tool.getName() + &quot; included in tools to run, but no coverage file available - skipping.&quot;;</line>
+<line covered="no">                QaLogger.getInstance().warn(message);</line>
+<line covered="no">                continue;</line>
+<line>            }</line>
+<line covered="no">            else if (Tool.COBERTURA_MERGE.equals(tool) &amp;&amp; config.getCoverageDataFileCount() &lt;= 1)</line>
+<line>            {</line>
+<line covered="no">                String message = tool.getName() + &quot; not required.&quot;;</line>
+<line covered="no">                QaLogger.getInstance().info(message);</line>
+<line covered="no">                continue;</line>
+<line>            }</line>
+<line/>
+<line covered="no">            String version = config.getToolVersion(tool.getId());</line>
+<line covered="no">            String runnerClassName = config.getToolRunner(tool.getId(), version);</line>
+<line covered="no">            AbstractToolRunner runner = createRunner(runnerClassName);</line>
+<line covered="no">            runner.setToolVersion(version);</line>
+<line/>
+<line covered="no">            add(runner);</line>
+<line/>
+<line covered="no">            if (runner.getToolResultFile() != null)</line>
+<line>            {</line>
+<line covered="no">                if (config.isIncludeToolOutput())</line>
+<line>                {</line>
+<line sev="0" covered="no"><diag id="753"/>                    File resultFile = new File(runner.getToolResultFile());</line>
+<line sev="0" covered="no"><diag id="754"/>                    add(new FileCopier(resultFile, new File(config.getReportDir(), resultFile.getName())));</line>
+<line>                }</line>
+<line/>
+<line covered="no">                String readerClassName = config.getToolReader(tool.getId(), version);</line>
+<line covered="no">                ResultReader reader = createReader(readerClassName, runner.getToolResultFile());</line>
+<line covered="no">                add(reader);</line>
+<line>            }</line>
+<line>        }</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Instantiates and configures a runner of the given class.</line>
+<line>     * @param className the runner class name.</line>
+<line>     * @return an instance of the runner class.</line>
+<line>     */</line>
+<line>    private AbstractToolRunner createRunner(final String className)</line>
+<line>    {</line>
+<line covered="no">        AbstractToolRunner runner = null;</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            Class&lt;?&gt; runnerClass = Class.forName(className);</line>
+<line/>
+<line covered="no">            if (!AbstractToolRunner.class.isAssignableFrom(runnerClass))</line>
+<line>            {</line>
+<line covered="no">                throw new QAException(&quot;Invalid runner class - runners must extend AbstractToolRunner&quot;);</line>
+<line>            }</line>
+<line/>
+<line covered="no">            runner = (AbstractToolRunner) runnerClass.newInstance();</line>
+<line covered="no">            runner.setConfig(config);</line>
+<line>        }</line>
+<line covered="no">        catch (Exception e)</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;Error instantiating runner &quot; + className, e);</line>
+<line covered="no">        }</line>
+<line/>
+<line covered="no">        return runner;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Instantiates and configures a reader of the given class.</line>
+<line>     * @param className the reader class name.</line>
+<line>     * @param toolResultFile the result file to be read.</line>
+<line>     * @return an instance of the reader class.</line>
+<line>     */</line>
+<line>    private ResultReader createReader(final String className, final String toolResultFile)</line>
+<line>    {</line>
+<line covered="no">        ResultReader reader = null;</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            Class&lt;?&gt; readerClass = Class.forName(className);</line>
+<line/>
+<line covered="no">            if (!ResultReader.class.isAssignableFrom(readerClass))</line>
+<line>            {</line>
+<line covered="no">                throw new QAException(&quot;Invalid reader class - readers must implement ResultReader&quot;);</line>
+<line>            }</line>
+<line/>
+<line covered="no">            reader = (ResultReader) readerClass.newInstance();</line>
+<line covered="no">            reader.setProperties(config.getToolProperties());</line>
+<line covered="no">            reader.setStats(stats);</line>
+<line>        }</line>
+<line covered="no">        catch (Exception e)</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;Error instantiating reader &quot; + className, e);</line>
+<line covered="no">        }</line>
+<line/>
+<line covered="no">        reader.setResultFile(new File(toolResultFile));</line>
+<line covered="no">        return reader;</line>
+<line>    }</line>
+<line/>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="753" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="754" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+</diags>
+</classDetails>

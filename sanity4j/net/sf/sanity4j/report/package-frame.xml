@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/package-frame.xsl"?>
+<packageClasses packageName="net.sf.sanity4j.report" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<class name="net.sf.sanity4j.report.CategoryWriter" high="0" significant="0" moderate="0" low="5" info="3"/>
+<class name="net.sf.sanity4j.report.ChartFactory" high="0" significant="0" moderate="0" low="1" info="1"/>
+<class name="net.sf.sanity4j.report.ChartFactory_Test" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="net.sf.sanity4j.report.CrossProjectChartCreator" high="0" significant="0" moderate="0" low="1" info="7"/>
+<class name="net.sf.sanity4j.report.ExportWriter" high="0" significant="0" moderate="0" low="9" info="2"/>
+<class name="net.sf.sanity4j.report.ExtractStaticContent" high="0" significant="0" moderate="2" low="0" info="5"/>
+<class name="net.sf.sanity4j.report.JavaSourceWriter" high="0" significant="0" moderate="0" low="5" info="4"/>
+<class name="net.sf.sanity4j.report.PackageWriter" high="0" significant="0" moderate="0" low="32" info="4"/>
+<class name="net.sf.sanity4j.report.ReportUtil" high="0" significant="0" moderate="1" low="0" info="1"/>
+<class name="net.sf.sanity4j.report.ReportUtil_Test" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="net.sf.sanity4j.report.ReportWriter" high="0" significant="0" moderate="0" low="1" info="2"/>
+<class name="net.sf.sanity4j.report.RuleCatalogueWriter" high="0" significant="0" moderate="0" low="0" info="2"/>
+</packageClasses>

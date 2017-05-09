@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.util.ExtractStats_Test" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.util;</line>
+<line/>
+<line>import java.io.ByteArrayOutputStream;</line>
+<line>import java.io.File;</line>
+<line>import java.io.FileOutputStream;</line>
+<line>import java.io.IOException;</line>
+<line>import java.io.InputStream;</line>
+<line/>
+<line>import junit.framework.TestCase;</line>
+<line>import net.sf.sanity4j.model.coverage.ClassCoverage;</line>
+<line>import net.sf.sanity4j.model.coverage.Coverage;</line>
+<line>import net.sf.sanity4j.model.coverage.PackageCoverage;</line>
+<line>import net.sf.sanity4j.model.diagnostic.Diagnostic;</line>
+<line>import net.sf.sanity4j.model.diagnostic.DiagnosticSet;</line>
+<line>import net.sf.sanity4j.model.summary.PackageSummary;</line>
+<line>import net.sf.sanity4j.workflow.QAConfig;</line>
+<line>import net.sf.sanity4j.workflow.tool.CheckStyleResultReader;</line>
+<line>import net.sf.sanity4j.workflow.tool.CoberturaResultReader;</line>
+<line>import net.sf.sanity4j.workflow.tool.FindBugsResultReader;</line>
+<line>import net.sf.sanity4j.workflow.tool.PmdCpdResultReader;</line>
+<line>import net.sf.sanity4j.workflow.tool.PmdResultReader;</line>
+<line/>
+<line>/**</line>
+<line> * ExtractStats_Test - unit test for {@link ExtractStats}.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class ExtractStats_Test extends TestCase</line>
+<line>{</line>
+<line>    /** A temporary directory used to hold test data. */</line>
+<line>    private QAConfig config;</line>
+<line/>
+<line>    /** Incorrect classname message. */</line>
+<line>    private static final String INCORRECT_CLASSNAME_MSG = &quot;Incorrect class name&quot;;</line>
+<line/>
+<line>    /** Incorrect rulename message. */</line>
+<line>    private static final String INCORRECT_RULENAME_MSG = &quot;Incorrect rule name&quot;;</line>
+<line/>
+<line>    /** Incorrect message text. */</line>
+<line>    private static final String INCORRECT_MESSAGE_TEXT = &quot;Incorrect message text&quot;;</line>
+<line/>
+<line>    /** No stats extracted message. */</line>
+<line>    private static final String NO_STATS_EXTRACTED_MSG = &quot;No stats extracted&quot;;</line>
+<line/>
+<line>    /**</line>
+<line>     * Since ExtractStats uses canonical paths, the test files</line>
+<line>     * do actually need to exist on the file system. This sets</line>
+<line>     * up the files.</line>
+<line>     */</line>
+<line>    public void setUp() throws IOException</line>
+<line>    {</line>
+<line>        config = new QAConfig();</line>
+<line/>
+<line>        // Get a path to a temp dir</line>
+<line>        File tempDir = File.createTempFile(&quot;ExtractStats_Test&quot;, &quot;&quot;);</line>
+<line>        tempDir.delete();</line>
+<line/>
+<line>        config.setTempDir(tempDir);</line>
+<line/>
+<line>        File sourceDir = config.getCombinedSourceDir();</line>
+<line/>
+<line>        // Package dirs &amp; files</line>
+<line>        File subpackage1Dir = new File(sourceDir, &quot;package/subpackage1&quot;);</line>
+<line>        File subpackage2Dir = new File(sourceDir, &quot;package/subpackage2&quot;);</line>
+<line>        File file1 = new File(sourceDir, &quot;package/ClassOne.java&quot;);</line>
+<line>        File file2 = new File(sourceDir, &quot;package/subpackage1/ClassTwo.java&quot;);</line>
+<line>        File file3 = new File(sourceDir, &quot;package/subpackage2/ClassThree.java&quot;);</line>
+<line>        File file4 = new File(sourceDir, &quot;package/subpackage2/ClassFour.java&quot;);</line>
+<line/>
+<line>        if (!tempDir.mkdirs()</line>
+<line>            || !subpackage1Dir.mkdirs() || !subpackage2Dir.mkdirs()</line>
+<line>            || !file1.createNewFile() || !file2.createNewFile()</line>
+<line>            || !file3.createNewFile() || !file4.createNewFile())</line>
+<line>        {</line>
+<line>            throw new IOException(&quot;Failed to create temp files&quot;);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Deletes the temporary dir.</line>
+<line>     */</line>
+<line>    public void tearDown() throws IOException</line>
+<line>    {</line>
+<line>        File tempDir = config.getTempDir();</line>
+<line/>
+<line>        if (tempDir != null &amp;&amp; tempDir.isDirectory())</line>
+<line>        {</line>
+<line>            FileUtil.delete(tempDir);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    public void testExtractCheckStyleStats() throws Exception</line>
+<line>    {</line>
+<line>        ExtractStats stats = new ExtractStats(config.getCombinedSourceDir().getCanonicalPath());</line>
+<line>        createResultFile(&quot;/resources/tool-xml/checkStyle.xml&quot;, config.getToolResultFile(Tool.CHECKSTYLE));</line>
+<line>        CheckStyleResultReader reader = new CheckStyleResultReader();</line>
+<line>        reader.setResultFile(config.getToolResultFile(Tool.CHECKSTYLE));</line>
+<line>        reader.setStats(stats);</line>
+<line>        reader.run();</line>
+<line>        assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
+<line>        checkDiagnostics(stats);</line>
+<line>    }</line>
+<line/>
+<line>    public void testExtractCoberturaCoverage() throws Exception</line>
+<line>    {</line>
+<line>        ExtractStats stats = new ExtractStats(config.getCombinedSourceDir().getCanonicalPath());</line>
+<line>        createResultFile(&quot;/resources/tool-xml/cobertura.xml&quot;, config.getToolResultFile(Tool.COBERTURA));</line>
+<line>        CoberturaResultReader reader = new CoberturaResultReader();</line>
+<line>        reader.setResultFile(config.getToolResultFile(Tool.COBERTURA));</line>
+<line>        reader.setStats(stats);</line>
+<line>        reader.run();</line>
+<line/>
+<line>        Coverage coverage = stats.getCoverage();</line>
+<line>        assertNotNull(&quot;No coverage extracted&quot;, coverage);</line>
+<line/>
+<line>        PackageCoverage packageCoverage = coverage.getPackageCoverage(&quot;package&quot;);</line>
+<line>        assertEquals(&quot;Incorrect package line coverage extracted&quot;, 0.5, packageCoverage.getLineCoverage(), 0.0);</line>
+<line>        assertEquals(&quot;Incorrect package branch coverage extracted&quot;, 0.5, packageCoverage.getBranchCoverage(), 0.0);</line>
+<line/>
+<line>        ClassCoverage classCoverage = packageCoverage.getClassCoverage(&quot;package.ClassOne&quot;);</line>
+<line>        assertEquals(&quot;Incorrect class line coverage extracted&quot;, 1.0, classCoverage.getCoveredLineCount(), 0.0);</line>
+<line>        assertEquals(&quot;Incorrect classs branch coverage extracted&quot;, 0.0, classCoverage.getBranchCount(), 0.0);</line>
+<line>        assertEquals(&quot;Incorrect class line count extracted&quot;, 1, classCoverage.getLineCount());</line>
+<line>        assertEquals(&quot;Incorrect class branch count extracted&quot;, 0, classCoverage.getBranchCount());</line>
+<line>    }</line>
+<line/>
+<line>    public void testExtractFindbugsStats() throws Exception</line>
+<line>    {</line>
+<line>        ExtractStats stats = new ExtractStats(config.getCombinedSourceDir().getCanonicalPath());</line>
+<line>        createResultFile(&quot;/resources/tool-xml/findBugs.xml&quot;, config.getToolResultFile(Tool.FINDBUGS));</line>
+<line>        FindBugsResultReader reader = new FindBugsResultReader();</line>
+<line>        reader.setResultFile(config.getToolResultFile(Tool.FINDBUGS));</line>
+<line>        reader.setStats(stats);</line>
+<line>        reader.run();</line>
+<line/>
+<line>        assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
+<line>        checkDiagnostics(stats);</line>
+<line>    }</line>
+<line/>
+<line>    public void testExtractPmdCpdStats() throws Exception</line>
+<line>    {</line>
+<line>        ExtractStats stats = new ExtractStats(config.getCombinedSourceDir().getCanonicalPath());</line>
+<line>        createResultFile(&quot;/resources/tool-xml/pmdCpd.xml&quot;, config.getToolResultFile(Tool.PMD_CPD));</line>
+<line>        PmdCpdResultReader reader = new PmdCpdResultReader();</line>
+<line>        reader.setResultFile(config.getToolResultFile(Tool.PMD_CPD));</line>
+<line>        reader.setStats(stats);</line>
+<line>        reader.run();</line>
+<line/>
+<line>        assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
+<line>        checkDiagnostics(stats);</line>
+<line>    }</line>
+<line/>
+<line>    public void testExtractPmdStats() throws Exception</line>
+<line>    {</line>
+<line>        ExtractStats stats = new ExtractStats(config.getCombinedSourceDir().getCanonicalPath());</line>
+<line>        createResultFile(&quot;/resources/tool-xml/pmd.xml&quot;, config.getToolResultFile(Tool.PMD));</line>
+<line>        PmdResultReader reader = new PmdResultReader();</line>
+<line>        reader.setResultFile(config.getToolResultFile(Tool.PMD));</line>
+<line>        reader.setStats(stats);</line>
+<line>        reader.run();</line>
+<line/>
+<line>        assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
+<line>        checkDiagnostics(stats);</line>
+<line>    }</line>
+<line/>
+<line>    private File createResultFile(final String resourcePath, final File dest) throws IOException</line>
+<line>    {</line>
+<line>        File sourceDir = config.getCombinedSourceDir();</line>
+<line>        dest.deleteOnExit();</line>
+<line/>
+<line>        InputStream ris = getClass().getResourceAsStream(resourcePath);</line>
+<line>        String xml = new String(getBytes(ris), &quot;UTF-8&quot;);</line>
+<line>        QaUtil.safeClose(ris);</line>
+<line/>
+<line>        xml = replace(xml, &quot;src\\package\\&quot;, sourceDir.getCanonicalPath() + &quot;\\package\\&quot;);</line>
+<line>        xml = replace(xml, &quot;src/package/&quot;, sourceDir.getCanonicalPath() + &quot;/package/&quot;);</line>
+<line/>
+<line>        // Fix for Bug 3523174 Sanity4J will only build on Windows</line>
+<line>        xml = xml.replace('\\', '/');</line>
+<line/>
+<line>        FileOutputStream fos = new FileOutputStream(dest);</line>
+<line>        fos.write(xml.getBytes(&quot;UTF-8&quot;));</line>
+<line/>
+<line>        ris.close();</line>
+<line>        fos.close();</line>
+<line/>
+<line>        return dest;</line>
+<line>    }</line>
+<line/>
+<line>    /** Checks the diagnostics. */</line>
+<line>    private void checkDiagnostics(final ExtractStats stats) throws IOException</line>
+<line>    {</line>
+<line>        stats.extractLineCounts();</line>
+<line/>
+<line>        // Check summary stats</line>
+<line>        assertEquals(&quot;Incorrect number of classes&quot;, 4, stats.getClassCount());</line>
+<line>        assertEquals(&quot;Incorrect number of classes for package 'package'&quot;,</line>
+<line>                     1, stats.getPackageClassCount(&quot;package&quot;));</line>
+<line>        assertEquals(&quot;Incorrect number of classes for package 'package.subpackage1'&quot;,</line>
+<line>                     1, stats.getPackageClassCount(&quot;package.subpackage1&quot;));</line>
+<line>        assertEquals(&quot;Incorrect number of classes for package 'package.subpackage2'&quot;,</line>
+<line>                     2, stats.getPackageClassCount(&quot;package.subpackage2&quot;));</line>
+<line/>
+<line>        PackageSummary[] summary = stats.getRunSummary();</line>
+<line>        assertEquals(&quot;Incorrect number of package summaries&quot;, 4, summary.length); // 3, +1 for root package</line>
+<line/>
+<line>        // Check diagnostic set</line>
+<line>        DiagnosticSet diags = stats.getDiagnostics();</line>
+<line>        assertEquals(&quot;Incorrect number of diagnostics&quot;, 6, diags.size());</line>
+<line/>
+<line>        assertEquals(&quot;Incorrect diags for package 'package'&quot;,</line>
+<line>                     1, diags.getDiagnosticsForPackage(&quot;package&quot;, false).size());</line>
+<line>        assertEquals(&quot;Incorrect diags for package 'package.subpackage1'&quot;,</line>
+<line>                     2, diags.getDiagnosticsForPackage(&quot;package.subpackage1&quot;, false).size());</line>
+<line>        assertEquals(&quot;Incorrect diags for package 'package.subpackage2'&quot;,</line>
+<line>                     3, diags.getDiagnosticsForPackage(&quot;package.subpackage2&quot;, false).size());</line>
+<line/>
+<line>        // Check the individual diagnostics</line>
+<line>        for (Diagnostic diag : diags)</line>
+<line>        {</line>
+<line>            // We switch on the start line number, as it's the only thing</line>
+<line>            // That all the tools have in common</line>
+<line>            switch (diag.getStartLine())</line>
+<line>            {</line>
+<line>                case 11:</line>
+<line>                {</line>
+<line>                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line>                                 &quot;package.ClassOne&quot;, diag.getClassName());</line>
+<line/>
+<line>                    break;</line>
+<line>                }</line>
+<line>                case 22:</line>
+<line>                {</line>
+<line>                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line>                                 &quot;package.subpackage1.ClassTwo&quot;, diag.getClassName());</line>
+<line>                    break;</line>
+<line>                }</line>
+<line>                case 33:</line>
+<line>                {</line>
+<line>                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line>                                 &quot;package.subpackage1.ClassTwo&quot;, diag.getClassName());</line>
+<line/>
+<line>                    break;</line>
+<line>                }</line>
+<line>                case 44:</line>
+<line>                {</line>
+<line>                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line>                                 &quot;package.subpackage2.ClassThree&quot;, diag.getClassName());</line>
+<line/>
+<line>                    break;</line>
+<line>                }</line>
+<line>                case 55:</line>
+<line>                {</line>
+<line>                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line>                                 &quot;package.subpackage2.ClassThree&quot;, diag.getClassName());</line>
+<line/>
+<line>                    break;</line>
+<line>                }</line>
+<line>                case 66:</line>
+<line>                {</line>
+<line>                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line>                                 &quot;package.subpackage2.ClassFour&quot;, diag.getClassName());</line>
+<line/>
+<line>                    break;</line>
+<line>                }</line>
+<line>                default:</line>
+<line>                {</line>
+<line>                    fail(&quot;Extracted incorrect start line: &quot; + diag.getStartLine());</line>
+<line>                }</line>
+<line>            }</line>
+<line/>
+<line>            int testNum = diag.getStartLine() / 11;</line>
+<line/>
+<line>            if (diag.getSource() != Diagnostic.SOURCE_PMD_CPD)</line>
+<line>            {</line>
+<line>                assertEquals(INCORRECT_RULENAME_MSG, &quot;rule&quot; + testNum, diag.getRuleName());</line>
+<line/>
+<line>                assertEquals(INCORRECT_MESSAGE_TEXT,</line>
+<line>                             &quot;message text&quot; + testNum, diag.getMessage().trim());</line>
+<line>            }</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Rather than using regexps and having to escape the (dynamic)</line>
+<line>     * replacement String, this has been shamelessly copied from</line>
+<line>     * Apache Ant's StringUtils.</line>
+<line>     */</line>
+<line>    public static String replace(final String data, final String search, final String replace)</line>
+<line>    {</line>
+<line>        StringBuffer buf = new StringBuffer(data.length());</line>
+<line>        int lastPos = 0;</line>
+<line/>
+<line>        for (int pos = data.indexOf(search, 0); pos != -1; pos = data.indexOf(search, lastPos))</line>
+<line>        {</line>
+<line>            buf.append(data.substring(lastPos, pos)).append(replace);</line>
+<line>            lastPos = pos + search.length();</line>
+<line>        }</line>
+<line/>
+<line>        buf.append(data.substring(lastPos));</line>
+<line>        return buf.toString();</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Returns a byte array containing all the information contained in the</line>
+<line>     * given input stream.</line>
+<line>     *</line>
+<line>     * @param stream the stream to read from.</line>
+<line>     * @return the stream contents as a byte array.</line>
+<line>     * @throws IOException if there is an error reading from the stream.</line>
+<line>     */</line>
+<line>    private byte[] getBytes(final InputStream stream) throws IOException</line>
+<line>    {</line>
+<line>        ByteArrayOutputStream result = new ByteArrayOutputStream();</line>
+<line/>
+<line>        final byte[] buf = new byte[4096];</line>
+<line>        int bytesRead = stream.read(buf);</line>
+<line/>
+<line>        while (bytesRead != -1)</line>
+<line>        {</line>
+<line>            result.write(buf, 0, bytesRead);</line>
+<line>            bytesRead = stream.read(buf);</line>
+<line>        }</line>
+<line/>
+<line>        result.flush();</line>
+<line>        result.close();</line>
+<line/>
+<line>        return result.toByteArray();</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

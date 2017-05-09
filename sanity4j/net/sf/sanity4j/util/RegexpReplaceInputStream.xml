@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.util.RegexpReplaceInputStream" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="1" low="1" info="2" lineCoverage="83" branchCoverage="66" quality="97"/>
+<source>
+<line>package net.sf.sanity4j.util;</line>
+<line/>
+<line>import java.io.IOException;</line>
+<line>import java.io.InputStream;</line>
+<line>import java.io.UnsupportedEncodingException;</line>
+<line>import java.util.regex.Matcher;</line>
+<line>import java.util.regex.Pattern;</line>
+<line/>
+<line>/**</line>
+<line> * &lt;p&gt;An {@link InputStream} implementation that replaced a regexp within the original stream</line>
+<line> * with a replacement regexp string &quot;on the fly&quot;.&lt;/p&gt;</line>
+<line> * </line>
+<line> * &lt;p&gt;This class will use a fixed size &quot;lookahead&quot; buffer, so it is possible that a regexp longer than the &quot;lookahead&quot;,</line>
+<line> * will not be matched. If expecting particularly long regexp matches (&amp;gt; 4096 characters) use the</line>
+<line> * {@link #RegexpReplaceInputStream(InputStream, String, String, int)} constructor, and specify a lookahead long enough</line>
+<line> * to ensure that all regexps matched will fit within the lookahead.&lt;/p&gt;</line>
+<line> * </line>
+<line> * @author Brian Kavanagh</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class RegexpReplaceInputStream extends InputStream</line>
+<line>{</line>
+<line>    /** The default size of the lookahead buffer. */</line>
+<line>    private static final int DEFAULT_LOOKAHEAD = 4096;</line>
+<line/>
+<line>    /** The lookahead buffer used for pattern matching. (2 * {@link #lookaheadLength}) */</line>
+<line>    private final byte[] lookahead;</line>
+<line/>
+<line>    /**</line>
+<line>     * Half the size of the {@link #lookahead} buffer, (we copy in half a buffer at a time to avoid missing matches on</line>
+<line>     * the boundaries.</line>
+<line>     */</line>
+<line>    private final int lookaheadLength;</line>
+<line/>
+<line>    /** The backing input stream. */</line>
+<line>    private final InputStream backing;</line>
+<line/>
+<line>    /**</line>
+<line>     * The number of bytes remaining in the {@link #lookahead}. (Normally this will = 2 * {@link #lookaheadLength} but</line>
+<line>     * when we reach the end of the underlying {@link InputStream} we need to work-out how many bytes are &quot;valid&quot; within</line>
+<line>     * the {@link #lookahead} buffer.</line>
+<line>     */</line>
+<line>    private int lookaheadRemaining;</line>
+<line/>
+<line>    /** The current read offset within the {@link #lookahead}. */</line>
+<line>    private int lookaheadOffset;</line>
+<line/>
+<line>    /**</line>
+<line>     * The offset within the {@link #lookahead} of the begining of the {@link #pattern} string. -1 if there is no match</line>
+<line>     * in the current {@link #lookahead}.</line>
+<line>     */</line>
+<line>    private int matchOffset;</line>
+<line/>
+<line>    /**</line>
+<line>     * The offset within the {@link #lookahead} of the end of the {@link #pattern} string. -1 if there is no match in</line>
+<line>     * the current {@link #lookahead}.</line>
+<line>     */</line>
+<line>    private int matchFinishOffset;</line>
+<line/>
+<line>    /** The regexp to be matched. */</line>
+<line>    private final Pattern pattern;</line>
+<line/>
+<line>    /** The replacement regular expression string. */</line>
+<line>    private final String replaceRegexp;</line>
+<line/>
+<line>    /** The replacement string. */</line>
+<line>    private String replace;</line>
+<line/>
+<line>    /** The current offset within the {@link #replace} string. */</line>
+<line>    private int replaceOffset;</line>
+<line/>
+<line>    /**</line>
+<line>     * A flag indicating whether or not to replace all occurances of the {@link #pattern} within the underlying</line>
+<line>     * {@link InputStream}.</line>
+<line>     */</line>
+<line>    private final boolean replaceAll;</line>
+<line/>
+<line>    /**</line>
+<line>     * This constructor creates a &lt;b&gt;RegexpReplaceInputStream&lt;/b&gt; which replaces a single &lt;em&gt;regexp&lt;/em&gt;, backed by</line>
+<line>     * a specified &lt;em&gt;InputStream&lt;/em&gt; with a default buffer size.</line>
+<line>     * </line>
+<line>     * @param backing</line>
+<line>     *            The &lt;b&gt;InputStream&lt;/b&gt; backing this &lt;b&gt;RegexpReplaceInputStream&lt;/b&gt;.</line>
+<line>     * @param regexp</line>
+<line>     *            The regexp to be replaced.</line>
+<line>     * @param replaceRegexp</line>
+<line>     *            The replacement replaceRegexp string.</line>
+<line>     *            </line>
+<line>     * @throws IOException if there is an error reading from the backing stream.</line>
+<line>     */</line>
+<line>    public RegexpReplaceInputStream(final InputStream backing, final String regexp, final String replaceRegexp) throws IOException</line>
+<line>    {</line>
+<line covered="yes">        this(backing, regexp, replaceRegexp, DEFAULT_LOOKAHEAD, false);</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * This constructor creates a &lt;b&gt;RegexpReplaceInputStream&lt;/b&gt; which replaces a single regexp, backed by a specified</line>
+<line>     * InputStream with a explicitly specified &quot;lookahead&quot; buffer size.</line>
+<line>     * </line>
+<line>     * @param backing</line>
+<line>     *            The &lt;b&gt;InputStream&lt;/b&gt; backing this &lt;b&gt;RegexpReplaceInputStream&lt;/b&gt;.</line>
+<line>     * @param regexp</line>
+<line>     *            The regexp to be replaced.</line>
+<line>     * @param replaceRegexp</line>
+<line>     *            The replacement regexp string.</line>
+<line>     * @param lookaheadLength</line>
+<line>     *            The length of the &quot;lookahead&quot; buffer used for pattern matching.</line>
+<line>     *            </line>
+<line>     * @throws IOException if there is an error reading from the backing stream.</line>
+<line>     */</line>
+<line>    public RegexpReplaceInputStream(final InputStream backing, final String regexp, final String replaceRegexp, final int lookaheadLength)</line>
+<line>        throws IOException</line>
+<line>    {</line>
+<line covered="no">        this(backing, regexp, replaceRegexp, lookaheadLength, false);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * This constructor creates a &lt;b&gt;RegexpReplaceInputStream&lt;/b&gt; backed by a specified &lt;em&gt;InputStream&lt;/em&gt; with a</line>
+<line>     * explicitly specified &quot;lookahead&quot; buffer size.</line>
+<line>     * </line>
+<line>     * @param backing</line>
+<line>     *            The &lt;b&gt;InputStream&lt;/b&gt; backing this &lt;b&gt;RegexpReplaceInputStream&lt;/b&gt;.</line>
+<line>     * @param regexp</line>
+<line>     *            The regexp to be replaced.</line>
+<line>     * @param replaceRegexp</line>
+<line>     *            The replacement regexp string.</line>
+<line>     * @param lookaheadLength</line>
+<line>     *            The size of the lookahead buffer.</line>
+<line>     * @param replaceAll</line>
+<line>     *            A flag which indicates whether (true) or not (false) we should replace all occurances of the regexp in</line>
+<line>     *            the stream.</line>
+<line>     *            </line>
+<line>     * @throws IOException if there is an error reading from the backing stream.</line>
+<line>     */</line>
+<line>    public RegexpReplaceInputStream(final InputStream backing, final String regexp, final String replaceRegexp, final int lookaheadLength,</line>
+<line>                                    final boolean replaceAll) throws IOException</line>
+<line covered="yes">    {</line>
+<line covered="yes">        this.backing = backing;</line>
+<line covered="yes">        this.lookaheadLength = lookaheadLength;</line>
+<line covered="yes">        this.lookahead = new byte[lookaheadLength * 2];</line>
+<line covered="yes">        this.lookaheadOffset = 0;</line>
+<line covered="yes">        this.lookaheadRemaining = backing.read(this.lookahead, 0, this.lookahead.length);</line>
+<line/>
+<line covered="yes">        this.pattern = Pattern.compile(regexp);</line>
+<line covered="yes">        this.matchOffset = -1;</line>
+<line covered="yes">        this.matchFinishOffset = -1;</line>
+<line/>
+<line covered="yes">        this.replaceOffset = 0;</line>
+<line covered="yes">        this.replaceRegexp = replaceRegexp;</line>
+<line covered="yes">        this.replaceAll = replaceAll;</line>
+<line/>
+<line covered="yes">        updateMatchOffset();</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * This method is used to update the matchOffset member variables </line>
+<line>     * after a new read from the underlying inputStream.</line>
+<line>     */</line>
+<line>    private void updateMatchOffset()</line>
+<line>    {</line>
+<line>        try</line>
+<line>        {</line>
+<line covered="partial">            if ((lookaheadRemaining &gt; 0) &amp;&amp; (matchOffset == -1))</line>
+<line>            {</line>
+<line covered="yes">                String buffer = new String(lookahead, lookaheadOffset, lookaheadRemaining - lookaheadOffset, &quot;UTF-8&quot;);</line>
+<line/>
+<line covered="yes">                Matcher matcher = pattern.matcher(buffer);</line>
+<line/>
+<line covered="partial">                if (matcher.find() &amp;&amp; matcher.start() &lt; lookaheadLength)</line>
+<line>                {</line>
+<line covered="yes">                    matchOffset = lookaheadOffset + matcher.start();</line>
+<line covered="yes">                    matchFinishOffset = lookaheadOffset + matcher.end();</line>
+<line/>
+<line covered="yes">                    replace = buffer.substring(matcher.start(), matcher.end()).replaceFirst(pattern.pattern(), replaceRegexp);</line>
+<line>                }</line>
+<line>            }</line>
+<line>        }</line>
+<line sev="2" covered="no"><diag id="668"/>        catch (UnsupportedEncodingException uue)</line>
+<line sev="2"><diag id="311"/>        {</line>
+<line sev="2">            // Should never happen, java has to support UTF-8.</line>
+<line sev="2" covered="yes">        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * This method is used to read in another &quot;chunk&quot; from the underlying &lt;b&gt;InputStream&lt;/b&gt;. It shuffles the last half</line>
+<line>     * of the {@link #lookahead} buffer into the first half and then read in a new 2nd &quot;half&quot; form the underlying</line>
+<line>     * &lt;b&gt;InputStream&lt;/b&gt;.</line>
+<line>     * </line>
+<line>     * @throws IOException if there is an error reading from the backing stream.</line>
+<line>     */</line>
+<line>    private void getLookahead() throws IOException</line>
+<line>    {</line>
+<line>        // Copy the 2nd half to the 1st half.</line>
+<line covered="partial">        if (lookaheadRemaining &gt; lookaheadLength)</line>
+<line>        {</line>
+<line covered="yes">            System.arraycopy(lookahead, lookaheadLength, lookahead, 0, lookaheadLength);</line>
+<line covered="yes">            lookaheadRemaining -= lookaheadLength;</line>
+<line covered="yes">            lookaheadOffset -= lookaheadLength;</line>
+<line/>
+<line covered="partial">            if (matchOffset != -1)</line>
+<line>            {</line>
+<line sev="0" covered="partial"><diag id="669"/>                if (matchOffset - lookaheadLength &gt;= 0)</line>
+<line sev="0">                {</line>
+<line sev="0" covered="no">                    matchOffset -= lookaheadLength;</line>
+<line sev="0">                }</line>
+<line/>
+<line sev="0" covered="partial"><diag id="670"/>                if (matchFinishOffset - lookaheadLength &gt;= 0)</line>
+<line sev="0">                {</line>
+<line sev="0" covered="no">                    matchFinishOffset -= lookaheadLength;</line>
+<line sev="0">                }</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line>        // Read in a new 2nd half.</line>
+<line covered="yes">        if (lookaheadRemaining == lookaheadLength)</line>
+<line>        {</line>
+<line covered="yes">            int read = backing.read(lookahead, lookaheadLength, lookaheadLength);</line>
+<line/>
+<line covered="partial">            if (read != -1)</line>
+<line>            {</line>
+<line covered="yes">                lookaheadRemaining += read;</line>
+<line>            }</line>
+<line>        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * This method is used to perform a read after a match has been found in the underlying InputStream. The processing</line>
+<line>     * is slightly different, because we now read perform the replacement, and then just defer to the underlying stream.</line>
+<line>     * </line>
+<line>     * @return The character read from the underlying stream or -1 if we have reached the end of the stream.</line>
+<line>     * @throws IOException if there is an error reading from the backing stream.</line>
+<line>     */</line>
+<line>    private int readMatch() throws IOException</line>
+<line>    {</line>
+<line covered="yes">        if (lookaheadOffset &gt;= lookaheadRemaining)</line>
+<line>        {</line>
+<line covered="yes">            return backing.read();</line>
+<line>        }</line>
+<line covered="yes">        else if (lookaheadOffset &lt; matchOffset)</line>
+<line>        {</line>
+<line covered="yes">            return lookahead[lookaheadOffset++];</line>
+<line>        }</line>
+<line covered="yes">        else if (lookaheadOffset &lt; matchFinishOffset)</line>
+<line>        {</line>
+<line covered="yes">            int chr = replace.charAt(replaceOffset++);</line>
+<line/>
+<line covered="yes">            if (replaceOffset &gt;= replace.length())</line>
+<line>            {</line>
+<line covered="yes">                lookaheadOffset = matchFinishOffset;</line>
+<line covered="yes">                matchFinishOffset = -1;</line>
+<line/>
+<line covered="partial">                if (replaceAll)</line>
+<line>                {</line>
+<line covered="no">                    matchOffset = -1;</line>
+<line covered="no">                    replaceOffset = 0;</line>
+<line covered="no">                    updateMatchOffset();</line>
+<line>                }</line>
+<line>            }</line>
+<line/>
+<line covered="yes">            return chr;</line>
+<line>        }</line>
+<line>        else</line>
+<line>        {</line>
+<line covered="yes">            return lookahead[lookaheadOffset++];</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * This method reads a character from the underlying {@link InputStream}, </line>
+<line>     * replacing a match to the given regexp with the replacement text along the way.</line>
+<line>     * </line>
+<line>     * @return The character read from the underlying stream, or -1 if we have reached the end of the stream.</line>
+<line>     * @throws IOException if there is an error reading from the backing stream.</line>
+<line>     */</line>
+<line>    public int read() throws IOException</line>
+<line>    {</line>
+<line covered="yes">        if (lookaheadOffset &gt;= lookaheadLength)</line>
+<line>        {</line>
+<line covered="yes">            getLookahead();</line>
+<line covered="yes">            updateMatchOffset();</line>
+<line>        }</line>
+<line/>
+<line covered="partial">        if (matchOffset != -1)</line>
+<line>        {</line>
+<line covered="yes">            return readMatch();</line>
+<line>        }</line>
+<line/>
+<line covered="no">        if (lookaheadOffset &gt; lookaheadRemaining - 1)</line>
+<line>        {</line>
+<line covered="no">            return -1;</line>
+<line>        }</line>
+<line/>
+<line covered="no">        return lookahead[lookaheadOffset++];</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="668" sev="2" tool="PMD" rule="EmptyCatchBlock">
+Avoid empty catch blocks
+</diag>
+<diag id="311" sev="1" tool="Checkstyle" rule="EmptyBlockCheck">Must have at least one statement.</diag>
+<diag id="669" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">
+Deeply nested if..then statements are hard to read
+</diag>
+<diag id="670" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">
+Deeply nested if..then statements are hard to read
+</diag>
+</diags>
+</classDetails>

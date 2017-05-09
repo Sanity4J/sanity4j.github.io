@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.ReportProducer" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="0" branchCoverage="100" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.workflow;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line/>
+<line>import net.sf.sanity4j.report.ReportWriter;</line>
+<line>import net.sf.sanity4j.util.ExtractStats;</line>
+<line>import net.sf.sanity4j.util.FileUtil;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line/>
+<line>/**</line>
+<line> * A {@link WorkUnit} that produces the report for the current run.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public final class ReportProducer implements WorkUnit</line>
+<line>{</line>
+<line>    /** The number of milli-seconds in a second. */</line>
+<line>    private static final int MILLISECONDS_PER_SECOND = 1000;</line>
+<line/>
+<line>    /** The QA configuration for the current run. */</line>
+<line>    private final QAConfig config;</line>
+<line/>
+<line>    /** The statistics/diagnostics for the current run. */</line>
+<line>    private final ExtractStats stats;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a ReportProducer.</line>
+<line>     * </line>
+<line>     * @param config the configuration for the current run.</line>
+<line>     * @param stats the statistics/diagnostics for the current run.</line>
+<line>     */</line>
+<line>    public ReportProducer(final QAConfig config, final ExtractStats stats)</line>
+<line covered="no">    {</line>
+<line covered="no">        this.config = config;</line>
+<line covered="no">        this.stats = stats;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Produces the report.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line covered="no">        long start = System.currentTimeMillis();</line>
+<line covered="no">        FileUtil.createDir(config.getReportDir());</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            File reportDirFile = new File(config.getReportDir());</line>
+<line covered="no">            boolean diagnosticsFirst = config.getDiagnosticsFirst();</line>
+<line covered="no">            ReportWriter reportWriter = new ReportWriter(stats, diagnosticsFirst, reportDirFile);</line>
+<line covered="no">            reportWriter.produceReport(config);</line>
+<line>        }</line>
+<line covered="no">        catch (IOException e)</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;Failed to write combined report&quot;, e);</line>
+<line covered="no">        }</line>
+<line/>
+<line covered="no">        long elapsed = System.currentTimeMillis() - start;</line>
+<line covered="no">        QaLogger.getInstance().info(&quot;Report generated in &quot; + (elapsed / MILLISECONDS_PER_SECOND) + &quot;s.&quot;);        </line>
+<line covered="no">    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line covered="no">        return &quot;Producing combined report&quot;;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="xslt/package-summary.xsl"?>
+<packageSummary packageName="" pathToRoot="" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<issueSummary high="0" significant="4" moderate="18" low="172" info="136">
+<category name="All categories" high="0" significant="0" moderate="1" low="7" info="2">
+<category name="Code style" high="0" significant="0" moderate="8" low="25" info="66"/>
+<category name="Correctness" high="0" significant="2" moderate="11" low="0" info="0"/>
+<category name="Exception handling" high="0" significant="3" moderate="5" low="0" info="0"/>
+<category name="Complexity" high="0" significant="0" moderate="0" low="24" info="22">
+<category name="Code size" high="0" significant="0" moderate="0" low="0" info="7"/>
+</category>
+<category name="Performance" high="0" significant="0" moderate="3" low="28" info="52"/>
+</category>
+<tool name="Findbugs" high="0" significant="2" moderate="4" low="0" info="43"/>
+<tool name="PMD" high="0" significant="2" moderate="12" low="84" info="81"/>
+<tool name="PMD-CPD" high="0" significant="0" moderate="0" low="28" info="0"/>
+<tool name="Checkstyle" high="0" significant="0" moderate="2" low="60" info="12"/>
+</issueSummary>
+<qualitySummary>
+<package name="" classes="97" lineCount="18330" high="0" significant="4" moderate="18" low="172" info="136" quality="97">
+<testCoverage lineCoveragePct="26" branchCoveragePct="26" lineCount="4970" coveredLineCount="1297" branchCount="672" coveredBranchCount="221"/>
+</package>
+<package name="net.sf.sanity4j" path="net/sf/sanity4j" classes="1" lineCount="66" high="0" significant="0" moderate="0" low="0" info="1" quality="100"/>
+<package name="net.sf.sanity4j.ant.taskdef" path="net/sf/sanity4j/ant/taskdef" classes="1" lineCount="366" high="0" significant="0" moderate="0" low="1" info="1" quality="99">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="86" coveredLineCount="0" branchCount="9" coveredBranchCount="0"/>
+</package>
+<package name="net.sf.sanity4j.maven.plugin" path="net/sf/sanity4j/maven/plugin" classes="2" lineCount="1566" high="0" significant="0" moderate="0" low="36" info="28" quality="95">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="333" coveredLineCount="0" branchCount="66" coveredBranchCount="0"/>
+</package>
+<package name="net.sf.sanity4j.model.coverage" path="net/sf/sanity4j/model/coverage" classes="8" lineCount="842" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
+<testCoverage lineCoveragePct="95" branchCoveragePct="90" lineCount="85" coveredLineCount="81" branchCount="15" coveredBranchCount="14"/>
+</package>
+<package name="net.sf.sanity4j.model.diagnostic" path="net/sf/sanity4j/model/diagnostic" classes="7" lineCount="2267" high="0" significant="0" moderate="1" low="17" info="2" quality="98">
+<testCoverage lineCoveragePct="94" branchCoveragePct="88" lineCount="280" coveredLineCount="264" branchCount="58" coveredBranchCount="52"/>
+</package>
+<package name="net.sf.sanity4j.model.summary" path="net/sf/sanity4j/model/summary" classes="4" lineCount="731" high="0" significant="0" moderate="0" low="0" info="5" quality="100">
+<testCoverage lineCoveragePct="85" branchCoveragePct="77" lineCount="121" coveredLineCount="103" branchCount="8" coveredBranchCount="8"/>
+</package>
+<package name="net.sf.sanity4j.report" path="net/sf/sanity4j/report" classes="12" lineCount="2964" high="0" significant="0" moderate="3" low="54" info="31" quality="95">
+<testCoverage lineCoveragePct="10" branchCoveragePct="8" lineCount="834" coveredLineCount="86" branchCount="140" coveredBranchCount="12"/>
+</package>
+<package name="net.sf.sanity4j.ui" path="net/sf/sanity4j/ui" classes="5" lineCount="1244" high="0" significant="1" moderate="0" low="5" info="7" quality="97">
+<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="430" coveredLineCount="0" branchCount="41" coveredBranchCount="0"/>
+</package>
+<package name="net.sf.sanity4j.util" path="net/sf/sanity4j/util" classes="21" lineCount="3558" high="0" significant="3" moderate="8" low="14" info="14" quality="96">
+<testCoverage lineCoveragePct="49" branchCoveragePct="36" lineCount="738" coveredLineCount="364" branchCount="142" coveredBranchCount="76"/>
+</package>
+<package name="net.sf.sanity4j.util.math" path="net/sf/sanity4j/util/math" classes="3" lineCount="431" high="0" significant="0" moderate="0" low="13" info="5" quality="93">
+<testCoverage lineCoveragePct="73" branchCoveragePct="100" lineCount="124" coveredLineCount="91" branchCount="19" coveredBranchCount="18"/>
+</package>
+<package name="net.sf.sanity4j.workflow" path="net/sf/sanity4j/workflow" classes="12" lineCount="2082" high="0" significant="0" moderate="5" low="21" info="9" quality="96">
+<testCoverage lineCoveragePct="3" branchCoveragePct="0" lineCount="492" coveredLineCount="18" branchCount="68" coveredBranchCount="1"/>
+</package>
+<package name="net.sf.sanity4j.workflow.tool" path="net/sf/sanity4j/workflow/tool" classes="21" lineCount="2213" high="0" significant="0" moderate="1" low="11" info="32" quality="98">
+<testCoverage lineCoveragePct="30" branchCoveragePct="31" lineCount="631" coveredLineCount="194" branchCount="75" coveredBranchCount="29"/>
+</package>
+</qualitySummary>
+<graphs>
+</graphs>
+</packageSummary>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.model.summary.SummaryCsvMarshaller" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="2" lineCoverage="80" branchCoverage="77" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.model.summary; </line>
+<line/>
+<line>import java.io.BufferedReader;</line>
+<line>import java.io.File;</line>
+<line>import java.io.FileInputStream;</line>
+<line>import java.io.FileOutputStream;</line>
+<line>import java.io.IOException;</line>
+<line>import java.io.InputStreamReader;</line>
+<line>import java.io.OutputStream;</line>
+<line>import java.io.Reader;</line>
+<line>import java.text.DateFormat;</line>
+<line>import java.text.ParseException;</line>
+<line>import java.text.SimpleDateFormat;</line>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.List;</line>
+<line/>
+<line>import net.sf.sanity4j.util.QaLogger;</line>
+<line/>
+<line>/** </line>
+<line> * SummaryCsvMarshaller - reads/writes summary entries to a CSV file.</line>
+<line> * </line>
+<line> * As we know that the values written do not contain new line or comma</line>
+<line> * characters, we don't need to escape any content. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line covered="yes">public class SummaryCsvMarshaller</line>
+<line>{    </line>
+<line>    /** The number of data columns in the CSV file. */</line>
+<line>    private static final int NUM_COLS = 10;</line>
+<line/>
+<line>    /** The column index for the run date. */</line>
+<line>    private static final int DATE_COLUMN_INDEX = 0;</line>
+<line>    /** The column index for the package name. */</line>
+<line>    private static final int PACKAGE_NAME_COLUMN_INDEX = 1;</line>
+<line>    /** The column index for the line coverage ratio. */</line>
+<line>    private static final int LINE_COVERAGE_COLUMN_INDEX = 2;</line>
+<line>    /** The column index for the branch coverage ratio. */</line>
+<line>    private static final int BRANCH_COVERAGE_COLUMN_INDEX = 3;</line>
+<line>    /** The column index for the number of info-severity diagnostics. */</line>
+<line>    private static final int INFO_COUNT_COLUMN_INDEX = 4;</line>
+<line>    /** The column index for the number of low-severity diagnostics. */</line>
+<line>    private static final int LOW_COUNT_COLUMN_INDEX = 5;</line>
+<line>    /** The column index for the number of moderate-severity diagnostics. */</line>
+<line>    private static final int MODERATE_COUNT_COLUMN_INDEX = 6;</line>
+<line>    /** The column index for the number of significant-severity diagnostics. */</line>
+<line>    private static final int SIGNIFICANT_COUNT_COLUMN_INDEX = 7;</line>
+<line>    /** The column index for the number of high-severity diagnostics. */</line>
+<line>    private static final int HIGH_COUNT_COLUMN_INDEX = 8;</line>
+<line>    /** The column index for the number the source line count. */</line>
+<line>    private static final int LINE_COUNT_COLUMN_INDEX = 9;</line>
+<line>    /** The number of characters on a line. */</line>
+<line>    private static final int CHARS_PER_LINE = 80;</line>
+<line/>
+<line/>
+<line>    /** The character encoding when writing the file. */</line>
+<line>    private static final String ENCODING = &quot;UTF-8&quot;;</line>
+<line/>
+<line>    /** The date format used to encode dates. */</line>
+<line covered="yes">    private final DateFormat dateFormat = new SimpleDateFormat(&quot;yyyy/MM/dd-HH:mm&quot;);</line>
+<line/>
+<line>    /**</line>
+<line>     * Reads all the entries from the given file.</line>
+<line>     * @param file the file to read from.</line>
+<line>     * @return the entries contained in the file, may be empty.</line>
+<line>     */</line>
+<line>    public PackageSummary[] read(final File file)</line>
+<line>    {</line>
+<line covered="yes">        List&lt;PackageSummary&gt; entries = new ArrayList&lt;PackageSummary&gt;((int) (file.length() / CHARS_PER_LINE)); // assume approx 80 chars per line</line>
+<line/>
+<line covered="yes">        BufferedReader reader = null;</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="yes">            FileInputStream fis = new FileInputStream(file);</line>
+<line sev="0" covered="yes"><diag id="337"/>            reader = new BufferedReader(new InputStreamReader(fis));</line>
+<line/>
+<line>            // Skip the header</line>
+<line covered="yes">            String line = reader.readLine();</line>
+<line covered="yes">            int lineNum = 1;</line>
+<line/>
+<line covered="yes">            for (line = reader.readLine(); line != null; line = reader.readLine())</line>
+<line>            {</line>
+<line covered="yes">                lineNum++;</line>
+<line covered="yes">                String[] cols = line.split(&quot;,&quot;);</line>
+<line/>
+<line covered="yes">                if (cols.length == NUM_COLS)</line>
+<line>                {</line>
+<line>                    try</line>
+<line>                    {</line>
+<line sev="0" covered="yes"><diag id="476"/>                        PackageSummary entry = new PackageSummary();</line>
+<line covered="yes">                        entry.setRunDate(dateFormat.parse(cols[DATE_COLUMN_INDEX]));</line>
+<line covered="yes">                        entry.setPackageName(cols[PACKAGE_NAME_COLUMN_INDEX]);</line>
+<line covered="yes">                        entry.setLineCoverage(Double.parseDouble(cols[LINE_COVERAGE_COLUMN_INDEX]));</line>
+<line covered="yes">                        entry.setBranchCoverage(Double.parseDouble(cols[BRANCH_COVERAGE_COLUMN_INDEX]));</line>
+<line covered="yes">                        entry.setInfoCount(Integer.parseInt(cols[INFO_COUNT_COLUMN_INDEX]));</line>
+<line covered="yes">                        entry.setLowCount(Integer.parseInt(cols[LOW_COUNT_COLUMN_INDEX]));</line>
+<line covered="yes">                        entry.setModerateCount(Integer.parseInt(cols[MODERATE_COUNT_COLUMN_INDEX]));</line>
+<line covered="yes">                        entry.setSignificantCount(Integer.parseInt(cols[SIGNIFICANT_COUNT_COLUMN_INDEX]));</line>
+<line covered="yes">                        entry.setHighCount(Integer.parseInt(cols[HIGH_COUNT_COLUMN_INDEX]));</line>
+<line covered="yes">                        entry.setLineCount(Integer.parseInt(cols[LINE_COUNT_COLUMN_INDEX]));</line>
+<line/>
+<line covered="yes">                        entries.add(entry);</line>
+<line>                    }</line>
+<line covered="no">                    catch (ParseException e)</line>
+<line>                    {</line>
+<line covered="no">                        String msg = &quot;Error reading line &quot; + lineNum;</line>
+<line covered="no">                        QaLogger.getInstance().warn(msg, e);</line>
+<line>                    }</line>
+<line covered="no">                    catch (NumberFormatException e)</line>
+<line>                    {</line>
+<line covered="no">                        String msg = &quot;Error reading line &quot; + lineNum;</line>
+<line covered="no">                        QaLogger.getInstance().warn(msg, e);</line>
+<line covered="yes">                    }</line>
+<line>                }</line>
+<line>                else</line>
+<line>                {</line>
+<line>                    // Bad line - file probably truncated on previous run.</line>
+<line covered="yes">                    String msg = &quot;Incorrect number of columns on line &quot; + lineNum</line>
+<line>                                 + &quot;- expected &quot; + NUM_COLS + &quot;, got &quot; + cols.length;</line>
+<line/>
+<line covered="yes">                    QaLogger.getInstance().warn(msg);</line>
+<line>                }</line>
+<line>            }</line>
+<line/>
+<line covered="yes">            safeClose(reader);            </line>
+<line>        }</line>
+<line covered="no">        catch (IOException e)</line>
+<line>        {</line>
+<line covered="no">            QaLogger.getInstance().error(&quot;Error reading summary data&quot;, e);</line>
+<line covered="no">            safeClose(reader);</line>
+<line covered="yes">        }</line>
+<line/>
+<line covered="yes">        return entries.toArray(new PackageSummary[entries.size()]);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Appends the given SummaryEntries to the specified file.</line>
+<line>     * </line>
+<line>     * @param entries the entries to write.</line>
+<line>     * @param file the file to append to.</line>
+<line>     */</line>
+<line>    public void write(final PackageSummary[] entries, final File file)</line>
+<line>    {</line>
+<line covered="partial">        if (!file.getParentFile().exists())</line>
+<line>        {</line>
+<line covered="no">            QaLogger.getInstance().warn(&quot;Unable to write summary data, directory doesn't exist: &quot; + file.getParent());</line>
+<line covered="no">            return;</line>
+<line>        }</line>
+<line/>
+<line covered="partial">        boolean newFile = !file.exists() || file.length() == 0;</line>
+<line/>
+<line covered="yes">        FileOutputStream fos = null;</line>
+<line covered="yes">        StringBuffer line = new StringBuffer();</line>
+<line/>
+<line>        // Write header if new file</line>
+<line>        try</line>
+<line>        {</line>
+<line covered="yes">            fos = new FileOutputStream(file, true);</line>
+<line/>
+<line covered="yes">            if (newFile)</line>
+<line>            {</line>
+<line covered="yes">                fos.write(&quot;Run date,Package name,Line coverage,Branch coverage,Info diags,Low diags,Moderate diags,Significant diags,High diags,Line count&quot;.getBytes(ENCODING));</line>
+<line>            }</line>
+<line/>
+<line covered="yes">            for (int i = 0; i &lt; entries.length; i++)</line>
+<line>            {</line>
+<line covered="yes">                line.setLength(0);</line>
+<line covered="yes">                line.append(&quot;\r\n&quot;);</line>
+<line covered="yes">                line.append(dateFormat.format(entries[i].getRunDate()));</line>
+<line covered="yes">                line.append(',');</line>
+<line covered="yes">                line.append(entries[i].getPackageName());</line>
+<line covered="yes">                line.append(',');</line>
+<line covered="yes">                line.append(entries[i].getLineCoverage());</line>
+<line covered="yes">                line.append(',');</line>
+<line covered="yes">                line.append(entries[i].getBranchCoverage());</line>
+<line covered="yes">                line.append(',');</line>
+<line covered="yes">                line.append(entries[i].getInfoCount());</line>
+<line covered="yes">                line.append(',');</line>
+<line covered="yes">                line.append(entries[i].getLowCount());</line>
+<line covered="yes">                line.append(',');</line>
+<line covered="yes">                line.append(entries[i].getModerateCount());</line>
+<line covered="yes">                line.append(',');</line>
+<line covered="yes">                line.append(entries[i].getSignificantCount());</line>
+<line covered="yes">                line.append(',');</line>
+<line covered="yes">                line.append(entries[i].getHighCount());</line>
+<line covered="yes">                line.append(',');</line>
+<line covered="yes">                line.append(entries[i].getLineCount());</line>
+<line/>
+<line covered="yes">                fos.write(line.toString().getBytes(ENCODING));</line>
+<line covered="yes">                fos.flush();</line>
+<line>            }</line>
+<line/>
+<line covered="yes">            safeClose(fos);</line>
+<line>        }</line>
+<line covered="no">        catch (IOException e)</line>
+<line>        {</line>
+<line covered="no">            QaLogger.getInstance().error(&quot;Error writing summary data&quot;, e);</line>
+<line covered="no">            safeClose(fos);</line>
+<line covered="yes">        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Closes a reader, logging any exceptions.</line>
+<line>     * @param reader the reader to close.</line>
+<line>     */</line>
+<line>    private void safeClose(final Reader reader)</line>
+<line>    {</line>
+<line covered="partial">        if (reader != null)</line>
+<line>        {</line>
+<line>            try</line>
+<line>            {</line>
+<line covered="yes">                reader.close();</line>
+<line>            }</line>
+<line covered="no">            catch (IOException e)</line>
+<line>            {</line>
+<line>                // Don't really care</line>
+<line covered="no">                QaLogger.getInstance().debug(&quot;Error closing stream&quot;, e);</line>
+<line covered="yes">            }</line>
+<line>        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Closes an OutputStream, logging any exceptions.</line>
+<line>     * @param stream the OutputStream to close.</line>
+<line>     */</line>
+<line>    private void safeClose(final OutputStream stream)</line>
+<line>    {</line>
+<line covered="partial">        if (stream != null)</line>
+<line>        {</line>
+<line>            try</line>
+<line>            {</line>
+<line covered="yes">                stream.close();</line>
+<line>            }</line>
+<line covered="no">            catch (IOException e)</line>
+<line>            {</line>
+<line>                // Don't really care</line>
+<line covered="no">                QaLogger.getInstance().debug(&quot;Error closing stream&quot;, e);</line>
+<line covered="yes">            }</line>
+<line>        }</line>
+<line covered="yes">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="337" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.model.summary.SummaryCsvMarshaller.read(File): new java.io.InputStreamReader(InputStream)</diag>
+<diag id="476" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+</diags>
+</classDetails>

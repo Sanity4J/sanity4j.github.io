@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.Sanity4J_Suite" pathToRoot="../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="1" quality="100"/>
+<source>
+<line sev="0"><diag id="252"/>package net.sf.sanity4j;</line>
+<line/>
+<line>import junit.framework.Test;</line>
+<line>import junit.framework.TestSuite;</line>
+<line>import net.sf.sanity4j.model.coverage.ClassCoverage_Test;</line>
+<line>import net.sf.sanity4j.model.coverage.Coverage_Test;</line>
+<line>import net.sf.sanity4j.model.coverage.PackageCoverage_Test;</line>
+<line>import net.sf.sanity4j.model.diagnostic.DiagnosticCategory_Test;</line>
+<line>import net.sf.sanity4j.model.diagnostic.DiagnosticSet_Test;</line>
+<line>import net.sf.sanity4j.model.diagnostic.Diagnostic_Test;</line>
+<line>import net.sf.sanity4j.model.summary.PackageSummary_Test;</line>
+<line>import net.sf.sanity4j.model.summary.SummaryCsvMarshaller_Test;</line>
+<line>import net.sf.sanity4j.report.ChartFactory_Test;</line>
+<line>import net.sf.sanity4j.report.ReportUtil_Test;</line>
+<line>import net.sf.sanity4j.util.ExternalProcessRunner_Test;</line>
+<line>import net.sf.sanity4j.util.ExtractStats_Test;</line>
+<line>import net.sf.sanity4j.util.FileUtil_Test;</line>
+<line>import net.sf.sanity4j.util.JaxbMarshaller_Test;</line>
+<line>import net.sf.sanity4j.util.PipeInputThread_Test;</line>
+<line>import net.sf.sanity4j.util.StringUtil_Test;</line>
+<line/>
+<line>/**</line>
+<line> * This class is the &lt;a href=&quot;http://www.junit.org&quot;&gt;JUnit&lt;/a&gt; TestSuite for the classes within</line>
+<line> * {@link net.sf.sanity4j} package within the &lt;b&gt;Sanity4J&lt;/b&gt; project.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class Sanity4J_Suite extends TestSuite</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Returns a JUnit TestSuite comprising of the tests for the {@link net.sf.sanity4j} package within the &lt;b&gt;Sanity4J&lt;/b&gt;</line>
+<line>     * library.</line>
+<line>     * </line>
+<line>     * @return A JUnit TestSuite.</line>
+<line>     */</line>
+<line>    public static Test suite()</line>
+<line>    {</line>
+<line>        TestSuite suite = new TestSuite();</line>
+<line>        suite.setName(Sanity4J_Suite.class.getName());</line>
+<line/>
+<line>        suite.addTestSuite(Coverage_Test.class);</line>
+<line>        suite.addTestSuite(ClassCoverage_Test.class);</line>
+<line>        suite.addTestSuite(PackageCoverage_Test.class);</line>
+<line/>
+<line>        suite.addTestSuite(Diagnostic_Test.class);</line>
+<line>        suite.addTestSuite(DiagnosticCategory_Test.class);</line>
+<line>        suite.addTestSuite(DiagnosticSet_Test.class);</line>
+<line/>
+<line>        suite.addTestSuite(ChartFactory_Test.class);</line>
+<line>        suite.addTestSuite(ReportUtil_Test.class);</line>
+<line/>
+<line>        suite.addTestSuite(SummaryCsvMarshaller_Test.class);</line>
+<line>        suite.addTestSuite(PackageSummary_Test.class);</line>
+<line/>
+<line>        suite.addTestSuite(ExternalProcessRunner_Test.class);</line>
+<line>        suite.addTestSuite(ExtractStats_Test.class);</line>
+<line>        suite.addTestSuite(FileUtil_Test.class);</line>
+<line>        suite.addTestSuite(PipeInputThread_Test.class);</line>
+<line>        suite.addTestSuite(JaxbMarshaller_Test.class);</line>
+<line>        suite.addTestSuite(StringUtil_Test.class);</line>
+<line/>
+<line>        return suite;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="252" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+</diags>
+</classDetails>

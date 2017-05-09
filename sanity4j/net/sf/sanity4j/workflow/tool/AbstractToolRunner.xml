@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.workflow.tool.AbstractToolRunner" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="1" info="1" lineCoverage="0" branchCoverage="0" quality="99"/>
+<source>
+<line sev="0"><diag id="325"/>package net.sf.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.FileOutputStream;</line>
+<line>import java.io.IOException;</line>
+<line>import java.io.InputStream;</line>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Map;</line>
+<line/>
+<line>import net.sf.sanity4j.util.FileUtil;</line>
+<line>import net.sf.sanity4j.util.QAException;</line>
+<line>import net.sf.sanity4j.util.QaUtil;</line>
+<line>import net.sf.sanity4j.util.StringUtil;</line>
+<line>import net.sf.sanity4j.util.Tool;</line>
+<line>import net.sf.sanity4j.workflow.QAConfig;</line>
+<line>import net.sf.sanity4j.workflow.WorkUnit;</line>
+<line/>
+<line>/**</line>
+<line> * AbstractToolRunner provides a properties-driven way of running external tools.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public abstract class AbstractToolRunner implements WorkUnit</line>
+<line>{</line>
+<line>    /** The current QA configuration. */</line>
+<line>    private QAConfig config;</line>
+<line/>
+<line>    /** The tool to run. */</line>
+<line>    private final Tool tool;</line>
+<line/>
+<line>    /** The tool version that was found. */</line>
+<line>    private String toolVersion;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates an AbstractToolRunner.</line>
+<line>     * </line>
+<line>     * @param tool the tool to run.</line>
+<line>     */</line>
+<line>    protected AbstractToolRunner(final Tool tool)</line>
+<line covered="no">    {</line>
+<line covered="no">        this.tool = tool;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the path to the tool home directory.</line>
+<line>     */</line>
+<line>    protected String getToolHome()</line>
+<line>    {</line>
+<line covered="no">        return config.getToolHome(tool.getId(), toolVersion);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the tool Maven artifact.</line>
+<line>     */</line>
+<line>    protected String getToolArtifact()</line>
+<line>    {</line>
+<line covered="no">        return config.getToolArtifact(tool.getId(), toolVersion);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the additional configuration classpath for the tool.</line>
+<line>     */</line>
+<line>    protected String getToolConfigClasspath()</line>
+<line>    {</line>
+<line covered="no">        return config.getToolConfigClasspath(tool.getId(), toolVersion);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return a list of paths to all the jars needed to run the tool.</line>
+<line>     */</line>
+<line>    protected List&lt;String&gt; getToolJars()</line>
+<line>    {</line>
+<line covered="no">        List&lt;String&gt; toolJars = new ArrayList&lt;String&gt;();</line>
+<line/>
+<line sev="1" covered="no"><diag id="727"/>        if (config.getProductsDir() != null)</line>
+<line sev="1">        {</line>
+<line sev="1" covered="no">            FileUtil.findJars(new File(getToolHome()), toolJars);</line>
+<line sev="1">        }</line>
+<line sev="1" covered="no">        else if (config.getRunQAMojo() != null)</line>
+<line sev="1">        {</line>
+<line sev="1" covered="no">            config.getRunQAMojo().getTransitiveDependencies(getToolArtifact(), toolJars);</line>
+<line sev="1">        }</line>
+<line/>
+<line covered="no">        if (toolJars.isEmpty())</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;Couldn't find &quot; + tool.getName() + &quot; jars in &quot; + getToolHome());</line>
+<line>        }</line>
+<line/>
+<line covered="no">        String configClasspath = getToolConfigClasspath();</line>
+<line/>
+<line covered="no">        if (configClasspath != null)</line>
+<line>        {</line>
+<line covered="no">            String separator = System.getProperty(&quot;path.separator&quot;);</line>
+<line covered="no">            String[] paths = configClasspath.split(separator);</line>
+<line/>
+<line covered="no">            for (String path : paths)</line>
+<line>            {</line>
+<line covered="no">                toolJars.add(path);</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line covered="no">        return toolJars;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the file path where the tool should place it's output.</line>
+<line>     */</line>
+<line>    protected String getToolResultFile()</line>
+<line>    {</line>
+<line covered="no">        return config.getTempDir().getPath() + File.separatorChar + tool + &quot;_result.xml&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /** @return the QA configuration for the current run. */</line>
+<line>    protected QAConfig getConfig()</line>
+<line>    {</line>
+<line covered="no">        return config;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Subclasses may override this method to add any additional parameters specific to the tool.</line>
+<line>     * </line>
+<line>     * @return a map of parameters to use for replacing configuration tokens.</line>
+<line>     */</line>
+<line>    protected Map&lt;String, String&gt; getParameterMap()</line>
+<line>    {</line>
+<line covered="no">        Map&lt;String, String&gt; paramMap = config.asParameterMap();</line>
+<line/>
+<line covered="no">        String outputFile = getToolResultFile();</line>
+<line covered="no">        String toolHome = getToolHome();</line>
+<line/>
+<line>        // Retrieve the configuration parameters for this tool.</line>
+<line covered="no">        String toolConfigParam = config.getToolConfigParam(tool.getId(), toolVersion);</line>
+<line covered="no">        String toolAuxClasspath = config.getToolConfigClasspath(tool.getId(), toolVersion);</line>
+<line/>
+<line>        // Retrieve the configuration parameter values for this tool.</line>
+<line covered="no">        String toolConfig = null;</line>
+<line/>
+<line covered="no">        if (toolConfigParam != null)</line>
+<line>        {</line>
+<line covered="no">            toolConfig = paramMap.get(toolConfigParam);</line>
+<line>        }</line>
+<line/>
+<line covered="no">        if (FileUtil.hasValue(toolConfig))</line>
+<line>        {</line>
+<line covered="no">            InputStream stream = this.getClass().getResourceAsStream(&quot;/&quot; + toolConfig);</line>
+<line/>
+<line covered="no">            if (stream != null)</line>
+<line>            {</line>
+<line covered="no">                FileOutputStream fos = null;</line>
+<line/>
+<line>                try</line>
+<line>                {</line>
+<line covered="no">                    File tempFile = File.createTempFile(tool.getId() + &quot;-&quot;, &quot;&quot;, config.getTempDir());</line>
+<line covered="no">                    fos = new FileOutputStream(tempFile);</line>
+<line covered="no">                    QaUtil.copy(stream, fos);</line>
+<line covered="no">                    toolConfig = tempFile.getCanonicalPath();</line>
+<line>                }</line>
+<line covered="no">                catch (IOException ioe)</line>
+<line>                {</line>
+<line covered="no">                    String message = &quot;Error creating temporary configuration file for tool [&quot; + tool.getId() + &quot;]&quot;;</line>
+<line covered="no">                    throw new QAException(message, ioe);</line>
+<line>                }</line>
+<line>                finally</line>
+<line>                {</line>
+<line covered="no">                    QaUtil.safeClose(stream);</line>
+<line covered="no">                    QaUtil.safeClose(fos);</line>
+<line covered="no">                }</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line>        // Add the class path for this tool to the javaArgs.</line>
+<line covered="no">        StringBuffer javaArgsBuf = new StringBuffer();</line>
+<line covered="no">        javaArgsBuf.append(paramMap.get(&quot;javaArgs&quot;));</line>
+<line covered="no">        List&lt;String&gt; toolJars = getToolJars();</line>
+<line covered="no">        String classPath = StringUtil.concatList(toolJars, File.pathSeparator);</line>
+<line covered="no">        javaArgsBuf.append(&quot; -cp &quot;).append(classPath);</line>
+<line/>
+<line>        // Put the &quot;extra&quot; parameters to the parameter map.</line>
+<line covered="no">        paramMap.put(&quot;outputFile&quot;, outputFile);</line>
+<line covered="no">        paramMap.put(&quot;toolHome&quot;, toolHome);</line>
+<line/>
+<line covered="no">        toolAuxClasspath = QaUtil.replaceTokens(toolAuxClasspath, paramMap, config, null);</line>
+<line covered="no">        toolConfig = QaUtil.replaceTokens(toolConfig, paramMap, config, toolAuxClasspath);</line>
+<line covered="no">        paramMap.put(toolConfigParam, toolConfig);</line>
+<line/>
+<line covered="no">        paramMap.put(&quot;javaArgs&quot;, javaArgsBuf.toString());</line>
+<line covered="no">        paramMap.put(&quot;auxClasspath&quot;, toolAuxClasspath);</line>
+<line/>
+<line covered="no">        return paramMap;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Subclasses must implement this method to actually run the tool.</line>
+<line>     * </line>
+<line>     * @param commandLine the tool command line.</line>
+<line>     */</line>
+<line>    protected abstract void runTool(String commandLine);</line>
+<line/>
+<line>    /**</line>
+<line>     * The entry point for the work unit. This implementation looks up the command line necessary to run the tool, then</line>
+<line>     * calls {@link #runTool(String)}.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line covered="no">        Map&lt;String, String&gt; params = getParameterMap();</line>
+<line covered="no">        String auxClasspath = params.get(&quot;auxClasspath&quot;);</line>
+<line covered="no">        String toolCommandLine = config.getToolCommandLine(tool.getId(), toolVersion);</line>
+<line covered="no">        toolCommandLine = QaUtil.replaceTokens(toolCommandLine, getParameterMap(), config, auxClasspath);</line>
+<line covered="no">        runTool(toolCommandLine);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Sets the QA configuration for the current run.</line>
+<line>     * </line>
+<line>     * @param config the QA configuration.</line>
+<line>     */</line>
+<line>    public void setConfig(final QAConfig config)</line>
+<line>    {</line>
+<line covered="no">        this.config = config;</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Sets the tool version to use.</line>
+<line>     * </line>
+<line>     * @param toolVersion the tool version to use.</line>
+<line>     */</line>
+<line>    public void setToolVersion(final String toolVersion)</line>
+<line>    {</line>
+<line covered="no">        this.toolVersion = toolVersion;</line>
+<line covered="no">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="325" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="727" sev="1" tool="PMD" rule="ConfusingTernary">
+Avoid if (x != y) ..; else ..;
+</diag>
+</diags>
+</classDetails>

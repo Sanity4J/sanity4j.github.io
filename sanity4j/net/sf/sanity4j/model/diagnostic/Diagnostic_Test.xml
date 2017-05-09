@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="net.sf.sanity4j.model.diagnostic.Diagnostic_Test" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package net.sf.sanity4j.model.diagnostic; </line>
+<line/>
+<line>import java.util.HashSet;</line>
+<line>import java.util.Set;</line>
+<line/>
+<line>import junit.framework.TestCase;</line>
+<line/>
+<line>/**</line>
+<line> * Diagnostic_Test - unit tests for {@link Diagnostic}. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class Diagnostic_Test extends TestCase</line>
+<line>{</line>
+<line>    public void testSetClassName()</line>
+<line>    {</line>
+<line>        Diagnostic diagnostic = new Diagnostic();</line>
+<line>        String packageName = &quot;mydomain.qa&quot;;  </line>
+<line>        String className = packageName + &quot;.DummyClass&quot;;</line>
+<line/>
+<line>        diagnostic.setClassName(className);</line>
+<line>        assertEquals(&quot;className accessor incorrect&quot;, className, diagnostic.getClassName());</line>
+<line>        assertEquals(&quot;packageName accessor incorrect&quot;, packageName, diagnostic.getPackageName());</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetStartColumn()</line>
+<line>    {</line>
+<line>        Diagnostic diagnostic = new Diagnostic();</line>
+<line/>
+<line>        diagnostic.setStartColumn(12345);</line>
+<line>        assertEquals(&quot;startColumn accessor incorrect&quot;, 12345, diagnostic.getStartColumn());</line>
+<line>        assertEquals(&quot;endColumn not equal to startColumn&quot;, diagnostic.getStartColumn(), diagnostic.getEndColumn());</line>
+<line/>
+<line>        diagnostic.setStartColumn(123);</line>
+<line>        assertEquals(&quot;startColumn accessor incorrect&quot;, 123, diagnostic.getStartColumn());</line>
+<line>        assertEquals(&quot;endColumn set incorrectly&quot;, 12345, diagnostic.getEndColumn());</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetEndColumn()</line>
+<line>    {</line>
+<line>        Diagnostic diagnostic = new Diagnostic();</line>
+<line/>
+<line>        diagnostic.setEndColumn(12345);</line>
+<line>        assertEquals(&quot;endColumn accessor incorrect&quot;, 12345, diagnostic.getEndColumn());</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetStartLine()</line>
+<line>    {</line>
+<line>        Diagnostic diagnostic = new Diagnostic();</line>
+<line/>
+<line>        diagnostic.setStartLine(12345);</line>
+<line>        assertEquals(&quot;startLine accessor incorrect&quot;, 12345, diagnostic.getStartLine());</line>
+<line>        assertEquals(&quot;endLine not equal to startLine&quot;, diagnostic.getStartLine(), diagnostic.getEndLine());</line>
+<line/>
+<line>        diagnostic.setStartLine(123);</line>
+<line>        assertEquals(&quot;startLine accessor incorrect&quot;, 123, diagnostic.getStartLine());</line>
+<line>        assertEquals(&quot;endLine set incorrectly&quot;, 12345, diagnostic.getEndLine());</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetEndLine()</line>
+<line>    {</line>
+<line>        Diagnostic diagnostic = new Diagnostic();</line>
+<line>        diagnostic.setEndLine(12345);</line>
+<line>        assertEquals(&quot;endLine accessor incorrect&quot;, 12345, diagnostic.getEndLine());</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetFileName()</line>
+<line>    {</line>
+<line>        Diagnostic diagnostic = new Diagnostic();</line>
+<line>        String fileName = &quot;dummy_file.name&quot;;</line>
+<line/>
+<line>        diagnostic.setFileName(fileName);</line>
+<line>        assertEquals(&quot;fileName accessor incorrect&quot;, fileName, diagnostic.getFileName());</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetMessage()</line>
+<line>    {</line>
+<line>        Diagnostic diagnostic = new Diagnostic();</line>
+<line>        String message = &quot;Dummy message&quot;;</line>
+<line/>
+<line>        diagnostic.setMessage(message);</line>
+<line>        assertEquals(&quot;message accessor incorrect&quot;, message, diagnostic.getMessage());</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetSeverity()</line>
+<line>    {</line>
+<line>        Diagnostic diagnostic = new Diagnostic();</line>
+<line/>
+<line>        diagnostic.setSeverity(Diagnostic.SEVERITY_MODERATE);</line>
+<line>        assertEquals(&quot;severity accessor incorrect&quot;, Diagnostic.SEVERITY_MODERATE, diagnostic.getSeverity());</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetSource()</line>
+<line>    {</line>
+<line>        Diagnostic diagnostic = new Diagnostic();</line>
+<line/>
+<line>        diagnostic.setSource(Diagnostic.SOURCE_FINDBUGS);</line>
+<line>        assertEquals(&quot;source accessor incorrect&quot;, Diagnostic.SOURCE_FINDBUGS, diagnostic.getSource());</line>
+<line>    }</line>
+<line/>
+<line>    public void testSetRuleName()</line>
+<line>    {</line>
+<line>        Diagnostic diagnostic = new Diagnostic();</line>
+<line>        String ruleName = &quot;DummyRuleName&quot;;</line>
+<line/>
+<line>        diagnostic.setRuleName(ruleName);</line>
+<line>        assertEquals(&quot;ruleName accessor incorrect&quot;, ruleName, diagnostic.getRuleName());</line>
+<line>    }</line>
+<line/>
+<line>    public void testGetId()</line>
+<line>    {</line>
+<line>        assertNotSame(&quot;Diagnostics should have unique Ids&quot;,</line>
+<line>                   new Diagnostic().getId(), new Diagnostic().getId()); </line>
+<line>    }</line>
+<line/>
+<line>    public void testGetSeverityDescription()</line>
+<line>    {</line>
+<line>        int[] severities = </line>
+<line>        {</line>
+<line>            Diagnostic.SEVERITY_ALL,</line>
+<line>            Diagnostic.SEVERITY_INFO,</line>
+<line>            Diagnostic.SEVERITY_LOW,</line>
+<line>            Diagnostic.SEVERITY_MODERATE,</line>
+<line>            Diagnostic.SEVERITY_SIGNIFICANT,</line>
+<line>            Diagnostic.SEVERITY_HIGH,</line>
+<line>            Integer.MIN_VALUE // Should not result in an error</line>
+<line>        };</line>
+<line/>
+<line>        Diagnostic diag = new Diagnostic();</line>
+<line>        Set&lt;String&gt; descriptions = new HashSet&lt;String&gt;(); </line>
+<line/>
+<line>        for (int i = 0; i &lt; severities.length; i++)</line>
+<line>        {</line>
+<line>            diag.setSeverity(severities[i]);</line>
+<line>            String description = diag.getSeverityDescription();</line>
+<line>            assertNotNull(&quot;Severity description should not be null for severity &quot; + diag.getSeverity(), </line>
+<line>                          description);</line>
+<line>            assertFalse(&quot;Severity descriptions should be unique: &quot; + description, </line>
+<line>                        descriptions.contains(description)); </line>
+<line>            descriptions.add(description);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    public void testGetSourceDescription()</line>
+<line>    {</line>
+<line>        int[] sources = </line>
+<line>        {</line>
+<line>            Diagnostic.SOURCE_ALL,</line>
+<line>            Diagnostic.SOURCE_OTHER,</line>
+<line>            Diagnostic.SOURCE_FINDBUGS,</line>
+<line>            Diagnostic.SOURCE_PMD,</line>
+<line>            Diagnostic.SOURCE_PMD_CPD,</line>
+<line>            Diagnostic.SOURCE_CHECKSTYLE,  </line>
+<line>        };</line>
+<line/>
+<line>        Diagnostic diag = new Diagnostic();</line>
+<line>        Set&lt;String&gt; descriptions = new HashSet&lt;String&gt;(); </line>
+<line/>
+<line>        for (int i = 0; i &lt; sources.length; i++)</line>
+<line>        {</line>
+<line>            diag.setSource(sources[i]);</line>
+<line>            String description = diag.getSourceDescription();</line>
+<line>            assertNotNull(&quot;Source description should not be null for source &quot; + diag.getSource(), </line>
+<line>                          description);</line>
+<line>            assertFalse(&quot;Source descriptions should be unique: &quot; + description, </line>
+<line>                        descriptions.contains(description)); </line>
+<line>            descriptions.add(description);</line>
+<line>        }</line>
+<line/>
+<line>        diag.setSource(Integer.MIN_VALUE);</line>
+<line>        assertNotNull(&quot;Source description should not be null for source &quot; + diag.getSource(), </line>
+<line>                      diag.getSourceDescription());</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>
