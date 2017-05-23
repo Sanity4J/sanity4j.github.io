@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/package-frame.xsl"?>
+<packageClasses packageName="com.github.sanity4j.util" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<class name="com.github.sanity4j.util.ExternalProcessRunner" high="0" significant="2" moderate="0" low="1" info="0"/>
+<class name="com.github.sanity4j.util.ExternalProcessRunner_Test" high="0" significant="0" moderate="0" low="2" info="0"/>
+<class name="com.github.sanity4j.util.ExtractStats" high="0" significant="0" moderate="1" low="5" info="5"/>
+<class name="com.github.sanity4j.util.ExtractStats_Test" high="0" significant="0" moderate="0" low="4" info="0"/>
+<class name="com.github.sanity4j.util.FileUtil" high="0" significant="0" moderate="2" low="0" info="1"/>
+<class name="com.github.sanity4j.util.FileUtil_Test" high="0" significant="0" moderate="0" low="1" info="0"/>
+<class name="com.github.sanity4j.util.JaxbMarshaller" high="0" significant="4" moderate="0" low="1" info="0"/>
+<class name="com.github.sanity4j.util.JaxbMarshaller_Test" high="0" significant="0" moderate="0" low="3" info="0"/>
+<class name="com.github.sanity4j.util.PipeInputThread" high="0" significant="0" moderate="2" low="0" info="0"/>
+<class name="com.github.sanity4j.util.PipeInputThread_Test" high="0" significant="0" moderate="0" low="1" info="0"/>
+<class name="com.github.sanity4j.util.QAException" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.util.QaLogger" high="0" significant="0" moderate="0" low="1" info="0"/>
+<class name="com.github.sanity4j.util.QaLoggerAntImpl" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.util.QaLoggerMavenImpl" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.util.QaLoggerSystemOutImpl" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.util.QaUtil" high="0" significant="3" moderate="5" low="11" info="7"/>
+<class name="com.github.sanity4j.util.RegexpReplaceInputStream" high="0" significant="0" moderate="1" low="2" info="2"/>
+<class name="com.github.sanity4j.util.StartElementListener" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.util.StringUtil" high="0" significant="0" moderate="0" low="1" info="0"/>
+<class name="com.github.sanity4j.util.StringUtil_Test" high="0" significant="0" moderate="0" low="3" info="0"/>
+<class name="com.github.sanity4j.util.Tool" high="0" significant="0" moderate="0" low="0" info="0"/>
+</packageClasses>

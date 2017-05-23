@@ -1,0 +1,1392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.maven.plugin.RunQAMojo" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<summary high="0" significant="6" moderate="1" low="10" info="27" quality="88"/>
+<source>
+<line sev="2"><diag id="341"/><diag id="342"/>package com.github.sanity4j.maven.plugin;</line>
+<line sev="2"/>
+<line sev="2">import java.io.BufferedWriter;</line>
+<line sev="2">import java.io.File;</line>
+<line sev="2">import java.io.FileWriter;</line>
+<line sev="2">import java.io.IOException;</line>
+<line sev="2">import java.lang.reflect.InvocationTargetException;</line>
+<line sev="2">import java.util.Collections;</line>
+<line sev="2">import java.util.HashSet;</line>
+<line sev="2">import java.util.LinkedHashSet;</line>
+<line sev="2">import java.util.List;</line>
+<line sev="2">import java.util.Locale;</line>
+<line sev="2">import java.util.Properties;</line>
+<line sev="2">import java.util.ResourceBundle;</line>
+<line sev="2">import java.util.Set;</line>
+<line sev="2"/>
+<line sev="2">import org.apache.maven.artifact.Artifact;</line>
+<line sev="2">import org.apache.maven.artifact.DefaultArtifact;</line>
+<line sev="2">import org.apache.maven.artifact.handler.DefaultArtifactHandler;</line>
+<line sev="2">import org.apache.maven.artifact.repository.ArtifactRepository;</line>
+<line sev="2">import org.apache.maven.artifact.resolver.ArtifactResolver;</line>
+<line sev="2">import org.apache.maven.artifact.resolver.filter.ArtifactFilter;</line>
+<line sev="2">import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;</line>
+<line sev="2">import org.apache.maven.artifact.versioning.VersionRange;</line>
+<line sev="2">import org.apache.maven.doxia.siterenderer.Renderer;</line>
+<line sev="2">import org.apache.maven.model.DistributionManagement;</line>
+<line sev="2">import org.apache.maven.model.Site;</line>
+<line sev="2">import org.apache.maven.plugin.MojoExecutionException;</line>
+<line sev="2">import org.apache.maven.plugin.dependency.utils.resolvers.ArtifactsResolver;</line>
+<line sev="2">import org.apache.maven.plugin.dependency.utils.resolvers.DefaultArtifactsResolver;</line>
+<line sev="2">import org.apache.maven.plugins.annotations.Component;</line>
+<line sev="2">import org.apache.maven.plugins.annotations.Mojo;</line>
+<line sev="2">import org.apache.maven.plugins.annotations.Parameter;</line>
+<line sev="2">import org.apache.maven.plugins.annotations.ResolutionScope;</line>
+<line sev="2">import org.apache.maven.project.DefaultProjectBuildingRequest;</line>
+<line sev="2">import org.apache.maven.project.MavenProject;</line>
+<line sev="2">import org.apache.maven.project.ProjectBuilder;</line>
+<line sev="2">import org.apache.maven.project.ProjectBuildingException;</line>
+<line sev="2">import org.apache.maven.project.ProjectBuildingRequest;</line>
+<line sev="2">import org.apache.maven.reporting.AbstractMavenReport;</line>
+<line sev="2">import org.apache.maven.reporting.MavenReportException;</line>
+<line sev="2">import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;</line>
+<line sev="2">import org.apache.maven.shared.dependency.graph.DependencyGraphBuilderException;</line>
+<line sev="2">import org.apache.maven.shared.dependency.graph.DependencyNode;</line>
+<line sev="2">import org.apache.maven.shared.invoker.DefaultInvocationRequest;</line>
+<line sev="2">import org.apache.maven.shared.invoker.DefaultInvoker;</line>
+<line sev="2">import org.apache.maven.shared.invoker.InvocationRequest;</line>
+<line sev="2">import org.apache.maven.shared.invoker.Invoker;</line>
+<line sev="2"/>
+<line sev="2">import com.github.sanity4j.util.FileUtil;</line>
+<line sev="2">import com.github.sanity4j.util.QAException;</line>
+<line sev="2">import com.github.sanity4j.util.QaLogger;</line>
+<line sev="2">import com.github.sanity4j.util.QaLoggerMavenImpl;</line>
+<line sev="2">import com.github.sanity4j.util.Tool;</line>
+<line sev="2">import com.github.sanity4j.workflow.QAConfig;</line>
+<line sev="2">import com.github.sanity4j.workflow.QAProcessor;</line>
+<line sev="2"/>
+<line sev="2">/**</line>
+<line sev="2"> * &lt;p&gt;</line>
+<line sev="2"> * This class is a Maven plugin that runs Sanity4J against a project's source</line>
+<line sev="2"> * code and classes.</line>
+<line sev="2"> * &lt;/p&gt;</line>
+<line sev="2"> *</line>
+<line sev="2"> * &lt;p&gt;</line>
+<line sev="2"> * This task simply configures up a {@link QAProcessor} and then runs it in the</line>
+<line sev="2"> * {@link QAProcessor#run()} method.</line>
+<line sev="2"> * &lt;/p&gt;</line>
+<line sev="2"> *</line>
+<line sev="2"> * @author Darian Bridge</line>
+<line sev="2"> * @since Sanity4J 1.0</line>
+<line sev="2"> */</line>
+<line sev="2">@Mojo(name = &quot;sanity4j&quot;, requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST, requiresDependencyCollection = ResolutionScope.TEST)</line>
+<line sev="2"><diag id="343"/><diag id="344"/><diag id="345"/>public class RunQAMojo extends AbstractMavenReport</line>
+<line sev="2"><diag id="346"/>{</line>
+<line sev="2">    /** Mojo and goal to download historical coverage stats. */</line>
+<line sev="2">    private static final String DOWNLOAD_SINGLE_MOJO = &quot;org.codehaus.mojo:wagon-maven-plugin:1.0-beta-5:download-single&quot;;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The Maven Project to interact with.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;${project}&quot;, readonly = true, required = true)</line>
+<line sev="2">    private MavenProject project;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The projects in the reactor for aggregation report.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;${reactorProjects}&quot;, readonly = true, required = true)    </line>
+<line sev="2">    private List&lt;MavenProject&gt; reactorProjects;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Helper for locating Dependencies.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Component(hint = &quot;default&quot;)</line>
+<line sev="2">    private DependencyGraphBuilder dependencyGraphBuilder;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Helper for resolving Artifacts against the Repository.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Component</line>
+<line sev="2">    private ArtifactResolver resolver;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Helper for creating a Maven Project.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Component(role = ProjectBuilder.class)</line>
+<line sev="2">    private ProjectBuilder projectBuilder;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Can be one of the below.</line>
+<line sev="2">     * &lt;pre&gt; </line>
+<line sev="2">     * org.sonatype.aether.RepositorySystemSession</line>
+<line sev="2">     * org.eclipse.aether.RepositorySystemSession</line>
+<line sev="2">     * &lt;/pre&gt;</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;${repositorySystemSession}&quot;, readonly = true, required = true)</line>
+<line sev="2">    private Object session;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The Local Repository.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;${localRepository}&quot;, readonly = true, required = true)</line>
+<line sev="2">    private ArtifactRepository localRepo;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The Remote Repositories.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;${project.remoteArtifactRepositories}&quot;, readonly = true, required = true)</line>
+<line sev="2">    private List&lt;ArtifactRepository&gt; remoteRepos;    </line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Flag to indicate that this mojo should run it in a multi module way.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;false&quot;)</line>
+<line sev="2">    private boolean aggregate;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * &lt;i&gt;Maven Internal&lt;/i&gt;: The Doxia Site Renderer.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Component</line>
+<line sev="2">    private Renderer siteRenderer;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The source file paths for analysis.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String[] sources;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The test source file paths for analysis.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String[] testSources;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The class file paths for analysis.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String[] classes;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The test class file paths for analysis.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String[] testClasses;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The library file paths for analysis.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String[] libraries;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The location of the directory containing the various tools.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter</line>
+<line sev="2">    private String productsDir;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The directory in which to place report output.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;${project.reporting.outputDirectory}/sanity4j&quot;)  </line>
+<line sev="2">    private String reportDir;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The file containing the jUnit coverage data.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;target/jacoco.exec&quot;)    </line>
+<line sev="2">    private String coverageDataFile;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The file containing the merged jUnit coverage data.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;${project.build.directory}/jacoco-merged.exec&quot;)</line>
+<line sev="2">    private String coverageMergeDataFile;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The summary data file, if used.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;${project.reporting.outputDirectory}/${project.name}_analyse_summary.csv&quot;)    </line>
+<line sev="2">    private String summaryDataFile;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The path location to the external properties file (sanity4j.properties).</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;&quot;)    </line>
+<line sev="2">    private String externalPropertiesPath;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The configuration passed to the checkStyle ${sanity4j.tool.checkstyle.command} as ${sanity4j.tool.checkstyle.config}.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String checkStyleConfig;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The class path used by the configuration passed to the checkStyle ${sanity4j.tool.checkstyle.command} as ${sanity4j.tool.checkstyle.config}.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String checkStyleConfigClasspath;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The configuration passed to the FindBugs ${sanity4j.tool.findbugs.command} as ${sanity4j.tool.findbugs.config}.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String findBugsConfig;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The class path used by the configuration passed to the FindBugs ${sanity4j.tool.findbugs.command} as ${sanity4j.tool.findbugs.config}.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String findBugsConfigClasspath;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The configuration passed to the PMD ${sanity4j.tool.pmd.command} as ${sanity4j.tool.pmd.config}.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String pmdConfig;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Any additional properties to be passed to the tools.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String additionalProperties;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The class path used by the configuration passed to the PMD ${sanity4j.tool.pmd.command} as ${sanity4j.tool.pmd.config}.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter    </line>
+<line sev="2">    private String pmdConfigClasspath;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The temporary directory.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;${project.build.directory}/sanity4jAnalysis&quot;)    </line>
+<line sev="2">    private File tempDir;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The java runtime to use when running external tasks.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = QAProcessor.DEFAULT_JAVA_RUNTIME)    </line>
+<line sev="2">    private String javaRuntime;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The java args to use when running external tasks.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;${env.MAVEN_OPTS}&quot;)    </line>
+<line sev="2">    private String javaArgs;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * If true, the raw tool output is included in the report directory.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;false&quot;)</line>
+<line sev="2">    private boolean includeToolOutput;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * The number of threads to use to run the tools and produce the report</line>
+<line sev="2">     * output.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;1&quot;)</line>
+<line sev="2">    private int numThreads; </line>
+<line sev="2">    // TODO: Add support for concurrent tasks</line>
+<line sev="2">    // (Note: some tasks can not be run in parallel).</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Whether to use historical statistics when generating sanity4j reports.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Parameter(defaultValue = &quot;true&quot;)    </line>
+<line sev="2">    private boolean useHistory;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Override the default constructor to initialise the logger. No logging</line>
+<line sev="2">     * methods should be called before this method.</line>
+<line sev="2">     */</line>
+<line sev="2">    public RunQAMojo()</line>
+<line sev="2">    {</line>
+<line sev="2">        QaLogger.setLogger(new QaLoggerMavenImpl(this));</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Executes this mojo, invoking the {@link QAProcessor} which has already</line>
+<line sev="2">     * been configured by Maven using either the annotations or the POM (through</line>
+<line sev="2">     * reflection).</line>
+<line sev="2">     *</line>
+<line sev="2">     * @param locale The locale</line>
+<line sev="2">     * @throws MavenReportException Thrown if a problem occurs generating the report.</line>
+<line sev="2">     */</line>
+<line sev="2"><diag id="10"/>    @Override</line>
+<line sev="2"><diag id="381"/><diag id="382"/><diag id="383"/><diag id="384"/>    public void executeReport(final Locale locale) throws MavenReportException</line>
+<line sev="2">    {</line>
+<line sev="2">        if (isAggregate() &amp;&amp; !getProject().isExecutionRoot())</line>
+<line sev="2">        {</line>
+<line sev="2">            getLog().info(getProject().getName() + &quot; aggregation is on, but this is not the execution root. Skipping 'sanity4j' check.&quot;);</line>
+<line sev="2"/>
+<line sev="2">            // Write out an small index.html file so that Maven</line>
+<line sev="2">            // doesn't complain about empty files when deploying the site.</line>
+<line sev="2">            File index = new File(getReportDir(), &quot;index.html&quot;);</line>
+<line sev="2">            writeTextFile(index, &quot; &quot;);</line>
+<line sev="2"/>
+<line sev="2">            return;</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        FileUtil.createDir(getReportDir());</line>
+<line sev="2"/>
+<line sev="2">        boolean aggregating = isAggregate() &amp;&amp; getProject().isExecutionRoot();</line>
+<line sev="2"/>
+<line sev="2">        QAProcessor sanity4j = new QAProcessor();</line>
+<line sev="2">        QAConfig qaConfig = sanity4j.getConfig();</line>
+<line sev="2">        qaConfig.setRunQAMojo(this);</line>
+<line sev="2"/>
+<line sev="2">        if (aggregating)</line>
+<line sev="2">        {</line>
+<line sev="2">            for (MavenProject reactorProject : getReactorProjects())</line>
+<line sev="2">            {</line>
+<line sev="2">                if (getSources() == null)</line>
+<line sev="2">                {</line>
+<line sev="2">                    qaConfig.addSourcePath(</line>
+<line sev="2"><diag id="385"/>                        new File(reactorProject.getBasedir(), &quot;src/main&quot;).getPath());</line>
+<line sev="2">                }</line>
+<line sev="2">                else</line>
+<line sev="2">                {</line>
+<line sev="2">                    for (String source : getSources())</line>
+<line sev="2">                    {</line>
+<line sev="2">                        qaConfig.addSourcePath(</line>
+<line sev="2"><diag id="386"/>                            new File(reactorProject.getBasedir(), source).getPath());</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2">        else if (getSources() == null)</line>
+<line sev="2">        {</line>
+<line sev="2">            qaConfig.addSourcePath(</line>
+<line sev="2">                new File(getProject().getBasedir(), &quot;src/main&quot;).getPath());</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            for (String source : getSources())</line>
+<line sev="2">            {</line>
+<line sev="2">                qaConfig.addSourcePath(</line>
+<line sev="2"><diag id="387"/>                     new File(getProject().getBasedir(), source).getPath());</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        if (aggregating)</line>
+<line sev="2">        {</line>
+<line sev="2">            for (MavenProject reactorProject : getReactorProjects())</line>
+<line sev="2">            {</line>
+<line sev="2">                if (getTestSources() == null)</line>
+<line sev="2">                {</line>
+<line sev="2">                    qaConfig.addSourcePath(</line>
+<line sev="2"><diag id="388"/>                        new File(reactorProject.getBasedir(), &quot;src/test&quot;).getPath());</line>
+<line sev="2">                }</line>
+<line sev="2">                else</line>
+<line sev="2">                {</line>
+<line sev="2">                    for (String testSource : getTestSources())</line>
+<line sev="2">                    {</line>
+<line sev="2">                        qaConfig.addSourcePath(</line>
+<line sev="2"><diag id="389"/>                            new File(reactorProject.getBasedir(), testSource).getPath());</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2">        else if (getTestSources() == null)</line>
+<line sev="2">        {</line>
+<line sev="2">            qaConfig.addSourcePath(</line>
+<line sev="2">                new File(getProject().getBasedir(), &quot;src/test&quot;).getPath());</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            for (String testSource : getTestSources())</line>
+<line sev="2">            {</line>
+<line sev="2">                qaConfig.addSourcePath(</line>
+<line sev="2"><diag id="390"/>                    new File(getProject().getBasedir(), testSource).getPath());</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        boolean sourceFileDetected = false;</line>
+<line sev="2"/>
+<line sev="2">        for (String srcDir : qaConfig.getSourceDirs())</line>
+<line sev="2">        {</line>
+<line sev="2"><diag id="391"/>            if (checkForSource(new File(srcDir)))</line>
+<line sev="2">            {</line>
+<line sev="2">                sourceFileDetected = true;</line>
+<line sev="2">                break;</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2">        if (!sourceFileDetected)</line>
+<line sev="2">        {</line>
+<line sev="2">            getLog().info(getProject().getName() + &quot; contains no source code. Skipping 'sanity4j' check.&quot;);</line>
+<line sev="2">            return;</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        if (aggregating)</line>
+<line sev="2">        {</line>
+<line sev="2">            for (MavenProject reactorProject : getReactorProjects())</line>
+<line sev="2">            {</line>
+<line sev="2">                if (getClasses() == null)</line>
+<line sev="2">                {</line>
+<line sev="2">                qaConfig.addClassPath(</line>
+<line sev="2"><diag id="392"/>                        new File(reactorProject.getBasedir(), &quot;target/classes&quot;).getPath());</line>
+<line sev="2">                }</line>
+<line sev="2">                else</line>
+<line sev="2">                {</line>
+<line sev="2">                    for (String clazz : getClasses())</line>
+<line sev="2">                    {</line>
+<line sev="2">                        qaConfig.addClassPath(</line>
+<line sev="2"><diag id="393"/>                            new File(reactorProject.getBasedir(), clazz).getPath());</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2">        else if (getClasses() == null)</line>
+<line sev="2">        {</line>
+<line sev="2">            qaConfig.addClassPath(</line>
+<line sev="2">                new File(getProject().getBasedir(), &quot;target/classes&quot;).getPath());</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            for (String clazz : getClasses())</line>
+<line sev="2">            {</line>
+<line sev="2">                qaConfig.addClassPath(</line>
+<line sev="2"><diag id="394"/>                    new File(getProject().getBasedir(), clazz).getPath());</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        if (aggregating)</line>
+<line sev="2">        {</line>
+<line sev="2">            for (MavenProject reactorProject : getReactorProjects())</line>
+<line sev="2">            {</line>
+<line sev="2">                if (getTestClasses() == null)</line>
+<line sev="2">                {</line>
+<line sev="2">                    qaConfig.addClassPath(</line>
+<line sev="2"><diag id="395"/>                        new File(reactorProject.getBasedir(), &quot;target/test-classes&quot;).getPath());</line>
+<line sev="2">                }</line>
+<line sev="2">                else</line>
+<line sev="2">                {</line>
+<line sev="2">                    for (String testClazz : getTestClasses())</line>
+<line sev="2">                    {</line>
+<line sev="2">                        qaConfig.addClassPath(</line>
+<line sev="2"><diag id="396"/>                            new File(reactorProject.getBasedir(), testClazz).getPath());</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2">        else if (getTestClasses() == null)</line>
+<line sev="2">        {</line>
+<line sev="2">            qaConfig.addClassPath(</line>
+<line sev="2">                new File(getProject().getBasedir(), &quot;target/test-classes&quot;).getPath());</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            for (String testClazz : getTestClasses())</line>
+<line sev="2">            {</line>
+<line sev="2">                qaConfig.addClassPath(</line>
+<line sev="2"><diag id="397"/>                    new File(getProject().getBasedir(), testClazz).getPath());</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        if (aggregating)</line>
+<line sev="2">        {</line>
+<line sev="2">            if (getLibraries() == null)</line>
+<line sev="2">            {</line>
+<line sev="2">                for (MavenProject reactorProject : getReactorProjects())</line>
+<line sev="2">            {</line>
+<line sev="2">                try</line>
+<line sev="2">                {</line>
+<line sev="2">                    for (Artifact artifact : getTransitiveDependencies(reactorProject))</line>
+<line sev="2">                    {</line>
+<line sev="2">                        qaConfig.addLibraryPath(artifact.getFile().getPath());</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="3"><diag id="398"/>                catch (Exception e)</line>
+<line sev="2">                {</line>
+<line sev="2">                    // QA task will not be as accurate, log a warning</line>
+<line sev="2">                    getLog().warn(&quot;Unable to resolve library dependencies, analysis may not be as accurate.&quot;, e);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2">            else</line>
+<line sev="2">            {</line>
+<line sev="2">                for (String library : getLibraries())</line>
+<line sev="2">                {</line>
+<line sev="2">                    qaConfig.addLibraryPath(library);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2">        else if (getLibraries() == null)</line>
+<line sev="2">        {</line>
+<line sev="2">            try</line>
+<line sev="2">            {</line>
+<line sev="2">                for (Artifact artifact : getTransitiveDependencies(getProject()))</line>
+<line sev="2">                {</line>
+<line sev="2">                    qaConfig.addLibraryPath(artifact.getFile().getPath());</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="3"><diag id="399"/>            catch (Exception e)</line>
+<line sev="2">            {</line>
+<line sev="2">                // QA task will not be as accurate, log a warning</line>
+<line sev="2">                getLog().warn(&quot;Unable to resolve library dependencies, analysis may not be as accurate.&quot;, e);</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            for (String library : getLibraries())</line>
+<line sev="2">            {</line>
+<line sev="2">                qaConfig.addLibraryPath(library);</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        if (aggregating)</line>
+<line sev="2">        {</line>
+<line sev="2">            for (MavenProject reactorProject : getReactorProjects())</line>
+<line sev="2">            {</line>
+<line sev="2">                qaConfig.addCoverageDataFile(</line>
+<line sev="2"><diag id="400"/>                    new File(reactorProject.getBasedir(), getCoverageDataFile()).getPath());</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            qaConfig.setCoverageDataFile(</line>
+<line sev="2">                new File(getProject().getBasedir(), getCoverageDataFile()).getPath());</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        qaConfig.setCoverageMergeDataFile(getCoverageMergeDataFile());</line>
+<line sev="2">        qaConfig.setIncludeToolOutput(isIncludeToolOutput());</line>
+<line sev="2">        qaConfig.setJavaRuntime(getJavaRuntime());</line>
+<line sev="2">        qaConfig.setJavaArgs(getJavaArgs());</line>
+<line sev="2">        qaConfig.setNumThreads(getNumThreads());</line>
+<line sev="2">        qaConfig.setProductsDir(getProductsDir());</line>
+<line sev="2">        qaConfig.setReportDir(getReportDir());</line>
+<line sev="2">        qaConfig.setSummaryDataFile(getSummaryDataFile().replaceAll(&quot; &quot;, &quot;&quot;));</line>
+<line sev="2">        qaConfig.setTempDir(getTempDir());</line>
+<line sev="2">        qaConfig.setExternalPropertiesPath(getExternalPropertiesPath(), getAdditionalProperties());</line>
+<line sev="2"/>
+<line sev="2">        if (isUseHistory())</line>
+<line sev="2">        {</line>
+<line sev="2">            retrieveSanity4jStats();</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        if (getCheckStyleConfig() != null)</line>
+<line sev="2">        {</line>
+<line sev="2">            String version = qaConfig.getToolVersion(Tool.CHECKSTYLE.getId());</line>
+<line sev="2">            qaConfig.setToolConfig(Tool.CHECKSTYLE.getId(), null, getCheckStyleConfig(), getCheckStyleConfigClasspath());</line>
+<line sev="2">            qaConfig.setToolConfig(Tool.CHECKSTYLE.getId(), version, getCheckStyleConfig(), getCheckStyleConfigClasspath());</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        if (getFindBugsConfig() != null)</line>
+<line sev="2">        {</line>
+<line sev="2">            String version = qaConfig.getToolVersion(Tool.FINDBUGS.getId());</line>
+<line sev="2">            qaConfig.setToolConfig(Tool.FINDBUGS.getId(), null, getFindBugsConfig(), getFindBugsConfigClasspath());</line>
+<line sev="2">            qaConfig.setToolConfig(Tool.FINDBUGS.getId(), version, getFindBugsConfig(), getFindBugsConfigClasspath());</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        if (getPmdConfig() != null)</line>
+<line sev="2">        {</line>
+<line sev="2">            String version = qaConfig.getToolVersion(Tool.PMD.getId());</line>
+<line sev="2">            qaConfig.setToolConfig(Tool.PMD.getId(), null, getPmdConfig(), getPmdConfigClasspath());</line>
+<line sev="2">            qaConfig.setToolConfig(Tool.PMD.getId(), version, getPmdConfig(), getPmdConfigClasspath());</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        // TODO: HACK! Get around Stax using the context classloader rather than this class's.</line>
+<line sev="2">        // Need to write a custom class loader which combines the two.</line>
+<line sev="2">        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();</line>
+<line sev="2">        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());</line>
+<line sev="2">        sanity4j.run();</line>
+<line sev="2">        Thread.currentThread().setContextClassLoader(oldLoader);</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Resolves the list of Transitive Dependencies for the specified artifact.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param artifact The artifact for which to resolve the transitive dependencies.</line>
+<line sev="2">     * @param jars The list for which to populate the resolved file paths for all the transitive dependencies.</line>
+<line sev="2">     */</line>
+<line sev="2">    public void getTransitiveDependencies(final String artifact, final List&lt;String&gt; jars) </line>
+<line sev="2">    {</line>
+<line sev="2">        try </line>
+<line sev="2">        {</line>
+<line sev="2">            for (Artifact artifactItem : getTransitiveDependencies(artifact))</line>
+<line sev="2">            {</line>
+<line sev="2">                jars.add(artifactItem.getFile().getPath());</line>
+<line sev="2">            }</line>
+<line sev="2">        } </line>
+<line sev="3"><diag id="402"/>        catch (Exception ex) </line>
+<line sev="2">        {</line>
+<line sev="2">            throw new QAException(ex.getClass().getName() + &quot;: &quot;, ex);</line>
+<line sev="2">        }</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Resolves the list of Transitive Dependencies for the specified artifact.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param artifact The artifact for which to resolve the transitive dependencies.</line>
+<line sev="2">     * @return The set of resolved transitive dependencies.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @throws DependencyGraphBuilderException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws MojoExecutionException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws CloneNotSupportedException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws InvalidVersionSpecificationException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws ProjectBuildingException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws IllegalAccessException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws InvocationTargetException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws NoSuchMethodException Thrown if a problem occurs.</line>
+<line sev="2">     */</line>
+<line sev="2">    private Set&lt;Artifact&gt; getTransitiveDependencies(final String artifact) </line>
+<line sev="2">        throws DependencyGraphBuilderException, MojoExecutionException, CloneNotSupportedException, InvalidVersionSpecificationException, ProjectBuildingException, IllegalAccessException, InvocationTargetException, NoSuchMethodException</line>
+<line sev="2">    {</line>
+<line sev="2">        Coordinate coordinate = new Coordinate(artifact);</line>
+<line sev="2">        Artifact mavenArtifact = getArtifact(coordinate.getGroupId(), coordinate.getArtifactId(), coordinate.getVersion(), coordinate.getScope(), coordinate.getPackaging(), coordinate.getClassifier());</line>
+<line sev="2">        return getTransitiveDependencies(mavenArtifact);</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Assembles a Maven Artifact object.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param groupId The groupId.</line>
+<line sev="2">     * @param artifactId The artifactId.</line>
+<line sev="2">     * @param version The version.</line>
+<line sev="2">     * @param scope The scope.</line>
+<line sev="2">     * @param type The type.</line>
+<line sev="2">     * @param classifier The classifier.</line>
+<line sev="2">     * @return The assembled Maven Artifact object.</line>
+<line sev="2">     * @throws InvalidVersionSpecificationException Thrown if the version could not be idientified.</line>
+<line sev="2">     */</line>
+<line sev="2">    private Artifact getArtifact(final String groupId, final String artifactId, final String version, final String scope, final String type, final String classifier) </line>
+<line sev="2">        throws InvalidVersionSpecificationException</line>
+<line sev="2">    {</line>
+<line sev="2">        return new DefaultArtifact(</line>
+<line sev="2">            groupId, artifactId, VersionRange.createFromVersionSpec(version), scope, type, classifier, new DefaultArtifactHandler(type));</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Resolves the list of Transitive Dependencies for the specified artifact.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param artifact The artifact for which to resolve the transitive dependencies.</line>
+<line sev="2">     * @return The set of resolved transitive dependencies.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @throws DependencyGraphBuilderException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws MojoExecutionException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws CloneNotSupportedException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws InvalidVersionSpecificationException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws ProjectBuildingException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws IllegalAccessException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws InvocationTargetException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws NoSuchMethodException Thrown if a problem occurs.</line>
+<line sev="2">     */</line>
+<line sev="2">    private Set&lt;Artifact&gt; getTransitiveDependencies(final Artifact artifact) </line>
+<line sev="2">        throws DependencyGraphBuilderException, MojoExecutionException, CloneNotSupportedException, InvalidVersionSpecificationException, ProjectBuildingException, IllegalAccessException, InvocationTargetException, NoSuchMethodException</line>
+<line sev="2">    {</line>
+<line sev="2">        ProjectBuildingRequest request = new DefaultProjectBuildingRequest();</line>
+<line sev="2">        //request.setUserProperties(getProject().getProperties());</line>
+<line sev="2">        request.setSystemProperties(System.getProperties());</line>
+<line sev="2">        request.setLocalRepository(getLocalRepo());</line>
+<line sev="2">        request.setRemoteRepositories(getRemoteRepos());</line>
+<line sev="2"/>
+<line sev="2">        // Support for Maven 3.0 / 3.1+ (Move from Sonatype-Aether to Eclipse-Aether).</line>
+<line sev="2">        //request.setRepositorySession(session);</line>
+<line sev="2">        invoke(request, &quot;setRepositorySession&quot;, getSession());</line>
+<line sev="2"/>
+<line sev="2"><diag id="11"/>        MavenProject project = getProjectBuilder().build(artifact, request).getProject();</line>
+<line sev="2"/>
+<line sev="2">        return getTransitiveDependencies(project);</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Uses reflection to invoke a method on an object, passing in the arguments as parameters.</line>
+<line sev="2">     * Attempts to determine the method signature by using the first Interface of each argument's Class. </line>
+<line sev="2">     * </line>
+<line sev="2">     * Note, we should probably try to make a better attempt at identifying the method signature rather </line>
+<line sev="2">     * than simply using the first Interface of the argument's Class. However for the moment it is enough </line>
+<line sev="2">     * for it to support the use by it's only caller. </line>
+<line sev="2">     * </line>
+<line sev="2">     * @param object The Object on which to invoke the method.</line>
+<line sev="2">     * @param method The name of the method to invoke on the Object.</line>
+<line sev="2">     * @param args The parameters to pass to the method.</line>
+<line sev="2">     * @return The returned object of the method invoked.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @throws IllegalAccessException Thrown if the method cannot be invoked.</line>
+<line sev="2">     * @throws InvocationTargetException Thrown if the invoked method throws an Exception. </line>
+<line sev="2">     * @throws NoSuchMethodException Thrown if the method cannot be identified.</line>
+<line sev="2">     */</line>
+<line sev="2">    private Object invoke(final Object object, final String method, final Object... args)</line>
+<line sev="2">        throws IllegalAccessException, InvocationTargetException, NoSuchMethodException</line>
+<line sev="2">    {</line>
+<line sev="2">        Class&lt;?&gt;[] types = new Class&lt;?&gt;[args.length];</line>
+<line sev="2"/>
+<line sev="2">        for (int i = 0; i &lt; args.length; i++)</line>
+<line sev="2">        {</line>
+<line sev="2">            types[i] = args[i].getClass().getInterfaces()[0];</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        return object.getClass().getMethod(method, types).invoke(object, args);</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Resolves the list of Transitive Dependencies for the specified Maven Project.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param project The Maven Project for which to resolve the transitive dependencies.</line>
+<line sev="2">     * @return The set of resolved transitive dependencies.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @throws DependencyGraphBuilderException Thrown if a problem occurs.</line>
+<line sev="2">     * @throws MojoExecutionException Thrown if a problem occurs.</line>
+<line sev="2">     */</line>
+<line sev="2"><diag id="12"/>    private Set&lt;Artifact&gt; getTransitiveDependencies(final MavenProject project) </line>
+<line sev="2">        throws DependencyGraphBuilderException, MojoExecutionException</line>
+<line sev="2">    {</line>
+<line sev="2">        DependencyNode rootNode = getDependencyGraphBuilder().buildDependencyGraph(project, new ArtifactFilter()</line>
+<line sev="2">        {</line>
+<line sev="2">            @Override</line>
+<line sev="2">            public boolean include(final Artifact artifact) </line>
+<line sev="2">            {</line>
+<line sev="2">                return !Artifact.SCOPE_SYSTEM.equals(artifact.getScope());</line>
+<line sev="2">            }</line>
+<line sev="2">        });</line>
+<line sev="2"/>
+<line sev="2">        Set&lt;Artifact&gt; sortedArtifacts = new LinkedHashSet&lt;Artifact&gt;();</line>
+<line sev="2"/>
+<line sev="2">        sortedArtifacts.add(rootNode.getArtifact());</line>
+<line sev="2">        flattenChildren(sortedArtifacts, rootNode);</line>
+<line sev="2"/>
+<line sev="2">        ArtifactsResolver artifactsResolver = new DefaultArtifactsResolver(getResolver(), getLocalRepo(), getRemoteRepos(), true);</line>
+<line sev="2"/>
+<line sev="2">        Set&lt;Artifact&gt; resolvedArtifacts = artifactsResolver.resolve(sortedArtifacts, getLog());</line>
+<line sev="2"/>
+<line sev="2">        Set&lt;Artifact&gt; orderedArtifacts = new LinkedHashSet&lt;Artifact&gt;();</line>
+<line sev="2"/>
+<line sev="2">        for (Artifact sortedArtifact : sortedArtifacts)</line>
+<line sev="2">        {</line>
+<line sev="2">            for (Artifact resolvedArtifact : resolvedArtifacts)</line>
+<line sev="2">            {</line>
+<line sev="2">                if (sortedArtifact.compareTo(resolvedArtifact) == 0)</line>
+<line sev="2">                {</line>
+<line sev="2">                    orderedArtifacts.add(resolvedArtifact);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        return orderedArtifacts;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Resolves a single Artifact.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param artifact The Artifact for which to resolve.</line>
+<line sev="2">     * @return The File referencing the resolved Artifact.</line>
+<line sev="2">     */</line>
+<line sev="2">    public File resolveArtifact(final String artifact) </line>
+<line sev="2">    {</line>
+<line sev="2">        try</line>
+<line sev="2">        {</line>
+<line sev="2">            Coordinate coordinate = new Coordinate(artifact);</line>
+<line sev="2"/>
+<line sev="2">        Set&lt;Artifact&gt; artifacts = new HashSet&lt;Artifact&gt;();</line>
+<line sev="2">            artifacts.add(getArtifact(coordinate.getGroupId(), coordinate.getArtifactId(), coordinate.getVersion(), coordinate.getScope(), coordinate.getPackaging(), coordinate.getClassifier()));</line>
+<line sev="2"/>
+<line sev="2">            ArtifactsResolver artifactsResolver = new DefaultArtifactsResolver(getResolver(), getLocalRepo(), getRemoteRepos(), true);</line>
+<line sev="2"/>
+<line sev="2">            artifacts = artifactsResolver.resolve(artifacts, getLog());</line>
+<line sev="2"/>
+<line sev="2">            return artifacts.toArray(new Artifact[1])[0].getFile();</line>
+<line sev="2"/>
+<line sev="2">        } </line>
+<line sev="3"><diag id="403"/>        catch (Exception ex) </line>
+<line sev="2">        {</line>
+<line sev="2">            throw new QAException(ex.getClass().getName() + &quot;: &quot;, ex);</line>
+<line sev="2">        }</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Recursively traverses the hierarchy of the dependency tree flattening it's contents into a Set of Artifacts.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param artifacts The Set for which to populate the Artifacts. </line>
+<line sev="2">     * @param rootNode The start or currently positioned node within the dependency tree.</line>
+<line sev="2">     * @return The same Set of Artifacts as passed in, with the Artifacts populated.</line>
+<line sev="2">     */</line>
+<line sev="2">    private Set&lt;Artifact&gt; flattenChildren(final Set&lt;Artifact&gt; artifacts, final DependencyNode rootNode)</line>
+<line sev="2">    {</line>
+<line sev="2">        if (rootNode.getChildren() != null)</line>
+<line sev="2">        {</line>
+<line sev="2">            // Add all the child artifacts first.</line>
+<line sev="2">            for (DependencyNode node : rootNode.getChildren())</line>
+<line sev="2">            {</line>
+<line sev="2">                artifacts.add(node.getArtifact());</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2">            // Then add all the grand children second.</line>
+<line sev="2">            for (DependencyNode node : rootNode.getChildren())</line>
+<line sev="2">            {</line>
+<line sev="2">                flattenChildren(artifacts, node);</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        return artifacts;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * If available, retrieves sanity4j historical results from 'site' repository.</line>
+<line sev="2">     */</line>
+<line sev="2">    private void retrieveSanity4jStats()</line>
+<line sev="2">    {</line>
+<line sev="2">        try</line>
+<line sev="2">        {</line>
+<line sev="2">            DistributionManagement distributionManagement = getProject().getDistributionManagement();</line>
+<line sev="2">            if (distributionManagement == null)</line>
+<line sev="2">            {</line>
+<line sev="2">                getLog().info(&quot;'Site' distribution management not defined. No build history will be graphed. Continuing 'sanity4j' checks.&quot;);</line>
+<line sev="2">            }</line>
+<line sev="2">            else</line>
+<line sev="2">            {</line>
+<line sev="2">                Site site = distributionManagement.getSite();</line>
+<line sev="2"/>
+<line sev="2">                if (site == null)</line>
+<line sev="2">                {</line>
+<line sev="2">                    getLog().info(&quot;'Site' distribution management not defined. No build history will be graphed. Continuing 'sanity4j' checks.&quot;);</line>
+<line sev="2">                }</line>
+<line sev="2">                else</line>
+<line sev="2">                {</line>
+<line sev="2">                    InvocationRequest request = new DefaultInvocationRequest();</line>
+<line sev="2">                    request.setGoals(Collections.singletonList(DOWNLOAD_SINGLE_MOJO));</line>
+<line sev="2">                    Properties props = new Properties();</line>
+<line sev="2"/>
+<line sev="2">                    String siteUrl = site.getUrl();</line>
+<line sev="2">                    props.put(&quot;wagon.url&quot;, siteUrl);</line>
+<line sev="2">                    String dataFileName = getSummaryDataFile().replaceAll(&quot; &quot;, &quot;&quot;);</line>
+<line sev="2">                    props.put(&quot;wagon.fromFile&quot;, new File(dataFileName).getName());</line>
+<line sev="2">                    props.put(&quot;wagon.toDir&quot;, getProject().getReporting().getOutputDirectory());</line>
+<line sev="2">                    request.setProperties(props);</line>
+<line sev="2"/>
+<line sev="2">                    getLog().info(&quot;Retrieveing 'sanity4j' statistics from URL: &quot; + props);</line>
+<line sev="2">                    Invoker invoker = new DefaultInvoker();</line>
+<line sev="2">                    invoker.execute(request);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="3"><diag id="404"/>        catch (Exception e)</line>
+<line sev="2">        {</line>
+<line sev="2">            getLog().error(&quot;Unable to retrieve extisting report statistics. Continuing 'sanity4j' checks.&quot;, e);</line>
+<line sev="2">        }</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Recursive check for existence of .java file.</line>
+<line sev="2">     *</line>
+<line sev="2">     * @param srcFile the &lt;code&gt;File&lt;/code&gt; to start .java check from</line>
+<line sev="2">     * @return true if .java file exists; otherwise false</line>
+<line sev="2">     */</line>
+<line sev="2">    private boolean checkForSource(final File srcFile)</line>
+<line sev="2">    {</line>
+<line sev="2">        if (getLog().isDebugEnabled())</line>
+<line sev="2">        {</line>
+<line sev="2">            getLog().debug(&quot;checking if '.java' file: Location: &quot; + srcFile.getAbsolutePath());</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        boolean srcFileMatch = false;</line>
+<line sev="2"/>
+<line sev="2">        if (srcFile.isDirectory())</line>
+<line sev="2">        {</line>
+<line sev="2"><diag id="293"/>            File[] srcFiles = srcFile.listFiles();</line>
+<line sev="2">            for (File files : srcFiles)</line>
+<line sev="2">            {</line>
+<line sev="2">                if (checkForSource(files))</line>
+<line sev="2">                {</line>
+<line sev="2">                    srcFileMatch = true;</line>
+<line sev="2">                    break;</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        if (srcFile.getName().endsWith(&quot;.java&quot;))</line>
+<line sev="2">        {</line>
+<line sev="2">            srcFileMatch = true;</line>
+<line sev="2">            getLog().debug(&quot;Found '.java' file. Remaining recursive call will be skipped&quot;);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        return srcFileMatch;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Write out some small text to a file.</line>
+<line sev="2">     *</line>
+<line sev="2">     * @param file The file to write to.</line>
+<line sev="2">     * @param text The text to write to that file.</line>
+<line sev="2">     */</line>
+<line sev="2">    private void writeTextFile(final File file, final String text)</line>
+<line sev="2">    {</line>
+<line sev="2">        try</line>
+<line sev="2">        {</line>
+<line sev="3"><diag id="287"/>            BufferedWriter writer = new BufferedWriter(new FileWriter(file));</line>
+<line sev="2">            writer.write(text);</line>
+<line sev="2">            writer.close();</line>
+<line sev="2">        }</line>
+<line sev="2">        catch (IOException ex)</line>
+<line sev="2">        {</line>
+<line sev="2">            getLog().warn(&quot;Unable to write file: &quot; + file.getName());</line>
+<line sev="2">        }</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @see org.apache.maven.reporting.AbstractMavenReport#getProject()</line>
+<line sev="2">     *</line>
+<line sev="2">     * @return the maven project.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Override</line>
+<line sev="2">    public MavenProject getProject()</line>
+<line sev="2">    {</line>
+<line sev="2">        return project;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @see org.apache.maven.reporting.AbstractMavenReport#getOutputDirectory()</line>
+<line sev="2">     *</line>
+<line sev="2">     * @return the output directory.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Override</line>
+<line sev="2">    protected String getOutputDirectory()</line>
+<line sev="2">    {</line>
+<line sev="2">        return reportDir;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @see org.apache.maven.reporting.AbstractMavenReport#getSiteRenderer()</line>
+<line sev="2">     *</line>
+<line sev="2">     * @return the site renderer.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Override</line>
+<line sev="2">    protected Renderer getSiteRenderer()</line>
+<line sev="2">    {</line>
+<line sev="2">        return siteRenderer;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @see org.apache.maven.reporting.MavenReport#getDescription(java.util.Locale)</line>
+<line sev="2">     *</line>
+<line sev="2">     * @param locale the locale</line>
+<line sev="2">     * @return the description.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Override</line>
+<line sev="2">   public String getDescription(final Locale locale)</line>
+<line sev="2">    {</line>
+<line sev="2">        return getBundle(locale).getString(&quot;report.sanity4j.description&quot;);</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @see org.apache.maven.reporting.MavenReport#getName(java.util.Locale)</line>
+<line sev="2">     *</line>
+<line sev="2">     * @param locale the locale</line>
+<line sev="2">     * @return the name.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Override</line>
+<line sev="2">   public String getName(final Locale locale)</line>
+<line sev="2">    {</line>
+<line sev="2">        return getBundle(locale).getString(&quot;report.sanity4j.name&quot;);</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @see org.apache.maven.reporting.MavenReport#getOutputName()</line>
+<line sev="2">     *</line>
+<line sev="2">     * @return the output name.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Override</line>
+<line sev="2">   public String getOutputName()</line>
+<line sev="2">    {</line>
+<line sev="2">        return &quot;sanity4j/index&quot;;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Indicates that this report is external so that the generated index.html</line>
+<line sev="2">     * file is not overwritten by the default maven template.</line>
+<line sev="2">     *</line>
+<line sev="2">     * @see org.apache.maven.reporting.MavenReport#isExternalReport()</line>
+<line sev="2">     *</line>
+<line sev="2">     * @return true to indicate that the report is external.</line>
+<line sev="2">     */</line>
+<line sev="2">    @Override</line>
+<line sev="2">    public boolean isExternalReport()</line>
+<line sev="2">    {</line>
+<line sev="2">        return true;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Gets the resource bundle for the report text.</line>
+<line sev="2">     *</line>
+<line sev="2">     * @param locale The locale for the report, must not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line sev="2">     * @return The resource bundle for the requested locale.</line>
+<line sev="2">     */</line>
+<line sev="2">    private ResourceBundle getBundle(final Locale locale)</line>
+<line sev="2">    {</line>
+<line sev="2">        return ResourceBundle.getBundle(&quot;sanity4j-maven-report&quot;, locale,</line>
+<line sev="2">            getClass().getClassLoader());</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Reactor Projects.</line>
+<line sev="2">     */</line>
+<line sev="2">    public List&lt;MavenProject&gt; getReactorProjects() </line>
+<line sev="2">    {</line>
+<line sev="2">        return reactorProjects;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Dependency Graph Builder. </line>
+<line sev="2">     */</line>
+<line sev="2">    public DependencyGraphBuilder getDependencyGraphBuilder() </line>
+<line sev="2">    {</line>
+<line sev="2">        return dependencyGraphBuilder;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Artifact Resolver.</line>
+<line sev="2">     */</line>
+<line sev="2">    public ArtifactResolver getResolver() </line>
+<line sev="2">    {</line>
+<line sev="2">        return resolver;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Project Builder.</line>
+<line sev="2">     */</line>
+<line sev="2">    public ProjectBuilder getProjectBuilder() </line>
+<line sev="2">    {</line>
+<line sev="2">        return projectBuilder;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Can be one of the below.</line>
+<line sev="2">     * &lt;pre&gt; </line>
+<line sev="2">     * org.sonatype.aether.RepositorySystemSession</line>
+<line sev="2">     * org.eclipse.aether.RepositorySystemSession</line>
+<line sev="2">     * &lt;/pre&gt;</line>
+<line sev="2">     * </line>
+<line sev="2">     * @return The Repository System Session.</line>
+<line sev="2">     */</line>
+<line sev="2">    public Object getSession() </line>
+<line sev="2">    {</line>
+<line sev="2">        return session;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Local Artifact Repsoitory.</line>
+<line sev="2">     */</line>
+<line sev="2">    public ArtifactRepository getLocalRepo() </line>
+<line sev="2">    {</line>
+<line sev="2">        return localRepo;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The List of Remote Artifact Repositories.  </line>
+<line sev="2">     */</line>
+<line sev="2">    public List&lt;ArtifactRepository&gt; getRemoteRepos() </line>
+<line sev="2">    {</line>
+<line sev="2">        return remoteRepos;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return Is Aggregate.</line>
+<line sev="2">     */</line>
+<line sev="2">    public boolean isAggregate() </line>
+<line sev="2">    {</line>
+<line sev="2">        return aggregate;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Sources.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String[] getSources() </line>
+<line sev="2">    {</line>
+<line sev="2"><diag id="290"/><diag id="406"/>        return sources;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Test Sources.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String[] getTestSources() </line>
+<line sev="2">    {</line>
+<line sev="2"><diag id="292"/><diag id="407"/>        return testSources;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Classes.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String[] getClasses() </line>
+<line sev="2">    {</line>
+<line sev="2"><diag id="288"/><diag id="408"/>        return classes;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Test Classes.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String[] getTestClasses() </line>
+<line sev="2">    {</line>
+<line sev="2"><diag id="291"/><diag id="409"/>        return testClasses;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Libraries.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String[] getLibraries() </line>
+<line sev="2">    {</line>
+<line sev="2"><diag id="289"/><diag id="410"/>        return libraries;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Products Dir.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getProductsDir() </line>
+<line sev="2">    {</line>
+<line sev="2">        return productsDir;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Report Dir.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getReportDir() </line>
+<line sev="2">    {</line>
+<line sev="2">        return reportDir;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Coverage Data File.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getCoverageDataFile() </line>
+<line sev="2">    {</line>
+<line sev="2">        return coverageDataFile;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Coverage Merge Data File.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getCoverageMergeDataFile() </line>
+<line sev="2">    {</line>
+<line sev="2">        return coverageMergeDataFile;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Summary Data File.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getSummaryDataFile() </line>
+<line sev="2">    {</line>
+<line sev="2">        return summaryDataFile;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The External Properties Path.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getExternalPropertiesPath() </line>
+<line sev="2">    {</line>
+<line sev="2">        return externalPropertiesPath;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Check Style Config.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getCheckStyleConfig() </line>
+<line sev="2">    {</line>
+<line sev="2">        return checkStyleConfig;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Check Style Config Classpath.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getCheckStyleConfigClasspath() </line>
+<line sev="2">    {</line>
+<line sev="2">        return checkStyleConfigClasspath;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Fins Bugs Config.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getFindBugsConfig() </line>
+<line sev="2">    {</line>
+<line sev="2">        return findBugsConfig;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Find Bugs Config Classpath. </line>
+<line sev="2">     */</line>
+<line sev="2">    public String getFindBugsConfigClasspath() </line>
+<line sev="2">    {</line>
+<line sev="2">        return findBugsConfigClasspath;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Pmd Config.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getPmdConfig() </line>
+<line sev="2">    {</line>
+<line sev="2">        return pmdConfig;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Additional Properties.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getAdditionalProperties() </line>
+<line sev="2">    {</line>
+<line sev="2">        return additionalProperties;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Pmd Config Classpath.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getPmdConfigClasspath() </line>
+<line sev="2">    {</line>
+<line sev="2">        return pmdConfigClasspath;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Temp Dir.</line>
+<line sev="2">     */</line>
+<line sev="2">    public File getTempDir() </line>
+<line sev="2">    {</line>
+<line sev="2">        return tempDir;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Java Runtime. </line>
+<line sev="2">     */</line>
+<line sev="2">    public String getJavaRuntime() </line>
+<line sev="2">    {</line>
+<line sev="2">        return javaRuntime;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Java Args.</line>
+<line sev="2">     */</line>
+<line sev="2">    public String getJavaArgs() </line>
+<line sev="2">    {</line>
+<line sev="2">        return javaArgs;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return Is Include Tool Output.</line>
+<line sev="2">     */</line>
+<line sev="2">    public boolean isIncludeToolOutput() </line>
+<line sev="2">    {</line>
+<line sev="2">        return includeToolOutput;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return The Num Threads.</line>
+<line sev="2">     */</line>
+<line sev="2">    public int getNumThreads() </line>
+<line sev="2">    {</line>
+<line sev="2">        return numThreads;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return Is Use History.</line>
+<line sev="2">     */</line>
+<line sev="2">    public boolean isUseHistory() </line>
+<line sev="2">    {</line>
+<line sev="2">        return useHistory;</line>
+<line sev="2">    }</line>
+<line sev="2">}</line>
+</source>
+<diags first="false">
+<diag id="341" sev="0" tool="PMD" rule="ExcessiveImports">
+A high number of imports can indicate a high degree of coupling within an object.
+</diag>
+<diag id="342" sev="2" tool="PMD" rule="GodClass">
+Possible God class (WMC=118, ATFD=45, TCC=0.0016326530612244899)
+</diag>
+<diag id="343" sev="0" tool="PMD" rule="ExcessiveClassLength">
+Avoid really long classes.
+</diag>
+<diag id="344" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The class 'RunQAMojo' has a Cyclomatic Complexity of 2 (Highest = 46).
+</diag>
+<diag id="345" sev="0" tool="PMD" rule="TooManyFields">
+Too many fields
+</diag>
+<diag id="346" sev="0" tool="PMD" rule="TooManyMethods">
+This class has too many methods, consider refactoring it.
+</diag>
+<diag id="10" sev="1" tool="Checkstyle" rule="MethodLengthCheck">Method length is 278 lines (max allowed is 150).</diag>
+<diag id="381" sev="0" tool="PMD" rule="ExcessiveMethodLength">
+Avoid really long methods.
+</diag>
+<diag id="382" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The method 'executeReport' has a Cyclomatic Complexity of 46.
+</diag>
+<diag id="383" sev="0" tool="PMD" rule="NcssMethodCount">
+The method executeReport() has an NCSS line count of 142
+</diag>
+<diag id="384" sev="0" tool="PMD" rule="NPathComplexity">
+The method executeReport() has an NPath complexity of 22819104
+</diag>
+<diag id="385" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="386" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="387" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="388" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="389" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="390" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="391" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="392" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="393" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="394" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="395" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="396" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="397" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="398" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</diag>
+<diag id="399" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</diag>
+<diag id="400" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="402" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</diag>
+<diag id="11" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'project' hides a field.</diag>
+<diag id="12" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'project' hides a field.</diag>
+<diag id="403" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</diag>
+<diag id="404" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</diag>
+<diag id="293" sev="0" tool="Findbugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.maven.plugin.RunQAMojo.checkForSource(File) due to return value of called method</diag>
+<diag id="287" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.maven.plugin.RunQAMojo.writeTextFile(File, String): new java.io.FileWriter(File)</diag>
+<diag id="290" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getSources() may expose internal representation by returning RunQAMojo.sources</diag>
+<diag id="406" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+Returning 'sources' may expose an internal array.
+</diag>
+<diag id="292" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getTestSources() may expose internal representation by returning RunQAMojo.testSources</diag>
+<diag id="407" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+Returning 'testSources' may expose an internal array.
+</diag>
+<diag id="288" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getClasses() may expose internal representation by returning RunQAMojo.classes</diag>
+<diag id="408" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+Returning 'classes' may expose an internal array.
+</diag>
+<diag id="291" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getTestClasses() may expose internal representation by returning RunQAMojo.testClasses</diag>
+<diag id="409" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+Returning 'testClasses' may expose an internal array.
+</diag>
+<diag id="289" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getLibraries() may expose internal representation by returning RunQAMojo.libraries</diag>
+<diag id="410" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+Returning 'libraries' may expose an internal array.
+</diag>
+</diags>
+</classDetails>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-by-category.xsl"?>
+<packageByCategory packageName="com.github.sanity4j.maven.plugin" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<category name="All categories">
+<rule name="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" tool="Findbugs" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="293"/>
+</class>
+</rule>
+<category name="Correctness">
+<rule name="AvoidCatchingGenericException" tool="PMD" severity="3">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="398"/>
+<diag id="399"/>
+<diag id="402"/>
+<diag id="403"/>
+<diag id="404"/>
+</class>
+</rule>
+<rule name="ConstructorCallsOverridableMethod" tool="PMD" severity="1">
+<class name="com.github.sanity4j.maven.plugin.Coordinate">
+<diag id="333"/>
+<diag id="334"/>
+<diag id="335"/>
+<diag id="336"/>
+<diag id="337"/>
+<diag id="338"/>
+<diag id="339"/>
+</class>
+</rule>
+<rule name="DM_DEFAULT_ENCODING" tool="Findbugs" severity="3">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="287"/>
+</class>
+</rule>
+</category>
+<category name="Code style">
+<rule name="AvoidInstantiatingObjectsInLoops" tool="PMD" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="385"/>
+<diag id="386"/>
+<diag id="387"/>
+<diag id="388"/>
+<diag id="389"/>
+<diag id="390"/>
+<diag id="391"/>
+<diag id="392"/>
+<diag id="393"/>
+<diag id="394"/>
+<diag id="395"/>
+<diag id="396"/>
+<diag id="397"/>
+<diag id="400"/>
+</class>
+</rule>
+<rule name="EI_EXPOSE_REP" tool="Findbugs" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="288"/>
+<diag id="289"/>
+<diag id="290"/>
+<diag id="291"/>
+<diag id="292"/>
+</class>
+</rule>
+<rule name="ExcessiveImports" tool="PMD" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="341"/>
+</class>
+</rule>
+<rule name="FieldDeclarationsShouldBeAtStartOfClass" tool="PMD" severity="1">
+<class name="com.github.sanity4j.maven.plugin.Coordinate">
+<diag id="340"/>
+</class>
+</rule>
+<rule name="GodClass" tool="PMD" severity="2">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="342"/>
+</class>
+</rule>
+<rule name="MethodReturnsInternalArray" tool="PMD" severity="1">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="406"/>
+<diag id="407"/>
+<diag id="408"/>
+<diag id="409"/>
+<diag id="410"/>
+</class>
+</rule>
+</category>
+<category name="Complexity">
+<rule name="CyclomaticComplexity" tool="PMD" severity="1">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="344"/>
+<diag id="382"/>
+</class>
+</rule>
+<rule name="ExcessiveImports" tool="PMD" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="341"/>
+</class>
+</rule>
+<rule name="NPathComplexity" tool="PMD" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="384"/>
+</class>
+</rule>
+<rule name="NcssMethodCount" tool="PMD" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="383"/>
+</class>
+</rule>
+<rule name="TooManyFields" tool="PMD" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="345"/>
+</class>
+</rule>
+<rule name="TooManyMethods" tool="PMD" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="346"/>
+</class>
+</rule>
+<category name="Code size">
+<rule name="ExcessiveClassLength" tool="PMD" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="343"/>
+</class>
+</rule>
+<rule name="ExcessiveMethodLength" tool="PMD" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="381"/>
+</class>
+</rule>
+</category>
+</category>
+<category name="Performance">
+<rule name="AvoidInstantiatingObjectsInLoops" tool="PMD" severity="0">
+<class name="com.github.sanity4j.maven.plugin.RunQAMojo">
+<diag id="385"/>
+<diag id="386"/>
+<diag id="387"/>
+<diag id="388"/>
+<diag id="389"/>
+<diag id="390"/>
+<diag id="391"/>
+<diag id="392"/>
+<diag id="393"/>
+<diag id="394"/>
+<diag id="395"/>
+<diag id="396"/>
+<diag id="397"/>
+<diag id="400"/>
+</class>
+</rule>
+</category>
+</category>
+</packageByCategory>

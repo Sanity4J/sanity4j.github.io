@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.tool.JaCoCoRunner" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.workflow.tool;</line>
+<line/>
+<line>import com.github.sanity4j.util.Tool;</line>
+<line/>
+<line>/**</line>
+<line> * JaCoCoRunner - work unit which produces a JaCoCo report.</line>
+<line> * </line>
+<line> * Note: JaCoCo CLI is coming in a pending pull request - https://github.com/jacoco/jacoco/pull/525 . For now, we use the API directly</line>
+<line>* </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.8</line>
+<line> */</line>
+<line>public class JaCoCoRunner extends AbstractToolRunner</line>
+<line>{</line>
+<line>   /**</line>
+<line>    * Creates a JaCoCoRunner.</line>
+<line>    */</line>
+<line>   public JaCoCoRunner()</line>
+<line>   {</line>
+<line>      super(Tool.JACOCO);</line>
+<line>   }</line>
+<line/>
+<line>   /**</line>
+<line>    * Future point to run JaCoco. Does nothing for now.</line>
+<line>    * @param commandLine the JaCoCo command line.</line>
+<line>    */</line>
+<line>   @Override</line>
+<line>   protected void runTool(final String commandLine)</line>
+<line>   {</line>
+<line>      // TODO: Does nothing</line>
+<line>      // TODO: Hack - pass the config to the reader.</line>
+<line>      JaCoCoResultReader.setConfig(getConfig());</line>
+<line>   }</line>
+<line/>
+<line>   /**</line>
+<line>    * @return the description of this WorkUnit.</line>
+<line>    */</line>
+<line>   @Override</line>
+<line>   public String getDescription()</line>
+<line>   {</line>
+<line>       return &quot;Running JaCoco report&quot;;</line>
+<line>   }   </line>
+<line>}</line>
+</source>
+</classDetails>

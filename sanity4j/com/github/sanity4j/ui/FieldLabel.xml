@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.ui.FieldLabel" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="2" info="0" quality="84"/>
+<source>
+<line sev="1"><diag id="232"/>package com.github.sanity4j.ui; </line>
+<line/>
+<line>import javax.swing.JLabel;</line>
+<line/>
+<line>/**</line>
+<line> * A Label for an input field.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class FieldLabel extends JLabel</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a FieldLabel.</line>
+<line>     * </line>
+<line>     * @param text the field label text.</line>
+<line>     * @param mandatory whether the associated field is mandatory. </line>
+<line>     */</line>
+<line>    public FieldLabel(final String text, final boolean mandatory)</line>
+<line>    {</line>
+<line>        super(mandatory ? (&quot;&lt;html&gt;&lt;em style='color: red;'&gt;* &lt;/em&gt;&quot; + text + &quot;: &lt;/html&gt;&quot;)</line>
+<line sev="1"><diag id="559"/>                         : (text + &quot;: &quot;));</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="232" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="559" sev="1" tool="PMD" rule="UselessParentheses">
+Useless parentheses.
+</diag>
+</diags>
+</classDetails>

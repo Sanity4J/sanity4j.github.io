@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.model.coverage.PackageCoverage_Test" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="2" info="0" lineCoverage="100" branchCoverage="0" quality="96"/>
+<source>
+<line>package com.github.sanity4j.model.coverage; </line>
+<line/>
+<line sev="1"><diag id="424"/>import com.github.sanity4j.model.coverage.ClassCoverage;</line>
+<line sev="1"><diag id="425"/>import com.github.sanity4j.model.coverage.PackageCoverage;</line>
+<line/>
+<line>import junit.framework.TestCase;</line>
+<line/>
+<line>/** </line>
+<line> * PackageCoverage_Test - unit tests for {@link PackageCoverage}. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line covered="yes">public class PackageCoverage_Test extends TestCase</line>
+<line>{</line>
+<line>	/** Dummy Class Name 1. */</line>
+<line>    private static final String CLASS_NAME_1 = &quot;DummyClass&quot;;</line>
+<line>	/** Dummy Class Name 2. */</line>
+<line>    private static final String CLASS_NAME_2 = &quot;AnotherDummyClass&quot;;</line>
+<line/>
+<line>    /** The PackageCoverage to be tested. */</line>
+<line>	private PackageCoverage packageCoverage;</line>
+<line/>
+<line>	public void setUp()</line>
+<line>	{</line>
+<line covered="yes">		packageCoverage = new PackageCoverage(&quot;&quot;);</line>
+<line/>
+<line covered="yes">        ClassCoverage classCoverage = new ClassCoverage(CLASS_NAME_1);</line>
+<line covered="yes">        classCoverage.addLineCoverage(121, 0, false);</line>
+<line covered="yes">        classCoverage.addLineCoverage(122, 0, true);</line>
+<line covered="yes">        packageCoverage.addClass(classCoverage);</line>
+<line/>
+<line covered="yes">        classCoverage = new ClassCoverage(CLASS_NAME_2);</line>
+<line covered="yes">        classCoverage.addLineCoverage(123, 1, true);</line>
+<line covered="yes">        classCoverage.addLineCoverage(124, 2, false);</line>
+<line covered="yes">        packageCoverage.addClass(classCoverage);</line>
+<line covered="yes">	}</line>
+<line/>
+<line>    public void testConstructor()</line>
+<line>    {</line>
+<line covered="yes">        String packageName = &quot;mydomain.qatest&quot;; </line>
+<line/>
+<line covered="yes">        assertEquals(&quot;incorrect package name&quot;, </line>
+<line covered="yes">                     packageName, new PackageCoverage(packageName).getPackageName());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testBranchCoverageAccessors()</line>
+<line>    {</line>
+<line covered="yes">        double branchCoverage = 12.3;</line>
+<line/>
+<line covered="yes">        PackageCoverage coverage = new PackageCoverage(&quot;dummy&quot;);</line>
+<line covered="yes">        coverage.setBranchCoverage(branchCoverage);        </line>
+<line covered="yes">        assertEquals(&quot;branchCoverage accessor incorrect&quot;, branchCoverage, coverage.getBranchCoverage(), 0.0);</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testLineCoverageAccessors()</line>
+<line>    {</line>
+<line covered="yes">        double lineCoverage = 12.3;</line>
+<line/>
+<line covered="yes">        PackageCoverage coverage = new PackageCoverage(&quot;dummy&quot;);</line>
+<line covered="yes">        coverage.setLineCoverage(lineCoverage);        </line>
+<line covered="yes">        assertEquals(&quot;lineCoverage accessor incorrect&quot;, lineCoverage, coverage.getLineCoverage(), 0.0);</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetLineCount()</line>
+<line>    {</line>
+<line covered="yes">        assertEquals(&quot;Incorrect line count returned for empty coverage&quot;, </line>
+<line covered="yes">                     0, new PackageCoverage(&quot;&quot;).getLineCount());</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect line count returned&quot;, </line>
+<line covered="yes">                     4, packageCoverage.getLineCount());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetCoveredLineCount()</line>
+<line>    {</line>
+<line covered="yes">        assertEquals(&quot;Incorrect covered line count returned for empty coverage&quot;, </line>
+<line covered="yes">                     0, new PackageCoverage(&quot;&quot;).getCoveredLineCount());</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect covered line count returned&quot;, </line>
+<line covered="yes">                     2, packageCoverage.getCoveredLineCount());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetBranchCount()</line>
+<line>    {</line>
+<line covered="yes">        assertEquals(&quot;Incorrect branch count returned for empty coverage&quot;, </line>
+<line covered="yes">                     0, new PackageCoverage(&quot;&quot;).getBranchCount());</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect branch count returned&quot;, </line>
+<line covered="yes">                     2, packageCoverage.getBranchCount());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetCoveredBranchCount()</line>
+<line>    {</line>
+<line covered="yes">        assertEquals(&quot;Incorrect covered branch count returned for empty coverage&quot;, </line>
+<line covered="yes">        			 0, new PackageCoverage(&quot;&quot;).getBranchCount());</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect covered branch count returned&quot;, </line>
+<line covered="yes">                     1, packageCoverage.getCoveredBranchCount());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetClassCount()</line>
+<line>    {</line>
+<line covered="yes">        assertEquals(&quot;Incorrect class count returned for empty coverage&quot;, </line>
+<line covered="yes">        			 0, new PackageCoverage(&quot;&quot;).getClassCount());</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect class count returned&quot;, </line>
+<line covered="yes">                     2, packageCoverage.getClassCount());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetClassCoverage()</line>
+<line>    {</line>
+<line covered="yes">        assertNull(&quot;Class coverage returned for empty coverage&quot;, </line>
+<line covered="yes">        		   new PackageCoverage(&quot;&quot;).getClassCoverage(CLASS_NAME_1));</line>
+<line/>
+<line covered="yes">        assertNotNull(&quot;Class coverage for class 1 missing&quot;, </line>
+<line covered="yes">        		      packageCoverage.getClassCoverage(CLASS_NAME_1));</line>
+<line/>
+<line covered="yes">        assertNotNull(&quot;Class coverage for class 2 missing&quot;, </line>
+<line covered="yes">        		      packageCoverage.getClassCoverage(CLASS_NAME_2));</line>
+<line/>
+<line covered="yes">        assertNull(&quot;Class coverage returned for incorrect class name&quot;, </line>
+<line covered="yes">        		   packageCoverage.getClassCoverage(CLASS_NAME_1 + CLASS_NAME_2));</line>
+<line covered="yes">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="424" sev="1" tool="PMD" rule="ImportFromSamePackage">
+No need to import a type that lives in the same package
+</diag>
+<diag id="425" sev="1" tool="PMD" rule="ImportFromSamePackage">
+No need to import a type that lives in the same package
+</diag>
+</diags>
+</classDetails>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.util.Tool" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="60" branchCoverage="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.util;</line>
+<line/>
+<line>import java.util.Arrays;</line>
+<line>import java.util.Collections;</line>
+<line>import java.util.List;</line>
+<line/>
+<line>/**</line>
+<line> * This is a class rather than an enumeration</line>
+<line> * as we need additional attributes.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public final class Tool</line>
+<line>{</line>
+<line>    /** &lt;a href=&quot;http://checkstyle.sourceforge.net/&quot;&gt;Checkstyle&lt;/a&gt; static source code analyser. */</line>
+<line covered="yes">    public static final Tool CHECKSTYLE = new Tool(&quot;checkstyle&quot;, &quot;Checkstyle&quot;);</line>
+<line>    /** &lt;a href=&quot;http://cobertura.sourceforge.net/&quot;&gt;Cobertura&lt;/a&gt; datafile merge tool. */</line>
+<line covered="yes">    public static final Tool COBERTURA_MERGE = new Tool(&quot;cobertura-merge&quot;, &quot;Cobertura Merge&quot;);</line>
+<line>    /** &lt;a href=&quot;http://cobertura.sourceforge.net/&quot;&gt;Cobertura&lt;/a&gt; unit test coverage analysis. */</line>
+<line covered="yes">    public static final Tool COBERTURA = new Tool(&quot;cobertura&quot;, &quot;Cobertura&quot;);</line>
+<line>    /** &lt;a href=&quot;http://findbugs.sourceforge.net/&quot;&gt;FindBugs&lt;/a&gt; static byte-code analyser. */</line>
+<line covered="yes">    public static final Tool FINDBUGS = new Tool(&quot;findbugs&quot;, &quot;FindBugs&quot;);</line>
+<line>    /** &lt;a href=&quot;http://www.jacoco.org/jacoco/index.html&quot;&gt;JaCoco&lt;/a&gt; datafile merge tool. */</line>
+<line covered="yes">    public static final Tool JACOCO_MERGE = new Tool(&quot;jacoco-merge&quot;, &quot;JaCoCo merge&quot;);</line>
+<line>    /** &lt;a href=&quot;http://www.jacoco.org/jacoco/index.html&quot;&gt;JaCoco&lt;/a&gt; unit test coverage analysis. */</line>
+<line covered="yes">    public static final Tool JACOCO = new Tool(&quot;jacoco&quot;, &quot;JaCoCo&quot;);</line>
+<line>    /** &lt;a href=&quot;http://pmd.sourceforge.net/&quot;&gt;PMD&lt;/a&gt; static source code analyser. */</line>
+<line covered="yes">    public static final Tool PMD = new Tool(&quot;pmd&quot;, &quot;PMD&quot;);</line>
+<line>    /** &lt;a href=&quot;http://pmd.sourceforge.net/&quot;&gt;PMD CPD&lt;/a&gt; copy &amp;amp; pasted source code detector. */</line>
+<line covered="yes">    public static final Tool PMD_CPD = new Tool(&quot;pmd-cpd&quot;, &quot;PMD CPD&quot;);</line>
+<line/>
+<line>    //public static final Tool JUNIT = new Tool(&quot;junit&quot;, &quot;JUnit&quot;);</line>
+<line/>
+<line>    /** A Read-only list of all the tools which are supported by Sanity4J. */</line>
+<line covered="yes">    public static final List&lt;Tool&gt; TOOLS = Collections.unmodifiableList(Arrays.asList(new Tool[]</line>
+<line>    {</line>
+<line>       CHECKSTYLE,</line>
+<line>       COBERTURA_MERGE,</line>
+<line>       COBERTURA,</line>
+<line>       FINDBUGS,</line>
+<line>       JACOCO,</line>
+<line>       JACOCO_MERGE,</line>
+<line>       //JUNIT,</line>
+<line>       PMD,</line>
+<line>       PMD_CPD</line>
+<line>    }));</line>
+<line/>
+<line>    /** The tool id, which is used to e.g. look up values in tools.properties. */</line>
+<line>    private final String toolId;</line>
+<line/>
+<line>    /** The human-readable tool name. */</line>
+<line>    private final String name;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a tool with the given id and name.</line>
+<line>     * @param toolId the tool id</line>
+<line>     * @param name the tool name</line>
+<line>     */</line>
+<line>    private Tool(final String toolId, final String name)</line>
+<line covered="yes">    {</line>
+<line covered="yes">       this.toolId = toolId;</line>
+<line covered="yes">       this.name = name;</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /** @return the id */</line>
+<line>    public String getId()</line>
+<line>    {</line>
+<line covered="yes">        return toolId;</line>
+<line>    }</line>
+<line/>
+<line>    /** @return the name */</line>
+<line>    public String getName()</line>
+<line>    {</line>
+<line covered="no">        return name;</line>
+<line>    }</line>
+<line/>
+<line>    /** @return the id */</line>
+<line>    @Override</line>
+<line>   public String toString()</line>
+<line>    {</line>
+<line covered="no">        return toolId;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Retrieves the tool with the given id.</line>
+<line>     * @param toolId the tool id.</line>
+<line>     * @return the tool with the given id, or null if the tool does not exist.</line>
+<line>     */</line>
+<line>    public static Tool get(final String toolId)</line>
+<line>    {</line>
+<line covered="no">        for (Tool tool : TOOLS)</line>
+<line>        {</line>
+<line covered="no">            if (tool.getId().equals(toolId))</line>
+<line>            {</line>
+<line covered="no">                return tool;</line>
+<line>            }</line>
+<line covered="no">        }</line>
+<line/>
+<line covered="no">        return null;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Indicates if the given object is equal to this tool.</line>
+<line>     * Two tools are considered equal if their IDs match.</line>
+<line>     * </line>
+<line>     * @param obj the object to test for equality.</line>
+<line>     * @return true if the object is equal to this tool.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>   public boolean equals(final Object obj)</line>
+<line>    {</line>
+<line covered="no">        return obj instanceof Tool &amp;&amp; ((Tool) obj).toolId.equals(toolId);</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    @Override</line>
+<line>   public int hashCode()</line>
+<line>    {</line>
+<line covered="no">        return toolId.hashCode();</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

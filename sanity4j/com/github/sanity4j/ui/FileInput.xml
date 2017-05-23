@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.ui.FileInput" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.ui; </line>
+<line/>
+<line>import java.awt.BorderLayout;</line>
+<line>import java.awt.event.ActionEvent;</line>
+<line>import java.awt.event.ActionListener;</line>
+<line>import java.io.File;</line>
+<line/>
+<line>import javax.swing.JButton;</line>
+<line>import javax.swing.JFileChooser;</line>
+<line>import javax.swing.JPanel;</line>
+<line>import javax.swing.JTextField;</line>
+<line/>
+<line>import com.github.sanity4j.util.StringUtil;</line>
+<line/>
+<line/>
+<line>/** </line>
+<line> * FileInput provides a UI to pick a file/directory. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class FileInput extends JPanel implements ActionListener</line>
+<line>{</line>
+<line>    /** The text field which holds the file name. */</line>
+<line>    private final JTextField fileName = new JTextField(40);</line>
+<line/>
+<line>    /** Controls the file selection mode (true = directories only, false = files only). */</line>
+<line>    private final boolean directory;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a FileInput.</line>
+<line>     * @param directory true to only allow directories can be selected, false to only allow files can be selected.</line>
+<line>     */</line>
+<line>    public FileInput(final boolean directory)</line>
+<line>    {</line>
+<line>        this.directory = directory;</line>
+<line/>
+<line>        setLayout(new BorderLayout());</line>
+<line>        add(fileName, BorderLayout.CENTER);</line>
+<line/>
+<line>        JButton browseButton = new JButton(&quot;Browse&quot;);</line>
+<line>        add(browseButton, BorderLayout.EAST);</line>
+<line>        browseButton.addActionListener(this);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * ActionListener implementation for the browseButton.</line>
+<line>     * @param event the event that occurred.</line>
+<line>     */</line>
+<line>    public void actionPerformed(final ActionEvent event)</line>
+<line>    {</line>
+<line>        JFileChooser jfc = new JFileChooser(getFile());</line>
+<line/>
+<line>        if (directory)</line>
+<line>        {</line>
+<line>            jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);</line>
+<line>        }</line>
+<line>        else</line>
+<line>        {</line>
+<line>            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);</line>
+<line>        }</line>
+<line/>
+<line>        if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)</line>
+<line>        {</line>
+<line>            setFile(jfc.getSelectedFile());</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the file name text, which may or may not be a file</line>
+<line>     */</line>
+<line>    public String getText()</line>
+<line>    {</line>
+<line>        return fileName.getText();</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Sets the file name text.</line>
+<line>     * @param text the file name text.</line>
+<line>     */</line>
+<line>    public void setText(final String text)</line>
+<line>    {</line>
+<line>        fileName.setText(text);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Retrieves the selected file. Note that that file may not exist, or be a valid file.</line>
+<line>     * @return the selected file, or null if no file has been selected.</line>
+<line>     */</line>
+<line>    public File getFile()</line>
+<line>    {</line>
+<line>        if (StringUtil.empty(fileName.getText()))</line>
+<line>        {</line>
+<line>            return null;</line>
+<line>        }</line>
+<line/>
+<line>        return new File(fileName.getText());</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Sets the file. </line>
+<line>     * @param file the file to set.</line>
+<line>     */</line>
+<line>    public void setFile(final File file)</line>
+<line>    {</line>
+<line>        fileName.setText(file.getPath());</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

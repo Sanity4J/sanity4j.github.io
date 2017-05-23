@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DiagnosticSet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.model.diagnostic</a> &gt; <span class="el_source">DiagnosticSet.java</span></div><h1>DiagnosticSet.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.model.diagnostic; 
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+/** 
+ * DiagnosticSet a set of Diagnostics.
+ * 
+ * @author Yiannis Paschalidis 
+ * @since Sanity4J 1.0
+ */
+<span class="fc" id="L16">public final class DiagnosticSet implements Cloneable, Iterable&lt;Diagnostic&gt;</span>
+{   
+    /** A list of all the diagnostics contained in this DiagnosticSet. */
+<span class="fc" id="L19">    private final List&lt;Diagnostic&gt; diagnostics = new ArrayList&lt;Diagnostic&gt;();</span>
+
+    /** Diagnostics keyed by the source file name. */
+    private Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByFileName;
+    /** Diagnostics keyed by the class name. */
+    private Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByClassName;
+    /** Diagnostics keyed by the package name. */
+    private Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByPackageName;
+    /** Diagnostics keyed by their severity. */
+    private Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsBySeverity;
+    /** Diagnostics keyed by their source (tool). */
+    private Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByTool;
+
+    /**
+     * @return the current Lists of Diagnostics, keyed by the source file name
+     */
+    public Map&lt;String, List&lt;Diagnostic&gt;&gt; getDiagnosticsByFileName()
+    {
+        // Lazy initialization of collection
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (diagnosticsByFileName == null)</span>
+        {
+<span class="fc" id="L40">            diagnosticsByFileName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</span>
+<span class="fc" id="L41">            final int numDiagnositcs = diagnostics.size();</span>
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            for (int i = 0; i &lt; numDiagnositcs; i++)</span>
+            {
+<span class="fc" id="L45">                Diagnostic diagnostic = diagnostics.get(i);</span>
+
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">                if (diagnostic.getFileName() != null)</span>
+                {
+<span class="fc" id="L49">                    String fileName = diagnostic.getFileName();</span>
+<span class="fc" id="L50">                    addToMapList(diagnosticsByFileName, fileName, diagnostic);</span>
+                }
+            }
+        }
+
+<span class="fc" id="L55">        return diagnosticsByFileName;</span>
+    }
+
+	/**
+     * @return the current Lists of Diagnostics, keyed by the class name
+     */
+    public Map&lt;String, List&lt;Diagnostic&gt;&gt; getDiagnosticsByClassName()
+    {
+        // Lazy initialization of collection
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if (diagnosticsByClassName == null)</span>
+        {
+<span class="fc" id="L66">            diagnosticsByClassName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</span>
+<span class="fc" id="L67">            final int numDiagnositcs = diagnostics.size();</span>
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            for (int i = 0; i &lt; numDiagnositcs; i++)</span>
+            {
+<span class="fc" id="L71">                Diagnostic diagnostic = diagnostics.get(i);</span>
+
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">                if (diagnostic.getClassName() != null)</span>
+                {
+<span class="fc" id="L75">                    String className = diagnostic.getClassName();</span>
+<span class="fc" id="L76">                    addToMapList(diagnosticsByClassName, className, diagnostic);</span>
+                }
+            }
+        }
+
+<span class="fc" id="L81">        return diagnosticsByClassName;</span>
+    }
+
+	/**
+     * @return the current Lists of Diagnostics, keyed by package
+     */
+    public Map&lt;String, List&lt;Diagnostic&gt;&gt; getDiagnosticsByPackageName()
+    {
+        // Lazy initialization of collection
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (diagnosticsByPackageName == null)</span>
+        {
+<span class="fc" id="L92">            diagnosticsByPackageName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</span>
+<span class="fc" id="L93">            final int numDiagnositcs = diagnostics.size();</span>
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            for (int i = 0; i &lt; numDiagnositcs; i++)</span>
+            {
+<span class="fc" id="L97">                Diagnostic diagnostic = diagnostics.get(i);</span>
+
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">                if (diagnostic.getClassName() != null)</span>
+                {
+<span class="fc" id="L101">                    String pkg = diagnostic.getClassName();</span>
+
+<span class="fc bfc" id="L103" title="All 2 branches covered.">                    for (int index = pkg.lastIndexOf('.'); index != -1; index = pkg.lastIndexOf('.'))</span>
+                    {
+<span class="fc" id="L105">                        pkg = pkg.substring(0, index);</span>
+
+<span class="fc" id="L107">                        addToMapList(diagnosticsByPackageName, pkg, diagnostic);</span>
+                    }
+                }
+            }
+        }
+
+<span class="fc" id="L113">        return diagnosticsByPackageName;</span>
+    }
+	
+	/**
+     * @return the current Lists of Diagnostics, keyed by severity
+     */
+    public Map&lt;String, List&lt;Diagnostic&gt;&gt; getDiagnosticsBySeverity()
+    {
+        // Lazy initialization of collection
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (diagnosticsBySeverity == null)</span>
+        {
+<span class="fc" id="L124">            diagnosticsBySeverity = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</span>
+<span class="fc" id="L125">            final int numDiagnositcs = diagnostics.size();</span>
+
+<span class="fc bfc" id="L127" title="All 2 branches covered.">            for (int i = 0; i &lt; numDiagnositcs; i++)</span>
+            {
+<span class="fc" id="L129">                Diagnostic diagnostic = diagnostics.get(i);</span>
+
+<span class="fc" id="L131">                String severity = String.valueOf(diagnostic.getSeverity());</span>
+<span class="fc" id="L132">                addToMapList(diagnosticsBySeverity, severity, diagnostic);</span>
+            }
+        }
+
+<span class="fc" id="L136">        return diagnosticsBySeverity;</span>
+    }
+
+	/**
+     * @return the current Lists of Diagnostics, keyed by tool
+     */
+    public Map&lt;String, List&lt;Diagnostic&gt;&gt; getDiagnosticsByTool()
+    {
+        // Lazy initialization of collection
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        if (diagnosticsByTool == null)</span>
+        {
+<span class="fc" id="L147">            diagnosticsByTool = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</span>
+<span class="fc" id="L148">            final int numDiagnositcs = diagnostics.size();</span>
+
+<span class="fc bfc" id="L150" title="All 2 branches covered.">            for (int i = 0; i &lt; numDiagnositcs; i++)</span>
+            {
+<span class="fc" id="L152">                Diagnostic diagnostic = diagnostics.get(i);</span>
+
+<span class="fc" id="L154">                String tool = String.valueOf(diagnostic.getSource());</span>
+<span class="fc" id="L155">                addToMapList(diagnosticsByTool, tool, diagnostic);</span>
+            }
+        }
+
+<span class="fc" id="L159">        return diagnosticsByTool;</span>
+    }
+	
+	/**
+     * Adds the given diagnostic to the set of diagnostics.
+     * 
+     * @param diagnostic the diagnostic to add.
+     */
+    public void add(final Diagnostic diagnostic)
+    {
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        if (!diagnostic.isExcluded())</span>
+        {
+<span class="fc" id="L171">            diagnostics.add(diagnostic);</span>
+        }
+<span class="fc" id="L173">    }</span>
+	
+	/**
+	 * Utility method to add a Diagnostic to a list of Diagnostics in a Map.
+	 * 
+	 * @param map the map to add to
+	 * @param key the map key containing the list
+	 * @param diag the Diagnostic to add
+	 */
+	private void addToMapList(final Map&lt;String, List&lt;Diagnostic&gt;&gt; map, final String key, final Diagnostic diag)
+    {
+<span class="fc" id="L184">        List&lt;Diagnostic&gt; list = map.get(key);</span>
+
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        if (list == null)</span>
+        {
+<span class="fc" id="L188">            list = new ArrayList&lt;Diagnostic&gt;();</span>
+<span class="fc" id="L189">            map.put(key, list);</span>
+        }
+
+<span class="fc" id="L192">        list.add(diag);</span>
+<span class="fc" id="L193">    }</span>
+	
+	/**
+	 * Returns the diagnostics obtained from the given tool.
+	 * 
+	 * @param tool the tool, see Diagnostic.SOURCE_*
+	 * 
+	 * @return the set of diagnostics for the given tool, may be empty
+	 */
+	public DiagnosticSet getDiagnosticsForTool(final int tool)
+    {
+        // No-op for all
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        if (tool == Diagnostic.SOURCE_ALL)</span>
+        {
+<span class="fc" id="L207">            return (DiagnosticSet) clone();</span>
+        }
+
+<span class="fc" id="L210">        DiagnosticSet subset = new DiagnosticSet();</span>
+
+<span class="fc" id="L212">        List&lt;Diagnostic&gt; list = getDiagnosticsByTool().get(String.valueOf(tool));</span>
+
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">        if (list != null)</span>
+        {
+<span class="fc bfc" id="L216" title="All 2 branches covered.">            for (int i = 0; i &lt; list.size(); i++)</span>
+            {
+<span class="fc" id="L218">                Diagnostic diagnostic = list.get(i);</span>
+
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">                if (diagnostic.getSource() == tool)</span>
+                {
+<span class="fc" id="L222">                    subset.diagnostics.add(diagnostic);</span>
+                }
+            }
+        }
+
+<span class="fc" id="L227">        return subset;</span>
+    }		
+
+	/**
+	 * Returns the diagnostics with the given severity.
+	 * 
+	 * @param severity the severity, see Diagnostic.SEVERITY_*
+	 * 
+	 * @return the set of diagnostics for the given severity, may be empty
+	 */
+	public DiagnosticSet getDiagnosticsForSeverity(final int severity)
+    {
+        // No-op for all
+<span class="fc bfc" id="L240" title="All 2 branches covered.">        if (severity == Diagnostic.SEVERITY_ALL)</span>
+        {
+<span class="fc" id="L242">            return (DiagnosticSet) clone();</span>
+        }
+
+<span class="fc" id="L245">        DiagnosticSet subset = new DiagnosticSet();</span>
+
+<span class="fc" id="L247">        List&lt;Diagnostic&gt; list = getDiagnosticsBySeverity().get(String.valueOf(severity));</span>
+
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">        if (list != null)</span>
+        {
+<span class="fc bfc" id="L251" title="All 2 branches covered.">            for (int i = 0; i &lt; list.size(); i++)</span>
+            {
+<span class="fc" id="L253">                Diagnostic diagnostic = list.get(i);</span>
+
+<span class="pc bpc" id="L255" title="1 of 2 branches missed.">                if (diagnostic.getSeverity() == severity)</span>
+                {
+<span class="fc" id="L257">                    subset.diagnostics.add(diagnostic);</span>
+                }
+            }
+        }
+
+<span class="fc" id="L262">        return subset;</span>
+    }		
+
+	/**
+	 * Returns the diagnostics for the given package and sub-packages.
+	 * 
+	 * @param packageName the package name
+	 * 
+	 * @return the set of diagnostics for the given package and sub-packages
+	 */
+	public DiagnosticSet getDiagnosticsForPackage(final String packageName)
+    {
+<span class="fc" id="L274">        return getDiagnosticsForPackage(packageName, true);</span>
+    }
+	
+	/**
+	 * Returns the diagnostics for the given package, and optionally, sub-packages.
+	 * 
+	 * @param packageName the package name
+	 * @param includeSubpackages if true, also include diagnostics for sub-packages 
+	 * 
+	 * @return the set of diagnostics for the given package
+	 */
+	public DiagnosticSet getDiagnosticsForPackage(final String packageName, 
+                                                  final boolean includeSubpackages)
+    {
+<span class="fc" id="L288">        DiagnosticSet subset = new DiagnosticSet();</span>
+
+<span class="fc" id="L290">        List&lt;Diagnostic&gt; list = getDiagnosticsByPackageName().get(packageName);</span>
+
+<span class="pc bpc" id="L292" title="1 of 2 branches missed.">        if (list != null)</span>
+        {
+<span class="fc bfc" id="L294" title="All 2 branches covered.">            for (int i = 0; i &lt; list.size(); i++)</span>
+            {
+<span class="fc" id="L296">                Diagnostic diag = list.get(i);</span>
+
+<span class="fc bfc" id="L298" title="All 4 branches covered.">                if (includeSubpackages || packageName.equals(diag.getPackageName()))</span>
+                {
+<span class="fc" id="L300">                    subset.diagnostics.add(diag);</span>
+                }
+            }
+        }
+
+<span class="fc" id="L305">        return subset;</span>
+    }
+
+	/**
+	 * Returns the diagnostics for the given file.
+	 * 
+	 * @param fileName the name of the file.
+	 * 
+	 * @return the set of diagnostics for the given file.
+	 */
+	public DiagnosticSet getDiagnosticsForFile(final String fileName)
+    {
+<span class="fc" id="L317">        DiagnosticSet subset = new DiagnosticSet();</span>
+
+<span class="fc" id="L319">        List&lt;Diagnostic&gt; list = getDiagnosticsByFileName().get(fileName);</span>
+
+<span class="pc bpc" id="L321" title="1 of 2 branches missed.">        if (list != null)</span>
+        {
+<span class="fc bfc" id="L323" title="All 2 branches covered.">            for (int i = 0; i &lt; list.size(); i++)</span>
+            {
+<span class="fc" id="L325">                Diagnostic diagnostic = list.get(i);</span>
+<span class="fc" id="L326">                subset.diagnostics.add(diagnostic);</span>
+            }
+        }
+
+<span class="fc" id="L330">        return subset;</span>
+    }
+
+    /**
+     * @return a shallow copy of this DiagnosticSet.
+     */
+    public Object clone()
+    {
+<span class="fc" id="L338">        Object clone = null;</span>
+
+        try
+        {
+<span class="fc" id="L342">            clone = super.clone();</span>
+        }
+<span class="nc" id="L344">        catch (CloneNotSupportedException ignored)</span>
+        {
+            // impossible, as implements Cloneable
+<span class="fc" id="L347">        }</span>
+
+<span class="fc" id="L349">        return clone;</span>
+    }
+	
+	/**
+	 * Returns the number of diagnostics with the given severity.
+	 * 
+	 * @param severity the severity.
+	 * @return the number of diagnostics with the given severity.
+	 */
+	public int getCountForSeverity(final int severity)
+    {
+<span class="fc bfc" id="L360" title="All 2 branches covered.">        if (severity == Diagnostic.SEVERITY_ALL)</span>
+        {
+<span class="fc" id="L362">            return size();</span>
+        }
+
+<span class="fc" id="L365">        List&lt;Diagnostic&gt; list = getDiagnosticsBySeverity().get(String.valueOf(severity));</span>
+
+<span class="fc bfc" id="L367" title="All 2 branches covered.">        return list == null ? 0 : list.size();</span>
+    }
+
+    /**
+     * @return the number of Diagnostics in this DiagnosticSet.
+     */
+    public int size()
+    {
+<span class="fc" id="L375">        return diagnostics.size();</span>
+    }
+
+    /**
+     * @return true if this DiagnosticSet contains no Diagnostics.
+     */
+    public boolean isEmpty()
+    {
+<span class="fc" id="L383">        return diagnostics.isEmpty();</span>
+    }
+
+    /**
+     * @return an iteration over the diagnostics in this DiagnosticSet.
+     */
+    public Iterator&lt;Diagnostic&gt; iterator()
+    {
+<span class="fc" id="L391">        return new ReadOnlyIterator&lt;Diagnostic&gt;(diagnostics);</span>
+    }
+
+    /**
+     * Read only iterator for iterating over the diagnostics in this DiagnosticSet.
+     *
+     * @param &lt;T&gt; generic type parameter.
+     */
+	private static final class ReadOnlyIterator&lt;T&gt; implements Iterator&lt;T&gt;
+	{
+        /** The current position in the list. */
+<span class="fc" id="L402">        private int index = 0;</span>
+        /** The list being iterated over. */
+        private final List&lt;T&gt; list;
+	    
+        /**
+         * Creates a ReadOnlyIterator for the given list.
+         * 
+         * @param list the list to iterate over.
+         */
+        ReadOnlyIterator(final List&lt;T&gt; list)
+<span class="fc" id="L412">        {</span>
+<span class="fc" id="L413">            this.list = list;</span>
+<span class="fc" id="L414">        }</span>
+
+        /**
+         * Returns &lt;tt&gt;true&lt;/tt&gt; if the iteration has more elements. (In other
+         * words, returns &lt;tt&gt;true&lt;/tt&gt; if &lt;tt&gt;next&lt;/tt&gt; would return an element
+         * rather than throwing an exception.)
+         *
+         * @return &lt;tt&gt;true&lt;/tt&gt; if the iterator has more elements.
+         */
+        public boolean hasNext()
+        {
+<span class="fc bfc" id="L425" title="All 2 branches covered.">            return index &lt; list.size();</span>
+        }
+
+        /**
+         * @return the next element in the iteration.
+         */
+        public T next()
+        {
+<span class="fc bfc" id="L433" title="All 2 branches covered.">            if (index == list.size())</span>
+            {
+<span class="fc" id="L435">                throw new NoSuchElementException(&quot;iteration has no more elements&quot;);</span>
+            }
+            
+<span class="fc" id="L438">            return list.get(index++);</span>
+        }
+
+        /**
+         * Remove is not supported, calling this method will
+         * result in an UnsupportedOperationException being thrown.
+         */
+        public void remove()
+        {
+<span class="fc" id="L447">            throw new UnsupportedOperationException(&quot;ReadOnlyIterator does not support remove&quot;);</span>
+        }
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

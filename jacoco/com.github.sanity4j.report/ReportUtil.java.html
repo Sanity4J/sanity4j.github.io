@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReportUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.report</a> &gt; <span class="el_source">ReportUtil.java</span></div><h1>ReportUtil.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.report; 
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import com.github.sanity4j.model.diagnostic.Diagnostic;
+import com.github.sanity4j.model.diagnostic.DiagnosticSet;
+import com.github.sanity4j.model.summary.PackageSummary;
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.util.math.InfixExpression;
+import com.github.sanity4j.util.math.SyntaxException;
+
+
+/** 
+ * General utility methods used by the report classes. 
+ * 
+ * @author Yiannis Paschalidis 
+ * @since Sanity4J 1.0
+ */
+public final class ReportUtil
+{
+    /** The reporting properties, such as metrics. */
+<span class="fc" id="L28">    private static Properties properties = QaUtil.getProperties(&quot;/com/github/sanity4j/report/report.properties&quot;);</span>
+    
+    /** ReportUtil should not be instantiated. */
+    private ReportUtil()
+<span class="nc" id="L32">    {</span>
+<span class="nc" id="L33">    }</span>
+    
+    /**
+     * Return the path to the report &quot;root&quot; directory for the given path.
+     * 
+     * @param relativeFileName a path to a file, relative to the root dir
+     * @return the relative path to the root directory
+     */
+    public static String getHtmlPathToRoot(final String relativeFileName)
+    {
+<span class="fc" id="L43">        StringBuffer pathToRoot = new StringBuffer();</span>
+        
+        // For the path com/bar/foo/Foobar.html, we need &quot;../../../&quot;
+<span class="fc" id="L46">        int depth = new StringTokenizer(relativeFileName, &quot;/\\&quot;).countTokens();</span>
+        
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        while (--depth &gt; 0)</span>
+        {
+<span class="fc" id="L50">            pathToRoot.append(&quot;../&quot;);</span>
+        }
+    
+<span class="fc" id="L53">        return pathToRoot.toString();</span>
+    }
+
+    /**
+     * Escapes (certain) special characters in HTML commonly found in source files.
+     * 
+     * @param text the String to escape
+     * @return the escaped String
+     */
+    public static String htmlEscape(final String text)
+    {
+<span class="fc bfc" id="L64" title="All 4 branches covered.">        if (text == null || text.length() == 0)</span>
+        {
+<span class="fc" id="L66">            return text;</span>
+        }
+        
+<span class="fc" id="L69">        final int len = text.length();</span>
+<span class="fc" id="L70">        StringBuffer out = new StringBuffer(len);</span>
+        
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        for (int i = 0; i &lt; len; i++)</span>
+        {
+<span class="fc" id="L74">            char chr = text.charAt(i);</span>
+            
+<span class="fc bfc" id="L76" title="All 5 branches covered.">            switch (chr)</span>
+            {
+                case '&lt;':
+<span class="fc" id="L79">                    out.append(&quot;&amp;lt;&quot;);</span>
+<span class="fc" id="L80">                    break;</span>
+                case '&gt;':
+<span class="fc" id="L82">                    out.append(&quot;&amp;gt;&quot;);</span>
+<span class="fc" id="L83">                    break;</span>
+                case '&quot;':
+<span class="fc" id="L85">                    out.append(&quot;&amp;quot;&quot;);</span>
+<span class="fc" id="L86">                    break;</span>
+                case '&amp;':
+<span class="fc" id="L88">                    out.append(&quot;&amp;amp;&quot;);</span>
+<span class="fc" id="L89">                    break;</span>
+                
+                default:
+<span class="fc" id="L92">                    out.append(chr);</span>
+            }
+        }
+        
+<span class="fc" id="L96">        return out.toString();</span>
+    }
+    
+    /**
+     * Produces a Map of Diagnostic lists, keyed by class name.
+     * 
+     * @param diagnostics the diagnostics to map
+     * @return a Map containing Lists of Diagnostics, keyed by class name
+     */
+    public static Map&lt;String, List&lt;Diagnostic&gt;&gt; mapDiagnosticsByClassName(final List&lt;Diagnostic&gt; diagnostics)
+    {
+<span class="fc" id="L107">        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByClassName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</span>
+        
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        for (Diagnostic diagnostic : diagnostics)</span>
+        {
+<span class="fc" id="L111">            List&lt;Diagnostic&gt; list = diagnosticsByClassName.get(diagnostic.getClassName());</span>
+            
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            if (list == null)</span>
+            {
+<span class="fc" id="L115">                list = new ArrayList&lt;Diagnostic&gt;();</span>
+<span class="fc" id="L116">                diagnosticsByClassName.put(diagnostic.getClassName(), list);</span>
+            }
+            
+<span class="fc" id="L119">            list.add(diagnostic);</span>
+<span class="fc" id="L120">        }</span>
+        
+<span class="fc" id="L122">        return diagnosticsByClassName;</span>
+    }    
+        
+    /**
+     * Returns the path of a source file, relative to the source directory.
+     * 
+     * @param basePath the path of the source directory
+     * @param sourcePath the absolute path to the source file
+     * @return the path of the source file, relative to the source directory 
+     */
+    public static String getRelativeSourcePath(final String basePath, final String sourcePath)
+    {
+<span class="fc bfc" id="L134" title="All 2 branches covered.">        if (!sourcePath.startsWith(basePath))</span>
+        {
+<span class="fc" id="L136">            throw new IllegalArgumentException(&quot;File &quot; + sourcePath + &quot; is not within the source directory&quot;);</span>
+        }
+        
+<span class="fc" id="L139">        int basePathLength = basePath.length() + 1;</span>
+<span class="fc" id="L140">        return sourcePath.substring(basePathLength).replaceAll(&quot;\\.java\\z&quot;, &quot;.xml&quot;);</span>
+    }
+    
+    /**
+     * Evaluates the given metric for a package/class with the given set of diagnostics.
+     * 
+     * @param metric the metric name, as defined in report.properties
+     * @param diagnostics the diagnostics for the package/class
+     * @param linesOfCode the number of lines of code
+     * @return the value of the given metric, or -1 on error.
+     */
+    public static double evaluateMetric(final String metric, final DiagnosticSet diagnostics, final int linesOfCode)
+    {
+<span class="nc" id="L153">        Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();</span>
+<span class="nc" id="L154">        variables.put(&quot;highCount&quot;, diagnostics.getCountForSeverity(Diagnostic.SEVERITY_HIGH));</span>
+<span class="nc" id="L155">        variables.put(&quot;significantCount&quot;, diagnostics.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT));        </span>
+<span class="nc" id="L156">        variables.put(&quot;moderateCount&quot;, diagnostics.getCountForSeverity(Diagnostic.SEVERITY_MODERATE));</span>
+<span class="nc" id="L157">        variables.put(&quot;lowCount&quot;, diagnostics.getCountForSeverity(Diagnostic.SEVERITY_LOW));</span>
+<span class="nc" id="L158">        variables.put(&quot;infoCount&quot;, diagnostics.getCountForSeverity(Diagnostic.SEVERITY_INFO));</span>
+<span class="nc" id="L159">        variables.put(&quot;linesOfCode&quot;, linesOfCode);</span>
+
+<span class="nc" id="L161">        return evaluateMetric(metric, variables);</span>
+    }
+    
+    /**
+     * Evaluates the given metric for a package/class with the given set of diagnostics.
+     * 
+     * @param metric the metric name, as defined in report.properties
+     * @param summary the summary for the package
+     * @return the value of the given metric, or -1 on error.
+     */
+    public static double evaluateMetric(final String metric, final PackageSummary summary)
+    {
+<span class="fc" id="L173">        Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();</span>
+<span class="fc" id="L174">        variables.put(&quot;highCount&quot;, summary.getHighCount());</span>
+<span class="fc" id="L175">        variables.put(&quot;significantCount&quot;, summary.getSignificantCount());        </span>
+<span class="fc" id="L176">        variables.put(&quot;moderateCount&quot;, summary.getModerateCount());</span>
+<span class="fc" id="L177">        variables.put(&quot;lowCount&quot;, summary.getLowCount());</span>
+<span class="fc" id="L178">        variables.put(&quot;infoCount&quot;, summary.getInfoCount());</span>
+<span class="fc" id="L179">        variables.put(&quot;linesOfCode&quot;, summary.getLineCount());</span>
+
+<span class="fc" id="L181">        return evaluateMetric(metric, variables);</span>
+    }
+    
+    /**
+     * Evaluates the given metric for a package/class with the given set of diagnostics.
+     * This version is used by the other &lt;code&gt;evaluateMetric&lt;/code&gt; methods in this class,
+     * which build up the &lt;code&gt;variables&lt;/code&gt; map depending on the data they have.
+     * 
+     * @param metric the metric name, as defined in report.properties.
+     * @param variables the map of variables to substitute.
+     * @return the value of the given metric, or -1 on error.
+     */
+    private static double evaluateMetric(final String metric, final Map&lt;String, Object&gt; variables)
+    {
+<span class="fc" id="L195">        String expression = (String) properties.get(&quot;sanity4j.report.metric.&quot; + metric + &quot;.expression&quot;);</span>
+        
+        try
+        {
+<span class="fc" id="L199">            return Math.max(0.0, new InfixExpression(expression).evaluate(variables));</span>
+        }
+<span class="nc" id="L201">        catch (SyntaxException e)</span>
+        {
+<span class="nc" id="L203">            QaLogger.getInstance().error(&quot;Syntax exception running: &quot; + expression, e);</span>
+<span class="nc" id="L204">            return -1.0;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

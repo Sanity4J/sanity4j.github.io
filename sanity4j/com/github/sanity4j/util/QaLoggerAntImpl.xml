@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.util.QaLoggerAntImpl" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.util; </line>
+<line/>
+<line>import org.apache.tools.ant.Project;</line>
+<line/>
+<line>import com.github.sanity4j.ant.taskdef.RunQA;</line>
+<line/>
+<line>/**</line>
+<line> * This class acts as wrapper for an Ant Project, so that the bulk </line>
+<line> * of the classes can avoid a direct dependence on Ant. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class QaLoggerAntImpl extends QaLogger</line>
+<line>{</line>
+<line>    /** The current Ant QA task, whose project is used for the logging. */</line>
+<line>    private final RunQA qaTask;</line>
+<line/>
+<line>    /** </line>
+<line>     * Creates a QaLoggerAntImpl. The constructor is hidden, as</line>
+<line>     * instances must be obtained using getInstance.</line>
+<line>     *</line>
+<line>     * @param qaTask the current Ant QA task</line>
+<line>     */</line>
+<line>    public QaLoggerAntImpl(final RunQA qaTask)</line>
+<line>    {</line>
+<line>        this.qaTask = qaTask;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of MSG_DEBUG .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     */</line>
+<line>    public void debug(final String message)</line>
+<line>    {</line>
+<line>        qaTask.getProject().log(qaTask, message, Project.MSG_DEBUG);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of MSG_DEBUG .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     * @param throwable the throwable, presumably caught in a catch block.</line>
+<line>     */</line>
+<line>    public void debug(final String message, final Throwable throwable)</line>
+<line>    {</line>
+<line>        String messageWithStrackTrace = stackTraceToString(message, throwable);        </line>
+<line>        qaTask.getProject().log(qaTask, messageWithStrackTrace, Project.MSG_DEBUG);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of MSG_INFO .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     */</line>
+<line>    public void info(final String message)</line>
+<line>    {</line>
+<line>        qaTask.getProject().log(qaTask, message, Project.MSG_INFO);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of MSG_WARN .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     */</line>
+<line>    public void warn(final String message)</line>
+<line>    {</line>
+<line>        qaTask.getProject().log(qaTask, message, Project.MSG_WARN);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of MSG_WARN .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     * @param throwable the throwable, presumably caught in a catch block.</line>
+<line>     */</line>
+<line>    public void warn(final String message, final Throwable throwable)</line>
+<line>    {</line>
+<line>        String messageWithStrackTrace = stackTraceToString(message, throwable);        </line>
+<line>        qaTask.getProject().log(qaTask, messageWithStrackTrace, Project.MSG_WARN);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of MSG_ERR .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     */</line>
+<line>    public void error(final String message)</line>
+<line>    {</line>
+<line>        qaTask.getProject().log(qaTask, message, Project.MSG_ERR);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Write a message to the log with the log level of MSG_ERR .</line>
+<line>     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line>     * @param throwable the throwable, presumably caught in a catch block.</line>
+<line>     */</line>
+<line>    public void error(final String message, final Throwable throwable)</line>
+<line>    {</line>
+<line>        String messageWithStrackTrace = stackTraceToString(message, throwable);        </line>
+<line>        qaTask.getProject().log(qaTask, messageWithStrackTrace, Project.MSG_ERR);</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

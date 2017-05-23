@@ -1,0 +1,938 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.report.PackageWriter" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="1" low="37" info="4" quality="88"/>
+<source>
+<line sev="2"><diag id="501"/>package com.github.sanity4j.report;</line>
+<line sev="2"/>
+<line sev="2">import java.awt.image.BufferedImage;</line>
+<line sev="2">import java.io.File;</line>
+<line sev="2">import java.io.IOException;</line>
+<line sev="2">import java.util.ArrayList;</line>
+<line sev="2">import java.util.Collections;</line>
+<line sev="2">import java.util.Comparator;</line>
+<line sev="2">import java.util.Date;</line>
+<line sev="2">import java.util.HashMap;</line>
+<line sev="2">import java.util.Iterator;</line>
+<line sev="2">import java.util.List;</line>
+<line sev="2">import java.util.Map;</line>
+<line sev="2">import java.util.Set;</line>
+<line sev="2">import java.util.TreeSet;</line>
+<line sev="2"/>
+<line sev="2">import javax.imageio.ImageIO;</line>
+<line sev="2"/>
+<line sev="2">import com.github.sanity4j.model.coverage.CoverageItf;</line>
+<line sev="2">import com.github.sanity4j.model.diagnostic.Diagnostic;</line>
+<line sev="2">import com.github.sanity4j.model.diagnostic.DiagnosticCategory;</line>
+<line sev="2">import com.github.sanity4j.model.diagnostic.DiagnosticSet;</line>
+<line sev="2">import com.github.sanity4j.model.summary.PackageSummary;</line>
+<line sev="2">import com.github.sanity4j.util.ExtractStats;</line>
+<line sev="2">import com.github.sanity4j.util.FileUtil;</line>
+<line sev="2">import com.github.sanity4j.util.QaLogger;</line>
+<line sev="2">import com.github.sanity4j.util.StringUtil;</line>
+<line sev="2">import com.github.sanity4j.workflow.QAProcessor;</line>
+<line sev="2"/>
+<line sev="2"/>
+<line sev="2">/**</line>
+<line sev="2"> * PackageWriter writes diagnostics by package.</line>
+<line sev="2"> *  </line>
+<line sev="2"> * @author Yiannis Paschalidis</line>
+<line sev="2"> * @since Sanity4J 1.0</line>
+<line sev="2"> */</line>
+<line sev="2"><diag id="502"/>public class PackageWriter </line>
+<line sev="2"><diag id="503"/>{</line>
+<line sev="2">    /** The ImageIO image format to use for the package summary graph. */</line>
+<line sev="2">    private static final String IMAGE_FORMAT = &quot;PNG&quot;;</line>
+<line sev="2">    /** The file suffix for the package summary graph image file. */</line>
+<line sev="2">    private static final String IMAGE_FORMAT_FILE_SUFFIX = &quot;.png&quot;;</line>
+<line sev="2"/>
+<line sev="2">    /** Source file paths, keyed by package name. */</line>
+<line sev="2">    private final Map&lt;String, List&lt;String&gt;&gt; sourcesByPackage;</line>
+<line sev="2"/>
+<line sev="2">    /** The diagnostics that we are writing. */</line>
+<line sev="2">    private final ExtractStats stats;</line>
+<line sev="2"/>
+<line sev="2">    /** The destination directory. */</line>
+<line sev="2">    private final File reportDir;</line>
+<line sev="2"/>
+<line sev="2">    /** One hundred. */</line>
+<line sev="2">    private static final double HUNDRED = 100.0;</line>
+<line sev="2"/>
+<line sev="2">    /** One hundred. */</line>
+<line sev="2">    private static final int ONE_HUNDRED = 100;</line>
+<line sev="2"/>
+<line sev="2">    /** The tools to include in the tool summary. */</line>
+<line sev="2">    private static final int[] TOOLS = </line>
+<line sev="2">    {</line>
+<line sev="2">        Diagnostic.SOURCE_FINDBUGS,</line>
+<line sev="2">        Diagnostic.SOURCE_PMD,</line>
+<line sev="2">        Diagnostic.SOURCE_PMD_CPD,</line>
+<line sev="2">        Diagnostic.SOURCE_CHECKSTYLE,</line>
+<line sev="2">        Diagnostic.SOURCE_OTHER</line>
+<line sev="2">    };</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Creates a PackageWriter.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param stats the stats utility containing the results</line>
+<line sev="2">     * @param reportDir the base directory for the report</line>
+<line sev="2">     * @param sourcesByPackage a map of source files by package name</line>
+<line sev="2">     */</line>
+<line sev="2">    public PackageWriter(final ExtractStats stats, final File reportDir, </line>
+<line sev="2">                         final Map&lt;String, List&lt;String&gt;&gt; sourcesByPackage)</line>
+<line sev="2">    {</line>
+<line sev="2">        this.stats = stats;</line>
+<line sev="2">        this.reportDir = reportDir;        </line>
+<line sev="2">        this.sourcesByPackage = sourcesByPackage;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Writes the output for a package to the given directory.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param packageName the package name</line>
+<line sev="2">     * @throws IOException if there is an error writing any file</line>
+<line sev="2">     */</line>
+<line sev="2">    public void writePackage(final String packageName) throws IOException</line>
+<line sev="2">    {</line>
+<line sev="2">        if (StringUtil.empty(packageName))</line>
+<line sev="2">        {</line>
+<line sev="2">            // Write package frame to : &quot;allclasses-frame.xml&quot;</line>
+<line sev="2">            String fileName = &quot;allclasses-frame.xml&quot;;                            </line>
+<line sev="2">            String xml = generatePackageFrame(&quot;&quot;);</line>
+<line sev="2">            FileUtil.writeToFile(xml, new File(reportDir, fileName));</line>
+<line sev="2"/>
+<line sev="2">            // Write package overview</line>
+<line sev="2">            fileName = &quot;overview-summary.xml&quot;;          </line>
+<line sev="2">            xml = generateSummaryPageForPackage(&quot;&quot;, fileName);</line>
+<line sev="2">            FileUtil.writeToFile(xml, new File(reportDir, fileName));</line>
+<line sev="2"/>
+<line sev="2">            // Write package by rule</line>
+<line sev="2">            fileName = &quot;package-by-rule.xml&quot;;          </line>
+<line sev="2">            xml = generatePackageByRule(&quot;&quot;);</line>
+<line sev="2">            FileUtil.writeToFile(xml, new File(reportDir, fileName));</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            // Write package frame to : &quot;com/foobar/mypackage/package-frame.xml&quot;</line>
+<line sev="2">            String fileName = packageName.replace('.', File.separatorChar) + &quot;/package-frame.xml&quot;;                            </line>
+<line sev="2">            String xml = generatePackageFrame(packageName);</line>
+<line sev="2">            FileUtil.writeToFile(xml, new File(reportDir, fileName));</line>
+<line sev="2"/>
+<line sev="2">            // Write package summary to &quot;com/foobar/mypackage/package-summary.xml&quot;</line>
+<line sev="2">            fileName = packageName.replace('.', File.separatorChar) + &quot;/package-summary.xml&quot;;           </line>
+<line sev="2">            xml = generateSummaryPageForPackage(packageName, fileName);</line>
+<line sev="2">            FileUtil.writeToFile(xml, new File(reportDir, fileName));</line>
+<line sev="2"/>
+<line sev="2">            // Write package by rule</line>
+<line sev="2">            fileName = packageName.replace('.', File.separatorChar) + &quot;/package-by-rule.xml&quot;;           </line>
+<line sev="2">            xml = generatePackageByRule(packageName);</line>
+<line sev="2">            FileUtil.writeToFile(xml, new File(reportDir, fileName));</line>
+<line sev="2">        }       </line>
+<line sev="2"/>
+<line sev="2">        // Write categories</line>
+<line sev="2">        CategoryWriter categoryWriter = new CategoryWriter(stats, reportDir);</line>
+<line sev="2">        categoryWriter.writeCategories(packageName);</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Generates the package frame page, to be written to </line>
+<line sev="2">     * com/foobar/mypackage/package-frame.xml .</line>
+<line sev="2">     *  </line>
+<line sev="2">     * @param packageName the name of the package to create the frame for</line>
+<line sev="2">     * @return the frame page XML</line>
+<line sev="2">     */</line>
+<line sev="2">    private String generatePackageFrame(final String packageName)</line>
+<line sev="2">    {</line>
+<line sev="2">        // For the package name com.bar.foo, we need &quot;../../../&quot;</line>
+<line sev="2">        String pathToRoot = StringUtil.empty(packageName) </line>
+<line sev="2">                          ? &quot;&quot; </line>
+<line sev="2"><diag id="507"/><diag id="508"/>                          : (packageName.replaceAll(&quot;[^\\.]&quot;, &quot;&quot;).replaceAll(&quot;\\.&quot;, &quot;../&quot;) + &quot;../&quot;);</line>
+<line sev="2"/>
+<line sev="2"><diag id="509"/>        StringBuffer html = new StringBuffer();</line>
+<line sev="2"/>
+<line sev="2">        // Write top-level package summary info        </line>
+<line sev="2"><diag id="510"/>        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</line>
+<line sev="2"><diag id="511"/>            .append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/package-frame.xsl\&quot;?&gt;\n&quot;)        </line>
+<line sev="2">            .append(&quot;&lt;packageClasses packageName=\&quot;&quot;).append(StringUtil.empty(packageName) ? &quot;&quot; : packageName).append(&quot;\&quot; pathToRoot=\&quot;&quot;)</line>
+<line sev="2">            .append(pathToRoot).append(&quot;\&quot; qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</line>
+<line sev="2"><diag id="512"/>            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">        List&lt;String&gt; packageSources;</line>
+<line sev="2"/>
+<line sev="2">        if (StringUtil.empty(packageName))</line>
+<line sev="2">        {</line>
+<line sev="2">            // The default package sources should list everything</line>
+<line sev="2">            packageSources = new ArrayList&lt;String&gt;();</line>
+<line sev="2"/>
+<line sev="2">            for (List&lt;String&gt; packageSource : sourcesByPackage.values())</line>
+<line sev="2">            {</line>
+<line sev="2">                packageSources.addAll(packageSource);</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2">            // Sort by the class name only - ignoring the package</line>
+<line sev="2">            Collections.sort(packageSources, </line>
+<line sev="2">                new Comparator&lt;String&gt;()</line>
+<line sev="2">                {</line>
+<line sev="2">                    public int compare(final String obj1, final String obj2)</line>
+<line sev="2">                    {</line>
+<line sev="2">                        String name1 = obj1.substring(obj1.lastIndexOf(File.separatorChar) + 1);</line>
+<line sev="2">                        String name2 = obj2.substring(obj2.lastIndexOf(File.separatorChar) + 1);</line>
+<line sev="2"/>
+<line sev="2">                        return name1.compareTo(name2);</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="2">            );</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            packageSources = sourcesByPackage.get(packageName);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        for (String sourcePath : packageSources)</line>
+<line sev="2">        {</line>
+<line sev="2">            String className = ReportUtil.getRelativeSourcePath(stats.getSourceDirectory(), sourcePath).replaceAll(&quot;.xml\\z&quot;, &quot;&quot;).replaceAll(&quot;[\\\\/]&quot;, &quot;.&quot;);</line>
+<line sev="2">            DiagnosticSet diagsForFile = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</line>
+<line sev="2"/>
+<line sev="2">            html.append(&quot;&lt;class name=\&quot;&quot;).append(className)</line>
+<line sev="2"><diag id="513"/>                .append(&quot;\&quot; high=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</line>
+<line sev="2"><diag id="514"/>                .append(&quot;\&quot; significant=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</line>
+<line sev="2"><diag id="515"/>                .append(&quot;\&quot; moderate=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</line>
+<line sev="2"><diag id="516"/>                .append(&quot;\&quot; low=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_LOW))</line>
+<line sev="2"><diag id="517"/>                .append(&quot;\&quot; info=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_INFO))</line>
+<line sev="2"><diag id="518"/>                .append(&quot;\&quot;/&gt;\n&quot;);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        html.append(&quot;&lt;/packageClasses&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">        return html.toString();</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Generates the package by rule file, to be written to </line>
+<line sev="2">     * com/foobar/mypackage/package-by-rule.xml .</line>
+<line sev="2">     *  </line>
+<line sev="2">     * @param packageName the name of the package to create the frame for</line>
+<line sev="2">     * @return the export XML</line>
+<line sev="2">     */</line>
+<line sev="2"><diag id="519"/><diag id="520"/>    private String generatePackageByRule(final String packageName) </line>
+<line sev="2">    {</line>
+<line sev="2">        // For the package name com.bar.foo, we need &quot;../../../&quot;</line>
+<line sev="2">        String pathToRoot = StringUtil.empty(packageName) </line>
+<line sev="2">                          ? &quot;&quot; </line>
+<line sev="2"><diag id="521"/>                          : (packageName.replaceAll(&quot;[^\\.]&quot;, &quot;&quot;).replaceAll(&quot;\\.&quot;, &quot;../&quot;) + &quot;../&quot;);</line>
+<line sev="2"/>
+<line sev="2"><diag id="522"/>        DiagnosticSet diags = (StringUtil.empty(packageName))</line>
+<line sev="2">                              ? stats.getDiagnostics()</line>
+<line sev="2">                              : stats.getDiagnostics().getDiagnosticsForPackage(packageName);</line>
+<line sev="2"/>
+<line sev="2"><diag id="523"/>        StringBuffer html = new StringBuffer();</line>
+<line sev="2"/>
+<line sev="2">        // Write top-level package summary info        </line>
+<line sev="2"><diag id="524"/>        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</line>
+<line sev="2"><diag id="525"/>            .append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/package-by-rule.xsl\&quot;?&gt;\n&quot;)        </line>
+<line sev="2">            .append(&quot;&lt;packageByRule packageName=\&quot;&quot;).append(StringUtil.empty(packageName) ? &quot;&quot; : packageName).append(&quot;\&quot; pathToRoot=\&quot;&quot;)</line>
+<line sev="2">            .append(pathToRoot).append(&quot;\&quot; qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</line>
+<line sev="2">            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">        // Hash the diagnostics by rule name, to condense the report</line>
+<line sev="2">        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByRuleName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</line>
+<line sev="2"/>
+<line sev="2"><diag id="905"/>        for (Diagnostic diagnostic : diags)</line>
+<line sev="2">        {</line>
+<line sev="2">            String key = diagnostic.getRuleName();</line>
+<line sev="2"/>
+<line sev="2">            if (key == null)</line>
+<line sev="2">            {</line>
+<line sev="2">                key = &quot;(none)&quot;;</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2">            List&lt;Diagnostic&gt; list = diagnosticsByRuleName.get(key);</line>
+<line sev="2"/>
+<line sev="2">            if (list == null)</line>
+<line sev="2">            {</line>
+<line sev="2"><diag id="526"/>                list = new ArrayList&lt;Diagnostic&gt;();</line>
+<line sev="2">                diagnosticsByRuleName.put(key, list);</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2">            list.add(diagnostic);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        List&lt;String&gt; ruleNames = new ArrayList&lt;String&gt;(diagnosticsByRuleName.keySet());</line>
+<line sev="2">        Collections.sort(ruleNames);</line>
+<line sev="2"/>
+<line sev="2">        // Output diagnostics (if any)</line>
+<line sev="2">        for (String ruleName : ruleNames)</line>
+<line sev="2">        {</line>
+<line sev="2">            List&lt;Diagnostic&gt; diagnosticsForRule = diagnosticsByRuleName.get(ruleName);</line>
+<line sev="2">            Diagnostic firstDiag = diagnosticsForRule.get(0);</line>
+<line sev="2"/>
+<line sev="2">            html.append(&quot;&lt;rule name=\&quot;&quot;).append(ruleName)</line>
+<line sev="2">                .append(&quot;\&quot; tool=\&quot;&quot;).append(Diagnostic.getSourceDescription(firstDiag.getSource()))</line>
+<line sev="2">                .append(&quot;\&quot; severity=\&quot;&quot;).append(firstDiag.getSeverity())</line>
+<line sev="2">                .append(&quot;\&quot;&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">            Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByClassName = ReportUtil.mapDiagnosticsByClassName(diagnosticsForRule); </line>
+<line sev="2"><diag id="527"/>            List&lt;String&gt; classNames = new ArrayList&lt;String&gt;(diagnosticsByClassName.keySet());</line>
+<line sev="2">            Collections.sort(classNames);</line>
+<line sev="2"/>
+<line sev="2">            for (String className : classNames)</line>
+<line sev="2">            {</line>
+<line sev="2">                html.append(&quot;&lt;class name=\&quot;&quot;).append(className).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">                for (Diagnostic diag : diagnosticsByClassName.get(className))</line>
+<line sev="2">                {</line>
+<line sev="2">                    html.append(&quot;&lt;diag id=\&quot;&quot;).append(diag.getId()).append(&quot;\&quot;/&gt;\n&quot;);</line>
+<line sev="2">                }</line>
+<line sev="2"/>
+<line sev="2">                html.append(&quot;&lt;/class&gt;\n&quot;);</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2">            html.append(&quot;&lt;/rule&gt;\n&quot;);</line>
+<line sev="2">        }        </line>
+<line sev="2"/>
+<line sev="2"/>
+<line sev="2">        html.append(&quot;&lt;/packageByRule&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">        return html.toString();</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Generates the summary page for a package.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param packageName the package name, or null to create a summary for all packages</line>
+<line sev="2">     * @param relativeFileName the name of the file being written to, used to create relative hyperlinks </line>
+<line sev="2">     * @return the generated page in a String</line>
+<line sev="2">     */</line>
+<line sev="2">    private String generateSummaryPageForPackage(final String packageName, </line>
+<line sev="2">                                                 final String relativeFileName)</line>
+<line sev="2">    {</line>
+<line sev="2">        String pathToRoot = ReportUtil.getHtmlPathToRoot(relativeFileName);</line>
+<line sev="2"/>
+<line sev="2"><diag id="528"/>        DiagnosticSet diags = (StringUtil.empty(packageName))</line>
+<line sev="2">                              ? stats.getDiagnostics()</line>
+<line sev="2">                              : stats.getDiagnostics().getDiagnosticsForPackage(packageName);</line>
+<line sev="2"/>
+<line sev="2"><diag id="529"/>        StringBuffer html = new StringBuffer();</line>
+<line sev="2"/>
+<line sev="2">        // Write top-level package summary info        </line>
+<line sev="2"><diag id="530"/>        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</line>
+<line sev="2"><diag id="531"/>            .append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/package-summary.xsl\&quot;?&gt;\n&quot;)        </line>
+<line sev="2">            .append(&quot;&lt;packageSummary packageName=\&quot;&quot;).append(StringUtil.empty(packageName) ? &quot;&quot; : packageName).append(&quot;\&quot; pathToRoot=\&quot;&quot;)</line>
+<line sev="2">            .append(pathToRoot).append(&quot;\&quot; qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</line>
+<line sev="2"><diag id="532"/>            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">        html.append(&quot;&lt;issueSummary high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</line>
+<line sev="2">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</line>
+<line sev="2">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</line>
+<line sev="2">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</line>
+<line sev="2">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO)).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">        // Output category information</line>
+<line sev="2">        DiagnosticCategory categories = new DiagnosticCategory();</line>
+<line sev="2"/>
+<line sev="2">        for (Diagnostic diag : diags)</line>
+<line sev="2">        {</line>
+<line sev="2">            categories.addDiagnostic(diag);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        outputCategory(categories, html);</line>
+<line sev="2"/>
+<line sev="2">        // Output tool summary information</line>
+<line sev="2">        for (int i = 0; i &lt; TOOLS.length; i++)</line>
+<line sev="2">        {</line>
+<line sev="2">            outputTool(TOOLS[i], diags, html);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2"><diag id="533"/>        html.append(&quot;&lt;/issueSummary&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">        // Quality summary</line>
+<line sev="2">        html.append(&quot;&lt;qualitySummary&gt;\n&quot;);</line>
+<line sev="2">        outputQualitySummary(packageName, html);</line>
+<line sev="2"><diag id="534"/>        html.append(&quot;&lt;/qualitySummary&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">        // Summary image</line>
+<line sev="2">        html.append(&quot;&lt;graphs&gt;\n&quot;);</line>
+<line sev="2">        appendSummaryImage(packageName, html);</line>
+<line sev="2"><diag id="535"/>        html.append(&quot;&lt;/graphs&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">        html.append(&quot;&lt;/packageSummary&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">        return html.toString();</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Outputs tool summary information.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param tool the tool to output the information for.</line>
+<line sev="2">     * @param diags the full list of diagnostics for the package being written.</line>
+<line sev="2">     * @param html the StringBuffer to append XML output to.</line>
+<line sev="2">     */</line>
+<line sev="2">    private void outputTool(final int tool, final DiagnosticSet diags, final StringBuffer html)</line>
+<line sev="2">    {</line>
+<line sev="2">        DiagnosticSet toolDiags = diags.getDiagnosticsForTool(tool);</line>
+<line sev="2"/>
+<line sev="2">        if (!toolDiags.isEmpty())</line>
+<line sev="2">        {</line>
+<line sev="2">            String toolName = Diagnostic.getSourceDescription(tool);</line>
+<line sev="2"/>
+<line sev="2">            html.append(&quot;&lt;tool name=\&quot;&quot;).append(toolName)</line>
+<line sev="2">                .append(&quot;\&quot; high=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</line>
+<line sev="2">                .append(&quot;\&quot; significant=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</line>
+<line sev="2">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</line>
+<line sev="2">                .append(&quot;\&quot; low=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</line>
+<line sev="2">                .append(&quot;\&quot; info=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_INFO)).append(&quot;\&quot;/&gt;\n&quot;);</line>
+<line sev="2">        }</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Outputs category information, recursing for sub-categories.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param category the DiagnosticCategory to output.</line>
+<line sev="2">     * @param html the StringBuffer to append XML output to.</line>
+<line sev="2">     */</line>
+<line sev="2">    private void outputCategory(final DiagnosticCategory category, final StringBuffer html)</line>
+<line sev="2">    {</line>
+<line sev="2">        DiagnosticSet diags = new DiagnosticSet();</line>
+<line sev="2"/>
+<line sev="2">        for (Diagnostic diag : category.getDiagnostics())</line>
+<line sev="2">        {</line>
+<line sev="2">            diags.add(diag);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        // Output category</line>
+<line sev="2">        html.append(&quot;&lt;category name=\&quot;&quot;).append(category.getName());          </line>
+<line sev="2"/>
+<line sev="2">        html.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</line>
+<line sev="2">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</line>
+<line sev="2">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</line>
+<line sev="2">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</line>
+<line sev="2">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO)).append('&quot;');</line>
+<line sev="2"/>
+<line sev="2">        if (category.getSubCategories().isEmpty())</line>
+<line sev="2">        {</line>
+<line sev="2">            html.append(&quot;/&gt;\n&quot;);</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            html.append(&quot;&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">            for (Iterator&lt;DiagnosticCategory&gt; i = category.subCategoriesIterator(); i.hasNext();)</line>
+<line sev="2">            {</line>
+<line sev="2">                DiagnosticCategory subCategory = i.next();</line>
+<line sev="2">                outputCategory(subCategory, html);</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2">            html.append(&quot;&lt;/category&gt;\n&quot;);</line>
+<line sev="2">        }        </line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * If there is sufficient data available, </line>
+<line sev="2">     * append a summary image to the given HTML StringBuffer.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param packageName the package name</line>
+<line sev="2">     * @param html the string buffer to append the image tag to</line>
+<line sev="2">     */</line>
+<line sev="2">    private void appendSummaryImage(final String packageName, final StringBuffer html)</line>
+<line sev="2">    {</line>
+<line sev="2">        String nonNullPackageName = StringUtil.empty(packageName) ? &quot;&quot; : packageName;</line>
+<line sev="2">        PackageSummary[] summaries = stats.getPackageSummary(nonNullPackageName);</line>
+<line sev="2"/>
+<line sev="2">        // Only generate the image if there's more than one run</line>
+<line sev="2"><diag id="536"/>        if (summaries.length &gt; 1)</line>
+<line sev="2">        {</line>
+<line sev="2">            BufferedImage image = ChartFactory.createImage(summaries, nonNullPackageName);</line>
+<line sev="2"/>
+<line sev="2">            try</line>
+<line sev="2">            {</line>
+<line sev="2">                String path = nonNullPackageName.replace('.', File.separatorChar) + File.separatorChar;             </line>
+<line sev="2">                String fileName = &quot;summary&quot; + IMAGE_FORMAT_FILE_SUFFIX;             </line>
+<line sev="2">                ImageIO.write(image, IMAGE_FORMAT, new File(reportDir, path + fileName));</line>
+<line sev="2"/>
+<line sev="2">                html.append(&quot;&lt;graph path=\&quot;&quot;).append(fileName)</line>
+<line sev="2">                    .append(&quot;\&quot; alt=\&quot;History for &quot;).append(nonNullPackageName) </line>
+<line sev="2">                    .append(&quot;\&quot;/&gt;\n&quot;);</line>
+<line sev="2">            }</line>
+<line sev="2">            catch (IOException e)</line>
+<line sev="2">            {</line>
+<line sev="2">                QaLogger.getInstance().error(&quot;Error writing summary image&quot;, e);</line>
+<line sev="2">            }</line>
+<line sev="2">        }       </line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Generates the quality summary table HTML.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param packageName the package name to create the tables for</line>
+<line sev="2">     * @param html the StringBuffer to append XML output to.</line>
+<line sev="2">     */</line>
+<line sev="2">    private void outputQualitySummary(final String packageName, final StringBuffer html)</line>
+<line sev="2">    {</line>
+<line sev="2">        // Display package and subpackages first</line>
+<line sev="2">        Set&lt;String&gt; packageNames = new TreeSet&lt;String&gt;(sourcesByPackage.keySet());</line>
+<line sev="2"/>
+<line sev="2">        // Output summary for all classes</line>
+<line sev="2">        if (StringUtil.empty(packageName))</line>
+<line sev="2">        {</line>
+<line sev="2">            appendPackageQualityStatsRow(&quot;&quot;, &quot;&quot;, html);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        String packageNamePlusDot = packageName + '.';</line>
+<line sev="2"/>
+<line sev="2">        for (String otherPackageName : packageNames)</line>
+<line sev="2">        {</line>
+<line sev="2">            if (StringUtil.empty(packageName) || otherPackageName.equals(packageName) </line>
+<line sev="2">                || otherPackageName.startsWith(packageNamePlusDot))</line>
+<line sev="2">            {</line>
+<line sev="2">                appendPackageQualityStatsRow(StringUtil.empty(packageName) ? &quot;&quot; : packageName, otherPackageName, html);</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        // Display classes in package</line>
+<line sev="2">        List&lt;String&gt; packageSources = sourcesByPackage.get(packageName);</line>
+<line sev="2"/>
+<line sev="2">        if (packageSources == null)</line>
+<line sev="2">        {</line>
+<line sev="2">            appendClassQualityStatsRow(null, html);</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            for (String sourcePath : packageSources)</line>
+<line sev="2">            {</line>
+<line sev="2">                appendClassQualityStatsRow(sourcePath, html);</line>
+<line sev="2">            }       </line>
+<line sev="2">        }</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Appends a package quality statistics row to the given string buffer.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param currentPackageName the current package name</line>
+<line sev="2">     * @param packageName the package name to write the stats for, may be a sub-package</line>
+<line sev="2">     * @param html the string buffer to append to</line>
+<line sev="2">     */</line>
+<line sev="2">    private void appendPackageQualityStatsRow(final String currentPackageName, </line>
+<line sev="2">                                              final String packageName, </line>
+<line sev="2"><diag id="891"/>                                              final StringBuffer html)</line>
+<line sev="2">    {</line>
+<line sev="2">        boolean allPackages = &quot;&quot;.equals(packageName);</line>
+<line sev="2"/>
+<line sev="2">        DiagnosticSet diags = null;</line>
+<line sev="2">        CoverageItf coverage = null;</line>
+<line sev="2">        int numLines = 0;</line>
+<line sev="2">        int numExecutableLines = 0;</line>
+<line sev="2">        int coveredLines = 0;</line>
+<line sev="2">        int coveredLinePct = 0;</line>
+<line sev="2">        int coveredBranchPct = 0;</line>
+<line sev="2">        int branchCount = 0;</line>
+<line sev="2">        int coveredBranchCount = 0;</line>
+<line sev="2">        int classCount = 0;</line>
+<line sev="2"/>
+<line sev="2">        if (allPackages)</line>
+<line sev="2">        {</line>
+<line sev="2">            coverage = stats.getCoverage();</line>
+<line sev="2">            diags = stats.getDiagnostics();</line>
+<line sev="2">            numLines = stats.getLineCount();</line>
+<line sev="2">            classCount = stats.getClassCount();</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            coverage = stats.getCoverage().getPackageCoverage(packageName);</line>
+<line sev="2">            diags = stats.getDiagnostics().getDiagnosticsForPackage(packageName, false);</line>
+<line sev="2"/>
+<line sev="2">            numLines = stats.getPackageLineCount(packageName);</line>
+<line sev="2">            classCount = stats.getPackageClassCount(packageName);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        if (coverage != null)</line>
+<line sev="2">        {</line>
+<line sev="2">            coveredLines = (int) Math.round(numLines * coverage.getLineCoverage());</line>
+<line sev="2">            coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);</line>
+<line sev="2">            coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);</line>
+<line sev="2">            coveredLines = coverage.getCoveredLineCount();</line>
+<line sev="2">            branchCount = coverage.getBranchCount();</line>
+<line sev="2">            coveredBranchCount = coverage.getCoveredBranchCount();</line>
+<line sev="2">            numExecutableLines = coverage.getLineCount();</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        html.append(&quot;&lt;package name=\&quot;&quot;).append(packageName);</line>
+<line sev="2"/>
+<line sev="2">        if (!allPackages &amp;&amp; !packageName.equals(currentPackageName))</line>
+<line sev="2">        {</line>
+<line sev="2">            // Link to the other package</line>
+<line sev="2">            int dotLength = currentPackageName.length() &gt; 0 ? 1 : 0;</line>
+<line sev="2">            String relativePath = packageName.substring(currentPackageName.length() + dotLength).replace('.', '/');</line>
+<line sev="2"/>
+<line sev="2">            html.append(&quot;\&quot; path=\&quot;&quot;).append(relativePath);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        html.append(&quot;\&quot; classes=\&quot;&quot;).append(classCount)</line>
+<line sev="2">            .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numLines);</line>
+<line sev="2"/>
+<line sev="2">        // Quality</line>
+<line sev="2">        int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</line>
+<line sev="2"/>
+<line sev="2"><diag id="892"/>        html.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</line>
+<line sev="2">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</line>
+<line sev="2">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</line>
+<line sev="2">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</line>
+<line sev="2">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))</line>
+<line sev="2">            .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)</line>
+<line sev="2">            .append('&quot;');</line>
+<line sev="2"/>
+<line sev="2">        // Test coverage</line>
+<line sev="2">        if (numExecutableLines == 0)</line>
+<line sev="2">        {</line>
+<line sev="2">            html.append(&quot;/&gt;\n&quot;);</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2"><diag id="537"/>            html.append(&quot;&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">            html.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)</line>
+<line sev="2">                .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)</line>
+<line sev="2">                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)</line>
+<line sev="2">                .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)</line>
+<line sev="2">                .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)</line>
+<line sev="2">                .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)</line>
+<line sev="2"><diag id="538"/>                .append(&quot;\&quot;/&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">            html.append(&quot;&lt;/package&gt;\n&quot;);</line>
+<line sev="2">        }</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Appends a class quality statistics row to the given string buffer.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param sourcePath the source file to write the stats for</line>
+<line sev="2">     * @param html the string buffer to append to</line>
+<line sev="2">     */</line>
+<line sev="2">    private void appendClassQualityStatsRow(final String sourcePath, final StringBuffer html)</line>
+<line sev="2">    {</line>
+<line sev="2"><diag id="897"/>        if (sourcePath != null)</line>
+<line sev="2">        {       </line>
+<line sev="2">            DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</line>
+<line sev="2">            String className = stats.getClassNameForSourcePath(sourcePath);     </line>
+<line sev="2">            CoverageItf coverage = stats.getCoverage().getClassCoverage(className);</line>
+<line sev="2"/>
+<line sev="2">            int numLines = stats.getClassLineCount(className);</line>
+<line sev="2">            int numExecutableLines = 0;</line>
+<line sev="2">            int coveredLines = 0;</line>
+<line sev="2">            int coveredLinePct = 0;</line>
+<line sev="2">            int coveredBranchPct = 0;</line>
+<line sev="2">            int branchCount = 0;</line>
+<line sev="2">            int coveredBranchCount = 0;</line>
+<line sev="2"/>
+<line sev="2">            if (coverage != null)</line>
+<line sev="2">            {</line>
+<line sev="2">                numExecutableLines = coverage.getLineCount();</line>
+<line sev="2">                coveredLines = coverage.getCoveredLineCount();</line>
+<line sev="2">                branchCount = coverage.getBranchCount();</line>
+<line sev="2">                coveredBranchCount = coverage.getCoveredBranchCount();</line>
+<line sev="2">                coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);</line>
+<line sev="2">                coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2"/>
+<line sev="2">            // Quality</line>
+<line sev="2">            int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</line>
+<line sev="2"/>
+<line sev="2">            html.append(&quot;&lt;class name=\&quot;&quot;).append(className.substring(className.lastIndexOf('.') + 1))</line>
+<line sev="2"><diag id="893"/>                .append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</line>
+<line sev="2">                .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</line>
+<line sev="2">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</line>
+<line sev="2">                .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</line>
+<line sev="2">                .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))</line>
+<line sev="2">                .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)</line>
+<line sev="2">                .append('&quot;');</line>
+<line sev="2"/>
+<line sev="2">            // Test coverage</line>
+<line sev="2">            if (numExecutableLines == 0)</line>
+<line sev="2">            {</line>
+<line sev="2">                html.append(&quot;/&gt;\n&quot;);</line>
+<line sev="2">            }</line>
+<line sev="2">            else</line>
+<line sev="2">            {</line>
+<line sev="2"><diag id="539"/>                html.append(&quot;&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">                html.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)</line>
+<line sev="2">                    .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)</line>
+<line sev="2">                    .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)</line>
+<line sev="2">                    .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)</line>
+<line sev="2">                    .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)</line>
+<line sev="2">                    .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)</line>
+<line sev="2"><diag id="540"/>                    .append(&quot;\&quot;/&gt;\n&quot;);</line>
+<line sev="2"/>
+<line sev="2">                html.append(&quot;&lt;/class&gt;\n&quot;);</line>
+<line sev="2">            }</line>
+<line sev="2">        }   </line>
+<line sev="2">    }</line>
+<line sev="2">}</line>
+</source>
+<diags first="false">
+<diag id="501" sev="2" tool="PMD" rule="GodClass">
+Possible God class (WMC=53, ATFD=122, TCC=0.03636363636363636)
+</diag>
+<diag id="502" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The class 'PackageWriter' has a Cyclomatic Complexity of 5 (Highest = 10).
+</diag>
+<diag id="503" sev="0" tool="PMD" rule="TooManyMethods">
+This class has too many methods, consider refactoring it.
+</diag>
+<diag id="507" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;../&quot; appears 4 times in this file; the first occurrence is on line 144
+</diag>
+<diag id="508" sev="1" tool="PMD" rule="UselessParentheses">
+Useless parentheses.
+</diag>
+<diag id="509" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">
+StringBuffer constructor is initialized with size 16, but has at least 292 characters appended.
+</diag>
+<diag id="510" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="511" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="512" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;\&quot;&gt;\n&quot; appears 6 times in this file; the first occurrence is on line 153
+</diag>
+<diag id="513" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;\&quot; high=\&quot;&quot; appears 5 times in this file; the first occurrence is on line 192
+</diag>
+<diag id="514" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;\&quot; significant=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 193
+</diag>
+<diag id="515" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;\&quot; moderate=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 194
+</diag>
+<diag id="516" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;\&quot; low=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 195
+</diag>
+<diag id="517" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;\&quot; info=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 196
+</diag>
+<diag id="518" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;\&quot;/&gt;\n&quot; appears 6 times in this file; the first occurrence is on line 197
+</diag>
+<diag id="519" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The method 'generatePackageByRule' has a Cyclomatic Complexity of 10.
+</diag>
+<diag id="520" sev="0" tool="PMD" rule="NPathComplexity">
+The method generatePackageByRule() has an NPath complexity of 2500
+</diag>
+<diag id="521" sev="1" tool="PMD" rule="UselessParentheses">
+Useless parentheses.
+</diag>
+<diag id="522" sev="1" tool="PMD" rule="UselessParentheses">
+Useless parentheses.
+</diag>
+<diag id="523" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">
+StringBuffer constructor is initialized with size 16, but has at least 309 characters appended.
+</diag>
+<diag id="524" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="525" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="905" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/CategoryWriter.java:
+        for (Diagnostic diagnostic : category.getDiagnostics())
+        {
+            String key = diagnostic.getRuleName();
+            
+            if (key == null)
+            {
+                key = &quot;(none)&quot;;
+            }
+            
+            List&lt;Diagnostic&gt; list = diagnosticsByRuleName.get(key);
+            
+            if (list == null)
+            {
+                list = new ArrayList&lt;Diagnostic&gt;();
+                diagnosticsByRuleName.put(key, list);
+            }
+            
+            list.add(diagnostic);
+        }
+        
+        List&lt;String&gt; ruleNames = new ArrayList&lt;String&gt;(diagnosticsByRuleName.keySet());
+        Collections.sort(ruleNames);
+        
+        // Output diagnostics (if any)
+        for (String ruleName : ruleNames)
+        {
+            List&lt;Diagnostic&gt; diagnosticsForRule = diagnosticsByRuleName.get(ruleName);
+            Diagnostic firstDiag = diagnosticsForRule.get(0);</diag>
+<diag id="526" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="527" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="528" sev="1" tool="PMD" rule="UselessParentheses">
+Useless parentheses.
+</diag>
+<diag id="529" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">
+StringBuffer constructor is initialized with size 16, but has at least 365 characters appended.
+</diag>
+<diag id="530" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="531" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="532" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="533" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="534" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="535" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="536" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
+Avoid using Literals in Conditional Statements
+</diag>
+<diag id="891" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/ExportWriter.java:
+	private void writePackage(final String packageName, final StringBuffer xml)
+	{
+        boolean allPackages = &quot;&quot;.equals(packageName);
+
+        DiagnosticSet diags = null;
+        CoverageItf coverage = null;
+        int numLines = 0;
+        int numExecutableLines = 0;
+        int coveredLines = 0;
+        int coveredLinePct = 0;
+        int coveredBranchPct = 0;
+        int branchCount = 0;
+        int coveredBranchCount = 0;
+        int classCount = 0;
+
+        if (allPackages)
+        {
+            coverage = stats.getCoverage();
+            diags = stats.getDiagnostics();
+            numLines = stats.getLineCount();
+            classCount = stats.getClassCount();
+        }
+        else
+        {
+            coverage = stats.getCoverage().getPackageCoverage(packageName);
+            diags = stats.getDiagnostics().getDiagnosticsForPackage(packageName, false);
+
+            numLines = stats.getPackageLineCount(packageName);
+            classCount = stats.getPackageClassCount(packageName);
+        }
+
+        if (coverage != null)
+        {
+            coveredLines = (int) Math.round(numLines * coverage.getLineCoverage());
+            coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);
+            coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);
+            coveredLines = coverage.getCoveredLineCount();
+            branchCount = coverage.getBranchCount();
+            coveredBranchCount = coverage.getCoveredBranchCount();
+            numExecutableLines = coverage.getLineCount();
+        }</diag>
+<diag id="892" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/PackageWriter.java:
+        html.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))
+            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))
+            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))
+            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))
+            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))
+            .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)
+            .append('&quot;');
+        
+        // Test coverage
+        if (numExecutableLines == 0)
+        {
+            html.append(&quot;/&gt;\n&quot;);
+        }
+        else
+        {
+            html.append(&quot;&gt;\n&quot;);
+            
+            html.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)
+                .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)
+                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)
+                .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)
+                .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)
+                .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)
+                .append(&quot;\&quot;/&gt;\n&quot;);
+            
+            html.append(&quot;&lt;/package&gt;\n&quot;);</diag>
+<diag id="537" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="538" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="897" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/ExportWriter.java:
+        for (String sourcePath : packageSources)
+        {
+            DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);
+            String className = stats.getClassNameForSourcePath(sourcePath);     
+            CoverageItf coverage = stats.getCoverage().getClassCoverage(className);
+            
+            int numLines = stats.getClassLineCount(className);
+            int numExecutableLines = 0;
+            int coveredLines = 0;
+            int coveredLinePct = 0;
+            int coveredBranchPct = 0;
+            int branchCount = 0;
+            int coveredBranchCount = 0;
+            
+            if (coverage != null)
+            {
+                numExecutableLines = coverage.getLineCount();
+                coveredLines = coverage.getCoveredLineCount();
+                branchCount = coverage.getBranchCount();
+                coveredBranchCount = coverage.getCoveredBranchCount();
+                coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);
+                coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);
+            }
+            
+            
+            // Quality
+            int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</diag>
+<diag id="893" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/PackageWriter.java:
+        html.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))
+            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))
+            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))
+            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))
+            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))
+            .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)
+            .append('&quot;');
+        
+        // Test coverage
+        if (numExecutableLines == 0)
+        {
+            html.append(&quot;/&gt;\n&quot;);
+        }
+        else
+        {
+            html.append(&quot;&gt;\n&quot;);
+            
+            html.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)
+                .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)
+                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)
+                .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)
+                .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)
+                .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)
+                .append(&quot;\&quot;/&gt;\n&quot;);
+            
+            html.append(&quot;&lt;/package&gt;\n&quot;);</diag>
+<diag id="539" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="540" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+</diags>
+</classDetails>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PmdCpd4ResultReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow.tool</a> &gt; <span class="el_source">PmdCpd4ResultReader.java</span></div><h1>PmdCpd4ResultReader.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow.tool;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
+
+import com.github.sanity4j.model.diagnostic.Diagnostic;
+import com.github.sanity4j.model.diagnostic.DiagnosticFactory;
+import com.github.sanity4j.model.diagnostic.DiagnosticSet;
+import com.github.sanity4j.util.ExtractStats;
+import com.github.sanity4j.util.JaxbMarshaller;
+import com.github.sanity4j.util.QAException;
+
+import com.github.sanity4j.gen.pmdcpd_4_2_1.Duplication;
+import com.github.sanity4j.gen.pmdcpd_4_2_1.PmdCpd;
+
+/**
+ * PmdCpdResultReader - Translates PMD CPD results into the common format used by the QA tool.
+ *
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+<span class="fc" id="L24">public class PmdCpd4ResultReader implements ResultReader</span>
+{
+    /** The rule name to use for Diagnostics, as PMD-CPD doesn't have rules. */
+    private static final String PMD_CPD_RULE_NAME = &quot;DoNotCopyAndPasteCode&quot;;
+
+    /** The properties used to configure this {@link ResultReader}. */
+<span class="fc" id="L30">    private final Properties properties = new Properties();</span>
+    
+    /** The ExtractStats to add the results to. */
+    private ExtractStats stats;
+    
+    /** The PMD CPD XML result file to read from. */
+    private File pmdCpdResultFile;
+    
+    /** The threshold for severity. */
+    private static final int SEVERITY_THRESHOLD = 100;
+
+	/** {@inheritDoc} */
+	public void setProperties(final Properties properties) 
+	{
+<span class="nc" id="L44">		this.properties.putAll(properties);</span>
+<span class="nc" id="L45">	}</span>
+
+    /** {@inheritDoc} */
+    public final void setResultFile(final File resultFile)
+    {
+<span class="fc" id="L50">        this.pmdCpdResultFile = resultFile;</span>
+<span class="fc" id="L51">    }</span>
+
+    /**
+     * Retrieves the result file. 
+     * @return the result file.
+     */
+    protected final File getResultFile()
+    {
+<span class="nc" id="L59">        return pmdCpdResultFile;</span>
+    }
+    
+    /** {@inheritDoc} */
+    public void setStats(final ExtractStats stats)
+    {
+<span class="fc" id="L65">        this.stats = stats;</span>
+<span class="fc" id="L66">    }</span>
+
+    /**
+     * Extracts PMD statistics from the pmdCpdResultFile.
+     */
+    public void run()
+    {
+<span class="fc" id="L73">        DiagnosticFactory diagnosticFactory = DiagnosticFactory.getInstance(properties);</span>
+<span class="fc" id="L74">        DiagnosticSet diagnostics = stats.getDiagnostics();</span>
+
+<span class="fc" id="L76">        PmdCpd result = (PmdCpd)</span>
+<span class="fc" id="L77">            JaxbMarshaller.unmarshal(pmdCpdResultFile, &quot;com.github.sanity4j.gen.pmdcpd_4_2_1&quot;, &quot;http://com.github.sanity4j/namespace/pmdcpd-4.2.1&quot;);</span>
+
+<span class="fc" id="L79">        List&lt;Duplication&gt; duplications = result.getDuplication();</span>
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        for (Duplication duplication : duplications)</span>
+        {
+            try
+            {
+<span class="fc" id="L85">                com.github.sanity4j.gen.pmdcpd_4_2_1.File file1 = duplication.getFile().get(0);</span>
+<span class="fc" id="L86">                com.github.sanity4j.gen.pmdcpd_4_2_1.File file2 = duplication.getFile().get(1);</span>
+<span class="fc" id="L87">                String fileName1 = stats.getCanonicalPath(file1.getPath()).substring(stats.getSourceDirectory().length() + 1);</span>
+<span class="fc" id="L88">                String fileName2 = stats.getCanonicalPath(file2.getPath()).substring(stats.getSourceDirectory().length() + 1);</span>
+
+                // severity is based on the size of the duplication
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">                int severity = duplication.getLines().intValue() &lt; SEVERITY_THRESHOLD</span>
+                               ? Diagnostic.SEVERITY_LOW
+                               : Diagnostic.SEVERITY_MODERATE;
+
+<span class="fc" id="L95">                Diagnostic diagnostic = diagnosticFactory.getDiagnostic();</span>
+<span class="fc" id="L96">                diagnostic.setSource(Diagnostic.SOURCE_PMD_CPD);</span>
+<span class="fc" id="L97">                diagnostic.setRuleName(PMD_CPD_RULE_NAME);</span>
+<span class="fc" id="L98">                diagnostic.setSeverity(severity);</span>
+<span class="fc" id="L99">                diagnostic.setFileName(stats.getCanonicalPath(file1.getPath()));</span>
+<span class="fc" id="L100">                diagnostic.setStartLine(file1.getLine().intValue());</span>
+<span class="fc" id="L101">                diagnostic.setEndLine(file1.getLine().intValue() + duplication.getLines().intValue());</span>
+<span class="fc" id="L102">                diagnostic.setMessage(&quot;Duplicate of &quot; + fileName2 + &quot;:\n&quot; + duplication.getCodefragment());</span>
+
+                // CPD is source file based, so guess the class name
+<span class="fc" id="L105">                diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</span>
+
+<span class="fc" id="L107">                diagnostics.add(diagnostic);</span>
+
+<span class="fc" id="L109">                diagnostic = diagnosticFactory.getDiagnostic();</span>
+<span class="fc" id="L110">                diagnostic.setSource(Diagnostic.SOURCE_PMD_CPD);</span>
+<span class="fc" id="L111">                diagnostic.setRuleName(PMD_CPD_RULE_NAME);</span>
+<span class="fc" id="L112">                diagnostic.setSeverity(severity);</span>
+<span class="fc" id="L113">                diagnostic.setFileName(stats.getCanonicalPath(file2.getPath()));</span>
+<span class="fc" id="L114">                diagnostic.setStartLine(file2.getLine().intValue());</span>
+<span class="fc" id="L115">                diagnostic.setEndLine(file2.getLine().intValue() + duplication.getLines().intValue());</span>
+<span class="fc" id="L116">                diagnostic.setMessage(&quot;Duplicate of &quot; + fileName1 + &quot;:\n&quot; + duplication.getCodefragment());</span>
+<span class="fc" id="L117">                diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</span>
+
+                // CPD is source file based, so guess the class name
+<span class="fc" id="L120">                diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</span>
+
+<span class="fc" id="L122">                diagnostics.add(diagnostic);</span>
+            }
+<span class="nc" id="L124">            catch (IOException e)</span>
+            {
+<span class="nc" id="L126">                throw new QAException(&quot;Failed to obtain canonical path&quot;, e);</span>
+<span class="fc" id="L127">            }</span>
+<span class="fc" id="L128">        }</span>
+<span class="fc" id="L129">    }</span>
+
+    /**
+     * @return the description of this WorkUnit
+     */
+    public String getDescription()
+    {
+<span class="nc" id="L136">        return &quot;Reading PMD CPD results&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

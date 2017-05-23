@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FindBugsRunner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow.tool</a> &gt; <span class="el_source">FindBugsRunner.java</span></div><h1>FindBugsRunner.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow.tool;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import com.github.sanity4j.util.ExternalProcessRunner;
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.QAException;
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.util.Tool;
+import com.github.sanity4j.workflow.QAConfig;
+
+/**
+ * FindBugsRunner - a work unit that runs FindBugs.
+ *
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public class FindBugsRunner extends AbstractToolRunner
+{
+    /** The generated FindBugs project file. */
+<span class="nc" id="L29">    private File projectFile = null;</span>
+
+    /**
+     * Creates a FindBugsRunner.
+     */
+    public FindBugsRunner()
+    {
+<span class="nc" id="L36">        super(Tool.FINDBUGS);</span>
+<span class="nc" id="L37">    }</span>
+
+    /**
+     * Runs FindBugs.
+     * @param commandLine the FindBugs command line.
+     */
+    public void runTool(final String commandLine)
+    {
+<span class="nc" id="L45">        QAConfig config = getConfig();</span>
+        
+<span class="nc" id="L47">        File resultFile = config.getToolResultFile(Tool.FINDBUGS);</span>
+<span class="nc" id="L48">        FileUtil.createDir(resultFile.getParentFile().getPath());</span>
+
+<span class="nc" id="L50">        ByteArrayOutputStream stdout = null; </span>
+<span class="nc" id="L51">        ByteArrayOutputStream stderr = null; </span>
+
+        try
+        {
+<span class="nc" id="L55">            stdout = new ByteArrayOutputStream();</span>
+<span class="nc" id="L56">            stderr = new ByteArrayOutputStream();</span>
+            
+<span class="nc" id="L58">            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</span>
+
+<span class="nc" id="L60">            String stdoutString = new String(stdout.toByteArray());</span>
+
+<span class="nc bnc" id="L62" title="All 2 branches missed.">            if (FileUtil.hasValue(stdoutString))</span>
+            {
+<span class="nc" id="L64">                QaLogger.getInstance().info(stdoutString);</span>
+            }
+            
+<span class="nc" id="L67">            String stderrString = new String(stderr.toByteArray());</span>
+
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            if (FileUtil.hasValue(stderrString))</span>
+            {
+<span class="nc" id="L71">                QaLogger.getInstance().error(stderrString);</span>
+            }
+
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            if (result != 0)</span>
+            {
+<span class="nc" id="L76">                String out = new String(stdout.toByteArray());</span>
+<span class="nc" id="L77">                String err = new String(stderr.toByteArray());</span>
+<span class="nc" id="L78">                throw new QAException(&quot;FindBugs Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</span>
+            }
+        }
+        finally
+        {
+<span class="nc" id="L83">            QaUtil.safeClose(stdout);</span>
+<span class="nc" id="L84">            QaUtil.safeClose(stderr);</span>
+<span class="nc" id="L85">        }</span>
+<span class="nc" id="L86">    }</span>
+
+    /**
+     * Creates the FindBugs project file, which controls the FindBugs run.
+     */
+    private void createFindBugsProjectFile()
+    {
+<span class="nc" id="L93">        QAConfig config = getConfig();</span>
+<span class="nc" id="L94">        List&lt;String&gt; sourcePaths = Arrays.asList(new String[]{config.getCombinedSourceDir().getPath()});</span>
+
+<span class="nc" id="L96">        List&lt;String&gt; classPaths = new ArrayList&lt;String&gt;();</span>
+<span class="nc" id="L97">        classPaths.add(config.getCombinedClassDir().getPath());</span>
+<span class="nc" id="L98">        FileUtil.findJars(config.getCombinedClassDir(), classPaths);</span>
+
+<span class="nc" id="L100">        List&lt;String&gt; libraryPaths = new ArrayList&lt;String&gt;();</span>
+<span class="nc" id="L101">        libraryPaths.add(config.getCombinedLibraryDir().getPath());</span>
+<span class="nc" id="L102">        FileUtil.findJars(config.getCombinedLibraryDir(), libraryPaths);</span>
+
+<span class="nc" id="L104">        String xml = generateFindBugsProjectXml(sourcePaths, classPaths, libraryPaths);</span>
+
+        try
+        {
+<span class="nc" id="L108">            projectFile = File.createTempFile(&quot;findbugsproject&quot;, &quot;.fbp&quot;);</span>
+<span class="nc" id="L109">            FileUtil.writeToFile(xml, projectFile);</span>
+<span class="nc" id="L110">            projectFile.deleteOnExit();</span>
+        }
+<span class="nc" id="L112">        catch (IOException e)</span>
+        {
+<span class="nc" id="L114">            throw new QAException(&quot;Failed to create FindBugs project file&quot;, e);</span>
+<span class="nc" id="L115">        }</span>
+<span class="nc" id="L116">    }</span>
+
+    /**
+     * Overridden to add FindBugs specific parameters to the map.
+     * @return a map of parameters to use for replacing configuration tokens.
+     */
+    protected Map&lt;String, String&gt; getParameterMap()
+    {
+<span class="nc" id="L124">        Map&lt;String, String&gt; map = super.getParameterMap();</span>
+        
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (projectFile == null)</span>
+        {
+<span class="nc" id="L128">            createFindBugsProjectFile();</span>
+        }
+
+<span class="nc" id="L131">        map.put(&quot;findBugsProjectFile&quot;, projectFile.getPath());</span>
+        
+<span class="nc" id="L133">        return map;</span>
+    }
+
+    /**
+     * Overriden to remove the GUI jar from the class path, as we want to run the text UI.
+     * @return a list of paths to all the jars needed to run FindBugs.
+     */
+    protected List&lt;String&gt; getToolJars()
+    {
+<span class="nc" id="L142">        List&lt;String&gt; findbugsJars = super.getToolJars();</span>
+
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        for (Iterator&lt;String&gt; i = findbugsJars.iterator(); i.hasNext();)</span>
+        {
+<span class="nc bnc" id="L146" title="All 2 branches missed.">            if (i.next().endsWith(&quot;findbugsGUI.jar&quot;))</span>
+            {
+<span class="nc" id="L148">                i.remove();</span>
+            }
+        }
+
+<span class="nc" id="L152">        return findbugsJars;</span>
+    }
+
+    /**
+     * @return the description of this WorkUnit
+     */
+    public String getDescription()
+    {
+<span class="nc" id="L160">        return &quot;Running FindBugs&quot;;</span>
+    }
+
+    /**
+     * Build the findbugs project file, as there doesn't seem to be a nicer way to run it.
+     * The final XML will look like the following:
+     * &lt;pre&gt;
+     *   &amp;lt;Project filename=&quot;unnamed project&quot; projectName=&quot;unnamed project&quot;&amp;gt;
+     *      &amp;lt;Jar&amp;gt;...path/project.jar&amp;lt;/Jar&amp;gt;
+     *      ...
+     *      &amp;lt;AuxClasspathEntry&amp;gt;...path/library.jar&amp;lt;/AuxClasspathEntry&amp;gt;
+     *      ...
+     *      &amp;lt;SrcDir&amp;gt;...path/src/java&amp;lt;/SrcDir&amp;gt;
+     *      ...
+     *      &amp;lt;SuppressionFilter&amp;gt;
+     *         &amp;lt;LastVersion value=&quot;-1&quot; relOp=&quot;NEQ&quot;/&amp;gt;
+     *      &amp;lt;/SuppressionFilter&amp;gt;
+     *   &amp;lt;/Project&amp;gt;
+     * &lt;/pre&gt;
+     *
+     * @param sourcePaths the source paths
+     * @param classPaths the class paths
+     * @param libraryPaths the library paths
+     *
+     * @return the FindBugs project xml for the given data
+     */
+    private String generateFindBugsProjectXml(final List&lt;String&gt; sourcePaths,
+                                              final List&lt;String&gt; classPaths, final List&lt;String&gt; libraryPaths)
+    {
+<span class="nc" id="L189">        StringBuffer buf = new StringBuffer(&quot;&lt;Project filename=\&quot;unnamed project\&quot; projectName=\&quot;unnamed project\&quot;&gt;\n&quot;);</span>
+
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        for (int i = 0; i &lt; classPaths.size(); i++)</span>
+        {
+<span class="nc" id="L193">            buf.append(&quot;   &lt;Jar&gt;&quot;);</span>
+<span class="nc" id="L194">            buf.append(classPaths.get(i));</span>
+<span class="nc" id="L195">            buf.append(&quot;&lt;/Jar&gt;\n&quot;);</span>
+        }
+
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        for (int i = 0; i &lt; libraryPaths.size(); i++)</span>
+        {
+<span class="nc" id="L200">            buf.append(&quot;   &lt;AuxClasspathEntry&gt;&quot;);</span>
+<span class="nc" id="L201">            buf.append(libraryPaths.get(i));</span>
+<span class="nc" id="L202">            buf.append(&quot;&lt;/AuxClasspathEntry&gt;\n&quot;);</span>
+        }
+
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        for (int i = 0; i &lt; sourcePaths.size(); i++)</span>
+        {
+<span class="nc" id="L207">            buf.append(&quot;   &lt;SrcDir&gt;&quot;);</span>
+<span class="nc" id="L208">            buf.append(sourcePaths.get(i));</span>
+<span class="nc" id="L209">            buf.append(&quot;&lt;/SrcDir&gt;\n&quot;);</span>
+        }
+
+<span class="nc" id="L212">        buf.append(</span>
+              &quot;   &lt;SuppressionFilter&gt;\n&quot;
+            + &quot;       &lt;LastVersion value=\&quot;-1\&quot; relOp=\&quot;NEQ\&quot;/&gt;\n&quot;
+            + &quot;    &lt;/SuppressionFilter&gt;\n&quot;
+            + &quot;&lt;/Project&gt;\n&quot;
+        );
+
+<span class="nc" id="L219">        return buf.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

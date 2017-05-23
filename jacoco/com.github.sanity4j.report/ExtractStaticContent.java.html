@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExtractStaticContent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.report</a> &gt; <span class="el_source">ExtractStaticContent.java</span></div><h1>ExtractStaticContent.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.report;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.workflow.QAConfig;
+
+/**
+ * ExtractStaticContent - extracts static content for the report.
+ *
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public final class ExtractStaticContent
+{
+    /** The buffer size to use when copying the data. */
+    private static final int BUFFER_SIZE = 1024;
+
+    /** ExtractStaticContent should not be instantiated. */
+    private ExtractStaticContent()
+<span class="nc" id="L33">    {</span>
+<span class="nc" id="L34">    }</span>
+
+    /**
+     * Copies a resource.
+     *
+     * @param classLoader the classloader used to load the resource.
+     * @param resourcePath the path to the resource
+     * @param destDir the directory to write the resource to
+     * @param destPath the destination path, relative to destDir
+     *
+     * @throws IOException if there is an error writing the file
+     */
+    private static void copyResource(final ClassLoader classLoader,
+                                     final String resourcePath, final File destDir,
+                                     final String destPath) throws IOException
+    {
+        // Get the resource as a stream
+<span class="nc" id="L51">        InputStream inStream = classLoader.getResourceAsStream(resourcePath);</span>
+        
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (inStream == null)</span>
+        {
+            // If not found, try loading from the default. 
+<span class="nc" id="L56">            inStream = ExtractStaticContent.class.getResourceAsStream(resourcePath);</span>
+        }
+
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (inStream == null)</span>
+        {
+            // If not found, try loading from the current classloader. 
+<span class="nc" id="L62">            inStream = ExtractStaticContent.class.getClassLoader().getResourceAsStream(resourcePath);</span>
+        }
+        
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (inStream == null)</span>
+        {
+<span class="nc" id="L67">        	QaLogger.getInstance().error(&quot;Resource [&quot; + resourcePath + &quot;] doesn't exist&quot;);</span>
+<span class="nc" id="L68">        	return;</span>
+        }
+
+        // Set up the destination file
+<span class="nc" id="L72">        File destFile = new File(destDir, destPath);</span>
+
+<span class="nc bnc" id="L74" title="All 4 branches missed.">        if (!destFile.getParentFile().exists() &amp;&amp; !destFile.getParentFile().mkdirs())</span>
+        {
+<span class="nc" id="L76">            QaLogger.getInstance().error(&quot;Failed to create parent directory for file [&quot; + destPath + &quot;]&quot;);</span>
+<span class="nc" id="L77">            return;</span>
+        }
+
+        // Copy the data
+<span class="nc" id="L81">        FileOutputStream fos = new FileOutputStream(destFile);</span>
+<span class="nc" id="L82">        byte[] buf = new byte[BUFFER_SIZE];</span>
+
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        for (int count = inStream.read(buf); count != -1; count = inStream.read(buf))</span>
+        {
+<span class="nc" id="L86">            fos.write(buf, 0, count);</span>
+        }
+
+<span class="nc" id="L89">        fos.close();</span>
+<span class="nc" id="L90">        inStream.close();</span>
+<span class="nc" id="L91">    }</span>
+
+    /**
+     * Extracts all of the static content specified by a Properties object to the destination directory.
+     *
+     * @param classLoader the classloader used to load the resources.
+     * @param destDir the destination directory
+     * @param properties a properties file containing name / value pairs
+     * representing the source resources, and their destinations.
+     * @throws IOException if there is an error extracting the static content
+     */
+    private static void extractContent(final ClassLoader classLoader, final File destDir, final Properties properties) throws IOException
+    {
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        for (Enumeration&lt;Object&gt; keyEnum = properties.keys(); keyEnum.hasMoreElements();)</span>
+        {
+<span class="nc" id="L106">            String source = (String) keyEnum.nextElement();</span>
+<span class="nc" id="L107">            String dest = (String) properties.get(source);</span>
+<span class="nc" id="L108">            copyResource(classLoader, source.trim(), destDir, dest.trim());</span>
+<span class="nc" id="L109">        }</span>
+<span class="nc" id="L110">    }</span>
+
+    /**
+     * This method extracts the static content specified by the properties stored within of an &lt;b&gt;InputStream&lt;/b&gt;.
+     *
+     * @param classLoader the classloader used to load the resource.
+     * @param destinationDirectory The directory to which the static content should be extracted.
+     * @param inputStream The input stream representing the input to the &lt;b&gt;java.util.Properties#load(InputStream)&lt;/b&gt; method.
+     * @throws IOException If there is an error reading from the &lt;em&gt;inputStream&lt;/em&gt; or writing to the &lt;em&gt;destDir&lt;/em&gt;.
+     */
+    private static void extractStreamContent(final ClassLoader classLoader, final File destinationDirectory, final InputStream inputStream) throws IOException
+    {
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (inputStream == null)</span>
+        {
+<span class="nc" id="L124">            QaLogger.getInstance().debug(&quot;Nothing to extract.&quot;);            </span>
+        }
+        else
+        {
+<span class="nc" id="L128">            Properties properties = new Properties();</span>
+<span class="nc" id="L129">            properties.load(inputStream);</span>
+<span class="nc" id="L130">            inputStream.close();</span>
+<span class="nc" id="L131">            extractContent(classLoader, destinationDirectory, properties);</span>
+        }
+<span class="nc" id="L133">    }</span>
+
+    /**
+     * Converts a String representing &quot;path.separator&quot; separated list of URLs into an array of java.net.URL objects.
+     *  
+     * @param classpath a String representing &quot;path.separator&quot; separated list of URLs.
+     * @return An array of java.net.URL objects.
+     * @throws MalformedURLException if entries within the classpath are invalid.
+     */
+    private static URL[] classpathToUrlArray(final String classpath) throws MalformedURLException
+    {
+<span class="nc" id="L144">        List&lt;URL&gt; urlList = new ArrayList&lt;URL&gt;();</span>
+        
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (classpath != null)</span>
+        {
+<span class="nc" id="L148">            String pathSeparator = System.getProperty(&quot;path.separator&quot;);</span>
+<span class="nc" id="L149">            StringTokenizer stringTokenizer = new StringTokenizer(classpath, pathSeparator);</span>
+            
+<span class="nc bnc" id="L151" title="All 2 branches missed.">            while (stringTokenizer.hasMoreTokens())</span>
+            {
+<span class="nc" id="L153">                String stringUrl = stringTokenizer.nextToken();</span>
+<span class="nc" id="L154">                URL url = null;</span>
+                
+                try
+                {
+<span class="nc" id="L158">                    url = new URL(stringUrl);</span>
+                }
+<span class="nc" id="L160">                catch (MalformedURLException mue)</span>
+                {
+                    // Assume the URL is a local file.
+<span class="nc bnc" id="L163" title="All 2 branches missed.">                    if (stringUrl.toUpperCase().endsWith(&quot;.JAR&quot;))</span>
+                    {
+<span class="nc" id="L165">                        url = new URL(&quot;jar:file:///&quot; + stringUrl + &quot;!/&quot;);</span>
+                    }
+                    else
+                    {
+<span class="nc" id="L169">                        url = new URL(&quot;file:///&quot; + stringUrl);</span>
+                    }
+<span class="nc" id="L171">                }</span>
+                
+<span class="nc" id="L173">                QaLogger.getInstance().debug(&quot;URL: &quot; + url);</span>
+<span class="nc" id="L174">                urlList.add(url);</span>
+<span class="nc" id="L175">            }</span>
+        }
+        
+<span class="nc" id="L178">        URL[] urls = urlList.toArray(new URL[urlList.size()]);</span>
+        
+<span class="nc" id="L180">        return urls;</span>
+    }
+    
+    /**
+     * Extracts the static content to the destination directory.
+     *
+     * @param config the configuration object for the sanity4j tool.
+     * @param destDir the destination directory.
+     * @param propertiesFile the name of the properties file.
+     * @throws IOException if there is an error extracting the static content.
+     */
+    public static void extractContent(final QAConfig config, final File destDir, final String propertiesFile) throws IOException
+    {
+<span class="nc" id="L193">        ClassLoader classLoader = ExtractStaticContent.class.getClassLoader();</span>
+        
+        // Load default &quot;ExtractStaticContent.properties&quot; files.
+<span class="nc" id="L196">        InputStream inStream = ExtractStaticContent.class.getResourceAsStream(propertiesFile);</span>
+<span class="nc" id="L197">        QaLogger.getInstance().debug(&quot;Extract using file: &quot; + propertiesFile);</span>
+<span class="nc" id="L198">        extractStreamContent(classLoader, destDir, inStream);</span>
+
+        // Load all other &quot;ExtractStaticContent.properties&quot; files from classpath.
+<span class="nc" id="L201">        QaLogger.getInstance().debug(&quot;Extract using file: &quot; + propertiesFile);</span>
+<span class="nc" id="L202">        Enumeration&lt;URL&gt; resourceEnum = classLoader.getResources(propertiesFile);</span>
+
+<span class="nc bnc" id="L204" title="All 2 branches missed.">        while (resourceEnum.hasMoreElements())</span>
+        {
+<span class="nc" id="L206">            URL resourceUrl = resourceEnum.nextElement();</span>
+            
+<span class="nc" id="L208">            QaLogger.getInstance().debug(&quot;Extract using URL: &quot; + resourceUrl);</span>
+            
+<span class="nc" id="L210">            inStream = resourceUrl.openStream();</span>
+<span class="nc" id="L211">            extractStreamContent(classLoader, destDir, inStream);</span>
+<span class="nc" id="L212">        }</span>
+        
+        // Load all other &quot;ExtractStaticContent.properties files from tool classpaths.
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        for (String tool : config.getToolsToRun())</span>
+        {
+<span class="nc" id="L217">            String version = config.getToolVersion(tool);</span>
+<span class="nc" id="L218">            String configClasspath = config.getToolConfigClasspath(tool, version);</span>
+            
+<span class="nc bnc" id="L220" title="All 2 branches missed.">            if (FileUtil.hasValue(configClasspath))</span>
+            {
+<span class="nc" id="L222">                URL[] urls = classpathToUrlArray(configClasspath);</span>
+<span class="nc" id="L223">                ClassLoader toolClassLoader = new URLClassLoader(urls);</span>
+<span class="nc" id="L224">                resourceEnum = toolClassLoader.getResources(propertiesFile);</span>
+
+<span class="nc bnc" id="L226" title="All 2 branches missed.">                while (resourceEnum.hasMoreElements())</span>
+                {
+<span class="nc" id="L228">                    URL resourceUrl = resourceEnum.nextElement();</span>
+
+<span class="nc" id="L230">                    QaLogger.getInstance().debug(&quot;Extract using URL: &quot; + resourceUrl);</span>
+                    
+<span class="nc" id="L232">                    inStream = resourceUrl.openStream();</span>
+<span class="nc" id="L233">                    extractStreamContent(toolClassLoader, destDir, inStream);</span>
+<span class="nc" id="L234">                }</span>
+            }
+        }
+<span class="nc" id="L237">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

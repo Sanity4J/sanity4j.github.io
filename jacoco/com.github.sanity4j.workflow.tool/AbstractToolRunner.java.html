@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractToolRunner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow.tool</a> &gt; <span class="el_source">AbstractToolRunner.java</span></div><h1>AbstractToolRunner.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow.tool;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.QAException;
+import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.util.StringUtil;
+import com.github.sanity4j.util.Tool;
+import com.github.sanity4j.workflow.QAConfig;
+import com.github.sanity4j.workflow.WorkUnit;
+
+/**
+ * AbstractToolRunner provides a properties-driven way of running external tools.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public abstract class AbstractToolRunner implements WorkUnit
+{
+    /** The current QA configuration. */
+    private QAConfig config;
+
+    /** The tool to run. */
+    private final Tool tool;
+
+    /** The tool version that was found. */
+    private String toolVersion;
+
+    /**
+     * Creates an AbstractToolRunner.
+     * 
+     * @param tool the tool to run.
+     */
+    protected AbstractToolRunner(final Tool tool)
+<span class="nc" id="L42">    {</span>
+<span class="nc" id="L43">        this.tool = tool;</span>
+<span class="nc" id="L44">    }</span>
+
+    /**
+     * @return the path to the tool home directory.
+     */
+    protected String getToolHome()
+    {
+<span class="nc" id="L51">        return config.getToolHome(tool.getId(), toolVersion);</span>
+    }
+    
+    /**
+     * @return the tool Maven artifact.
+     */
+    protected String getToolArtifact()
+    {
+<span class="nc" id="L59">        return config.getToolArtifact(tool.getId(), toolVersion);</span>
+    }
+
+    /**
+     * @return the additional configuration classpath for the tool.
+     */
+    protected String getToolConfigClasspath()
+    {
+<span class="nc" id="L67">        return config.getToolConfigClasspath(tool.getId(), toolVersion);</span>
+    }
+    
+    /**
+     * @return a list of paths to all the jars needed to run the tool.
+     */
+    protected List&lt;String&gt; getToolJars()
+    {
+<span class="nc" id="L75">        List&lt;String&gt; toolJars = new ArrayList&lt;String&gt;();</span>
+        
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (config.getProductsDir() != null)</span>
+        {
+<span class="nc" id="L79">            FileUtil.findJars(new File(getToolHome()), toolJars);</span>
+        }
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        else if (config.getRunQAMojo() != null)</span>
+        {
+<span class="nc" id="L83">            config.getRunQAMojo().getTransitiveDependencies(getToolArtifact(), toolJars);</span>
+        }
+        
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (toolJars.isEmpty())</span>
+        {
+<span class="nc" id="L88">            throw new QAException(&quot;Couldn't find &quot; + tool.getName() + &quot; jars in &quot; + getToolHome());</span>
+        }
+
+<span class="nc" id="L91">        String configClasspath = getToolConfigClasspath();</span>
+        
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (configClasspath != null)</span>
+        {
+<span class="nc" id="L95">            String separator = System.getProperty(&quot;path.separator&quot;);</span>
+<span class="nc" id="L96">            String[] paths = configClasspath.split(separator);</span>
+            
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            for (String path : paths)</span>
+            {
+<span class="nc" id="L100">                toolJars.add(path);</span>
+            }
+        }
+        
+<span class="nc" id="L104">        return toolJars;</span>
+    }
+
+    /**
+     * @return the file path where the tool should place it's output.
+     */
+    protected String getToolResultFile()
+    {
+<span class="nc" id="L112">        return config.getTempDir().getPath() + File.separatorChar + tool + &quot;_result.xml&quot;;</span>
+    }
+
+    /** @return the QA configuration for the current run. */
+    protected QAConfig getConfig()
+    {
+<span class="nc" id="L118">        return config;</span>
+    }
+
+    /**
+     * Subclasses may override this method to add any additional parameters specific to the tool.
+     * 
+     * @return a map of parameters to use for replacing configuration tokens.
+     */
+    protected Map&lt;String, String&gt; getParameterMap()
+    {
+<span class="nc" id="L128">        Map&lt;String, String&gt; paramMap = config.asParameterMap();</span>
+
+<span class="nc" id="L130">        String outputFile = getToolResultFile();</span>
+<span class="nc" id="L131">        String toolHome = getToolHome();</span>
+
+        // Retrieve the configuration parameters for this tool.
+<span class="nc" id="L134">        String toolConfigParam = config.getToolConfigParam(tool.getId(), toolVersion);</span>
+<span class="nc" id="L135">        String toolAuxClasspath = config.getToolConfigClasspath(tool.getId(), toolVersion);</span>
+
+        // Retrieve the configuration parameter values for this tool.
+<span class="nc" id="L138">        String toolConfig = null;</span>
+
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (toolConfigParam != null)</span>
+        {
+<span class="nc" id="L142">            toolConfig = paramMap.get(toolConfigParam);</span>
+        }
+
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (FileUtil.hasValue(toolConfig))</span>
+        {
+<span class="nc" id="L147">            InputStream stream = this.getClass().getResourceAsStream(&quot;/&quot; + toolConfig);</span>
+
+<span class="nc bnc" id="L149" title="All 2 branches missed.">            if (stream != null)</span>
+            {
+<span class="nc" id="L151">                FileOutputStream fos = null;</span>
+
+                try
+                {
+<span class="nc" id="L155">                    File tempFile = File.createTempFile(tool.getId() + &quot;-&quot;, &quot;&quot;, config.getTempDir());</span>
+<span class="nc" id="L156">                    fos = new FileOutputStream(tempFile);</span>
+<span class="nc" id="L157">                    QaUtil.copy(stream, fos);</span>
+<span class="nc" id="L158">                    toolConfig = tempFile.getCanonicalPath();</span>
+                }
+<span class="nc" id="L160">                catch (IOException ioe)</span>
+                {
+<span class="nc" id="L162">                    String message = &quot;Error creating temporary configuration file for tool [&quot; + tool.getId() + &quot;]&quot;;</span>
+<span class="nc" id="L163">                    throw new QAException(message, ioe);</span>
+                }
+                finally
+                {
+<span class="nc" id="L167">                    QaUtil.safeClose(stream);</span>
+<span class="nc" id="L168">                    QaUtil.safeClose(fos);</span>
+<span class="nc" id="L169">                }</span>
+            }
+        }
+        
+        // Add the class path for this tool to the javaArgs.
+<span class="nc" id="L174">        StringBuffer javaArgsBuf = new StringBuffer();</span>
+<span class="nc" id="L175">        javaArgsBuf.append(paramMap.get(&quot;javaArgs&quot;));</span>
+<span class="nc" id="L176">        List&lt;String&gt; toolJars = getToolJars();</span>
+<span class="nc" id="L177">        String classPath = StringUtil.concatList(toolJars, File.pathSeparator);</span>
+<span class="nc" id="L178">        javaArgsBuf.append(&quot; -cp &quot;).append(classPath);</span>
+
+        // Put the &quot;extra&quot; parameters to the parameter map.
+<span class="nc" id="L181">        paramMap.put(&quot;outputFile&quot;, outputFile);</span>
+<span class="nc" id="L182">        paramMap.put(&quot;toolHome&quot;, toolHome);</span>
+
+<span class="nc" id="L184">        toolAuxClasspath = QaUtil.replaceTokens(toolAuxClasspath, paramMap, config, null);</span>
+<span class="nc" id="L185">        toolConfig = QaUtil.replaceTokens(toolConfig, paramMap, config, toolAuxClasspath);</span>
+<span class="nc" id="L186">        paramMap.put(toolConfigParam, toolConfig);</span>
+
+<span class="nc" id="L188">        paramMap.put(&quot;javaArgs&quot;, javaArgsBuf.toString());</span>
+<span class="nc" id="L189">        paramMap.put(&quot;auxClasspath&quot;, toolAuxClasspath);</span>
+
+<span class="nc" id="L191">        return paramMap;</span>
+    }
+
+    /**
+     * Subclasses must implement this method to actually run the tool.
+     * 
+     * @param commandLine the tool command line.
+     */
+    protected abstract void runTool(String commandLine);
+
+    /**
+     * The entry point for the work unit. This implementation looks up the command line necessary to run the tool, then
+     * calls {@link #runTool(String)}.
+     */
+    public void run()
+    {
+<span class="nc" id="L207">        Map&lt;String, String&gt; params = getParameterMap();</span>
+<span class="nc" id="L208">        String auxClasspath = params.get(&quot;auxClasspath&quot;);</span>
+<span class="nc" id="L209">        String toolCommandLine = config.getToolCommandLine(tool.getId(), toolVersion);</span>
+<span class="nc" id="L210">        toolCommandLine = QaUtil.replaceTokens(toolCommandLine, getParameterMap(), config, auxClasspath);</span>
+<span class="nc" id="L211">        runTool(toolCommandLine);</span>
+<span class="nc" id="L212">    }</span>
+
+    /**
+     * Sets the QA configuration for the current run.
+     * 
+     * @param config the QA configuration.
+     */
+    public void setConfig(final QAConfig config)
+    {
+<span class="nc" id="L221">        this.config = config;</span>
+<span class="nc" id="L222">    }</span>
+
+    /**
+     * Sets the tool version to use.
+     * 
+     * @param toolVersion the tool version to use.
+     */
+    public void setToolVersion(final String toolVersion)
+    {
+<span class="nc" id="L231">        this.toolVersion = toolVersion;</span>
+<span class="nc" id="L232">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

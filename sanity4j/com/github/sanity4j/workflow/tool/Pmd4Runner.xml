@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.tool.Pmd4Runner" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="1" moderate="0" low="0" info="0" quality="77"/>
+<source>
+<line>package com.github.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.ByteArrayOutputStream;</line>
+<line>import java.io.File;</line>
+<line>import java.io.FileOutputStream;</line>
+<line>import java.io.IOException;</line>
+<line/>
+<line>import com.github.sanity4j.util.ExternalProcessRunner;</line>
+<line>import com.github.sanity4j.util.FileUtil;</line>
+<line>import com.github.sanity4j.util.QAException;</line>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line>import com.github.sanity4j.util.QaUtil;</line>
+<line>import com.github.sanity4j.util.Tool;</line>
+<line/>
+<line>/**</line>
+<line> * PmdRunner - a work unit that runs PMD.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class Pmd4Runner extends AbstractToolRunner</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a PmdRunner.</line>
+<line>     */</line>
+<line>    public Pmd4Runner()</line>
+<line>    {</line>
+<line>        super(Tool.PMD);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Runs PMD.</line>
+<line>     * @param commandLine the PMD command line.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>    public void runTool(final String commandLine)</line>
+<line>    {</line>
+<line>        File resultFile = getConfig().getToolResultFile(Tool.PMD);</line>
+<line>        FileUtil.createDir(resultFile.getParentFile().getPath());</line>
+<line/>
+<line>        FileOutputStream stdout = null; </line>
+<line>        ByteArrayOutputStream stderr = null; </line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line>            // Run the process</line>
+<line>            // PMD sends its output to standard out, so we need to intercept it and write it to a file ourselves</line>
+<line>            stdout = new FileOutputStream(resultFile);</line>
+<line>            stderr = new ByteArrayOutputStream();</line>
+<line/>
+<line>            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</line>
+<line/>
+<line>            String stderrString = new String(stderr.toByteArray());</line>
+<line/>
+<line>            if (FileUtil.hasValue(stderrString))</line>
+<line>            {</line>
+<line>                QaLogger.getInstance().error(stderrString);</line>
+<line>            }</line>
+<line/>
+<line>            if (result != 0)</line>
+<line>            {</line>
+<line sev="3"><diag id="324"/>                String err = new String(stderr.toByteArray());</line>
+<line>                throw new QAException(&quot;PMD Command [&quot; + commandLine + &quot;] failed to generate output: [&quot; + err + &quot;]&quot;);</line>
+<line>            }</line>
+<line/>
+<line>            stdout.close();</line>
+<line>        }</line>
+<line>        catch (IOException e)</line>
+<line>        {</line>
+<line>            throw new QAException(&quot;Error writing PMD output to &quot; + resultFile, e);</line>
+<line>        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line>            QaUtil.safeClose(stdout);</line>
+<line>            QaUtil.safeClose(stderr);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the description of this WorkUnit</line>
+<line>     */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line>        return &quot;Running PMD&quot;;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="324" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.Pmd4Runner.runTool(String): new String(byte[])</diag>
+</diags>
+</classDetails>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.SummariseRun" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.workflow; </line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line/>
+<line>import com.github.sanity4j.model.summary.SummaryCsvMarshaller;</line>
+<line>import com.github.sanity4j.util.ExtractStats;</line>
+<line>import com.github.sanity4j.util.QAException;</line>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line/>
+<line>/**</line>
+<line> * Summarises the current run, and reads in the old summary data (if available).</line>
+<line> * Should only be run once all results have been read in, line counts calculated etc. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class SummariseRun implements WorkUnit</line>
+<line>{</line>
+<line>    /** The ExtractStats which holds the summary data. */</line>
+<line>    private final ExtractStats stats;</line>
+<line/>
+<line>    /** The current QA run's configuration. */</line>
+<line>    private final QAConfig config;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a SummariseRun.</line>
+<line>     * </line>
+<line>     * @param stats the stats which holds the summary data.</line>
+<line>     * @param config the current QA run's configuration.</line>
+<line>     */</line>
+<line>    public SummariseRun(final ExtractStats stats, final QAConfig config)</line>
+<line>    {</line>
+<line>        this.stats = stats;</line>
+<line>        this.config = config;</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line>        return &quot;Summarising run&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Reads in the existing summary data file (if available),</line>
+<line>     * and records the current run summary.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line>        String summaryDataFileName = config.getSummaryDataFile();</line>
+<line/>
+<line>        // Read the existing summary</line>
+<line>        File summaryDataFile = new File(summaryDataFileName);</line>
+<line/>
+<line>        if (summaryDataFile.exists())</line>
+<line>        {</line>
+<line>            QaLogger.getInstance().debug(&quot;Reading previous run summaries&quot;);</line>
+<line/>
+<line>            try</line>
+<line>            {</line>
+<line>                stats.extractHistoricalSummary(summaryDataFile);</line>
+<line>            }</line>
+<line>            catch (IOException e)</line>
+<line>            {</line>
+<line>                throw new QAException(&quot;Unable to read previous run summary&quot;, e);</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line>        // Save the current run summary</line>
+<line>        if (!summaryDataFile.exists() || summaryDataFile.canWrite())</line>
+<line>        {</line>
+<line>            String msg = &quot;Saving run summary data to &quot; + summaryDataFile;</line>
+<line>            QaLogger.getInstance().info(msg);</line>
+<line/>
+<line>            SummaryCsvMarshaller marshaller = new SummaryCsvMarshaller();</line>
+<line>            marshaller.write(stats.getRunSummary(), summaryDataFile);</line>
+<line>        }</line>
+<line>        else</line>
+<line>        {</line>
+<line>            QaLogger.getInstance().warn(&quot;Unalbe to update run summary file: &quot; + summaryDataFileName);</line>
+<line>        }</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

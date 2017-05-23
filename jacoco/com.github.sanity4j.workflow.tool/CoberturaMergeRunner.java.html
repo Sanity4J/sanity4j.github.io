@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CoberturaMergeRunner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow.tool</a> &gt; <span class="el_source">CoberturaMergeRunner.java</span></div><h1>CoberturaMergeRunner.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow.tool;
+
+import java.io.ByteArrayOutputStream;
+
+import com.github.sanity4j.util.ExternalProcessRunner;
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.QAException;
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.util.Tool;
+
+/**
+ * CoberturaMergeRunner - a work unit that merges Cobertura data files.
+ * 
+ * @author Darian Bridge
+ * @since Sanity4J 1.0.4
+ */
+public class CoberturaMergeRunner extends AbstractToolRunner
+{
+    /**
+     * Creates a CoberturaReportRunner.
+     */
+    public CoberturaMergeRunner()
+    {
+<span class="nc" id="L25">        super(Tool.COBERTURA_MERGE);</span>
+<span class="nc" id="L26">    }</span>
+
+    /**
+     * Produces the Merged Cobertura data file.
+     * 
+     * @param commandLine the Merge Cobertura data file command line.
+     */
+    public void runTool(final String commandLine)
+    {
+        // Run the process
+<span class="nc" id="L36">        ByteArrayOutputStream stdout = null;</span>
+<span class="nc" id="L37">        ByteArrayOutputStream stderr = null;</span>
+
+        try
+        {
+<span class="nc" id="L41">            stdout = new ByteArrayOutputStream();</span>
+<span class="nc" id="L42">            stderr = new ByteArrayOutputStream();</span>
+
+            // Run the process
+<span class="nc" id="L45">            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</span>
+
+<span class="nc" id="L47">            String stdoutString = new String(stdout.toByteArray());</span>
+
+<span class="nc bnc" id="L49" title="All 2 branches missed.">            if (FileUtil.hasValue(stdoutString))</span>
+            {
+<span class="nc" id="L51">                QaLogger.getInstance().info(stdoutString);</span>
+            }
+
+<span class="nc" id="L54">            String stderrString = new String(stderr.toByteArray());</span>
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">            if (FileUtil.hasValue(stderrString))</span>
+            {
+<span class="nc" id="L58">                QaLogger.getInstance().error(stderrString);</span>
+            }
+            
+<span class="nc bnc" id="L61" title="All 2 branches missed.">            if (result != 0)</span>
+            {
+<span class="nc" id="L63">                String out = new String(stdout.toByteArray());</span>
+<span class="nc" id="L64">                String err = new String(stderr.toByteArray());</span>
+<span class="nc" id="L65">                throw new QAException(&quot;Cobertura Merge Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</span>
+            }
+        }
+        finally
+        {
+<span class="nc" id="L70">            QaUtil.safeClose(stdout);</span>
+<span class="nc" id="L71">            QaUtil.safeClose(stderr);</span>
+<span class="nc" id="L72">        }</span>
+<span class="nc" id="L73">    }</span>
+
+    /**
+     * @return the file path where the tool should place it's output.
+     */
+    protected String getToolResultFile()
+    {
+<span class="nc" id="L80">        return null;</span>
+    }
+
+    /**
+     * @return the description of this WorkUnit.
+     */
+    public String getDescription()
+    {
+<span class="nc" id="L88">        return &quot;Running Cobertura Data File Merge&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

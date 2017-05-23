@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.FileCopier" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.workflow;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line/>
+<line>import com.github.sanity4j.util.FileUtil;</line>
+<line>import com.github.sanity4j.util.QAException;</line>
+<line/>
+<line>/**</line>
+<line> * A {@link WorkUnit} that copies a file.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public final class FileCopier implements WorkUnit</line>
+<line>{</line>
+<line>    /** The source file to copy. */</line>
+<line>    private final File sourceFile;</line>
+<line>    /** The destination file to copy to. */</line>
+<line>    private final File destFile;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a FileCopier.</line>
+<line>     * @param sourceFile the source file.</line>
+<line>     * @param destFile the destination file.</line>
+<line>     */</line>
+<line>    public FileCopier(final File sourceFile, final File destFile)</line>
+<line>    {</line>
+<line>        this.sourceFile = sourceFile;</line>
+<line>        this.destFile = destFile;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Copies {@link #sourceFile} to {@link #destFile}.</line>
+<line>     * An error message will be logged on error.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line>        try</line>
+<line>        {</line>
+<line>            FileUtil.copy(sourceFile, destFile);</line>
+<line>        }</line>
+<line>        catch (IOException e)</line>
+<line>        {</line>
+<line>            throw new QAException(&quot;Failed to &quot; + sourceFile.getPath() + &quot; to &quot; + destFile.getPath(), e);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line>        return &quot;Copying file&quot;;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

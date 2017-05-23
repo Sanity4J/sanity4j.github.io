@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QaLogger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.util</a> &gt; <span class="el_source">QaLogger.java</span></div><h1>QaLogger.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.util; 
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+/**
+ * Since the QA task can utilise several logging libs, it needs to 
+ * provide its own logging facade. The logger defaults to System.out
+ * until another logger is initialised.
+ * 
+ * @author Yiannis Paschalidis 
+ * @since Sanity4J 1.0
+ */
+<span class="fc" id="L14">public abstract class QaLogger</span>
+{
+    /** The logger instance to use. Defaults to a logger which logs to &lt;code&gt;System.out&lt;/code&gt;. */
+<span class="fc" id="L17">    private static QaLogger instance = new QaLoggerSystemOutImpl();    </span>
+    
+    /** 
+     * Sets the logger to use. This logger will be the one returned by {@link #getInstance()}.
+     * @param logger the logger to set.
+     */
+    public static void setLogger(final QaLogger logger)
+    {
+<span class="nc" id="L25">        instance = logger;</span>
+<span class="nc" id="L26">    }</span>
+    
+    /**
+     * @return an instance of the logger
+     */
+    public static QaLogger getInstance()
+    {
+<span class="fc" id="L33">        return instance;</span>
+    }
+    
+    /**
+     * Write a message to the log with the log level of MSG_DEBUG .
+     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.
+     */
+    public abstract void debug(String message);
+    
+    /**
+     * Write a message to the log with the log level of MSG_DEBUG .
+     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.
+     * @param throwable the throwable, presumably caught in a catch block.
+     */
+    public abstract void debug(String message, Throwable throwable);
+
+    /**
+     * Write a message to the log with the log level of MSG_INFO .
+     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.
+     */
+    public abstract void info(String message);
+
+    /**
+     * Write a message to the log with the log level of MSG_WARN .
+     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.
+     */
+    public abstract void warn(String message);
+    
+    /**
+     * Write a message to the log with the log level of MSG_WARN .
+     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.
+     * @param throwable the throwable, presumably caught in a catch block.
+     */
+    public abstract void warn(String message, Throwable throwable);
+
+    /**
+     * Write a message to the log with the log level of MSG_ERR .
+     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.
+     */
+    public abstract void error(String message);
+    
+    /**
+     * Write a message to the log with the log level of MSG_ERR .
+     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.
+     * @param throwable the throwable, presumably caught in a catch block.
+     */
+    public abstract void error(String message, Throwable throwable);
+    
+    /**
+     * Converts the message and throwable to a format suitable for logging.
+     * 
+     * @param message the message
+     * @param throwable the throwable
+     * @return a String suitable for logging
+     */
+    protected String stackTraceToString(final String message, final Throwable throwable)
+    {
+<span class="nc" id="L90">        StringWriter writer = new StringWriter();</span>
+<span class="nc" id="L91">        throwable.printStackTrace(new PrintWriter(writer));        </span>
+<span class="nc" id="L92">        String stackTrace = writer.toString();</span>
+        
+<span class="nc" id="L94">        StringBuffer msgBuffer = new StringBuffer();        </span>
+<span class="nc" id="L95">        msgBuffer.append(message);</span>
+<span class="nc" id="L96">        msgBuffer.append('\n');</span>
+<span class="nc" id="L97">        msgBuffer.append(throwable.getMessage());</span>
+<span class="nc" id="L98">        msgBuffer.append(&quot;:\n&quot;);</span>
+<span class="nc" id="L99">        msgBuffer.append(stackTrace);</span>
+
+<span class="nc" id="L101">        return msgBuffer.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

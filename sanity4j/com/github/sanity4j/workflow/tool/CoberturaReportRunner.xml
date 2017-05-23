@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.tool.CoberturaReportRunner" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="1" moderate="0" low="2" info="0" quality="75"/>
+<source>
+<line>package com.github.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.ByteArrayOutputStream;</line>
+<line>import java.io.File;</line>
+<line/>
+<line>import com.github.sanity4j.util.ExternalProcessRunner;</line>
+<line>import com.github.sanity4j.util.FileUtil;</line>
+<line>import com.github.sanity4j.util.QAException;</line>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line>import com.github.sanity4j.util.QaUtil;</line>
+<line>import com.github.sanity4j.util.Tool;</line>
+<line/>
+<line>/**</line>
+<line> * CoberturaReportRunner - a work unit that produces a Cobertura report.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class CoberturaReportRunner extends AbstractToolRunner</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a CoberturaReportRunner.</line>
+<line>     */</line>
+<line>    public CoberturaReportRunner()</line>
+<line>    {</line>
+<line>        super(Tool.COBERTURA);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Produces the Cobertura report file.</line>
+<line>     * </line>
+<line>     * @param commandLine the Cobertura command line.</line>
+<line>     */</line>
+<line>    public void runTool(final String commandLine)</line>
+<line>    {</line>
+<line sev="1"><diag id="898"/>        FileUtil.createDir(getConfig().getToolResultFile(Tool.COBERTURA).getParent());</line>
+<line sev="1"/>
+<line sev="1">        // Run the process</line>
+<line sev="1"><diag id="901"/>        ByteArrayOutputStream stdout = null;</line>
+<line sev="1">        ByteArrayOutputStream stderr = null;</line>
+<line sev="1"/>
+<line sev="1">        try</line>
+<line sev="1">        {</line>
+<line sev="1">            stdout = new ByteArrayOutputStream();</line>
+<line sev="1">            stderr = new ByteArrayOutputStream();</line>
+<line sev="1"/>
+<line sev="1">            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</line>
+<line sev="1"/>
+<line sev="1">            String stdoutString = new String(stdout.toByteArray());</line>
+<line sev="1"/>
+<line sev="1">            if (FileUtil.hasValue(stdoutString))</line>
+<line sev="1">            {</line>
+<line sev="1">                QaLogger.getInstance().info(stdoutString);</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1">            String stderrString = new String(stderr.toByteArray());</line>
+<line sev="1"/>
+<line sev="1">            if (FileUtil.hasValue(stderrString))</line>
+<line sev="1">            {</line>
+<line sev="1">                QaLogger.getInstance().error(stderrString);</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1">            if (result != 0)</line>
+<line sev="1">            {</line>
+<line sev="1">                String out = new String(stdout.toByteArray());</line>
+<line sev="3"><diag id="321"/>                String err = new String(stderr.toByteArray());</line>
+<line sev="1">                throw new QAException(&quot;Cobertura Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line>            QaUtil.safeClose(stdout);</line>
+<line>            QaUtil.safeClose(stderr);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * This needs to be overridden as Cobertura doesn't support specifying a file name for the report, only a</line>
+<line>     * destination directory.</line>
+<line>     * </line>
+<line>     * @return the file path where cobertura places it's output.</line>
+<line>     */</line>
+<line>    protected String getToolResultFile()</line>
+<line>    {</line>
+<line>        return new File(getConfig().getTempDir().getPath(), &quot;coverage.xml&quot;).getPath();</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the description of this WorkUnit</line>
+<line>     */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line>        return &quot;Running CoberturaReport&quot;;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="898" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/workflow/tool/FindBugsRunner.java:
+        FileUtil.createDir(getConfig().getToolResultFile(Tool.COBERTURA).getParent());
+
+        // Run the process
+        ByteArrayOutputStream stdout = null;
+        ByteArrayOutputStream stderr = null;
+
+        try
+        {
+            stdout = new ByteArrayOutputStream();
+            stderr = new ByteArrayOutputStream();
+
+            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);
+
+            String stdoutString = new String(stdout.toByteArray());
+
+            if (FileUtil.hasValue(stdoutString))
+            {
+                QaLogger.getInstance().info(stdoutString);
+            }
+
+            String stderrString = new String(stderr.toByteArray());
+
+            if (FileUtil.hasValue(stderrString))
+            {
+                QaLogger.getInstance().error(stderrString);
+            }
+
+            if (result != 0)
+            {
+                String out = new String(stdout.toByteArray());
+                String err = new String(stderr.toByteArray());
+                throw new QAException(&quot;Cobertura Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</diag>
+<diag id="901" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/workflow/tool/CoberturaMergeRunner.java:
+        ByteArrayOutputStream stdout = null;
+        ByteArrayOutputStream stderr = null;
+
+        try
+        {
+            stdout = new ByteArrayOutputStream();
+            stderr = new ByteArrayOutputStream();
+
+            // Run the process
+            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);
+
+            String stdoutString = new String(stdout.toByteArray());
+
+            if (FileUtil.hasValue(stdoutString))
+            {
+                QaLogger.getInstance().info(stdoutString);
+            }
+
+            String stderrString = new String(stderr.toByteArray());
+
+            if (FileUtil.hasValue(stderrString))
+            {
+                QaLogger.getInstance().error(stderrString);
+            }
+            
+            if (result != 0)
+            {
+                String out = new String(stdout.toByteArray());
+                String err = new String(stderr.toByteArray());
+                throw new QAException(&quot;Cobertura Merge Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</diag>
+<diag id="321" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.CoberturaReportRunner.runTool(String): new String(byte[])</diag>
+</diags>
+</classDetails>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CoberturaResultReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow.tool</a> &gt; <span class="el_source">CoberturaResultReader.java</span></div><h1>CoberturaResultReader.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow.tool;
+
+import java.io.File;
+import java.util.List;
+import java.util.Properties;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.events.StartElement;
+
+import com.github.sanity4j.model.coverage.ClassCoverage;
+import com.github.sanity4j.model.coverage.Coverage;
+import com.github.sanity4j.model.coverage.PackageCoverage;
+import com.github.sanity4j.util.ExtractStats;
+import com.github.sanity4j.util.JaxbMarshaller;
+import com.github.sanity4j.util.StartElementListener;
+
+import com.github.sanity4j.gen.cobertura_1_9_2.Clazz;
+import com.github.sanity4j.gen.cobertura_1_9_2.Line;
+import com.github.sanity4j.gen.cobertura_1_9_2.Package;
+
+/**
+ * CoberturaResultReader - Translates cobertura results into the common format used by the QA tool.
+ *
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+<span class="fc" id="L30">public final class CoberturaResultReader implements ResultReader, StartElementListener</span>
+{
+	/** The properties used to configure this {@link ResultReader}. */
+<span class="fc" id="L33">	private final Properties properties = new Properties();</span>
+	
+    /** The ExtractStats to add the results to. */
+    private ExtractStats stats;
+
+    /** The Cobertura result file to read from. */
+    private File coberturaResultFile;
+
+	/** {@inheritDoc} */
+	public void setProperties(final Properties properties) 
+	{
+<span class="nc" id="L44">		this.properties.putAll(properties);</span>
+<span class="nc" id="L45">	}</span>
+
+	/** {@inheritDoc} */
+    public void setResultFile(final File resultFile)
+    {
+<span class="fc" id="L50">        this.coberturaResultFile = resultFile;</span>
+<span class="fc" id="L51">    }</span>
+
+    /** {@inheritDoc} */
+    public void setStats(final ExtractStats stats)
+    {
+<span class="fc" id="L56">        this.stats = stats;</span>
+<span class="fc" id="L57">    }</span>
+
+    /**
+     * Extracts the Coverage statistics from the coberturaResultFile.
+     */
+    public void run()
+    {
+<span class="fc" id="L64">        JaxbMarshaller.traverse(coberturaResultFile, &quot;com.github.sanity4j.gen.cobertura_1_9_2&quot;, &quot;http://com.github.sanity4j/namespace/cobertura-1.9.2&quot;, this);</span>
+<span class="fc" id="L65">    }</span>
+
+    /** {@inheritDoc} */
+    public void foundElement(final StartElement element, final XMLEventReader reader, final Unmarshaller unmarshaller) throws JAXBException
+    {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (&quot;coverage&quot;.equals(element.getName().getLocalPart()))</span>
+        {
+<span class="fc" id="L72">            Coverage coverage = stats.getCoverage();</span>
+<span class="fc" id="L73">            coverage.setLineCoverage(Double.parseDouble(element.getAttributeByName(new QName(&quot;line-rate&quot;)).getValue()));</span>
+<span class="fc" id="L74">            coverage.setBranchCoverage(Double.parseDouble(element.getAttributeByName(new QName(&quot;branch-rate&quot;)).getValue()));</span>
+<span class="fc" id="L75">        }</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        else if (&quot;package&quot;.equals(element.getName().getLocalPart()))</span>
+	    {
+<span class="fc" id="L78">            Package pakage = (Package) unmarshaller.unmarshal(reader);</span>
+<span class="fc" id="L79">            processPackage(pakage);</span>
+	    }
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * Processes the coverage results for a single package.
+     * @param pakage the Package to process.
+     */
+    private void processPackage(final Package pakage)
+    {
+<span class="fc" id="L89">        Coverage coverage = stats.getCoverage();</span>
+<span class="fc" id="L90">        PackageCoverage packageCoverage = new PackageCoverage(pakage.getName());</span>
+<span class="fc" id="L91">        coverage.addPackage(packageCoverage);</span>
+
+<span class="fc" id="L93">        packageCoverage.setLineCoverage(pakage.getLineRate().doubleValue());</span>
+<span class="fc" id="L94">        packageCoverage.setBranchCoverage(pakage.getBranchRate().doubleValue());</span>
+
+<span class="fc" id="L96">        List&lt;Clazz&gt; classes = pakage.getClasses().getClazz();</span>
+
+        // Loop through all the package's classes and add them to the coverage
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for (Clazz clazz : classes)</span>
+        {
+            // We always use the enclosing class's name
+<span class="fc" id="L102">            String fileName = clazz.getFilename();</span>
+<span class="fc" id="L103">            String className = fileName.substring(0, fileName.length() - &quot;.java&quot;.length());</span>
+<span class="fc" id="L104">            className = className.replaceAll(&quot;[/\\\\]&quot;, &quot;.&quot;);</span>
+<span class="fc" id="L105">            boolean isEnclosingClass = className.equals(clazz.getName());</span>
+
+<span class="fc" id="L107">            ClassCoverage classCoverage = packageCoverage.getClassCoverage(className);</span>
+
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">            if (classCoverage == null)</span>
+            {
+<span class="fc" id="L111">                classCoverage = new ClassCoverage(className);</span>
+<span class="fc" id="L112">                packageCoverage.addClass(classCoverage);</span>
+            }
+
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">            if (isEnclosingClass)</span>
+            {
+<span class="nc" id="L117">                classCoverage.setLineCoverage(clazz.getLineRate().doubleValue());</span>
+<span class="nc" id="L118">                classCoverage.setBranchCoverage(clazz.getBranchRate().doubleValue());</span>
+            }
+
+            // Add line coverage info
+<span class="fc bfc" id="L122" title="All 2 branches covered.">            for (Object obj : clazz.getLines().getContent())</span>
+            {
+<span class="fc bfc" id="L124" title="All 2 branches covered.">                if (obj instanceof Line)</span>
+                {
+<span class="fc" id="L126">                    Line line = (Line) obj;</span>
+
+<span class="fc" id="L128">                    classCoverage.addLineCoverage(line.getNumber(), line.getHits(), line.isBranch());</span>
+
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">                    if (line.getConditionCoverage() != null)</span>
+                    {
+<span class="nc" id="L132">                        String conditionCoverage = line.getConditionCoverage();</span>
+<span class="nc" id="L133">                        int index = conditionCoverage.indexOf('%');</span>
+<span class="nc" id="L134">                        int percent = Integer.parseInt(conditionCoverage.substring(0, index));</span>
+
+<span class="nc" id="L136">                        classCoverage.addBranchCoverage(line.getNumber(), percent / 100.0);</span>
+                    }
+                }
+<span class="fc" id="L139">            }</span>
+<span class="fc" id="L140">        }</span>
+<span class="fc" id="L141">    }</span>
+
+
+    /**
+     * @return the description of this WorkUnit
+     */
+    public String getDescription()
+    {
+<span class="nc" id="L149">        return &quot;Reading Cobertura results&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

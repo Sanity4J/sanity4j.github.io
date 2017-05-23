@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PackageSummary.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.model.summary</a> &gt; <span class="el_source">PackageSummary.java</span></div><h1>PackageSummary.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.model.summary; 
+
+import java.util.Date;
+
+/** 
+ * PackageSummary - a quality summary entry. 
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+<span class="fc" id="L11">public final class PackageSummary</span>
+{
+    /** The date that the analysis was performed. */
+    private Date runDate;
+    
+    /** The java package name that this summary is for. */
+    private String packageName;
+    
+    /** jUnit test line coverage [0.0 .. 1.0]. */
+    private double lineCoverage;
+    
+    /** jUnit test branch coverage [0.0 .. 1.0]. */
+    private double branchCoverage;
+
+    /** The number of 'info' level diagnostics. */
+    private int infoCount;
+    
+    /** The number of 'low' level diagnostics. */
+    private int lowCount;
+    
+    /** The number of 'moderate' level diagnostics. */
+    private int moderateCount;
+    
+    /** The number of 'significant' level diagnostics. */
+    private int significantCount;
+    
+    /** The number of 'high' level diagnostics. */
+    private int highCount;
+    
+    /** The number of lines of code in the package. */
+    private int lineCount;
+    
+    /**
+     * @return Returns the branchCoverage.
+     */
+    public double getBranchCoverage()
+    {
+<span class="fc" id="L48">        return branchCoverage;</span>
+    }
+    
+    /**
+     * @param branchCoverage The branchCoverage to set.
+     */
+    public void setBranchCoverage(final double branchCoverage)
+    {
+<span class="fc" id="L56">        this.branchCoverage = branchCoverage;</span>
+<span class="fc" id="L57">    }</span>
+    
+    /**
+     * @return Returns the lineCoverage.
+     */
+    public double getLineCoverage()
+    {
+<span class="fc" id="L64">        return lineCoverage;</span>
+    }
+    
+    /**
+     * @param lineCoverage The lineCoverage to set.
+     */
+    public void setLineCoverage(final double lineCoverage)
+    {
+<span class="fc" id="L72">        this.lineCoverage = lineCoverage;</span>
+<span class="fc" id="L73">    }</span>
+    
+    /**
+     * @return Returns the packageName.
+     */
+    public String getPackageName()
+    {
+<span class="fc" id="L80">        return packageName;</span>
+    }
+    
+    /**
+     * @param packageName The packageName to set.
+     */
+    public void setPackageName(final String packageName)
+    {
+<span class="fc" id="L88">        this.packageName = packageName;</span>
+<span class="fc" id="L89">    }</span>
+    
+    /**
+     * @return the infoCount
+     */
+    public int getInfoCount()
+    {
+<span class="fc" id="L96">        return infoCount;</span>
+    }
+
+    /**
+     * @param infoCount the infoCount to set
+     */
+    public void setInfoCount(final int infoCount)
+    {
+<span class="fc" id="L104">        this.infoCount = infoCount;</span>
+<span class="fc" id="L105">    }</span>
+
+    /**
+     * @return the lowCount
+     */
+    public int getLowCount()
+    {
+<span class="fc" id="L112">        return lowCount;</span>
+    }
+
+    /**
+     * @param lowCount the lowCount to set
+     */
+    public void setLowCount(final int lowCount)
+    {
+<span class="fc" id="L120">        this.lowCount = lowCount;</span>
+<span class="fc" id="L121">    }</span>
+
+    /**
+     * @return the moderateCount
+     */
+    public int getModerateCount()
+    {
+<span class="fc" id="L128">        return moderateCount;</span>
+    }
+
+    /**
+     * @param moderateCount the moderateCount to set
+     */
+    public void setModerateCount(final int moderateCount)
+    {
+<span class="fc" id="L136">        this.moderateCount = moderateCount;</span>
+<span class="fc" id="L137">    }</span>
+
+    /**
+     * @return the significantCount
+     */
+    public int getSignificantCount()
+    {
+<span class="fc" id="L144">        return significantCount;</span>
+    }
+
+    /**
+     * @param significantCount the significantCount to set
+     */
+    public void setSignificantCount(final int significantCount)
+    {
+<span class="fc" id="L152">        this.significantCount = significantCount;</span>
+<span class="fc" id="L153">    }</span>
+
+    /**
+     * @return the highCount
+     */
+    public int getHighCount()
+    {
+<span class="fc" id="L160">        return highCount;</span>
+    }
+
+    /**
+     * @param highCount the highCount to set
+     */
+    public void setHighCount(final int highCount)
+    {
+<span class="fc" id="L168">        this.highCount = highCount;</span>
+<span class="fc" id="L169">    }</span>
+
+    /**
+     * @return Returns the runDate.
+     */
+    public Date getRunDate()
+    {
+<span class="fc" id="L176">        return runDate;</span>
+    }
+    
+    /**
+     * @param runDate The runDate to set.
+     */
+    public void setRunDate(final Date runDate)
+    {
+<span class="fc" id="L184">        this.runDate = runDate;</span>
+<span class="fc" id="L185">    }</span>
+    
+    /**
+     * @return the lineCount
+     */
+    public int getLineCount()
+    {
+<span class="fc" id="L192">        return lineCount;</span>
+    }
+
+    /**
+     * @param lineCount the lineCount to set
+     */
+    public void setLineCount(final int lineCount)
+    {
+<span class="fc" id="L200">        this.lineCount = lineCount;</span>
+<span class="fc" id="L201">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

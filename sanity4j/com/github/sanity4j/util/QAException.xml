@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.util.QAException" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="33" branchCoverage="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.util;</line>
+<line/>
+<line>/**</line>
+<line> * This exception can be thrown to indicate a failure in the QA process. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class QAException extends RuntimeException</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a QAException with the specified message.</line>
+<line>     * </line>
+<line>     * @param msg the message.</line>
+<line>     */</line>
+<line>	public QAException(final String msg)</line>
+<line>	{</line>
+<line covered="no">		super(msg);</line>
+<line covered="no">	}</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a QAException with the specified message and cause.</line>
+<line>     * </line>
+<line>     * @param msg the message.</line>
+<line>     * @param throwable the cause of the exception.</line>
+<line>     */</line>
+<line>	public QAException(final String msg, final Throwable throwable)</line>
+<line>	{</line>
+<line covered="yes">		super(msg, throwable);</line>
+<line covered="yes">	}</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a QAException with the specified cause.</line>
+<line>     * </line>
+<line>     * @param throwable the cause of the exception.</line>
+<line>     */</line>
+<line>	public QAException(final Throwable throwable)</line>
+<line>	{</line>
+<line covered="no">		super(throwable);</line>
+<line covered="no">	}</line>
+<line>}</line>
+</source>
+</classDetails>

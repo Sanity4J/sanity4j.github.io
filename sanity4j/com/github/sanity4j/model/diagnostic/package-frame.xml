@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-frame.xsl"?>
+<packageClasses packageName="com.github.sanity4j.model.diagnostic" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<class name="com.github.sanity4j.model.diagnostic.Diagnostic" high="0" significant="0" moderate="1" low="2" info="0"/>
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticCategory" high="0" significant="0" moderate="0" low="1" info="1"/>
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticCategory_Test" high="0" significant="0" moderate="0" low="2" info="0"/>
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticFactory" high="0" significant="1" moderate="0" low="2" info="0"/>
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticSet" high="0" significant="1" moderate="1" low="0" info="0"/>
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticSet_Test" high="0" significant="0" moderate="0" low="15" info="0"/>
+<class name="com.github.sanity4j.model.diagnostic.Diagnostic_Test" high="0" significant="0" moderate="0" low="1" info="0"/>
+</packageClasses>

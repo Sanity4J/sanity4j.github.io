@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QaApp.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.ui</a> &gt; <span class="el_source">QaApp.java</span></div><h1>QaApp.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.ui; 
+
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.workflow.QAProcessor;
+
+/** 
+ * QaApp is the main entry point to the Swing UI interface to Sanity4J.
+ * 
+ * TODO: Multiple project source etc. directories, includes, excludes
+ * 
+ * @author Yiannis Paschalidis 
+ * @since Sanity4J 1.0
+ */
+public final class QaApp extends JFrame
+{
+    /** The file name that configuration data is saved in, in the user's home directory. */
+    private static final String PROPERTIES_FILE_NAME = &quot;sanity4j-ui.properties&quot;;
+    
+    /** File input field for selecting the tools directory. */
+<span class="nc" id="L47">    private final FileInput productsDir = new FileInput(true);</span>
+    
+    /** File input field for selecting the java runtime executable. */
+<span class="nc" id="L50">    private final FileInput javaRuntime = new FileInput(false);</span>
+    
+    /** File input field for selecting the java runtime args. */
+<span class="nc" id="L53">    private final JTextField javaArgs = new JTextField(40);</span>
+    
+    /** File input field for selecting the project's class directory. */
+<span class="nc" id="L56">    private final FileInput classDir = new FileInput(true);</span>
+    
+    /** File input field for selecting the project's source directory. */
+<span class="nc" id="L59">    private final FileInput srcDir = new FileInput(true);</span>
+    
+    /** File input field for selecting the project's library directory. */
+<span class="nc" id="L62">    private final FileInput libDir = new FileInput(true);</span>
+    
+    /** File input field for selecting the project's coverage data file. */
+<span class="nc" id="L65">    private final FileInput coverageFile = new FileInput(false);</span>
+    
+    /** File input field for selecting the report output directory. */
+<span class="nc" id="L68">    private final FileInput reportDir = new FileInput(true);</span>
+    
+    /** File input field for selecting the summary CSV export. */
+<span class="nc" id="L71">    private final FileInput summaryOutputFile = new FileInput(false);</span>
+    
+    /** Controls whether to open the report on successful completion. */
+<span class="nc" id="L74">    private final JCheckBox openReportOnCompletion = new JCheckBox(&quot;Open report on completion&quot;);</span>
+    
+    ///** The button which displays the {@link QaConfigFrame}. */
+    //private final JButton advancedButton = new JButton(&quot;Advanced&quot;);
+    
+    /** The configuration used by the sanity4j application. */
+<span class="nc" id="L80">    private final QAProcessor processor = new QAProcessor();</span>
+    
+    // Disable the advanced button for now
+    ///** A frame used to modify the {@link QAConfig}. */
+    //private final QaConfigFrame qaConfigFrame = new QaConfigFrame(processor);
+    
+    /** The button which starts the analysis. */
+<span class="nc" id="L87">    private final JButton runButton = new JButton(&quot;Analyse&quot;);</span>
+    
+    /** Displays console output which is generated during the analysis process. */
+<span class="nc" id="L90">    private final JTextArea console = new JTextArea(10, 60);</span>
+    
+    /** The inset. */
+    private static final int INSET = 5; 
+
+    /**
+     * Creates a QaApp.
+     */
+    public QaApp()
+    {
+<span class="nc" id="L100">        super(&quot;Sanity4J UI &quot; + QAProcessor.QA_VERSION);</span>
+        
+<span class="nc" id="L102">        JPanel contentPane = new JPanel();</span>
+<span class="nc" id="L103">        contentPane.setBorder(new EmptyBorder(INSET, INSET, INSET, INSET));</span>
+<span class="nc" id="L104">        contentPane.setLayout(new GridBagLayout());</span>
+<span class="nc" id="L105">        setContentPane(contentPane);</span>
+
+<span class="nc" id="L107">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+        
+<span class="nc" id="L109">        addWindowListener(new WindowAdapter()</span>
+<span class="nc" id="L110">        {</span>
+            @Override
+            public void windowClosing(final WindowEvent event)
+            {
+<span class="nc" id="L114">                writeConfig();</span>
+<span class="nc" id="L115">            }</span>
+        });
+        
+        // Disable the &quot;Advanced&quot; button for now.
+        //advancedButton.addActionListener(new ActionListener()
+        //{
+        //    public void actionPerformed(final ActionEvent event)
+        //    {
+        //        if (!validateInput())
+        //        {
+        //            return;
+        //        }
+        //
+        //        saveConfig();
+        //        qaConfigFrame.setVisible(true);
+        //    }
+        //});
+        
+<span class="nc" id="L133">        runButton.addActionListener(new ActionListener()</span>
+<span class="nc" id="L134">        {</span>
+            public void actionPerformed(final ActionEvent event)
+            {
+<span class="nc" id="L137">                runQA();</span>
+<span class="nc" id="L138">            }</span>
+        });
+        
+<span class="nc" id="L141">        console.setEditable(false);</span>
+
+<span class="nc" id="L143">        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();</span>
+        
+<span class="nc" id="L145">        layoutInterface();</span>
+<span class="nc" id="L146">        pack();        </span>
+<span class="nc" id="L147">        setLocation((screenSize.width - getWidth()) / 2, (screenSize.height - getHeight()) / 2); </span>
+        
+<span class="nc" id="L149">        readConfig();</span>
+<span class="nc" id="L150">    }</span>
+    
+    /**
+     * Adds the various components to the app interace.
+     */
+    private void layoutInterface()
+    {
+<span class="nc" id="L157">        int gridy = 0;</span>
+
+<span class="nc" id="L159">        add(new JLabel(&quot;Sanity4j Configuration&quot;), 0, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+        
+<span class="nc" id="L161">        add(new FieldLabel(&quot;Directory containing analysis tools&quot;, true), 0, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </span>
+<span class="nc" id="L162">        add(productsDir, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL); </span>
+
+<span class="nc" id="L164">        add(new FieldLabel(&quot;Path to java executable&quot;, true), 0, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </span>
+<span class="nc" id="L165">        add(javaRuntime, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+        
+<span class="nc" id="L167">        add(new FieldLabel(&quot;Args to java executable&quot;, true), 0, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </span>
+<span class="nc" id="L168">        add(javaArgs, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+        
+<span class="nc" id="L170">        add(new JLabel(&quot; &quot;), 0, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L171">        add(new JLabel(&quot;Project settings&quot;), 0, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+        
+<span class="nc" id="L173">        add(new FieldLabel(&quot;Source directory (or parent)&quot;, true), 0, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </span>
+<span class="nc" id="L174">        add(srcDir, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+        
+<span class="nc" id="L176">        add(new FieldLabel(&quot;Class directory (or parent)&quot;, true), 0, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </span>
+<span class="nc" id="L177">        add(classDir, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+        
+<span class="nc" id="L179">        add(new FieldLabel(&quot;Library directory (or parent)&quot;, false), 0, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </span>
+<span class="nc" id="L180">        add(libDir, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+        
+<span class="nc" id="L182">        add(new FieldLabel(&quot;Test coverage data file&quot;, false), 0, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </span>
+<span class="nc" id="L183">        add(coverageFile, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+        
+<span class="nc" id="L185">        add(new JLabel(&quot; &quot;), 0, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L186">        add(new JLabel(&quot;Output options&quot;), 0, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+        
+<span class="nc" id="L188">        add(new FieldLabel(&quot;Report output directory&quot;, true), 0, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </span>
+<span class="nc" id="L189">        add(reportDir, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+        
+<span class="nc" id="L191">        add(new FieldLabel(&quot;Summary data CSV export file&quot;, false), 0, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </span>
+<span class="nc" id="L192">        add(summaryOutputFile, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+        
+        // Disable the &quot;Advanced&quot; button for now.
+        //add(advancedButton, 0, gridy++, 2, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); 
+        
+        try
+        {
+<span class="nc" id="L199">            Class.forName(&quot;java.awt.Desktop&quot;);</span>
+<span class="nc" id="L200">            add(openReportOnCompletion, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+        }
+<span class="nc" id="L202">        catch (ClassNotFoundException ex)</span>
+        {
+<span class="nc" id="L204">            openReportOnCompletion.setVisible(false);</span>
+<span class="nc" id="L205">        }</span>
+        
+<span class="nc" id="L207">        add(new JLabel(&quot; &quot;), 0, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L208">        add(runButton, 0, gridy++, 2, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);        </span>
+        
+<span class="nc" id="L210">        add(new JLabel(&quot;Console&quot;), 0, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L211">        add(new JScrollPane(console), 0, gridy++, 2, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH);</span>
+<span class="nc" id="L212">    }</span>
+    
+    /**
+     * Validates the input which has been entered, returning false on error.
+     * @return true if the input is valid, false otherwise.
+     */
+    private boolean validateInput()
+    {
+<span class="nc bnc" id="L220" title="All 4 branches missed.">        if (productsDir.getFile() == null || !productsDir.getFile().exists())</span>
+        {
+<span class="nc" id="L222">            JOptionPane.showMessageDialog(this, &quot;The Products directory must be specified&quot;);</span>
+<span class="nc" id="L223">            return false;</span>
+        }
+        
+<span class="nc bnc" id="L226" title="All 4 branches missed.">        if (javaRuntime.getFile() == null || !javaRuntime.getFile().exists())</span>
+        {
+<span class="nc" id="L228">            JOptionPane.showMessageDialog(this, &quot;The java runtime must be specified&quot;);</span>
+<span class="nc" id="L229">            return false;</span>
+        }
+
+<span class="nc bnc" id="L232" title="All 4 branches missed.">        if (srcDir.getFile() == null || !srcDir.getFile().exists())</span>
+        {
+<span class="nc" id="L234">            JOptionPane.showMessageDialog(this, &quot;The source directory must be specified&quot;);</span>
+<span class="nc" id="L235">            return false;</span>
+        }
+        
+<span class="nc bnc" id="L238" title="All 4 branches missed.">        if (classDir.getFile() == null || !classDir.getFile().exists())</span>
+        {
+<span class="nc" id="L240">            JOptionPane.showMessageDialog(this, &quot;The class directory must be specified&quot;);</span>
+<span class="nc" id="L241">            return false;</span>
+        }
+
+<span class="nc bnc" id="L244" title="All 4 branches missed.">        if (libDir.getFile() != null &amp;&amp; !libDir.getFile().exists())</span>
+        {
+<span class="nc" id="L246">            JOptionPane.showMessageDialog(this, &quot;The library directory is invalid (file not found)&quot;);</span>
+<span class="nc" id="L247">            return false;</span>
+        }
+
+<span class="nc bnc" id="L250" title="All 4 branches missed.">        if (coverageFile.getFile() != null &amp;&amp; !coverageFile.getFile().exists())</span>
+        {
+<span class="nc" id="L252">            JOptionPane.showMessageDialog(this, &quot;The coverage data file is invalid (file not found)&quot;);</span>
+<span class="nc" id="L253">            return false;</span>
+        }
+        
+<span class="nc bnc" id="L256" title="All 4 branches missed.">        if (reportDir.getFile() == null || !reportDir.getFile().exists())</span>
+        {
+<span class="nc" id="L258">            JOptionPane.showMessageDialog(this, &quot;The report directory must be specified&quot;);</span>
+<span class="nc" id="L259">            return false;</span>
+        }
+        
+<span class="nc" id="L262">        return true;</span>
+    }
+
+    /**
+     * Runs the QA tool with the configuration entered through the UI.
+     */
+    private void runQA()
+    {
+<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (!validateInput())</span>
+        {
+<span class="nc" id="L272">            return;</span>
+        }
+        
+<span class="nc" id="L275">        runButton.setEnabled(false);</span>
+<span class="nc" id="L276">        console.setText(&quot;&quot;);</span>
+<span class="nc" id="L277">        saveConfig();</span>
+        
+<span class="nc" id="L279">        new Thread()</span>
+<span class="nc" id="L280">        {</span>
+            @Override
+            public void run()
+            {
+                try
+                {
+<span class="nc" id="L286">                    processor.run();</span>
+                    
+<span class="nc bnc" id="L288" title="All 4 branches missed.">                    if (openReportOnCompletion.isVisible() &amp;&amp; openReportOnCompletion.isSelected())</span>
+                    {
+<span class="nc" id="L290">                        File index = new File(reportDir.getFile(), &quot;index.html&quot;);</span>
+                        
+                        // Use of reflections here is required as we still need to compile under java 1.5.
+                        //Desktop.getDesktop().open(index);
+                        try
+                        {
+<span class="nc" id="L296">                            Class&lt;?&gt; clazz = Class.forName(&quot;java.awt.Desktop&quot;);</span>
+<span class="nc" id="L297">                            Object instance = clazz.getMethod(&quot;getDesktop&quot;).invoke(null);</span>
+<span class="nc" id="L298">                            clazz.getMethod(&quot;open&quot;, File.class).invoke(instance, index);</span>
+                        }
+<span class="nc" id="L300">                        catch (ClassNotFoundException ex)</span>
+                        {
+                            // Pre-java 1.6
+<span class="nc" id="L303">                            QaLogger.getInstance().error(&quot;Open document failed, Requires java 1.6+&quot;, ex);</span>
+                        }
+<span class="nc" id="L305">                        catch (Exception ex)</span>
+                        {
+<span class="nc" id="L307">                            QaLogger.getInstance().error(&quot;Failed to open report&quot;, ex);</span>
+<span class="nc" id="L308">                        }</span>
+                    }
+                }
+<span class="nc" id="L311">                catch (Throwable ex)</span>
+                {
+                    // Need to catch throwable rather than exception, to e.g. catch JAXB LinkageErrors.
+<span class="nc" id="L314">                    QaLogger.getInstance().error(&quot;QA failed&quot;, ex);</span>
+                }
+                finally
+                {
+<span class="nc" id="L318">                    runButton.setEnabled(true);</span>
+<span class="nc" id="L319">                }</span>
+<span class="nc" id="L320">            }</span>
+<span class="nc" id="L321">        } .start();</span>
+<span class="nc" id="L322">    }</span>
+
+    /**
+     * Save the data input into the QaApp to the processor configuration.
+     */
+    private void saveConfig()
+    {
+<span class="nc" id="L329">        processor.getConfig().addSourcePath(srcDir.getFile().getPath());</span>
+<span class="nc" id="L330">        processor.getConfig().addClassPath(classDir.getFile().getPath());</span>
+<span class="nc" id="L331">        processor.getConfig().setProductsDir(productsDir.getFile().getPath());</span>
+        
+<span class="nc bnc" id="L333" title="All 2 branches missed.">        if (coverageFile.getFile() != null)</span>
+        {
+<span class="nc" id="L335">            processor.getConfig().setCoverageDataFile(coverageFile.getFile().getPath());</span>
+        }
+        
+<span class="nc" id="L338">        processor.getConfig().setReportDir(reportDir.getFile().getPath());</span>
+<span class="nc" id="L339">        processor.getConfig().setJavaRuntime(javaRuntime.getFile().getPath());</span>
+<span class="nc" id="L340">        processor.getConfig().setJavaArgs(javaArgs.getText());</span>
+        
+<span class="nc bnc" id="L342" title="All 2 branches missed.">        if (summaryOutputFile.getFile() != null)</span>
+        {
+<span class="nc" id="L344">            processor.getConfig().setSummaryDataFile(summaryOutputFile.getFile().getPath());</span>
+        }
+<span class="nc" id="L346">    }</span>
+    
+    /**
+     * Adds a component to the content pane.
+     * @param component the component to add.
+     * @param gridx the x grid co-ordinate.
+     * @param gridy the y grid co-ordinate.
+     * @param gridwidth the number of horizontal grid units to occupy.
+     * @param gridheight the number of vertical grid units to occupy.
+     * @param anchor the position of the component within the cell.
+     * @param fill the fill mode when the component is smaller than the cell.
+     */
+    private void add(final JComponent component, final int gridx, final int gridy, final int gridwidth, 
+                     final int gridheight, final int anchor, final int fill)
+    {
+<span class="nc" id="L361">        GridBagConstraints constraints = new GridBagConstraints();</span>
+<span class="nc" id="L362">        constraints.gridx = gridx;</span>
+<span class="nc" id="L363">        constraints.gridy = gridy;</span>
+<span class="nc" id="L364">        constraints.gridwidth = gridwidth;</span>
+<span class="nc" id="L365">        constraints.gridheight = gridheight;</span>
+<span class="nc" id="L366">        constraints.anchor = anchor;</span>
+<span class="nc" id="L367">        constraints.fill = fill;</span>
+        
+<span class="nc bnc" id="L369" title="All 4 branches missed.">        if (fill == GridBagConstraints.HORIZONTAL || fill == GridBagConstraints.BOTH)</span>
+        {
+<span class="nc" id="L371">            constraints.weightx = 1.0;</span>
+        }
+        
+<span class="nc bnc" id="L374" title="All 4 branches missed.">        if (fill == GridBagConstraints.VERTICAL || fill == GridBagConstraints.BOTH)</span>
+        {
+<span class="nc" id="L376">            constraints.weighty = 1.0;</span>
+        }
+        
+<span class="nc" id="L379">        getContentPane().add(component);</span>
+<span class="nc" id="L380">        ((GridBagLayout) getContentPane().getLayout()).setConstraints(component, constraints);</span>
+<span class="nc" id="L381">    }</span>
+
+    /**
+     * Reads the QaApp configuration file, applying settings as necessary.
+     * This is normally called once on application start-up.
+     */
+    private void readConfig()
+    {
+<span class="nc" id="L389">        Properties props = new Properties();</span>
+<span class="nc" id="L390">        File file = new File(System.getProperty(&quot;user.home&quot;), PROPERTIES_FILE_NAME);</span>
+<span class="nc" id="L391">        FileInputStream fis = null;</span>
+        
+<span class="nc bnc" id="L393" title="All 2 branches missed.">        if (file.exists())</span>
+        {
+            try
+            {
+<span class="nc" id="L397">                fis = new FileInputStream(file);</span>
+<span class="nc" id="L398">                props.load(fis);</span>
+            }
+<span class="nc" id="L400">            catch (IOException e)</span>
+            {
+<span class="nc" id="L402">                JOptionPane.showMessageDialog(this, &quot;Failed to load preferences from &quot; + file);</span>
+            }
+            finally
+            {
+<span class="nc" id="L406">                QaUtil.safeClose(fis);</span>
+<span class="nc" id="L407">            }</span>
+            
+<span class="nc" id="L409">            productsDir.setText(props.getProperty(&quot;productsDir&quot;));</span>
+<span class="nc" id="L410">            javaRuntime.setText(props.getProperty(&quot;javaRuntime&quot;));</span>
+<span class="nc" id="L411">            javaArgs.setText(props.getProperty(&quot;javaArgs&quot;));</span>
+<span class="nc" id="L412">            classDir.setText(props.getProperty(&quot;classDir&quot;));</span>
+<span class="nc" id="L413">            srcDir.setText(props.getProperty(&quot;srcDir&quot;));</span>
+<span class="nc" id="L414">            libDir.setText(props.getProperty(&quot;libDir&quot;));</span>
+<span class="nc" id="L415">            coverageFile.setText(props.getProperty(&quot;coverageFile&quot;));</span>
+<span class="nc" id="L416">            reportDir.setText(props.getProperty(&quot;reportDir&quot;));</span>
+<span class="nc" id="L417">            summaryOutputFile.setText(props.getProperty(&quot;summaryOutputFile&quot;));</span>
+<span class="nc" id="L418">            openReportOnCompletion.setSelected(&quot;true&quot;.equalsIgnoreCase(props.getProperty(&quot;openReportOnCompletion&quot;)));</span>
+        }
+        else
+        {
+<span class="nc" id="L422">            javaArgs.setText(processor.getConfig().getJavaArgs());</span>
+        }
+<span class="nc" id="L424">    }</span>
+    
+    /**
+     * Writes the QaApp configuration file with the current settings.
+     * This is normally called once on application shut-down.
+     */
+    private void writeConfig()
+    {
+<span class="nc" id="L432">        Properties props = new Properties();</span>
+<span class="nc" id="L433">        props.put(&quot;productsDir&quot;, productsDir.getText());</span>
+<span class="nc" id="L434">        props.put(&quot;productsDir&quot;, productsDir.getText());</span>
+<span class="nc" id="L435">        props.put(&quot;javaRuntime&quot;, javaRuntime.getText());</span>
+<span class="nc" id="L436">        props.put(&quot;javaArgs&quot;, javaArgs.getText());</span>
+<span class="nc" id="L437">        props.put(&quot;classDir&quot;, classDir.getText());</span>
+<span class="nc" id="L438">        props.put(&quot;srcDir&quot;, srcDir.getText());</span>
+<span class="nc" id="L439">        props.put(&quot;libDir&quot;, libDir.getText());</span>
+<span class="nc" id="L440">        props.put(&quot;coverageFile&quot;, coverageFile.getText());</span>
+<span class="nc" id="L441">        props.put(&quot;reportDir&quot;, reportDir.getText());</span>
+<span class="nc bnc" id="L442" title="All 2 branches missed.">        props.put(&quot;openReportOnCompletion&quot;, openReportOnCompletion.isSelected() ? &quot;true&quot; : &quot;false&quot;);</span>
+<span class="nc" id="L443">        props.put(&quot;summaryOutputFile&quot;, summaryOutputFile.getText());</span>
+        
+<span class="nc" id="L445">        File file = new File(System.getProperty(&quot;user.home&quot;), PROPERTIES_FILE_NAME);</span>
+<span class="nc" id="L446">        FileOutputStream fos = null;</span>
+        
+        try
+        {
+<span class="nc" id="L450">            fos = new FileOutputStream(file);</span>
+<span class="nc" id="L451">            props.store(fos, &quot;QaApp properties&quot;);</span>
+        }
+<span class="nc" id="L453">        catch (IOException e)</span>
+        {
+<span class="nc" id="L455">            JOptionPane.showMessageDialog(this, &quot;Failed to save preferences to &quot; + file);</span>
+        }
+        finally
+        {
+<span class="nc" id="L459">            QaUtil.safeClose(fos);</span>
+<span class="nc" id="L460">        }</span>
+<span class="nc" id="L461">    }    </span>
+
+    /**
+     * Main entry point to the QA App.
+     * @param args ignored - there are no command line arguments.
+     */
+    public static void main(final String[] args)
+    {
+<span class="nc" id="L469">        QaApp app = new QaApp();</span>
+<span class="nc" id="L470">        QaLogger.setLogger(new QaLoggerJTextAreaImpl(app.console));</span>
+        
+<span class="nc" id="L472">        app.setVisible(true);</span>
+<span class="nc" id="L473">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

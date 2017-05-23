@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.ReportProducer" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="1" info="0" quality="97"/>
+<source>
+<line>package com.github.sanity4j.workflow;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line/>
+<line>import com.github.sanity4j.report.ReportWriter;</line>
+<line>import com.github.sanity4j.util.ExtractStats;</line>
+<line>import com.github.sanity4j.util.FileUtil;</line>
+<line>import com.github.sanity4j.util.QAException;</line>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line/>
+<line>/**</line>
+<line> * A {@link WorkUnit} that produces the report for the current run.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public final class ReportProducer implements WorkUnit</line>
+<line>{</line>
+<line>    /** The number of milli-seconds in a second. */</line>
+<line>    private static final int MILLISECONDS_PER_SECOND = 1000;</line>
+<line/>
+<line>    /** The QA configuration for the current run. */</line>
+<line>    private final QAConfig config;</line>
+<line/>
+<line>    /** The statistics/diagnostics for the current run. */</line>
+<line>    private final ExtractStats stats;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a ReportProducer.</line>
+<line>     * </line>
+<line>     * @param config the configuration for the current run.</line>
+<line>     * @param stats the statistics/diagnostics for the current run.</line>
+<line>     */</line>
+<line>    public ReportProducer(final QAConfig config, final ExtractStats stats)</line>
+<line>    {</line>
+<line>        this.config = config;</line>
+<line>        this.stats = stats;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Produces the report.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line sev="1"><diag id="826"/>        long start = System.currentTimeMillis();</line>
+<line>        FileUtil.createDir(config.getReportDir());</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line>            File reportDirFile = new File(config.getReportDir());</line>
+<line>            boolean diagnosticsFirst = config.getDiagnosticsFirst();</line>
+<line>            ReportWriter reportWriter = new ReportWriter(stats, diagnosticsFirst, reportDirFile);</line>
+<line>            reportWriter.produceReport(config);</line>
+<line>        }</line>
+<line>        catch (IOException e)</line>
+<line>        {</line>
+<line>            throw new QAException(&quot;Failed to write combined report&quot;, e);</line>
+<line>        }</line>
+<line/>
+<line>        long elapsed = System.currentTimeMillis() - start;</line>
+<line>        QaLogger.getInstance().info(&quot;Report generated in &quot; + (elapsed / MILLISECONDS_PER_SECOND) + &quot;s.&quot;);        </line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line>        return &quot;Producing combined report&quot;;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="826" sev="1" tool="PMD" rule="PrematureDeclaration">
+Avoid declaring a variable if it is unreferenced before a possible exit point.
+</diag>
+</diags>
+</classDetails>

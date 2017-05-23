@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.ant.taskdef.RunQA" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="1" info="0" quality="99"/>
+<source>
+<line sev="1"><diag id="1"/>package com.github.sanity4j.ant.taskdef;</line>
+<line/>
+<line>import org.apache.tools.ant.BuildException;</line>
+<line>import org.apache.tools.ant.Project;</line>
+<line>import org.apache.tools.ant.Task;</line>
+<line>import org.apache.tools.ant.types.Path;</line>
+<line>import org.apache.tools.ant.types.Reference;</line>
+<line/>
+<line>import com.github.sanity4j.util.QAException;</line>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line>import com.github.sanity4j.util.QaLoggerAntImpl;</line>
+<line>import com.github.sanity4j.workflow.QAProcessor;</line>
+<line/>
+<line>/**</line>
+<line> * This class is an Apache ANT task that runs Sanity4J against a project's source code and classes.</line>
+<line> * &lt;p&gt;</line>
+<line> * This task simply configures up a {@link QAProcessor} and then runs it in the {@link #execute()} method.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class RunQA extends Task</line>
+<line>{</line>
+<line>    /** The QAProcessor that runs the QA process. */</line>
+<line>    private final QAProcessor qaProcessor = new QAProcessor();</line>
+<line/>
+<line>    /**</line>
+<line>     * An ant type that stores a tool name / tool version / and the 'location' of a configuration file for the given</line>
+<line>     * tool.</line>
+<line>     */</line>
+<line>    public static class Configuration</line>
+<line>    {</line>
+<line>        /** The ANT project in which this Configuration was created. */</line>
+<line>        private final Project project;</line>
+<line/>
+<line>        /** The name of the tool to be configured. */</line>
+<line>        private String tool;</line>
+<line/>
+<line>        /** The version of the tool to be configured. */</line>
+<line>        private String version;</line>
+<line/>
+<line>        /** The additional class path used by the custom configuration. */</line>
+<line>        private Path classpath;</line>
+<line/>
+<line>        /** The 'location' of the configuration file for the given tool. */</line>
+<line>        private String config;</line>
+<line/>
+<line>        /**</line>
+<line>         * Creates a {@link Configuration} associated with the given ANT {@link Project}.</line>
+<line>         * </line>
+<line>         * @param project The ant project which created this {@link Configuration}.</line>
+<line>         */</line>
+<line>        public Configuration(final Project project)</line>
+<line>        {</line>
+<line>            this.project = project;</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @return the {@link #tool}.</line>
+<line>         */</line>
+<line>        public String getTool()</line>
+<line>        {</line>
+<line>            return tool;</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @return the {@link #version}</line>
+<line>         */</line>
+<line>        public String getVersion()</line>
+<line>        {</line>
+<line>            return version;</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @return the {@link #config}.</line>
+<line>         */</line>
+<line>        public String getConfig()</line>
+<line>        {</line>
+<line>            return config;</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @return the {@link #classpath}.</line>
+<line>         */</line>
+<line>        public String getClasspath()</line>
+<line>        {</line>
+<line>        	if (classpath == null)</line>
+<line>        	{</line>
+<line>        		return null;</line>
+<line>        	}</line>
+<line>        	else</line>
+<line>        	{</line>
+<line>        		return classpath.toString();</line>
+<line>        	}</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @param tool the value to which to set {@link #tool}.</line>
+<line>         */</line>
+<line>        public void setTool(final String tool)</line>
+<line>        {</line>
+<line>            this.tool = tool;</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @param version the value to which to set {@link #version}.</line>
+<line>         */</line>
+<line>        public void setVersion(final String version)</line>
+<line>        {</line>
+<line>            this.version = version;</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @param config the value to which to set {@link #config}.</line>
+<line>         */</line>
+<line>        public void setConfig(final String config)</line>
+<line>        {</line>
+<line>            this.config = config;</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @return the created classpath from the project.</line>
+<line>         */</line>
+<line>        public Path createClasspath()</line>
+<line>        {</line>
+<line>        	if (classpath == null)</line>
+<line>        	{</line>
+<line>        		classpath = new Path(project); </line>
+<line>        	}</line>
+<line/>
+<line>        	return classpath.createPath();</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * @param classpath the value to which to set {@link #classpath}.</line>
+<line>         */</line>
+<line>        public void setClasspath(final Path classpath)</line>
+<line>        {</line>
+<line>        	if (this.classpath == null)</line>
+<line>        	{</line>
+<line>        		this.classpath = classpath;</line>
+<line>        	}</line>
+<line>        	else</line>
+<line>        	{</line>
+<line>        		this.classpath.append(classpath);</line>
+<line>        	}</line>
+<line>        }</line>
+<line/>
+<line>        /**</line>
+<line>         * Set the {@link #classpath} from a reference to another classpath.</line>
+<line>         * </line>
+<line>         * @param reference The reference from which the value of {@link #classpath} is to be derived. </line>
+<line>         */</line>
+<line>        public void setClasspathRef(final Reference reference)</line>
+<line>        {</line>
+<line>        	createClasspath().setRefid(reference);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Adds the given path to the list of sources.</line>
+<line>     * </line>
+<line>     * @param path the source path to add.</line>
+<line>     */</line>
+<line>    public void addConfiguredSourcepath(final Path path)</line>
+<line>    {</line>
+<line>        for (String pathElement : path.list())</line>
+<line>        {</line>
+<line>            qaProcessor.getConfig().addSourcePath(pathElement);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Adds the given path to the list of classes.</line>
+<line>     * </line>
+<line>     * @param path the class path to add.</line>
+<line>     */</line>
+<line>    public void addConfiguredClasspath(final Path path)</line>
+<line>    {</line>
+<line>        for (String pathElement : path.list())</line>
+<line>        {</line>
+<line>            qaProcessor.getConfig().addClassPath(pathElement);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Adds the given path to the list of libraries.</line>
+<line>     * </line>
+<line>     * @param path the library path to add.</line>
+<line>     */</line>
+<line>    public void addConfiguredLibraryPath(final Path path)</line>
+<line>    {</line>
+<line>        for (String pathElement : path.list())</line>
+<line>        {</line>
+<line>            qaProcessor.getConfig().addLibraryPath(pathElement);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return a newly created {@link Configuration}.</line>
+<line>     */</line>
+<line>    public Configuration createConfiguration()</line>
+<line>    {</line>
+<line>        return new Configuration(getProject());</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param configuration The tool configuration to be added to the QA Configuration.</line>
+<line>     */</line>
+<line>    public void addConfiguredConfiguration(final Configuration configuration)</line>
+<line>    {</line>
+<line>    	if (configuration.getConfig() != null)</line>
+<line>    	{</line>
+<line>	        qaProcessor.getConfig().setToolConfig(</line>
+<line>	        	configuration.getTool(), configuration.getVersion(),</line>
+<line>	            configuration.getConfig(), configuration.getClasspath());</line>
+<line/>
+<line>	        if (configuration.getVersion() == null)</line>
+<line>	        {</line>
+<line>	            String version = qaProcessor.getConfig().getToolVersion(configuration.getTool());</line>
+<line/>
+<line>	            qaProcessor.getConfig().setToolConfig(</line>
+<line>	            	configuration.getTool(), version, </line>
+<line>	            	configuration.getConfig(), configuration.getClasspath());</line>
+<line>	        }</line>
+<line>    	}</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param javaRuntime The javaRuntime to set.</line>
+<line>     */</line>
+<line>    public void setJavaRuntime(final String javaRuntime)</line>
+<line>    {</line>
+<line>        qaProcessor.getConfig().setJavaRuntime(javaRuntime);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param javaArgs The javaArgs to set.</line>
+<line>     */</line>
+<line>    public void setJavaArgs(final String javaArgs)</line>
+<line>    {</line>
+<line>        qaProcessor.getConfig().setJavaArgs(javaArgs);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param productsDir The productsDir to set.</line>
+<line>     */</line>
+<line>    public void setProductsDir(final String productsDir)</line>
+<line>    {</line>
+<line>        qaProcessor.getConfig().setProductsDir(productsDir);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param reportDir The reportDir to set.</line>
+<line>     */</line>
+<line>    public void setReportDir(final String reportDir)</line>
+<line>    {</line>
+<line>        qaProcessor.getConfig().setReportDir(reportDir);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param coverageDataFile The coverageDataFile to set.</line>
+<line>     */</line>
+<line>    public void setCoverageDataFile(final String coverageDataFile)</line>
+<line>    {</line>
+<line>        qaProcessor.getConfig().setCoverageDataFile(coverageDataFile);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param path The coverageDataFile to add to the list.</line>
+<line>     */</line>
+<line>    public void addConfiguredCoverageDataFiles(final Path path)</line>
+<line>    {</line>
+<line>        for (String pathElement : path.list())</line>
+<line>        {</line>
+<line>            qaProcessor.getConfig().addCoverageDataFile(pathElement);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param coverageMergeDataFile The coverageMergeDataFile to set.</line>
+<line>     */</line>
+<line>    public void setCoverageMergeDataFile(final String coverageMergeDataFile)</line>
+<line>    {</line>
+<line>        qaProcessor.getConfig().setCoverageMergeDataFile(coverageMergeDataFile);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param externalPropertiesPath The externalPropertiesPath to set.</line>
+<line>     */</line>
+<line>    public void setExternalPropertiesPath(final String externalPropertiesPath)</line>
+<line>    {</line>
+<line>        qaProcessor.getConfig().setExternalPropertiesPath(externalPropertiesPath);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param summaryDataFile The summaryDataFile to set.</line>
+<line>     */</line>
+<line>    public void setSummaryDataFile(final String summaryDataFile)</line>
+<line>    {</line>
+<line>        qaProcessor.getConfig().setSummaryDataFile(summaryDataFile);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @param includeToolOutput The includeToolOutput to set.</line>
+<line>     */</line>
+<line>    public void setIncludeToolOutput(final String includeToolOutput)</line>
+<line>    {</line>
+<line>        qaProcessor.getConfig().setIncludeToolOutput(&quot;true&quot;.equalsIgnoreCase(includeToolOutput));</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Sets the maximum number of threads to use (default is 1).</line>
+<line>     * </line>
+<line>     * @param numThreads the maximum number of threads to use.</line>
+<line>     */</line>
+<line>    public void setNumThreads(final int numThreads)</line>
+<line>    {</line>
+<line>        qaProcessor.getConfig().setNumThreads(numThreads);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Executes this task, invoking the {@link QAProcessor} which has already been configured by Ant using the setters</line>
+<line>     * in this Task.</line>
+<line>     * </line>
+<line>     * @throws BuildException if there is an error executing the task.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>   public void execute() throws BuildException</line>
+<line>    {</line>
+<line>        QaLogger.getInstance().debug(&quot;Coverage Data File:       [&quot; + qaProcessor.getConfig().getCoverageDataFile() + &quot;]&quot;);</line>
+<line>        QaLogger.getInstance().debug(&quot;Coverage Merge Data File: [&quot; + qaProcessor.getConfig().getCoverageMergeDataFile() + &quot;]&quot;);</line>
+<line>        QaLogger.getInstance().debug(&quot;External Properties Path: [&quot; + qaProcessor.getConfig().getExternalPropertiesPath() + &quot;]&quot;);</line>
+<line>        QaLogger.getInstance().debug(&quot;Java Runtime:             [&quot; + qaProcessor.getConfig().getJavaRuntime() + &quot;]&quot;);</line>
+<line>        QaLogger.getInstance().debug(&quot;Java Args:                [&quot; + qaProcessor.getConfig().getJavaArgs() + &quot;]&quot;);</line>
+<line>        QaLogger.getInstance().debug(&quot;Number of Threads:        [&quot; + qaProcessor.getConfig().getNumThreads() + &quot;]&quot;);</line>
+<line>        QaLogger.getInstance().debug(&quot;Products Directory:       [&quot; + qaProcessor.getConfig().getProductsDir() + &quot;]&quot;);</line>
+<line>        QaLogger.getInstance().debug(&quot;Report Directory:         [&quot; + qaProcessor.getConfig().getReportDir() + &quot;]&quot;);</line>
+<line>        QaLogger.getInstance().debug(&quot;Summary DataFile:         [&quot; + qaProcessor.getConfig().getSummaryDataFile() + &quot;]&quot;);</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line>            // TODO: HACK! Get around Stax using the context classloader rather than this class's.</line>
+<line>            // Need to write a custom class loader which combines the two.</line>
+<line>            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();</line>
+<line>            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());</line>
+<line>            qaProcessor.run();</line>
+<line>            Thread.currentThread().setContextClassLoader(oldLoader);</line>
+<line>        }</line>
+<line>        catch (QAException ex)</line>
+<line>        {</line>
+<line>            throw new BuildException(ex.getMessage(), ex);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Override setProject to initialise the logger. No logging methods should be called before this method.</line>
+<line>     * </line>
+<line>     * @param project the project to set.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>   public void setProject(final Project project)</line>
+<line>    {</line>
+<line>        super.setProject(project);</line>
+<line>        QaLogger.setLogger(new QaLoggerAntImpl(this));</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="1" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+</diags>
+</classDetails>

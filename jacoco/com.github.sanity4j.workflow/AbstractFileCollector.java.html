@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractFileCollector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow</a> &gt; <span class="el_source">AbstractFileCollector.java</span></div><h1>AbstractFileCollector.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow; 
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.QAException;
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.util.QaUtil;
+
+/** 
+ * AbstractFileCollector collects files from multiple directory 
+ * hierarchies and places them in a single directory hierarchy. This is 
+ * necessary, as some tools don't allow multiple directories 
+ * to be specified.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public abstract class AbstractFileCollector implements WorkUnit
+{
+    /** The file extensions to include in the collection.  */
+    private final Set&lt;String&gt; includedFileExtensions;
+    
+    /** The destination directory. */
+    private final File destDir;
+    
+    /** The source directories. */
+    private final List&lt;File&gt; sourceDirs;
+    
+    /**
+     * Creates a AbstractFileCollector.
+     * @param includedFileExtensions the file extensions to include in the copy.
+     * @param sourceDirs the list of source directories to copy from.
+     * @param destDir the destination directory to copy to.
+     */
+    public AbstractFileCollector(final Set&lt;String&gt; includedFileExtensions, final List&lt;String&gt; sourceDirs, final File destDir)
+<span class="nc" id="L43">    {</span>
+<span class="nc" id="L44">        this.includedFileExtensions = includedFileExtensions;</span>
+<span class="nc" id="L45">        this.destDir = destDir;</span>
+        
+<span class="nc" id="L47">        this.sourceDirs = new ArrayList&lt;File&gt;(sourceDirs.size());</span>
+        
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        for (String dir : sourceDirs)</span>
+        {
+<span class="nc" id="L51">            this.sourceDirs.add(new File(dir));</span>
+<span class="nc" id="L52">        }</span>
+<span class="nc" id="L53">    }</span>
+    
+    /**
+     * Indicates whether at least one file must be copied. 
+     * This default implementation returns false. 
+     * 
+     * @return false
+     */
+    protected boolean isMandatory()
+    {
+<span class="nc" id="L63">        return false;</span>
+    }
+
+    /**
+     * Performs the file copying.
+     */
+    public void run()
+    {
+<span class="nc" id="L71">        QaLogger.getInstance().info(&quot;Creating combined &quot; + getItemType() + &quot; directory.&quot;);        </span>
+<span class="nc" id="L72">        FileUtil.createDir(destDir.getPath());</span>
+        
+<span class="nc" id="L74">        int count = copyFiles(sourceDirs, destDir);        </span>
+<span class="nc" id="L75">        QaLogger.getInstance().info(&quot;Copied &quot; + count + &quot; files.&quot;);</span>
+        
+<span class="nc bnc" id="L77" title="All 4 branches missed.">        if (count == 0 &amp;&amp; isMandatory())</span>
+        {
+<span class="nc" id="L79">            throw new QAException(&quot;\&quot;&quot; + getItemDescription() + &quot;\&quot; are required, but none were found.&quot;);</span>
+        }        
+<span class="nc" id="L81">    }</span>
+    
+    /** @return the type of item being copied, e.g. &quot;source&quot;, &quot;class&quot;. */
+    protected abstract String getItemType();
+    
+    /** @return the brief description of the type of item being copied, e.g. &quot;sources&quot;, &quot;classes&quot;. */
+    protected abstract String getItemDescription();
+    
+    /**
+     * Copies class files to the given directory, correcting for package names
+     * along the way. Optionally copies all files with the given extension.
+     * 
+     * The root packages is set to be the top level of the destination directory, 
+     * regardless of where the file originated from.
+     * 
+     * @param filePaths the files to copy
+     * @param destDir the destination directory
+     * 
+     * @return the number of files copied
+     */
+    private int copyFiles(final List&lt;File&gt; filePaths, final File destDir)
+    {
+<span class="nc" id="L103">        int count = 0;</span>
+
+        // We want to copy files from arbitrary subdirectories,
+        // while maintaining the package structure
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        for (Iterator&lt;File&gt; i = filePaths.iterator(); i.hasNext();)</span>
+        {
+<span class="nc" id="L109">            File source = i.next();</span>
+
+            // If it's a directory, recurse...
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (source.isDirectory())</span>
+            {
+<span class="nc" id="L114">                String[] containedNames = source.list();</span>
+<span class="nc" id="L115">                File[] containedFiles = new File[containedNames.length];</span>
+                
+<span class="nc bnc" id="L117" title="All 2 branches missed.">                for (int j = 0; j &lt; containedFiles.length; j++)</span>
+                {
+<span class="nc" id="L119">                    containedFiles[j] = new File(source, containedNames[j]);</span>
+                }
+                
+<span class="nc" id="L122">                count += copyFiles(Arrays.asList(containedFiles), destDir);</span>
+<span class="nc" id="L123">            }           </span>
+            else
+            {
+                // Check whether it is a file which we should be copying
+<span class="nc" id="L127">                String fileExt = source.getName().substring(source.getName().lastIndexOf('.') + 1);</span>
+                
+<span class="nc bnc" id="L129" title="All 2 branches missed.">                if (includedFileExtensions.contains(fileExt.toLowerCase()))</span>
+                {
+<span class="nc" id="L131">                    copyFile(source, destDir);</span>
+<span class="nc" id="L132">                    count++;</span>
+                }
+            }
+<span class="nc" id="L135">        }</span>
+        
+<span class="nc" id="L137">        return count;       </span>
+    }
+    
+    /**
+     * Copies a single file, placing it in the correct package.
+     * @param file the file to copy
+     * @param destDir the destination directory root.
+     */
+    protected void copyFile(final File file, final File destDir)
+    {
+        try
+        {
+<span class="nc" id="L149">            String packageName = QaUtil.getPackageForFile(file);</span>
+            
+<span class="nc bnc" id="L151" title="All 2 branches missed.">            if (packageName == null)</span>
+            {
+                // Unable to determine package, use relative path from root.
+<span class="nc" id="L154">                StringBuffer relativePath = new StringBuffer(file.getName());</span>
+<span class="nc" id="L155">                File parent = null;</span>
+                
+<span class="nc bnc" id="L157" title="All 2 branches missed.">                for (parent = file.getParentFile(); parent != null; parent = parent.getParentFile())</span>
+                {
+<span class="nc bnc" id="L159" title="All 2 branches missed.">                    if (sourceDirs.contains(parent))</span>
+                    {
+                        // We've hit one of the top-level dirs, so copy using the relative path from this dir
+<span class="nc" id="L162">                        File dest = new File(destDir, relativePath.toString());</span>
+<span class="nc" id="L163">                        FileUtil.copy(file, dest);</span>
+<span class="nc" id="L164">                        break;</span>
+                    }
+                    else
+                    {
+                        // Prepend the parent directory name to the relative path
+<span class="nc" id="L169">                        relativePath.insert(0, File.separatorChar);</span>
+<span class="nc" id="L170">                        relativePath.insert(0, parent.getName());</span>
+                    }
+                }
+                
+                // If we couldn't find a relative path, then just copy the file.
+<span class="nc bnc" id="L175" title="All 2 branches missed.">                if (parent == null)</span>
+                {
+<span class="nc" id="L177">                    File dest = new File(destDir, file.getName());</span>
+<span class="nc" id="L178">                    FileUtil.copy(file, dest);</span>
+                }
+<span class="nc" id="L180">            }</span>
+            else
+            {                    
+<span class="nc" id="L183">                String destPath = packageName.replace('.', File.separatorChar) + File.separatorChar + file.getName();</span>
+<span class="nc" id="L184">                File destFile = new File(destDir, destPath);</span>
+                
+<span class="nc bnc" id="L186" title="All 2 branches missed.">                if (destFile.exists())</span>
+                {
+<span class="nc" id="L188">                    String msg = &quot;Duplicate file, analysis may be innaccurate: &quot; + destPath;</span>
+<span class="nc" id="L189">                    QaLogger.getInstance().warn(msg); </span>
+<span class="nc" id="L190">                }</span>
+                else
+                {
+<span class="nc" id="L193">                    FileUtil.copy(file, destFile);</span>
+                }
+            }
+        }
+<span class="nc" id="L197">        catch (IOException e)</span>
+        {
+<span class="nc" id="L199">            throw new QAException(&quot;Failed to copy file&quot;, e);</span>
+<span class="nc" id="L200">        }           </span>
+<span class="nc" id="L201">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

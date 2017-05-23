@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.util.QaLogger" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="1" info="0" lineCoverage="20" branchCoverage="0" quality="98"/>
+<source>
+<line>package com.github.sanity4j.util; </line>
+<line/>
+<line>import java.io.PrintWriter;</line>
+<line>import java.io.StringWriter;</line>
+<line/>
+<line>/**</line>
+<line> * Since the QA task can utilise several logging libs, it needs to </line>
+<line> * provide its own logging facade. The logger defaults to System.out</line>
+<line> * until another logger is initialised.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis </line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line sev="1" covered="yes"><diag id="720"/>public abstract class QaLogger</line>
+<line sev="1">{</line>
+<line sev="1">    /** The logger instance to use. Defaults to a logger which logs to &lt;code&gt;System.out&lt;/code&gt;. */</line>
+<line sev="1" covered="yes">    private static QaLogger instance = new QaLoggerSystemOutImpl();    </line>
+<line sev="1"/>
+<line sev="1">    /** </line>
+<line sev="1">     * Sets the logger to use. This logger will be the one returned by {@link #getInstance()}.</line>
+<line sev="1">     * @param logger the logger to set.</line>
+<line sev="1">     */</line>
+<line sev="1">    public static void setLogger(final QaLogger logger)</line>
+<line sev="1">    {</line>
+<line sev="1" covered="no">        instance = logger;</line>
+<line sev="1" covered="no">    }</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * @return an instance of the logger</line>
+<line sev="1">     */</line>
+<line sev="1">    public static QaLogger getInstance()</line>
+<line sev="1">    {</line>
+<line sev="1" covered="yes">        return instance;</line>
+<line sev="1">    }</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Write a message to the log with the log level of MSG_DEBUG .</line>
+<line sev="1">     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line sev="1">     */</line>
+<line sev="1">    public abstract void debug(String message);</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Write a message to the log with the log level of MSG_DEBUG .</line>
+<line sev="1">     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line sev="1">     * @param throwable the throwable, presumably caught in a catch block.</line>
+<line sev="1">     */</line>
+<line sev="1">    public abstract void debug(String message, Throwable throwable);</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Write a message to the log with the log level of MSG_INFO .</line>
+<line sev="1">     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line sev="1">     */</line>
+<line sev="1">    public abstract void info(String message);</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Write a message to the log with the log level of MSG_WARN .</line>
+<line sev="1">     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line sev="1">     */</line>
+<line sev="1">    public abstract void warn(String message);</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Write a message to the log with the log level of MSG_WARN .</line>
+<line sev="1">     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line sev="1">     * @param throwable the throwable, presumably caught in a catch block.</line>
+<line sev="1">     */</line>
+<line sev="1">    public abstract void warn(String message, Throwable throwable);</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Write a message to the log with the log level of MSG_ERR .</line>
+<line sev="1">     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line sev="1">     */</line>
+<line sev="1">    public abstract void error(String message);</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Write a message to the log with the log level of MSG_ERR .</line>
+<line sev="1">     * @param message The text to log. Should not be &lt;code&gt;null&lt;/code&gt;.</line>
+<line sev="1">     * @param throwable the throwable, presumably caught in a catch block.</line>
+<line sev="1">     */</line>
+<line sev="1">    public abstract void error(String message, Throwable throwable);</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Converts the message and throwable to a format suitable for logging.</line>
+<line sev="1">     * </line>
+<line sev="1">     * @param message the message</line>
+<line sev="1">     * @param throwable the throwable</line>
+<line sev="1">     * @return a String suitable for logging</line>
+<line sev="1">     */</line>
+<line sev="1">    protected String stackTraceToString(final String message, final Throwable throwable)</line>
+<line sev="1">    {</line>
+<line sev="1" covered="no">        StringWriter writer = new StringWriter();</line>
+<line sev="1" covered="no">        throwable.printStackTrace(new PrintWriter(writer));        </line>
+<line sev="1" covered="no">        String stackTrace = writer.toString();</line>
+<line sev="1"/>
+<line sev="1" covered="no">        StringBuffer msgBuffer = new StringBuffer();        </line>
+<line sev="1" covered="no">        msgBuffer.append(message);</line>
+<line sev="1" covered="no">        msgBuffer.append('\n');</line>
+<line sev="1" covered="no">        msgBuffer.append(throwable.getMessage());</line>
+<line sev="1" covered="no">        msgBuffer.append(&quot;:\n&quot;);</line>
+<line sev="1" covered="no">        msgBuffer.append(stackTrace);</line>
+<line sev="1"/>
+<line sev="1" covered="no">        return msgBuffer.toString();</line>
+<line sev="1">    }</line>
+<line sev="1">}</line>
+</source>
+<diags first="false">
+<diag id="720" sev="1" tool="PMD" rule="AbstractNaming">
+Abstract classes should be named AbstractXXX
+</diag>
+</diags>
+</classDetails>

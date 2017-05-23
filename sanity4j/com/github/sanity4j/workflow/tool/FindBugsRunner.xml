@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.tool.FindBugsRunner" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="1" moderate="0" low="2" info="0" quality="89"/>
+<source>
+<line>package com.github.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.ByteArrayOutputStream;</line>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Arrays;</line>
+<line>import java.util.Iterator;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Map;</line>
+<line/>
+<line>import com.github.sanity4j.util.ExternalProcessRunner;</line>
+<line>import com.github.sanity4j.util.FileUtil;</line>
+<line>import com.github.sanity4j.util.QAException;</line>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line>import com.github.sanity4j.util.QaUtil;</line>
+<line>import com.github.sanity4j.util.Tool;</line>
+<line>import com.github.sanity4j.workflow.QAConfig;</line>
+<line/>
+<line>/**</line>
+<line> * FindBugsRunner - a work unit that runs FindBugs.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class FindBugsRunner extends AbstractToolRunner</line>
+<line>{</line>
+<line>    /** The generated FindBugs project file. */</line>
+<line>    private File projectFile = null;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a FindBugsRunner.</line>
+<line>     */</line>
+<line>    public FindBugsRunner()</line>
+<line>    {</line>
+<line>        super(Tool.FINDBUGS);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Runs FindBugs.</line>
+<line>     * @param commandLine the FindBugs command line.</line>
+<line>     */</line>
+<line>    public void runTool(final String commandLine)</line>
+<line>    {</line>
+<line>        QAConfig config = getConfig();</line>
+<line/>
+<line>        File resultFile = config.getToolResultFile(Tool.FINDBUGS);</line>
+<line sev="1"><diag id="899"/>        FileUtil.createDir(resultFile.getParentFile().getPath());</line>
+<line sev="1"/>
+<line sev="1">        ByteArrayOutputStream stdout = null; </line>
+<line sev="1">        ByteArrayOutputStream stderr = null; </line>
+<line sev="1"/>
+<line sev="1">        try</line>
+<line sev="1">        {</line>
+<line sev="1">            stdout = new ByteArrayOutputStream();</line>
+<line sev="1">            stderr = new ByteArrayOutputStream();</line>
+<line sev="1"/>
+<line sev="1">            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</line>
+<line sev="1"/>
+<line sev="1">            String stdoutString = new String(stdout.toByteArray());</line>
+<line sev="1"/>
+<line sev="1">            if (FileUtil.hasValue(stdoutString))</line>
+<line sev="1">            {</line>
+<line sev="1">                QaLogger.getInstance().info(stdoutString);</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1">            String stderrString = new String(stderr.toByteArray());</line>
+<line sev="1"/>
+<line sev="1">            if (FileUtil.hasValue(stderrString))</line>
+<line sev="1">            {</line>
+<line sev="1">                QaLogger.getInstance().error(stderrString);</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1">            if (result != 0)</line>
+<line sev="1">            {</line>
+<line sev="1">                String out = new String(stdout.toByteArray());</line>
+<line sev="3"><diag id="322"/>                String err = new String(stderr.toByteArray());</line>
+<line sev="1">                throw new QAException(&quot;FindBugs Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line>            QaUtil.safeClose(stdout);</line>
+<line>            QaUtil.safeClose(stderr);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates the FindBugs project file, which controls the FindBugs run.</line>
+<line>     */</line>
+<line>    private void createFindBugsProjectFile()</line>
+<line>    {</line>
+<line>        QAConfig config = getConfig();</line>
+<line>        List&lt;String&gt; sourcePaths = Arrays.asList(new String[]{config.getCombinedSourceDir().getPath()});</line>
+<line/>
+<line>        List&lt;String&gt; classPaths = new ArrayList&lt;String&gt;();</line>
+<line>        classPaths.add(config.getCombinedClassDir().getPath());</line>
+<line>        FileUtil.findJars(config.getCombinedClassDir(), classPaths);</line>
+<line/>
+<line>        List&lt;String&gt; libraryPaths = new ArrayList&lt;String&gt;();</line>
+<line>        libraryPaths.add(config.getCombinedLibraryDir().getPath());</line>
+<line>        FileUtil.findJars(config.getCombinedLibraryDir(), libraryPaths);</line>
+<line/>
+<line>        String xml = generateFindBugsProjectXml(sourcePaths, classPaths, libraryPaths);</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line>            projectFile = File.createTempFile(&quot;findbugsproject&quot;, &quot;.fbp&quot;);</line>
+<line>            FileUtil.writeToFile(xml, projectFile);</line>
+<line>            projectFile.deleteOnExit();</line>
+<line>        }</line>
+<line>        catch (IOException e)</line>
+<line>        {</line>
+<line>            throw new QAException(&quot;Failed to create FindBugs project file&quot;, e);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Overridden to add FindBugs specific parameters to the map.</line>
+<line>     * @return a map of parameters to use for replacing configuration tokens.</line>
+<line>     */</line>
+<line>    protected Map&lt;String, String&gt; getParameterMap()</line>
+<line>    {</line>
+<line>        Map&lt;String, String&gt; map = super.getParameterMap();</line>
+<line/>
+<line>        if (projectFile == null)</line>
+<line>        {</line>
+<line>            createFindBugsProjectFile();</line>
+<line>        }</line>
+<line/>
+<line>        map.put(&quot;findBugsProjectFile&quot;, projectFile.getPath());</line>
+<line/>
+<line>        return map;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Overriden to remove the GUI jar from the class path, as we want to run the text UI.</line>
+<line>     * @return a list of paths to all the jars needed to run FindBugs.</line>
+<line>     */</line>
+<line>    protected List&lt;String&gt; getToolJars()</line>
+<line>    {</line>
+<line>        List&lt;String&gt; findbugsJars = super.getToolJars();</line>
+<line/>
+<line>        for (Iterator&lt;String&gt; i = findbugsJars.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line>            if (i.next().endsWith(&quot;findbugsGUI.jar&quot;))</line>
+<line>            {</line>
+<line>                i.remove();</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line>        return findbugsJars;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the description of this WorkUnit</line>
+<line>     */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line>        return &quot;Running FindBugs&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Build the findbugs project file, as there doesn't seem to be a nicer way to run it.</line>
+<line>     * The final XML will look like the following:</line>
+<line>     * &lt;pre&gt;</line>
+<line>     *   &amp;lt;Project filename=&quot;unnamed project&quot; projectName=&quot;unnamed project&quot;&amp;gt;</line>
+<line>     *      &amp;lt;Jar&amp;gt;...path/project.jar&amp;lt;/Jar&amp;gt;</line>
+<line>     *      ...</line>
+<line>     *      &amp;lt;AuxClasspathEntry&amp;gt;...path/library.jar&amp;lt;/AuxClasspathEntry&amp;gt;</line>
+<line>     *      ...</line>
+<line>     *      &amp;lt;SrcDir&amp;gt;...path/src/java&amp;lt;/SrcDir&amp;gt;</line>
+<line>     *      ...</line>
+<line>     *      &amp;lt;SuppressionFilter&amp;gt;</line>
+<line>     *         &amp;lt;LastVersion value=&quot;-1&quot; relOp=&quot;NEQ&quot;/&amp;gt;</line>
+<line>     *      &amp;lt;/SuppressionFilter&amp;gt;</line>
+<line>     *   &amp;lt;/Project&amp;gt;</line>
+<line>     * &lt;/pre&gt;</line>
+<line>     *</line>
+<line>     * @param sourcePaths the source paths</line>
+<line>     * @param classPaths the class paths</line>
+<line>     * @param libraryPaths the library paths</line>
+<line>     *</line>
+<line>     * @return the FindBugs project xml for the given data</line>
+<line>     */</line>
+<line>    private String generateFindBugsProjectXml(final List&lt;String&gt; sourcePaths,</line>
+<line>                                              final List&lt;String&gt; classPaths, final List&lt;String&gt; libraryPaths)</line>
+<line>    {</line>
+<line sev="1"><diag id="852"/>        StringBuffer buf = new StringBuffer(&quot;&lt;Project filename=\&quot;unnamed project\&quot; projectName=\&quot;unnamed project\&quot;&gt;\n&quot;);</line>
+<line/>
+<line>        for (int i = 0; i &lt; classPaths.size(); i++)</line>
+<line>        {</line>
+<line>            buf.append(&quot;   &lt;Jar&gt;&quot;);</line>
+<line>            buf.append(classPaths.get(i));</line>
+<line>            buf.append(&quot;&lt;/Jar&gt;\n&quot;);</line>
+<line>        }</line>
+<line/>
+<line>        for (int i = 0; i &lt; libraryPaths.size(); i++)</line>
+<line>        {</line>
+<line>            buf.append(&quot;   &lt;AuxClasspathEntry&gt;&quot;);</line>
+<line>            buf.append(libraryPaths.get(i));</line>
+<line>            buf.append(&quot;&lt;/AuxClasspathEntry&gt;\n&quot;);</line>
+<line>        }</line>
+<line/>
+<line>        for (int i = 0; i &lt; sourcePaths.size(); i++)</line>
+<line>        {</line>
+<line>            buf.append(&quot;   &lt;SrcDir&gt;&quot;);</line>
+<line>            buf.append(sourcePaths.get(i));</line>
+<line>            buf.append(&quot;&lt;/SrcDir&gt;\n&quot;);</line>
+<line>        }</line>
+<line/>
+<line>        buf.append(</line>
+<line>              &quot;   &lt;SuppressionFilter&gt;\n&quot;</line>
+<line>            + &quot;       &lt;LastVersion value=\&quot;-1\&quot; relOp=\&quot;NEQ\&quot;/&gt;\n&quot;</line>
+<line>            + &quot;    &lt;/SuppressionFilter&gt;\n&quot;</line>
+<line>            + &quot;&lt;/Project&gt;\n&quot;</line>
+<line>        );</line>
+<line/>
+<line>        return buf.toString();</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="899" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/workflow/tool/CoberturaReportRunner.java:
+        FileUtil.createDir(getConfig().getToolResultFile(Tool.COBERTURA).getParent());
+
+        // Run the process
+        ByteArrayOutputStream stdout = null;
+        ByteArrayOutputStream stderr = null;
+
+        try
+        {
+            stdout = new ByteArrayOutputStream();
+            stderr = new ByteArrayOutputStream();
+
+            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);
+
+            String stdoutString = new String(stdout.toByteArray());
+
+            if (FileUtil.hasValue(stdoutString))
+            {
+                QaLogger.getInstance().info(stdoutString);
+            }
+
+            String stderrString = new String(stderr.toByteArray());
+
+            if (FileUtil.hasValue(stderrString))
+            {
+                QaLogger.getInstance().error(stderrString);
+            }
+
+            if (result != 0)
+            {
+                String out = new String(stdout.toByteArray());
+                String err = new String(stderr.toByteArray());
+                throw new QAException(&quot;Cobertura Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</diag>
+<diag id="322" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.FindBugsRunner.runTool(String): new String(byte[])</diag>
+<diag id="852" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">
+StringBuffer constructor is initialized with size 88, but has at least 266 characters appended.
+</diag>
+</diags>
+</classDetails>

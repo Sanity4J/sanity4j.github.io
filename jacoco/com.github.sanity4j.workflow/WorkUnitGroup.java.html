@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WorkUnitGroup.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow</a> &gt; <span class="el_source">WorkUnitGroup.java</span></div><h1>WorkUnitGroup.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow; 
+
+import java.util.ArrayList;
+import java.util.List;
+
+/** 
+ * WorkUnitGroup provides a way to group {@link WorkUnit}s. 
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public class WorkUnitGroup implements WorkUnit
+{
+    /** A short description of this WorkUnitGroup. */
+    private final String description;
+    
+    /** The WorkUnits contained in this group. */
+<span class="nc" id="L18">    private final List&lt;WorkUnit&gt; work = new ArrayList&lt;WorkUnit&gt;();</span>
+
+    /**
+     * Creates a WorkUnitGroup where parallel work unit execution is disabled.
+     * @param description a short textual description of the WorkUnitGroup's purpose.
+     */
+    public WorkUnitGroup(final String description)
+    {
+<span class="nc" id="L26">        this(false, description);</span>
+<span class="nc" id="L27">    }</span>
+    
+    /**
+     * Creates a WorkUnitGroup where parallel work unit execution is allowed.
+     * 
+     * @param allowConcurrent true if WorkUnits in this group can be executed in parallel, false if not.
+     * @param description a short textual description of the WorkUnitGroup's purpose.
+     */
+    public WorkUnitGroup(final boolean allowConcurrent, final String description)
+<span class="nc" id="L36">    {</span>
+        // TODO: this.allowConcurrent = allowConcurrent;
+<span class="nc" id="L38">        this.description = description;</span>
+<span class="nc" id="L39">    }</span>
+    
+    /** {@inheritDoc} */
+    public String getDescription()
+    {
+<span class="nc" id="L44">        return description;</span>
+    }
+
+    /**
+     * Executes all the WorkUnits in this group.
+     */
+    public void run()
+    {
+        // TODO: Implement threading
+        
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        for (WorkUnit workUnit : work)</span>
+        {
+<span class="nc" id="L56">            workUnit.run();</span>
+<span class="nc" id="L57">        }</span>
+<span class="nc" id="L58">    }</span>
+
+    /**
+     * Adds a unit of work to this work group.
+     * @param workUnit the work unit to add.
+     */
+    public void add(final WorkUnit workUnit) 
+    {
+<span class="nc" id="L66">        work.add(workUnit);</span>
+<span class="nc" id="L67">    }</span>
+    
+    /**
+     * Sets the maximum number of threads which are allowed globally for WorkUnitGroups.
+     * This effectively controls how many WorkUnits can be run in parallel.
+     * 
+     * @param maxThreads the maximum number of threads allowed.
+     */
+    public static final void setMaxThreads(final int maxThreads)
+    {
+        // TODO: set up thread pool.
+<span class="nc" id="L78">    }    </span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.report.ExtractStaticContent" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="1" low="0" info="5" quality="97"/>
+<source>
+<line>package com.github.sanity4j.report;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.FileOutputStream;</line>
+<line>import java.io.IOException;</line>
+<line>import java.io.InputStream;</line>
+<line>import java.net.MalformedURLException;</line>
+<line>import java.net.URL;</line>
+<line>import java.net.URLClassLoader;</line>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Enumeration;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Properties;</line>
+<line>import java.util.StringTokenizer;</line>
+<line/>
+<line>import com.github.sanity4j.util.FileUtil;</line>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line>import com.github.sanity4j.workflow.QAConfig;</line>
+<line/>
+<line>/**</line>
+<line> * ExtractStaticContent - extracts static content for the report.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public final class ExtractStaticContent</line>
+<line>{</line>
+<line>    /** The buffer size to use when copying the data. */</line>
+<line>    private static final int BUFFER_SIZE = 1024;</line>
+<line/>
+<line>    /** ExtractStaticContent should not be instantiated. */</line>
+<line>    private ExtractStaticContent()</line>
+<line>    {</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Copies a resource.</line>
+<line>     *</line>
+<line>     * @param classLoader the classloader used to load the resource.</line>
+<line>     * @param resourcePath the path to the resource</line>
+<line>     * @param destDir the directory to write the resource to</line>
+<line>     * @param destPath the destination path, relative to destDir</line>
+<line>     *</line>
+<line>     * @throws IOException if there is an error writing the file</line>
+<line>     */</line>
+<line>    private static void copyResource(final ClassLoader classLoader,</line>
+<line>                                     final String resourcePath, final File destDir,</line>
+<line>                                     final String destPath) throws IOException</line>
+<line>    {</line>
+<line>        // Get the resource as a stream</line>
+<line>        InputStream inStream = classLoader.getResourceAsStream(resourcePath);</line>
+<line/>
+<line>        if (inStream == null)</line>
+<line>        {</line>
+<line>            // If not found, try loading from the default. </line>
+<line sev="0"><diag id="300"/>            inStream = ExtractStaticContent.class.getResourceAsStream(resourcePath);</line>
+<line>        }</line>
+<line/>
+<line>        if (inStream == null)</line>
+<line>        {</line>
+<line>            // If not found, try loading from the current classloader. </line>
+<line>            inStream = ExtractStaticContent.class.getClassLoader().getResourceAsStream(resourcePath);</line>
+<line>        }</line>
+<line/>
+<line>        if (inStream == null)</line>
+<line>        {</line>
+<line>        	QaLogger.getInstance().error(&quot;Resource [&quot; + resourcePath + &quot;] doesn't exist&quot;);</line>
+<line>        	return;</line>
+<line>        }</line>
+<line/>
+<line>        // Set up the destination file</line>
+<line>        File destFile = new File(destDir, destPath);</line>
+<line/>
+<line>        if (!destFile.getParentFile().exists() &amp;&amp; !destFile.getParentFile().mkdirs())</line>
+<line>        {</line>
+<line>            QaLogger.getInstance().error(&quot;Failed to create parent directory for file [&quot; + destPath + &quot;]&quot;);</line>
+<line>            return;</line>
+<line>        }</line>
+<line/>
+<line>        // Copy the data</line>
+<line>        FileOutputStream fos = new FileOutputStream(destFile);</line>
+<line>        byte[] buf = new byte[BUFFER_SIZE];</line>
+<line/>
+<line>        for (int count = inStream.read(buf); count != -1; count = inStream.read(buf))</line>
+<line>        {</line>
+<line>            fos.write(buf, 0, count);</line>
+<line>        }</line>
+<line/>
+<line>        fos.close();</line>
+<line>        inStream.close();</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Extracts all of the static content specified by a Properties object to the destination directory.</line>
+<line>     *</line>
+<line>     * @param classLoader the classloader used to load the resources.</line>
+<line>     * @param destDir the destination directory</line>
+<line>     * @param properties a properties file containing name / value pairs</line>
+<line>     * representing the source resources, and their destinations.</line>
+<line>     * @throws IOException if there is an error extracting the static content</line>
+<line>     */</line>
+<line>    private static void extractContent(final ClassLoader classLoader, final File destDir, final Properties properties) throws IOException</line>
+<line>    {</line>
+<line>        for (Enumeration&lt;Object&gt; keyEnum = properties.keys(); keyEnum.hasMoreElements();)</line>
+<line>        {</line>
+<line>            String source = (String) keyEnum.nextElement();</line>
+<line>            String dest = (String) properties.get(source);</line>
+<line>            copyResource(classLoader, source.trim(), destDir, dest.trim());</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * This method extracts the static content specified by the properties stored within of an &lt;b&gt;InputStream&lt;/b&gt;.</line>
+<line>     *</line>
+<line>     * @param classLoader the classloader used to load the resource.</line>
+<line>     * @param destinationDirectory The directory to which the static content should be extracted.</line>
+<line>     * @param inputStream The input stream representing the input to the &lt;b&gt;java.util.Properties#load(InputStream)&lt;/b&gt; method.</line>
+<line>     * @throws IOException If there is an error reading from the &lt;em&gt;inputStream&lt;/em&gt; or writing to the &lt;em&gt;destDir&lt;/em&gt;.</line>
+<line>     */</line>
+<line>    private static void extractStreamContent(final ClassLoader classLoader, final File destinationDirectory, final InputStream inputStream) throws IOException</line>
+<line>    {</line>
+<line>        if (inputStream == null)</line>
+<line>        {</line>
+<line>            QaLogger.getInstance().debug(&quot;Nothing to extract.&quot;);            </line>
+<line>        }</line>
+<line>        else</line>
+<line>        {</line>
+<line>            Properties properties = new Properties();</line>
+<line>            properties.load(inputStream);</line>
+<line>            inputStream.close();</line>
+<line>            extractContent(classLoader, destinationDirectory, properties);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Converts a String representing &quot;path.separator&quot; separated list of URLs into an array of java.net.URL objects.</line>
+<line>     *  </line>
+<line>     * @param classpath a String representing &quot;path.separator&quot; separated list of URLs.</line>
+<line>     * @return An array of java.net.URL objects.</line>
+<line>     * @throws MalformedURLException if entries within the classpath are invalid.</line>
+<line>     */</line>
+<line>    private static URL[] classpathToUrlArray(final String classpath) throws MalformedURLException</line>
+<line>    {</line>
+<line>        List&lt;URL&gt; urlList = new ArrayList&lt;URL&gt;();</line>
+<line/>
+<line>        if (classpath != null)</line>
+<line>        {</line>
+<line>            String pathSeparator = System.getProperty(&quot;path.separator&quot;);</line>
+<line>            StringTokenizer stringTokenizer = new StringTokenizer(classpath, pathSeparator);</line>
+<line/>
+<line>            while (stringTokenizer.hasMoreTokens())</line>
+<line>            {</line>
+<line>                String stringUrl = stringTokenizer.nextToken();</line>
+<line>                URL url = null;</line>
+<line/>
+<line>                try</line>
+<line>                {</line>
+<line sev="0"><diag id="486"/>                    url = new URL(stringUrl);</line>
+<line>                }</line>
+<line>                catch (MalformedURLException mue)</line>
+<line>                {</line>
+<line>                    // Assume the URL is a local file.</line>
+<line>                    if (stringUrl.toUpperCase().endsWith(&quot;.JAR&quot;))</line>
+<line>                    {</line>
+<line sev="0"><diag id="487"/>                        url = new URL(&quot;jar:file:///&quot; + stringUrl + &quot;!/&quot;);</line>
+<line>                    }</line>
+<line>                    else</line>
+<line>                    {</line>
+<line sev="0"><diag id="488"/>                        url = new URL(&quot;file:///&quot; + stringUrl);</line>
+<line>                    }</line>
+<line>                }</line>
+<line/>
+<line>                QaLogger.getInstance().debug(&quot;URL: &quot; + url);</line>
+<line>                urlList.add(url);</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line>        URL[] urls = urlList.toArray(new URL[urlList.size()]);</line>
+<line/>
+<line>        return urls;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Extracts the static content to the destination directory.</line>
+<line>     *</line>
+<line>     * @param config the configuration object for the sanity4j tool.</line>
+<line>     * @param destDir the destination directory.</line>
+<line>     * @param propertiesFile the name of the properties file.</line>
+<line>     * @throws IOException if there is an error extracting the static content.</line>
+<line>     */</line>
+<line>    public static void extractContent(final QAConfig config, final File destDir, final String propertiesFile) throws IOException</line>
+<line>    {</line>
+<line>        ClassLoader classLoader = ExtractStaticContent.class.getClassLoader();</line>
+<line/>
+<line>        // Load default &quot;ExtractStaticContent.properties&quot; files.</line>
+<line>        InputStream inStream = ExtractStaticContent.class.getResourceAsStream(propertiesFile);</line>
+<line>        QaLogger.getInstance().debug(&quot;Extract using file: &quot; + propertiesFile);</line>
+<line>        extractStreamContent(classLoader, destDir, inStream);</line>
+<line/>
+<line>        // Load all other &quot;ExtractStaticContent.properties&quot; files from classpath.</line>
+<line>        QaLogger.getInstance().debug(&quot;Extract using file: &quot; + propertiesFile);</line>
+<line>        Enumeration&lt;URL&gt; resourceEnum = classLoader.getResources(propertiesFile);</line>
+<line/>
+<line>        while (resourceEnum.hasMoreElements())</line>
+<line>        {</line>
+<line>            URL resourceUrl = resourceEnum.nextElement();</line>
+<line/>
+<line>            QaLogger.getInstance().debug(&quot;Extract using URL: &quot; + resourceUrl);</line>
+<line/>
+<line>            inStream = resourceUrl.openStream();</line>
+<line>            extractStreamContent(classLoader, destDir, inStream);</line>
+<line>        }</line>
+<line/>
+<line>        // Load all other &quot;ExtractStaticContent.properties files from tool classpaths.</line>
+<line>        for (String tool : config.getToolsToRun())</line>
+<line>        {</line>
+<line>            String version = config.getToolVersion(tool);</line>
+<line>            String configClasspath = config.getToolConfigClasspath(tool, version);</line>
+<line/>
+<line>            if (FileUtil.hasValue(configClasspath))</line>
+<line>            {</line>
+<line>                URL[] urls = classpathToUrlArray(configClasspath);</line>
+<line sev="2"><diag id="298"/><diag id="490"/>                ClassLoader toolClassLoader = new URLClassLoader(urls);</line>
+<line>                resourceEnum = toolClassLoader.getResources(propertiesFile);</line>
+<line/>
+<line>                while (resourceEnum.hasMoreElements())</line>
+<line>                {</line>
+<line>                    URL resourceUrl = resourceEnum.nextElement();</line>
+<line/>
+<line>                    QaLogger.getInstance().debug(&quot;Extract using URL: &quot; + resourceUrl);</line>
+<line/>
+<line>                    inStream = resourceUrl.openStream();</line>
+<line>                    extractStreamContent(toolClassLoader, destDir, inStream);</line>
+<line>                }</line>
+<line>            }</line>
+<line>        }</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="300" sev="0" tool="Findbugs" rule="OS_OPEN_STREAM">com.github.sanity4j.report.ExtractStaticContent.copyResource(ClassLoader, String, File, String) may fail to close stream</diag>
+<diag id="486" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="487" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="488" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="298" sev="2" tool="Findbugs" rule="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED">com.github.sanity4j.report.ExtractStaticContent.extractContent(QAConfig, File, String) creates a java.net.URLClassLoader classloader, which should be performed within a doPrivileged block</diag>
+<diag id="490" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+</diags>
+</classDetails>

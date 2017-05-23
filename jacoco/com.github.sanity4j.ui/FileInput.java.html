@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FileInput.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.ui</a> &gt; <span class="el_source">FileInput.java</span></div><h1>FileInput.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.ui; 
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import com.github.sanity4j.util.StringUtil;
+
+
+/** 
+ * FileInput provides a UI to pick a file/directory. 
+ * 
+ * @author Yiannis Paschalidis 
+ * @since Sanity4J 1.0
+ */
+public class FileInput extends JPanel implements ActionListener
+{
+    /** The text field which holds the file name. */
+<span class="nc" id="L25">    private final JTextField fileName = new JTextField(40);</span>
+    
+    /** Controls the file selection mode (true = directories only, false = files only). */
+    private final boolean directory;
+    
+    /**
+     * Creates a FileInput.
+     * @param directory true to only allow directories can be selected, false to only allow files can be selected.
+     */
+    public FileInput(final boolean directory)
+<span class="nc" id="L35">    {</span>
+<span class="nc" id="L36">        this.directory = directory;</span>
+        
+<span class="nc" id="L38">        setLayout(new BorderLayout());</span>
+<span class="nc" id="L39">        add(fileName, BorderLayout.CENTER);</span>
+        
+<span class="nc" id="L41">        JButton browseButton = new JButton(&quot;Browse&quot;);</span>
+<span class="nc" id="L42">        add(browseButton, BorderLayout.EAST);</span>
+<span class="nc" id="L43">        browseButton.addActionListener(this);</span>
+<span class="nc" id="L44">    }</span>
+    
+    /**
+     * ActionListener implementation for the browseButton.
+     * @param event the event that occurred.
+     */
+    public void actionPerformed(final ActionEvent event)
+    {
+<span class="nc" id="L52">        JFileChooser jfc = new JFileChooser(getFile());</span>
+        
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (directory)</span>
+        {
+<span class="nc" id="L56">            jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);</span>
+        }
+        else
+        {
+<span class="nc" id="L60">            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);</span>
+        }
+        
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)</span>
+        {
+<span class="nc" id="L65">            setFile(jfc.getSelectedFile());</span>
+        }
+<span class="nc" id="L67">    }</span>
+    
+    /**
+     * @return the file name text, which may or may not be a file
+     */
+    public String getText()
+    {
+<span class="nc" id="L74">        return fileName.getText();</span>
+    }
+    
+    /**
+     * Sets the file name text.
+     * @param text the file name text.
+     */
+    public void setText(final String text)
+    {
+<span class="nc" id="L83">        fileName.setText(text);</span>
+<span class="nc" id="L84">    }</span>
+    
+    /**
+     * Retrieves the selected file. Note that that file may not exist, or be a valid file.
+     * @return the selected file, or null if no file has been selected.
+     */
+    public File getFile()
+    {
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (StringUtil.empty(fileName.getText()))</span>
+        {
+<span class="nc" id="L94">            return null;</span>
+        }
+        
+<span class="nc" id="L97">        return new File(fileName.getText());</span>
+    }
+    
+    /**
+     * Sets the file. 
+     * @param file the file to set.
+     */
+    public void setFile(final File file)
+    {
+<span class="nc" id="L106">        fileName.setText(file.getPath());</span>
+<span class="nc" id="L107">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

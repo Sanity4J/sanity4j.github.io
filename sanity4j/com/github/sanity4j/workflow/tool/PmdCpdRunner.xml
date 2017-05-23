@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.tool.PmdCpdRunner" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.workflow.tool;</line>
+<line/>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line/>
+<line>/**</line>
+<line> * PmdCpdRunner - a work unit that runs PMD CPD.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> * @deprecated use PmdCpd4Runner</line>
+<line> */</line>
+<line>@Deprecated</line>
+<line>public class PmdCpdRunner extends PmdCpd4Runner</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a PmdCpdRunner.</line>
+<line>     */</line>
+<line>    public PmdCpdRunner()</line>
+<line>    {</line>
+<line>        QaLogger.getInstance().warn(&quot;PmdCpdRunner is deprecated, use PmdCpd4Runner for PMD 4.x or PmdCpd5Runner for PMD 5.x&quot;);</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

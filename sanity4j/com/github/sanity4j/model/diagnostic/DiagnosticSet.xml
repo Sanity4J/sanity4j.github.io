@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.model.diagnostic.DiagnosticSet" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="1" moderate="1" low="0" info="0" lineCoverage="99" branchCoverage="82" quality="94"/>
+<source>
+<line sev="2"><diag id="434"/>package com.github.sanity4j.model.diagnostic; </line>
+<line sev="2"/>
+<line sev="2">import java.util.ArrayList;</line>
+<line sev="2">import java.util.HashMap;</line>
+<line sev="2">import java.util.Iterator;</line>
+<line sev="2">import java.util.List;</line>
+<line sev="2">import java.util.Map;</line>
+<line sev="2">import java.util.NoSuchElementException;</line>
+<line sev="2"/>
+<line sev="2">/** </line>
+<line sev="2"> * DiagnosticSet a set of Diagnostics.</line>
+<line sev="2"> * </line>
+<line sev="2"> * @author Yiannis Paschalidis </line>
+<line sev="2"> * @since Sanity4J 1.0</line>
+<line sev="2"> */</line>
+<line sev="2" covered="yes">public final class DiagnosticSet implements Cloneable, Iterable&lt;Diagnostic&gt;</line>
+<line sev="2">{   </line>
+<line sev="2">    /** A list of all the diagnostics contained in this DiagnosticSet. */</line>
+<line sev="2" covered="yes">    private final List&lt;Diagnostic&gt; diagnostics = new ArrayList&lt;Diagnostic&gt;();</line>
+<line sev="2"/>
+<line sev="2">    /** Diagnostics keyed by the source file name. */</line>
+<line sev="2">    private Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByFileName;</line>
+<line sev="2">    /** Diagnostics keyed by the class name. */</line>
+<line sev="2">    private Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByClassName;</line>
+<line sev="2">    /** Diagnostics keyed by the package name. */</line>
+<line sev="2">    private Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByPackageName;</line>
+<line sev="2">    /** Diagnostics keyed by their severity. */</line>
+<line sev="2">    private Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsBySeverity;</line>
+<line sev="2">    /** Diagnostics keyed by their source (tool). */</line>
+<line sev="2">    private Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByTool;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return the current Lists of Diagnostics, keyed by the source file name</line>
+<line sev="2">     */</line>
+<line sev="2">    public Map&lt;String, List&lt;Diagnostic&gt;&gt; getDiagnosticsByFileName()</line>
+<line sev="2">    {</line>
+<line sev="2">        // Lazy initialization of collection</line>
+<line sev="2" covered="yes">        if (diagnosticsByFileName == null)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            diagnosticsByFileName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</line>
+<line sev="2" covered="yes">            final int numDiagnositcs = diagnostics.size();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">            for (int i = 0; i &lt; numDiagnositcs; i++)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                Diagnostic diagnostic = diagnostics.get(i);</line>
+<line sev="2"/>
+<line sev="2" covered="partial">                if (diagnostic.getFileName() != null)</line>
+<line sev="2">                {</line>
+<line sev="2" covered="yes">                    String fileName = diagnostic.getFileName();</line>
+<line sev="2" covered="yes">                    addToMapList(diagnosticsByFileName, fileName, diagnostic);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return diagnosticsByFileName;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">     * @return the current Lists of Diagnostics, keyed by the class name</line>
+<line sev="2">     */</line>
+<line sev="2">    public Map&lt;String, List&lt;Diagnostic&gt;&gt; getDiagnosticsByClassName()</line>
+<line sev="2">    {</line>
+<line sev="2">        // Lazy initialization of collection</line>
+<line sev="2" covered="partial">        if (diagnosticsByClassName == null)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            diagnosticsByClassName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</line>
+<line sev="2" covered="yes">            final int numDiagnositcs = diagnostics.size();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">            for (int i = 0; i &lt; numDiagnositcs; i++)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                Diagnostic diagnostic = diagnostics.get(i);</line>
+<line sev="2"/>
+<line sev="2" covered="partial">                if (diagnostic.getClassName() != null)</line>
+<line sev="2">                {</line>
+<line sev="2" covered="yes">                    String className = diagnostic.getClassName();</line>
+<line sev="2" covered="yes">                    addToMapList(diagnosticsByClassName, className, diagnostic);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return diagnosticsByClassName;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">     * @return the current Lists of Diagnostics, keyed by package</line>
+<line sev="2">     */</line>
+<line sev="2">    public Map&lt;String, List&lt;Diagnostic&gt;&gt; getDiagnosticsByPackageName()</line>
+<line sev="2">    {</line>
+<line sev="2">        // Lazy initialization of collection</line>
+<line sev="2" covered="yes">        if (diagnosticsByPackageName == null)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            diagnosticsByPackageName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</line>
+<line sev="2" covered="yes">            final int numDiagnositcs = diagnostics.size();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">            for (int i = 0; i &lt; numDiagnositcs; i++)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                Diagnostic diagnostic = diagnostics.get(i);</line>
+<line sev="2"/>
+<line sev="2" covered="partial">                if (diagnostic.getClassName() != null)</line>
+<line sev="2">                {</line>
+<line sev="2" covered="yes">                    String pkg = diagnostic.getClassName();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">                    for (int index = pkg.lastIndexOf('.'); index != -1; index = pkg.lastIndexOf('.'))</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="yes">                        pkg = pkg.substring(0, index);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">                        addToMapList(diagnosticsByPackageName, pkg, diagnostic);</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return diagnosticsByPackageName;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">     * @return the current Lists of Diagnostics, keyed by severity</line>
+<line sev="2">     */</line>
+<line sev="2">    public Map&lt;String, List&lt;Diagnostic&gt;&gt; getDiagnosticsBySeverity()</line>
+<line sev="2">    {</line>
+<line sev="2">        // Lazy initialization of collection</line>
+<line sev="2" covered="yes">        if (diagnosticsBySeverity == null)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            diagnosticsBySeverity = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</line>
+<line sev="2" covered="yes">            final int numDiagnositcs = diagnostics.size();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">            for (int i = 0; i &lt; numDiagnositcs; i++)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                Diagnostic diagnostic = diagnostics.get(i);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">                String severity = String.valueOf(diagnostic.getSeverity());</line>
+<line sev="2" covered="yes">                addToMapList(diagnosticsBySeverity, severity, diagnostic);</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return diagnosticsBySeverity;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">     * @return the current Lists of Diagnostics, keyed by tool</line>
+<line sev="2">     */</line>
+<line sev="2">    public Map&lt;String, List&lt;Diagnostic&gt;&gt; getDiagnosticsByTool()</line>
+<line sev="2">    {</line>
+<line sev="2">        // Lazy initialization of collection</line>
+<line sev="2" covered="yes">        if (diagnosticsByTool == null)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            diagnosticsByTool = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</line>
+<line sev="2" covered="yes">            final int numDiagnositcs = diagnostics.size();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">            for (int i = 0; i &lt; numDiagnositcs; i++)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                Diagnostic diagnostic = diagnostics.get(i);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">                String tool = String.valueOf(diagnostic.getSource());</line>
+<line sev="2" covered="yes">                addToMapList(diagnosticsByTool, tool, diagnostic);</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return diagnosticsByTool;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">     * Adds the given diagnostic to the set of diagnostics.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param diagnostic the diagnostic to add.</line>
+<line sev="2">     */</line>
+<line sev="2">    public void add(final Diagnostic diagnostic)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="partial">        if (!diagnostic.isExcluded())</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            diagnostics.add(diagnostic);</line>
+<line sev="2">        }</line>
+<line sev="2" covered="yes">    }</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">	 * Utility method to add a Diagnostic to a list of Diagnostics in a Map.</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @param map the map to add to</line>
+<line sev="2">	 * @param key the map key containing the list</line>
+<line sev="2">	 * @param diag the Diagnostic to add</line>
+<line sev="2">	 */</line>
+<line sev="2">	private void addToMapList(final Map&lt;String, List&lt;Diagnostic&gt;&gt; map, final String key, final Diagnostic diag)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        List&lt;Diagnostic&gt; list = map.get(key);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        if (list == null)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            list = new ArrayList&lt;Diagnostic&gt;();</line>
+<line sev="2" covered="yes">            map.put(key, list);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        list.add(diag);</line>
+<line sev="2" covered="yes">    }</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">	 * Returns the diagnostics obtained from the given tool.</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @param tool the tool, see Diagnostic.SOURCE_*</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @return the set of diagnostics for the given tool, may be empty</line>
+<line sev="2">	 */</line>
+<line sev="2">	public DiagnosticSet getDiagnosticsForTool(final int tool)</line>
+<line sev="2">    {</line>
+<line sev="2">        // No-op for all</line>
+<line sev="2" covered="yes">        if (tool == Diagnostic.SOURCE_ALL)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            return (DiagnosticSet) clone();</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        DiagnosticSet subset = new DiagnosticSet();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        List&lt;Diagnostic&gt; list = getDiagnosticsByTool().get(String.valueOf(tool));</line>
+<line sev="2"/>
+<line sev="2" covered="partial">        if (list != null)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            for (int i = 0; i &lt; list.size(); i++)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                Diagnostic diagnostic = list.get(i);</line>
+<line sev="2"/>
+<line sev="2" covered="partial">                if (diagnostic.getSource() == tool)</line>
+<line sev="2">                {</line>
+<line sev="2" covered="yes">                    subset.diagnostics.add(diagnostic);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return subset;</line>
+<line sev="2">    }		</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">	 * Returns the diagnostics with the given severity.</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @param severity the severity, see Diagnostic.SEVERITY_*</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @return the set of diagnostics for the given severity, may be empty</line>
+<line sev="2">	 */</line>
+<line sev="2">	public DiagnosticSet getDiagnosticsForSeverity(final int severity)</line>
+<line sev="2">    {</line>
+<line sev="2">        // No-op for all</line>
+<line sev="2" covered="yes">        if (severity == Diagnostic.SEVERITY_ALL)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            return (DiagnosticSet) clone();</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        DiagnosticSet subset = new DiagnosticSet();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        List&lt;Diagnostic&gt; list = getDiagnosticsBySeverity().get(String.valueOf(severity));</line>
+<line sev="2"/>
+<line sev="2" covered="partial">        if (list != null)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            for (int i = 0; i &lt; list.size(); i++)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                Diagnostic diagnostic = list.get(i);</line>
+<line sev="2"/>
+<line sev="2" covered="partial">                if (diagnostic.getSeverity() == severity)</line>
+<line sev="2">                {</line>
+<line sev="2" covered="yes">                    subset.diagnostics.add(diagnostic);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return subset;</line>
+<line sev="2">    }		</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">	 * Returns the diagnostics for the given package and sub-packages.</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @param packageName the package name</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @return the set of diagnostics for the given package and sub-packages</line>
+<line sev="2">	 */</line>
+<line sev="2">	public DiagnosticSet getDiagnosticsForPackage(final String packageName)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        return getDiagnosticsForPackage(packageName, true);</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">	 * Returns the diagnostics for the given package, and optionally, sub-packages.</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @param packageName the package name</line>
+<line sev="2">	 * @param includeSubpackages if true, also include diagnostics for sub-packages </line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @return the set of diagnostics for the given package</line>
+<line sev="2">	 */</line>
+<line sev="2">	public DiagnosticSet getDiagnosticsForPackage(final String packageName, </line>
+<line sev="2">                                                  final boolean includeSubpackages)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        DiagnosticSet subset = new DiagnosticSet();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        List&lt;Diagnostic&gt; list = getDiagnosticsByPackageName().get(packageName);</line>
+<line sev="2"/>
+<line sev="2" covered="partial">        if (list != null)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            for (int i = 0; i &lt; list.size(); i++)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                Diagnostic diag = list.get(i);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">                if (includeSubpackages || packageName.equals(diag.getPackageName()))</line>
+<line sev="2">                {</line>
+<line sev="2" covered="yes">                    subset.diagnostics.add(diag);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return subset;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">	 * Returns the diagnostics for the given file.</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @param fileName the name of the file.</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @return the set of diagnostics for the given file.</line>
+<line sev="2">	 */</line>
+<line sev="2">	public DiagnosticSet getDiagnosticsForFile(final String fileName)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        DiagnosticSet subset = new DiagnosticSet();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        List&lt;Diagnostic&gt; list = getDiagnosticsByFileName().get(fileName);</line>
+<line sev="2"/>
+<line sev="2" covered="partial">        if (list != null)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            for (int i = 0; i &lt; list.size(); i++)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                Diagnostic diagnostic = list.get(i);</line>
+<line sev="2" covered="yes">                subset.diagnostics.add(diagnostic);</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return subset;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return a shallow copy of this DiagnosticSet.</line>
+<line sev="2">     */</line>
+<line sev="3"><diag id="441"/>    public Object clone()</line>
+<line sev="3">    {</line>
+<line sev="3" covered="yes">        Object clone = null;</line>
+<line sev="3"/>
+<line sev="3">        try</line>
+<line sev="3">        {</line>
+<line sev="3" covered="yes">            clone = super.clone();</line>
+<line sev="3">        }</line>
+<line sev="3" covered="no">        catch (CloneNotSupportedException ignored)</line>
+<line sev="3">        {</line>
+<line sev="3">            // impossible, as implements Cloneable</line>
+<line sev="3" covered="yes">        }</line>
+<line sev="3"/>
+<line sev="3" covered="yes">        return clone;</line>
+<line sev="3">    }</line>
+<line sev="2"/>
+<line sev="2">	/**</line>
+<line sev="2">	 * Returns the number of diagnostics with the given severity.</line>
+<line sev="2">	 * </line>
+<line sev="2">	 * @param severity the severity.</line>
+<line sev="2">	 * @return the number of diagnostics with the given severity.</line>
+<line sev="2">	 */</line>
+<line sev="2">	public int getCountForSeverity(final int severity)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        if (severity == Diagnostic.SEVERITY_ALL)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            return size();</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        List&lt;Diagnostic&gt; list = getDiagnosticsBySeverity().get(String.valueOf(severity));</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return list == null ? 0 : list.size();</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return the number of Diagnostics in this DiagnosticSet.</line>
+<line sev="2">     */</line>
+<line sev="2">    public int size()</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        return diagnostics.size();</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return true if this DiagnosticSet contains no Diagnostics.</line>
+<line sev="2">     */</line>
+<line sev="2">    public boolean isEmpty()</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        return diagnostics.isEmpty();</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @return an iteration over the diagnostics in this DiagnosticSet.</line>
+<line sev="2">     */</line>
+<line sev="2">    public Iterator&lt;Diagnostic&gt; iterator()</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        return new ReadOnlyIterator&lt;Diagnostic&gt;(diagnostics);</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Read only iterator for iterating over the diagnostics in this DiagnosticSet.</line>
+<line sev="2">     *</line>
+<line sev="2">     * @param &lt;T&gt; generic type parameter.</line>
+<line sev="2">     */</line>
+<line sev="2">	private static final class ReadOnlyIterator&lt;T&gt; implements Iterator&lt;T&gt;</line>
+<line sev="2">	{</line>
+<line sev="2">        /** The current position in the list. */</line>
+<line sev="2" covered="yes">        private int index = 0;</line>
+<line sev="2">        /** The list being iterated over. */</line>
+<line sev="2">        private final List&lt;T&gt; list;</line>
+<line sev="2"/>
+<line sev="2">        /**</line>
+<line sev="2">         * Creates a ReadOnlyIterator for the given list.</line>
+<line sev="2">         * </line>
+<line sev="2">         * @param list the list to iterate over.</line>
+<line sev="2">         */</line>
+<line sev="2">        ReadOnlyIterator(final List&lt;T&gt; list)</line>
+<line sev="2" covered="yes">        {</line>
+<line sev="2" covered="yes">            this.list = list;</line>
+<line sev="2" covered="yes">        }</line>
+<line sev="2"/>
+<line sev="2">        /**</line>
+<line sev="2">         * Returns &lt;tt&gt;true&lt;/tt&gt; if the iteration has more elements. (In other</line>
+<line sev="2">         * words, returns &lt;tt&gt;true&lt;/tt&gt; if &lt;tt&gt;next&lt;/tt&gt; would return an element</line>
+<line sev="2">         * rather than throwing an exception.)</line>
+<line sev="2">         *</line>
+<line sev="2">         * @return &lt;tt&gt;true&lt;/tt&gt; if the iterator has more elements.</line>
+<line sev="2">         */</line>
+<line sev="2">        public boolean hasNext()</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            return index &lt; list.size();</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        /**</line>
+<line sev="2">         * @return the next element in the iteration.</line>
+<line sev="2">         */</line>
+<line sev="2">        public T next()</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            if (index == list.size())</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                throw new NoSuchElementException(&quot;iteration has no more elements&quot;);</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">            return list.get(index++);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        /**</line>
+<line sev="2">         * Remove is not supported, calling this method will</line>
+<line sev="2">         * result in an UnsupportedOperationException being thrown.</line>
+<line sev="2">         */</line>
+<line sev="2">        public void remove()</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            throw new UnsupportedOperationException(&quot;ReadOnlyIterator does not support remove&quot;);</line>
+<line sev="2">        }</line>
+<line sev="2">	}</line>
+<line sev="2">}</line>
+</source>
+<diags first="false">
+<diag id="434" sev="2" tool="PMD" rule="GodClass">
+Possible God class (WMC=54, ATFD=27, TCC=0.005847953216374269)
+</diag>
+<diag id="441" sev="3" tool="PMD" rule="CloneMethodReturnTypeMustMatchClassName">
+The return type of the clone() method must be the class name when implements Cloneable
+</diag>
+</diags>
+</classDetails>

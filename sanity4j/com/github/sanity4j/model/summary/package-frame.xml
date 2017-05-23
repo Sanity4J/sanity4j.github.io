@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-frame.xsl"?>
+<packageClasses packageName="com.github.sanity4j.model.summary" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<class name="com.github.sanity4j.model.summary.PackageSummary" high="0" significant="0" moderate="0" low="1" info="2"/>
+<class name="com.github.sanity4j.model.summary.PackageSummary_Test" high="0" significant="0" moderate="0" low="1" info="0"/>
+<class name="com.github.sanity4j.model.summary.SummaryCsvMarshaller" high="0" significant="1" moderate="0" low="0" info="1"/>
+<class name="com.github.sanity4j.model.summary.SummaryCsvMarshaller_Test" high="0" significant="0" moderate="0" low="2" info="0"/>
+</packageClasses>

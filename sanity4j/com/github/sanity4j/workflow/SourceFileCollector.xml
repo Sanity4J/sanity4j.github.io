@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.SourceFileCollector" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.workflow; </line>
+<line/>
+<line>import java.util.Arrays;</line>
+<line>import java.util.HashSet;</line>
+<line>import java.util.Set;</line>
+<line/>
+<line>/** </line>
+<line> * SourceFileCollector collects source files from multiple directory </line>
+<line> * hierarchies and places them in a single directory hierarchy. This is </line>
+<line> * necessary, as some tools don't allow multiple source directories </line>
+<line> * to be specified.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class SourceFileCollector extends AbstractFileCollector</line>
+<line>{</line>
+<line>    /** The file extensions to include in the collection.  */</line>
+<line>    private static final Set&lt;String&gt; FILE_EXTS = new HashSet&lt;String&gt;(Arrays.asList(new String[]{&quot;java&quot;, &quot;jsp&quot;}));</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a SourceFileCollector.</line>
+<line>     * @param config the current QA run's configuration.</line>
+<line>     */</line>
+<line>    public SourceFileCollector(final QAConfig config)</line>
+<line>    {</line>
+<line>        super(FILE_EXTS, config.getSourceDirs(), config.getCombinedSourceDir());</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Returns the item type being copied. </line>
+<line>     * @return &quot;source&quot; </line>
+<line>     */</line>
+<line>    @Override</line>
+<line>    protected String getItemType()</line>
+<line>    {</line>
+<line>        return &quot;source&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Returns the brief description of the item type being copied. </line>
+<line>     * @return &quot;sources&quot; </line>
+<line>     */</line>
+<line>    @Override</line>
+<line>    protected String getItemDescription() </line>
+<line>    {</line>
+<line>        return &quot;sources&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line>        return &quot;Collecting source files&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /** @return true, at least one source file must exist. */</line>
+<line>    @Override</line>
+<line>    protected boolean isMandatory()</line>
+<line>    {</line>
+<line>        return true;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

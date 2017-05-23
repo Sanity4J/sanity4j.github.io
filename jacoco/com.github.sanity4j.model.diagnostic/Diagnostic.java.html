@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Diagnostic.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.model.diagnostic</a> &gt; <span class="el_source">Diagnostic.java</span></div><h1>Diagnostic.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.model.diagnostic;
+
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+
+import com.github.sanity4j.util.QaLogger;
+
+/**
+ * Diagnostic - represents a diagnostic message that has been generated from one of the QA tools.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public class Diagnostic
+{
+    /**
+     * A sequence used to generate id numbers. Safe as Sanity4J only runs within one VM.
+     */
+<span class="fc" id="L19">    private static int idCounter = 1;</span>
+
+    /** The diagnostic properties, which controls severities, exclusions and categorisation. */
+    private final DiagnosticFactory diagnosticFactory;
+
+    // Source of the diagnostic.
+    // Integer range from SOURCE_ALL to SOURCE_CHECKSTYLE
+
+    /** Any source. */
+    public static final int SOURCE_ALL = -1;
+
+    /** A Diagnostic sourced from an undefined tool. Should not occur. */
+    public static final int SOURCE_OTHER = 0;
+
+    /** A Diagnostic sourced from FindBugs. */
+    public static final int SOURCE_FINDBUGS = 1;
+
+    /** A Diagnostic sourced from PMD. */
+    public static final int SOURCE_PMD = 2;
+
+    /** A Diagnostic sourced from PMD CPD. */
+    public static final int SOURCE_PMD_CPD = 3;
+
+    /** A Diagnostic sourced from Checkstyle. */
+    public static final int SOURCE_CHECKSTYLE = 4;
+
+    // Ratings taken from the Risk Rating table in the code review template
+    // Int range from SEVERITY_ALL to SEVERITY_HIGH
+    /** Any severity. */
+    public static final int SEVERITY_ALL = -1;
+
+    /** Information-only - for advice to junior developers. */
+    public static final int SEVERITY_INFO = 0;
+
+    /** Low priority - e.g. formatting issues. */
+    public static final int SEVERITY_LOW = 1;
+
+    /** Moderate priority - e.g. hard to understand code. */
+    public static final int SEVERITY_MODERATE = 2;
+
+    /** Significant priority - e.g. Probable NullPointerException. */
+    public static final int SEVERITY_SIGNIFICANT = 3;
+
+    /** High priority - e.g. calling System.exit from a Web-app. */
+    public static final int SEVERITY_HIGH = 4;
+
+    /** Class name. */
+    private String className;
+
+    /** Source file name. */
+    private String fileName;
+
+    /** Start line in source code. */
+<span class="fc" id="L72">    private int startLine = -1;</span>
+
+    /** End line in source code. */
+<span class="fc" id="L75">    private int endLine = -1;</span>
+
+    /** Start column in source code. */
+<span class="fc" id="L78">    private int startColumn = -1;</span>
+
+    /** End column in source code. */
+<span class="fc" id="L81">    private int endColumn = -1;</span>
+
+    /** Severity of the error. */
+<span class="fc" id="L84">    private int severity = -1;</span>
+
+    /** Source of the Diagnostic (which tool). */
+<span class="fc" id="L87">    private int source = -1;</span>
+
+    /** Tool's rule name, if applicable. */
+    private String ruleName;
+
+    /** Diagnostic message. */
+    private String message;
+
+    /** The identifier of the diagnostic. */
+<span class="fc" id="L96">    private final int identifier = nextId();</span>
+
+    /** Default constructor. */
+    public Diagnostic()
+<span class="fc" id="L100">    {</span>
+<span class="fc" id="L101">        diagnosticFactory = DiagnosticFactory.getInstance();</span>
+<span class="fc" id="L102">    }</span>
+
+    /**
+     * Package protected constructor.
+     * 
+     * @param diagnosticFactory The diagnosticFactory which contains the properties used by this {@link Diagnostic}.
+     */
+    Diagnostic(final DiagnosticFactory diagnosticFactory)
+<span class="fc" id="L110">    {</span>
+<span class="fc" id="L111">        this.diagnosticFactory = diagnosticFactory;</span>
+<span class="fc" id="L112">    }</span>
+
+    /** @return the next id in the id sequence. */
+    private static synchronized int nextId()
+    {
+<span class="fc" id="L117">        return idCounter++;</span>
+    }
+
+    /**
+     * @return Returns the className.
+     */
+    public String getClassName()
+    {
+<span class="fc" id="L125">        return className;</span>
+    }
+
+    /**
+     * @return Returns the package name.
+     */
+    public String getPackageName()
+    {
+<span class="fc" id="L133">        int index = className.lastIndexOf('.');</span>
+
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        return (index == -1) ? &quot;&quot; : className.substring(0, index);</span>
+    }
+
+    /**
+     * @param className The className to set.
+     */
+    public void setClassName(final String className)
+    {
+<span class="fc" id="L143">        this.className = className;</span>
+<span class="fc" id="L144">    }</span>
+
+    /**
+     * @return Returns the endColumn.
+     */
+    public int getEndColumn()
+    {
+<span class="fc" id="L151">        return endColumn;</span>
+    }
+
+    /**
+     * @param endColumn The endColumn to set.
+     */
+    public void setEndColumn(final int endColumn)
+    {
+<span class="fc" id="L159">        this.endColumn = endColumn;</span>
+<span class="fc" id="L160">    }</span>
+
+    /**
+     * @return Returns the endLine.
+     */
+    public int getEndLine()
+    {
+<span class="fc" id="L167">        return endLine;</span>
+    }
+
+    /**
+     * @param endLine The endLine to set.
+     */
+    public void setEndLine(final int endLine)
+    {
+<span class="fc" id="L175">        this.endLine = Math.max(1, endLine);</span>
+<span class="fc" id="L176">    }</span>
+
+    /**
+     * @return Returns the fileName.
+     */
+    public String getFileName()
+    {
+<span class="fc" id="L183">        return fileName;</span>
+    }
+
+    /**
+     * @param fileName The fileName to set.
+     */
+    public void setFileName(final String fileName)
+    {
+<span class="fc" id="L191">        this.fileName = fileName;</span>
+<span class="fc" id="L192">    }</span>
+
+    /**
+     * @return Returns the message.
+     */
+    public String getMessage()
+    {
+<span class="fc" id="L199">        return message;</span>
+    }
+
+    /**
+     * @param message The message to set.
+     */
+    public void setMessage(final String message)
+    {
+<span class="fc" id="L207">        this.message = message;</span>
+<span class="fc" id="L208">    }</span>
+
+    /**
+     * @return Returns the severity.
+     */
+    public int getSeverity()
+    {
+<span class="fc" id="L215">        return severity;</span>
+    }
+
+    /**
+     * @param severity The severity to set.
+     */
+    public void setSeverity(final int severity)
+    {
+<span class="fc" id="L223">        this.severity = severity;</span>
+<span class="fc" id="L224">    }</span>
+
+    /**
+     * @return Returns the source.
+     */
+    public int getSource()
+    {
+<span class="fc" id="L231">        return source;</span>
+    }
+
+    /**
+     * @param source The source to set.
+     */
+    public void setSource(final int source)
+    {
+<span class="fc" id="L239">        this.source = source;</span>
+<span class="fc" id="L240">    }</span>
+
+    /**
+     * @return Returns the className.
+     */
+    public String getRuleName()
+    {
+<span class="fc" id="L247">        return ruleName;</span>
+    }
+
+    /**
+     * @param ruleName The ruleName to set.
+     */
+    public void setRuleName(final String ruleName)
+    {
+<span class="fc" id="L255">        this.ruleName = ruleName;</span>
+<span class="fc" id="L256">    }</span>
+
+    /**
+     * @return Returns the startColumn.
+     */
+    public int getStartColumn()
+    {
+<span class="fc" id="L263">        return startColumn;</span>
+    }
+
+    /**
+     * @param startColumn The startColumn to set.
+     */
+    public void setStartColumn(final int startColumn)
+    {
+<span class="fc" id="L271">        this.startColumn = startColumn;</span>
+
+<span class="fc bfc" id="L273" title="All 2 branches covered.">        if (endColumn &lt; startColumn)</span>
+        {
+<span class="fc" id="L275">            endColumn = startColumn;</span>
+        }
+<span class="fc" id="L277">    }</span>
+
+    /**
+     * @return Returns the startLine.
+     */
+    public int getStartLine()
+    {
+<span class="fc" id="L284">        return startLine;</span>
+    }
+
+    /**
+     * @param startLine The startLine to set.
+     */
+    public void setStartLine(final int startLine)
+    {
+<span class="fc" id="L292">        this.startLine = Math.max(1, startLine);</span>
+
+<span class="fc bfc" id="L294" title="All 2 branches covered.">        if (endLine &lt; startLine)</span>
+        {
+<span class="fc" id="L296">            endLine = startLine;</span>
+        }
+<span class="fc" id="L298">    }</span>
+
+    /**
+     * @return this Diagnostic's unique (within a VM) id.
+     */
+    public int getId()
+    {
+<span class="fc" id="L305">        return identifier;</span>
+    }
+
+    /**
+     * @return a textual description of this Diagnostic's severity.
+     */
+    public String getSeverityDescription()
+    {
+<span class="fc" id="L313">        return getSeverityDescription(getSeverity());</span>
+    }
+
+    /**
+     * Returns a textual description of the severity.
+     * 
+     * @param severity the severity
+     * @return a textual description of the severity
+     */
+    public static String getSeverityDescription(final int severity)
+    {
+<span class="fc bfc" id="L324" title="All 7 branches covered.">        switch (severity)</span>
+        {
+            case SEVERITY_ALL:
+<span class="fc" id="L327">                return &quot;All&quot;;</span>
+
+            case SEVERITY_INFO:
+<span class="fc" id="L330">                return &quot;Info&quot;;</span>
+
+            case SEVERITY_LOW:
+<span class="fc" id="L333">                return &quot;Low&quot;;</span>
+
+            case SEVERITY_MODERATE:
+<span class="fc" id="L336">                return &quot;Moderate&quot;;</span>
+
+            case SEVERITY_SIGNIFICANT:
+<span class="fc" id="L339">                return &quot;Significant&quot;;</span>
+
+            case SEVERITY_HIGH:
+<span class="fc" id="L342">                return &quot;High&quot;;</span>
+
+            default:
+<span class="fc" id="L345">                return &quot;Other&quot;;</span>
+        }
+    }
+
+    /**
+     * @return a textual description of this Diagnostic's source.
+     */
+    public String getSourceDescription()
+    {
+<span class="fc" id="L354">        return getSourceDescription(getSource());</span>
+    }
+
+    /**
+     * Returns a textual description of the source.
+     * 
+     * @param source the source
+     * @return a textual description of the source
+     */
+    public static String getSourceDescription(final int source)
+    {
+<span class="fc bfc" id="L365" title="All 7 branches covered.">        switch (source)</span>
+        {
+            case SOURCE_ALL:
+<span class="fc" id="L368">                return &quot;All&quot;;</span>
+
+            case SOURCE_OTHER:
+<span class="fc" id="L371">                return &quot;Other&quot;;</span>
+
+            case SOURCE_FINDBUGS:
+<span class="fc" id="L374">                return &quot;Findbugs&quot;;</span>
+
+            case SOURCE_PMD:
+<span class="fc" id="L377">                return &quot;PMD&quot;;</span>
+
+            case SOURCE_PMD_CPD:
+<span class="fc" id="L380">                return &quot;PMD-CPD&quot;;</span>
+
+            case SOURCE_CHECKSTYLE:
+<span class="fc" id="L383">                return &quot;Checkstyle&quot;;</span>
+
+            default:
+<span class="fc" id="L386">                return &quot;Other&quot;;</span>
+        }
+    }
+
+    /**
+     * Returns the categories of this diagnostic, based upon the source and ruleName. The categories are read from
+     * Diagnostic.properties.
+     * 
+     * @return the categories of this diagnostic
+     */
+    public String[] getCategories()
+    {
+<span class="nc" id="L398">        String sourceName = getSourceDescription();</span>
+<span class="nc" id="L399">        String key = sourceName + '.' + ruleName + &quot;.category&quot;;</span>
+<span class="nc" id="L400">        String value = diagnosticFactory.getProperty(key);</span>
+
+<span class="nc bnc" id="L402" title="All 2 branches missed.">        return (value == null) ? new String[0] : value.split(&quot;,&quot;);</span>
+    }
+
+    /**
+     * Calculates the severity based on the Diagnostic.properties.
+     */
+    public void calcSeverity()
+    {
+<span class="fc" id="L410">        String sourceName = getSourceDescription();</span>
+
+<span class="fc" id="L412">        String key = sourceName + '.' + ruleName + &quot;.severity&quot;;</span>
+<span class="fc" id="L413">        String value = diagnosticFactory.getProperty(key);</span>
+
+<span class="pc bpc" id="L415" title="1 of 2 branches missed.">        if (value == null)</span>
+        {
+<span class="fc" id="L417">            String msg = &quot;Missing diagnostic severity for [&quot; + key + &quot;]: will default to [&quot; + SEVERITY_INFO</span>
+                         + &quot; (INFO)]&quot;;
+
+<span class="fc" id="L420">            QaLogger.getInstance().warn(msg);</span>
+<span class="fc" id="L421">            diagnosticFactory.setProperty(key, String.valueOf(SEVERITY_INFO));</span>
+<span class="fc" id="L422">            setSeverity(SEVERITY_INFO);</span>
+<span class="fc" id="L423">        }</span>
+        else
+        {
+<span class="nc" id="L426">            setSeverity(Integer.parseInt(value));</span>
+        }
+<span class="fc" id="L428">    }</span>
+
+    /**
+     * Should this diagnostic be excluded from the report? This is controlled by the Diagnostic.properties file, as some
+     * of the tools don't support exclusions by class + rule.
+     * 
+     * @return true if the diagnostic should be excluded
+     */
+    public boolean isExcluded()
+    {
+<span class="fc" id="L438">        String sourceName = getSourceDescription();</span>
+<span class="fc" id="L439">        String keyBase = sourceName + '.' + ruleName;</span>
+
+<span class="fc" id="L441">        String includes = diagnosticFactory.getProperty(keyBase + &quot;.includes&quot;);</span>
+<span class="fc" id="L442">        String excludes = diagnosticFactory.getProperty(keyBase + &quot;.excludes&quot;);</span>
+
+        // Is the file included by at least one include?
+<span class="pc bpc" id="L445" title="1 of 2 branches missed.">        if (includes != null)</span>
+        {
+<span class="nc" id="L447">            boolean include = false;</span>
+
+<span class="nc bnc" id="L449" title="All 2 branches missed.">            for (StringTokenizer st = new StringTokenizer(includes, &quot;,&quot;); st.hasMoreTokens();)</span>
+            {
+<span class="nc bnc" id="L451" title="All 2 branches missed.">                if (Pattern.matches(st.nextToken(), className))</span>
+                {
+<span class="nc" id="L453">                    include = true;</span>
+<span class="nc" id="L454">                    break;</span>
+                }
+            }
+
+<span class="nc bnc" id="L458" title="All 2 branches missed.">            if (!include)</span>
+            {
+<span class="nc" id="L460">                return true;</span>
+            }
+        }
+
+        // Is the file excluded by at least one exclude?
+<span class="pc bpc" id="L465" title="1 of 2 branches missed.">        if (excludes != null)</span>
+        {
+<span class="nc bnc" id="L467" title="All 2 branches missed.">            for (StringTokenizer st = new StringTokenizer(excludes, &quot;,&quot;); st.hasMoreTokens();)</span>
+            {
+<span class="nc bnc" id="L469" title="All 2 branches missed.">                if (Pattern.matches(st.nextToken(), className))</span>
+                {
+<span class="nc" id="L471">                    return true;</span>
+                }
+            }
+        }
+
+<span class="fc" id="L476">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

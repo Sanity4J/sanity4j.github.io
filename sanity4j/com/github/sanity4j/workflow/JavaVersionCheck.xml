@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.JavaVersionCheck" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="1" moderate="0" low="1" info="0" quality="66"/>
+<source>
+<line>package com.github.sanity4j.workflow; </line>
+<line/>
+<line>import java.io.ByteArrayOutputStream;</line>
+<line/>
+<line>import com.github.sanity4j.util.ExternalProcessRunner;</line>
+<line>import com.github.sanity4j.util.QAException;</line>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line/>
+<line/>
+<line>/** </line>
+<line> * Checks the java version that the tools will be run under.</line>
+<line> * The version is checked by running &quot;java -version&quot; and </line>
+<line> * parsing the output. Currently, 1.3 through 1.5 VMs from</line>
+<line> * various vendors seem to have a common first line:</line>
+<line> *      java version &quot;x.y.z&quot; </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class JavaVersionCheck implements WorkUnit</line>
+<line>{</line>
+<line>    /** The java runtime to check. */</line>
+<line>    private final String javaRuntime;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a JavaVersionCheck.</line>
+<line>     * @param config the current QA run's configuration.</line>
+<line>     */</line>
+<line>    public JavaVersionCheck(final QAConfig config)</line>
+<line>    {</line>
+<line>        this.javaRuntime = config.getJavaRuntime();</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line>        return &quot;Checking java version&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Executes the java runtime to obtain the version number.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line>        String[] cmdLine = new String[]</line>
+<line>        {</line>
+<line>            javaRuntime,</line>
+<line>            &quot;-version&quot;</line>
+<line>        };</line>
+<line/>
+<line>        ByteArrayOutputStream baos = new ByteArrayOutputStream();</line>
+<line>        ExternalProcessRunner.runProcess(cmdLine, System.out, baos);</line>
+<line/>
+<line sev="3"><diag id="316"/>        String[] output = baos.toString().split(&quot;[\n\r]&quot;);</line>
+<line>        String javaVersion = output[0].replaceAll(&quot;.*\&quot;(.*)\&quot;.*&quot;, &quot;$1&quot;);</line>
+<line/>
+<line>        QaLogger.getInstance().info(&quot;Java version: &quot; + javaVersion);</line>
+<line/>
+<line sev="1"><diag id="800"/>        if (&quot;1.5&quot;.compareTo(javaVersion) &gt; 0)</line>
+<line>        {</line>
+<line>            String msg = &quot;The QA tools require java 1.5 or later to Run, current java version is &quot; + javaVersion;</line>
+<line>            throw new QAException(msg);</line>
+<line>        }</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="316" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.JavaVersionCheck.run(): java.io.ByteArrayOutputStream.toString()</diag>
+<diag id="800" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
+Avoid using Literals in Conditional Statements
+</diag>
+</diags>
+</classDetails>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractCoverage.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.model.coverage</a> &gt; <span class="el_source">AbstractCoverage.java</span></div><h1>AbstractCoverage.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.model.coverage; 
+
+/** 
+ * Abstract implementation of Coverage.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+<span class="fc" id="L9">public abstract class AbstractCoverage implements CoverageItf</span>
+{
+    /** Branch coverage ratio, from 0.0 (none) to 1.0 (all). */
+    private double branchCoverage;
+    
+    /** Line coverage ratio, from 0.0 (none) to 1.0 (all). */
+    private double lineCoverage;
+    
+    /**
+     * @return Returns the branchCoverage.
+     */
+    public double getBranchCoverage()
+    {
+<span class="fc" id="L22">        return branchCoverage;</span>
+    }
+    
+    /**
+     * @param branchCoverage The branchCoverage to set.
+     */
+    public void setBranchCoverage(final double branchCoverage)
+    {
+<span class="fc" id="L30">        this.branchCoverage = branchCoverage;</span>
+<span class="fc" id="L31">    }</span>
+    
+    /**
+     * @return Returns the lineCoverage.
+     */
+    public double getLineCoverage()
+    {
+<span class="fc" id="L38">        return lineCoverage;</span>
+    }
+    
+    /**
+     * @param lineCoverage The lineCoverage to set.
+     */
+    public void setLineCoverage(final double lineCoverage)
+    {
+<span class="fc" id="L46">        this.lineCoverage = lineCoverage;</span>
+<span class="fc" id="L47">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.report.CategoryWriter" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="7" info="2" quality="92"/>
+<source>
+<line sev="1"><diag id="210"/>package com.github.sanity4j.report;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Collections;</line>
+<line>import java.util.Date;</line>
+<line>import java.util.HashMap;</line>
+<line>import java.util.Iterator;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Map;</line>
+<line/>
+<line>import com.github.sanity4j.model.diagnostic.Diagnostic;</line>
+<line>import com.github.sanity4j.model.diagnostic.DiagnosticCategory;</line>
+<line>import com.github.sanity4j.model.diagnostic.DiagnosticSet;</line>
+<line>import com.github.sanity4j.util.ExtractStats;</line>
+<line>import com.github.sanity4j.util.FileUtil;</line>
+<line>import com.github.sanity4j.util.StringUtil;</line>
+<line>import com.github.sanity4j.workflow.QAProcessor;</line>
+<line/>
+<line/>
+<line>/**</line>
+<line> * CategoryWriter writes diagnostics by category.</line>
+<line> *  </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class CategoryWriter </line>
+<line>{</line>
+<line>    /** The diagnostics that we are writing. */</line>
+<line>    private final ExtractStats stats;</line>
+<line/>
+<line>    /** The destination directory. */</line>
+<line>    private final File reportDir;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a category writer for the given stats.</line>
+<line>     * </line>
+<line>     * @param stats the stats utility containing the results</line>
+<line>     * @param reportDir the base directory for the report</line>
+<line>     */</line>
+<line>    public CategoryWriter(final ExtractStats stats, final File reportDir)</line>
+<line>    {</line>
+<line>        this.stats = stats;</line>
+<line>        this.reportDir = reportDir;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Writes the output for a package to e.g. &quot;com/foobar/mypackage/package-by-category.xml&quot;</line>
+<line>     * </line>
+<line>     * @param packageName the package name</line>
+<line>     * @throws IOException if there is an error writing to the file</line>
+<line>     */</line>
+<line>    public void writeCategories(final String packageName) throws IOException</line>
+<line>    {</line>
+<line>        String fileName = &quot;package-by-category.xml&quot;;</line>
+<line/>
+<line>        if (packageName != null)</line>
+<line>        {</line>
+<line>        	StringBuffer buf = new StringBuffer();</line>
+<line>        	buf.append(packageName.replace('.', File.separatorChar))</line>
+<line>        		.append(File.separatorChar)</line>
+<line>        		.append(fileName);</line>
+<line/>
+<line>            fileName = buf.toString();  </line>
+<line>        }</line>
+<line/>
+<line>        String summary = generateCategoryPage(packageName);       </line>
+<line>        FileUtil.writeToFile(summary, new File(reportDir, fileName));</line>
+<line>    }       </line>
+<line/>
+<line>    /**</line>
+<line>     * Generates the category XML.</line>
+<line>     * </line>
+<line>     * @param packageName the package name, or null to create a summary for all packages.</line>
+<line>     * @return the generated XML</line>
+<line>     */</line>
+<line>    private String generateCategoryPage(final String packageName)</line>
+<line>    {</line>
+<line>        // For the package name com.bar.foo, we need &quot;../../../&quot;</line>
+<line>        String pathToRoot = StringUtil.empty(packageName) </line>
+<line>                          ? &quot;&quot; </line>
+<line sev="1"><diag id="455"/>                          : (packageName.replaceAll(&quot;[^\\.]&quot;, &quot;&quot;).replaceAll(&quot;\\.&quot;, &quot;../&quot;) + &quot;../&quot;);</line>
+<line/>
+<line sev="1"><diag id="456"/>        StringBuffer xml = new StringBuffer();</line>
+<line/>
+<line>        // Write top-level package summary info        </line>
+<line sev="1"><diag id="457"/>        xml.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</line>
+<line sev="1"><diag id="458"/>           .append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/package-by-category.xsl\&quot;?&gt;\n&quot;)        </line>
+<line>           .append(&quot;&lt;packageByCategory packageName=\&quot;&quot;).append(packageName == null ? &quot;&quot; : packageName).append(&quot;\&quot; pathToRoot=\&quot;&quot;)</line>
+<line>           .append(pathToRoot).append(&quot;\&quot; qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</line>
+<line sev="1"><diag id="459"/>           .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line/>
+<line>        // Get diagnostics for the given package</line>
+<line>        DiagnosticSet diags = stats.getDiagnostics();</line>
+<line/>
+<line>        if (!StringUtil.empty(packageName))</line>
+<line>        {</line>
+<line>            diags = diags.getDiagnosticsForPackage(packageName);</line>
+<line>        }</line>
+<line/>
+<line>        // Build up categories &amp; generate XML</line>
+<line>        DiagnosticCategory category = new DiagnosticCategory();</line>
+<line/>
+<line>        for (Iterator&lt;Diagnostic&gt; i = diags.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line>            category.addDiagnostic(i.next());</line>
+<line>        }               </line>
+<line/>
+<line>        generateCategoryDetails(category, xml);</line>
+<line/>
+<line>        xml.append(&quot;&lt;/packageByCategory&gt;\n&quot;); </line>
+<line/>
+<line>        return xml.toString();</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Generates category details XML.</line>
+<line>     * </line>
+<line>     * @param category the Diagnostic category</line>
+<line>     * @param xml the string buffer to append the XML output to</line>
+<line>     */</line>
+<line>    private void generateCategoryDetails(final DiagnosticCategory category, </line>
+<line>                                          final StringBuffer xml)</line>
+<line>    {</line>
+<line>        xml.append(&quot;&lt;category name=\&quot;&quot;).append(category.getName()).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line/>
+<line>        // Output diagnostics (if any)</line>
+<line>        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByRuleName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</line>
+<line/>
+<line sev="1"><diag id="904"/>        for (Diagnostic diagnostic : category.getDiagnostics())</line>
+<line sev="1">        {</line>
+<line sev="1">            String key = diagnostic.getRuleName();</line>
+<line sev="1"/>
+<line sev="1">            if (key == null)</line>
+<line sev="1">            {</line>
+<line sev="1">                key = &quot;(none)&quot;;</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1">            List&lt;Diagnostic&gt; list = diagnosticsByRuleName.get(key);</line>
+<line sev="1"/>
+<line sev="1">            if (list == null)</line>
+<line sev="1">            {</line>
+<line sev="1"><diag id="460"/>                list = new ArrayList&lt;Diagnostic&gt;();</line>
+<line sev="1">                diagnosticsByRuleName.put(key, list);</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1">            list.add(diagnostic);</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        List&lt;String&gt; ruleNames = new ArrayList&lt;String&gt;(diagnosticsByRuleName.keySet());</line>
+<line sev="1">        Collections.sort(ruleNames);</line>
+<line sev="1"/>
+<line sev="1">        // Output diagnostics (if any)</line>
+<line sev="1">        for (String ruleName : ruleNames)</line>
+<line sev="1">        {</line>
+<line sev="1">            List&lt;Diagnostic&gt; diagnosticsForRule = diagnosticsByRuleName.get(ruleName);</line>
+<line sev="1">            Diagnostic firstDiag = diagnosticsForRule.get(0);</line>
+<line sev="1"/>
+<line>            xml.append(&quot;&lt;rule name=\&quot;&quot;).append(ruleName)</line>
+<line>               .append(&quot;\&quot; tool=\&quot;&quot;).append(firstDiag.getSourceDescription())</line>
+<line>               .append(&quot;\&quot; severity=\&quot;&quot;).append(firstDiag.getSeverity())</line>
+<line>               .append(&quot;\&quot;&gt;\n&quot;);</line>
+<line/>
+<line>            Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByClassName = ReportUtil.mapDiagnosticsByClassName(diagnosticsForRule); </line>
+<line sev="0"><diag id="461"/>            List&lt;String&gt; classNames = new ArrayList&lt;String&gt;(diagnosticsByClassName.keySet());</line>
+<line>            Collections.sort(classNames);</line>
+<line/>
+<line>            for (String className : classNames)</line>
+<line>            {</line>
+<line>                xml.append(&quot;&lt;class name=\&quot;&quot;).append(className).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line/>
+<line>                for (Diagnostic diag : diagnosticsByClassName.get(className))</line>
+<line>                {</line>
+<line>                    xml.append(&quot;&lt;diag id=\&quot;&quot;).append(diag.getId()).append(&quot;\&quot;/&gt;\n&quot;);</line>
+<line>                }</line>
+<line/>
+<line>                xml.append(&quot;&lt;/class&gt;\n&quot;);</line>
+<line>            }</line>
+<line/>
+<line>            xml.append(&quot;&lt;/rule&gt;\n&quot;);</line>
+<line>        }       </line>
+<line/>
+<line>        // Output subcategories (if any)</line>
+<line>        for (Iterator&lt;DiagnosticCategory&gt; i = category.subCategoriesIterator(); i.hasNext();)</line>
+<line>        {</line>
+<line>            DiagnosticCategory subCategory = i.next();</line>
+<line>            generateCategoryDetails(subCategory, xml);</line>
+<line>        }</line>
+<line/>
+<line>        xml.append(&quot;&lt;/category&gt;\n&quot;);</line>
+<line>    }       </line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="210" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="455" sev="1" tool="PMD" rule="UselessParentheses">
+Useless parentheses.
+</diag>
+<diag id="456" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">
+StringBuffer constructor is initialized with size 16, but has at least 224 characters appended.
+</diag>
+<diag id="457" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="458" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
+</diag>
+<diag id="459" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;\&quot;&gt;\n&quot; appears 4 times in this file; the first occurrence is on line 92
+</diag>
+<diag id="904" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/PackageWriter.java:
+        for (Diagnostic diagnostic : category.getDiagnostics())
+        {
+            String key = diagnostic.getRuleName();
+            
+            if (key == null)
+            {
+                key = &quot;(none)&quot;;
+            }
+            
+            List&lt;Diagnostic&gt; list = diagnosticsByRuleName.get(key);
+            
+            if (list == null)
+            {
+                list = new ArrayList&lt;Diagnostic&gt;();
+                diagnosticsByRuleName.put(key, list);
+            }
+            
+            list.add(diagnostic);
+        }
+        
+        List&lt;String&gt; ruleNames = new ArrayList&lt;String&gt;(diagnosticsByRuleName.keySet());
+        Collections.sort(ruleNames);
+        
+        // Output diagnostics (if any)
+        for (String ruleName : ruleNames)
+        {
+            List&lt;Diagnostic&gt; diagnosticsForRule = diagnosticsByRuleName.get(ruleName);
+            Diagnostic firstDiag = diagnosticsForRule.get(0);</diag>
+<diag id="460" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="461" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+</diags>
+</classDetails>

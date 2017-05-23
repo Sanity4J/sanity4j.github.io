@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.tool.PmdCpd5ResultReader" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.File;</line>
+<line/>
+<line>/**</line>
+<line> * PmdCpdResultReader - Translates PMD CPD 5.x results into the common format used by the QA tool.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.1</line>
+<line> */</line>
+<line>public final class PmdCpd5ResultReader extends PmdCpd4ResultReader</line>
+<line>{</line>
+<line>    /** {@inheritDoc} */</line>
+<line>    @Override</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line>        File pmdCpdResultFile = getResultFile();</line>
+<line/>
+<line>        if (pmdCpdResultFile.exists() &amp;&amp; pmdCpdResultFile.length() == 0)</line>
+<line>        {</line>
+<line>            // PMD-CPD 5.x doesn't output the empty &lt;pmd-cpd&gt; element if there are no results</line>
+<line>            return;</line>
+<line>        }</line>
+<line/>
+<line>        if (pmdCpdResultFile.exists() &amp;&amp; pmdCpdResultFile.length() &lt; 60)</line>
+<line>        {</line>
+<line>            // PMD-CPD 5.6.x outputs the empty &lt;pmd-cpd&gt; element as self-closing, which blows up jaxb with:</line>
+<line>            // SAXParseException pmd-cpd must be followed by either attribute specifications, &quot;&gt;&quot; or &quot;/&gt;&quot;. </line>
+<line>            return;</line>
+<line>        }</line>
+<line/>
+<line>        super.run();</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

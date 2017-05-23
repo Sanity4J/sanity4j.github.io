@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-by-category.xsl"?>
+<packageByCategory packageName="com.github.sanity4j.model.coverage" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<category name="All categories">
+<category name="Code style">
+<rule name="ImportFromSamePackage" tool="PMD" severity="1">
+<class name="com.github.sanity4j.model.coverage.ClassCoverage_Test">
+<diag id="416"/>
+</class>
+<class name="com.github.sanity4j.model.coverage.Coverage_Test">
+<diag id="419"/>
+<diag id="420"/>
+<diag id="421"/>
+</class>
+<class name="com.github.sanity4j.model.coverage.PackageCoverage_Test">
+<diag id="424"/>
+<diag id="425"/>
+</class>
+</rule>
+</category>
+</category>
+</packageByCategory>

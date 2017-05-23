@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.tool.CheckStyleResultReader" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="80" branchCoverage="66" quality="100"/>
+<source>
+<line>package com.github.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.math.BigInteger;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Properties;</line>
+<line/>
+<line>import com.github.sanity4j.model.diagnostic.Diagnostic;</line>
+<line>import com.github.sanity4j.model.diagnostic.DiagnosticFactory;</line>
+<line>import com.github.sanity4j.model.diagnostic.DiagnosticSet;</line>
+<line>import com.github.sanity4j.util.ExtractStats;</line>
+<line>import com.github.sanity4j.util.JaxbMarshaller;</line>
+<line>import com.github.sanity4j.util.QAException;</line>
+<line/>
+<line>import com.github.sanity4j.gen.checkstyle_4_4.Checkstyle;</line>
+<line>import com.github.sanity4j.gen.checkstyle_4_4.Error;</line>
+<line/>
+<line>/**</line>
+<line> * CheckStyleResultReader - Translates CheckStyle results into the common format used by the QA tool.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line covered="yes">public final class CheckStyleResultReader implements ResultReader</line>
+<line>{</line>
+<line>    /** The properties used to configure the {@link CheckStyleResultReader}. */</line>
+<line covered="yes">    private final Properties properties = new Properties();</line>
+<line/>
+<line>    /** The ExtractStats to add the results to. */</line>
+<line>    private ExtractStats stats;</line>
+<line/>
+<line>    /** The CheckStyle XML result file to read from. */</line>
+<line>    private File checkStyleResultFile;</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public void setProperties(final Properties properties)</line>
+<line>    {</line>
+<line covered="no">        this.properties.putAll(properties);</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public void setResultFile(final File resultFile)</line>
+<line>    {</line>
+<line covered="yes">        this.checkStyleResultFile = resultFile;</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public void setStats(final ExtractStats stats)</line>
+<line>    {</line>
+<line covered="yes">        this.stats = stats;</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Extracts CheckStyle statistics from the given file.</line>
+<line>     */</line>
+<line>    public void run()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticFactory diagnosticFactory = DiagnosticFactory.getInstance(properties);</line>
+<line covered="yes">        DiagnosticSet diagnostics = stats.getDiagnostics();</line>
+<line/>
+<line covered="yes">        Checkstyle result = (Checkstyle) JaxbMarshaller.unmarshal(checkStyleResultFile,</line>
+<line>                                                                  &quot;com.github.sanity4j.gen.checkstyle_4_4&quot;,</line>
+<line>                                                                  &quot;http://com.github.sanity4j/namespace/checkstyle-4.4&quot;);</line>
+<line/>
+<line covered="yes">        List&lt;com.github.sanity4j.gen.checkstyle_4_4.File&gt; files = result.getFile();</line>
+<line/>
+<line covered="yes">        for (com.github.sanity4j.gen.checkstyle_4_4.File file : files)</line>
+<line>        {</line>
+<line covered="yes">            List&lt;Object&gt; errors = file.getContent();</line>
+<line/>
+<line covered="yes">            for (Object obj : errors)</line>
+<line>            {</line>
+<line covered="yes">                if (obj instanceof Error)</line>
+<line>                {</line>
+<line covered="yes">                    Error error = (Error) obj;</line>
+<line/>
+<line>                    // Work-around for Checkstyle bugs</line>
+<line covered="partial">                    if (error.getLine().intValue() == 0)</line>
+<line>                    {</line>
+<line covered="no">                        if (error.getMessage().startsWith(&quot;Got an exception - java.lang.RuntimeException:&quot;))</line>
+<line>                        {</line>
+<line>                            // Checkstyle fails on methods that throw custom exception types</line>
+<line>                            // http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1462282&amp;group_id=29721&amp;atid=397078</line>
+<line covered="no">                            continue;</line>
+<line>                        }</line>
+<line>                        else</line>
+<line>                        {</line>
+<line>                            // Some findings are reported as line 0, so change this</line>
+<line>                            // to line 1 so that they appear on reports</line>
+<line covered="no">                            error.setLine(BigInteger.ONE);</line>
+<line>                        }</line>
+<line>                    }</line>
+<line/>
+<line covered="yes">                    Diagnostic diagnostic = diagnosticFactory.getDiagnostic();</line>
+<line covered="yes">                    diagnostic.setSource(Diagnostic.SOURCE_CHECKSTYLE);</line>
+<line/>
+<line>                    try</line>
+<line>                    {</line>
+<line covered="yes">                        diagnostic.setFileName(stats.getCanonicalPath(file.getName()));</line>
+<line>                    }</line>
+<line covered="no">                    catch (IOException e)</line>
+<line>                    {</line>
+<line covered="no">                        throw new QAException(&quot;Failed to get canonicalPath for &quot; + file.getName(), e);</line>
+<line covered="yes">                    }</line>
+<line/>
+<line covered="yes">                    diagnostic.setStartLine(error.getLine().intValue());</line>
+<line covered="yes">                    diagnostic.setMessage(error.getMessage());</line>
+<line/>
+<line covered="yes">                    String ruleName = error.getSource();</line>
+<line covered="yes">                    ruleName = ruleName.substring(ruleName.lastIndexOf('.') + 1);</line>
+<line covered="yes">                    diagnostic.setRuleName(ruleName);</line>
+<line covered="yes">                    diagnostic.calcSeverity();</line>
+<line/>
+<line covered="partial">                    if (error.getColumn() != null)</line>
+<line>                    {</line>
+<line covered="yes">                        diagnostic.setStartColumn(error.getColumn().intValue());</line>
+<line>                    }</line>
+<line/>
+<line>                    // Checkstyle is source file based, so guess the class name</line>
+<line covered="yes">                    diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</line>
+<line/>
+<line covered="yes">                    diagnostics.add(diagnostic);</line>
+<line>                }</line>
+<line covered="yes">            }</line>
+<line covered="yes">        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line covered="no">        return &quot;Reading CheckStyle results&quot;;</line>
+<line>    }</line>
+<line/>
+<line>}</line>
+</source>
+</classDetails>

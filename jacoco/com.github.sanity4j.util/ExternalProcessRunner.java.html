@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExternalProcessRunner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.util</a> &gt; <span class="el_source">ExternalProcessRunner.java</span></div><h1>ExternalProcessRunner.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.util; 
+
+import java.io.OutputStream;
+
+import org.apache.commons.lang.SystemUtils;
+
+/**
+ * Runs an external process.
+ * 
+ * @author Yiannis Paschalidis 
+ * @since Sanity4J 1.0
+ */
+public final class ExternalProcessRunner
+{
+    /** Sleep time while waiting for piping of process output streams to complete. */ 
+    private static final int SLEEP_TIME = 500; // 0.5 seconds
+    
+    /** Number of times to sleep. */
+    private static final int SLEEP_COUNT = 10;
+    
+    /** ExternalProcessRunner should not be instantiated. */
+    private ExternalProcessRunner() 
+<span class="nc" id="L23">    {        </span>
+        // ExternalProcessRunner should not be instantiated.
+<span class="nc" id="L25">    }</span>
+
+    /**
+     * Runs a process using the given command line,
+     * piping stdout/stderr to out/err.
+     * 
+     * @param cmdLine the command line to run
+     * @param out where to pipe System.out to
+     * @param err where to pipe System.err to
+     * 
+     * @return the return code of the process
+     */
+    public static int runProcess(final String[] cmdLine, 
+        final OutputStream out, final OutputStream err)
+    {    
+<span class="fc" id="L40">        StringBuffer cmdLineStr = new StringBuffer();                   </span>
+        
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        for (int i = 0; i &lt; cmdLine.length; i++)</span>
+        {
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">            if (cmdLine[i].indexOf(' ') == -1)</span>
+            {
+<span class="fc" id="L46">                cmdLineStr.append(cmdLine[i]);</span>
+            }
+<span class="nc bnc" id="L48" title="All 2 branches missed.">            else if (SystemUtils.IS_OS_UNIX)</span>
+            {
+                // escape any spaces.
+<span class="nc" id="L51">                cmdLineStr.append(cmdLine[i].replace(&quot; &quot;, &quot;\\ &quot;));</span>
+            }
+            else
+            {
+<span class="nc" id="L55">                cmdLineStr.append('&quot;');</span>
+<span class="nc" id="L56">                cmdLineStr.append(cmdLine[i]);</span>
+<span class="nc" id="L57">                cmdLineStr.append('&quot;');</span>
+            }
+            
+<span class="fc" id="L60">            cmdLineStr.append(' ');</span>
+        }
+        
+<span class="fc" id="L63">        return runProcess(cmdLineStr.toString(), out, err);</span>
+    }
+    
+    /**
+     * Runs a process using the given command line,
+     * piping stdout/stderr to out/err.
+     * 
+     * @param cmdLine the command line to run
+     * @param out where to pipe System.out to
+     * @param err where to pipe System.err to
+     * 
+     * @return the return code of the process
+     */
+    public static int runProcess(final String cmdLine, 
+        final OutputStream out, final OutputStream err)
+    {
+<span class="fc" id="L79">        QaLogger.getInstance().debug(cmdLine);     </span>
+            
+        try
+        {
+            // http://stackoverflow.com/questions/5946471/splitting-at-space-if-not-between-quotes
+<span class="fc" id="L84">            String[] cmdArray = cmdLine.split(&quot;[ ]+(?=([^\&quot;]*\&quot;[^\&quot;]*\&quot;)*[^\&quot;]*$)&quot;);</span>
+
+<span class="fc" id="L86">            StringBuffer cmdBuf = new StringBuffer();</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            for (int index = 0; index &lt; cmdArray.length; index++)</span>
+            {
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">                if (SystemUtils.IS_OS_UNIX)</span>
+                {
+                    // remove quotes.
+<span class="fc" id="L92">                    String cmdItem = cmdArray[index].replace(&quot;\&quot;&quot;, &quot;&quot;);</span>
+<span class="fc" id="L93">                    cmdArray[index] = cmdItem; </span>
+                    
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">                    if (cmdArray[index].contains(&quot; &quot;))</span>
+                    {
+                        // escape any spaces.
+<span class="nc" id="L98">                        cmdItem = cmdArray[index].replace(&quot; &quot;, &quot;\\ &quot;);</span>
+<span class="nc" id="L99">                        cmdArray[index] = cmdItem;</span>
+                    }
+<span class="fc" id="L101">                }</span>
+                else
+                {
+<span class="nc bnc" id="L104" title="All 2 branches missed.">                    if (!cmdArray[index].startsWith(&quot;\&quot;&quot;)</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">                        &amp;&amp; !cmdArray[index].endsWith(&quot;\&quot;&quot;)</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                        &amp;&amp; cmdArray[index].contains(&quot; &quot;))</span>
+                    {
+                        // add quotes if none already, and only if the param contains a space.
+<span class="nc" id="L109">                        String cmdItem = '&quot;' + cmdArray[index] + '&quot;';</span>
+<span class="nc" id="L110">                        cmdArray[index] = cmdItem;</span>
+                    }
+                }
+                
+<span class="fc" id="L114">                cmdBuf.append(cmdArray[index]).append(' ');</span>
+                
+<span class="fc" id="L116">                QaLogger.getInstance().debug(&quot;cmdArg[&quot; + index + &quot;]: &quot; + cmdArray[index]);</span>
+            }
+<span class="fc" id="L118">            QaLogger.getInstance().info(cmdBuf.toString());     </span>
+            
+<span class="fc" id="L120">            Process process = Runtime.getRuntime().exec(cmdArray);</span>
+
+            // Pipe process output to stdout/stderr
+<span class="fc" id="L123">            PipeInputThread stdout = new PipeInputThread(process.getInputStream(), out);</span>
+<span class="fc" id="L124">            PipeInputThread stderr = new PipeInputThread(process.getErrorStream(), err);</span>
+            
+<span class="fc" id="L126">            stdout.start();</span>
+<span class="fc" id="L127">            stderr.start();</span>
+            
+<span class="fc" id="L129">            int result = process.waitFor();</span>
+            
+            // Allow some more time for all output to be written
+<span class="pc bpc" id="L132" title="3 of 6 branches missed.">            for (int i = 0; i &lt; SLEEP_COUNT &amp;&amp; (stdout.isRunning() || stderr.isRunning()); i++)</span>
+            {
+<span class="nc" id="L134">                Thread.sleep(SLEEP_TIME);</span>
+            }
+            
+<span class="fc" id="L137">            return result;</span>
+        }
+<span class="fc" id="L139">        catch (Exception ex)</span>
+        {
+<span class="fc" id="L141">            throw new QAException(&quot;Failed to run external process&quot;, ex);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

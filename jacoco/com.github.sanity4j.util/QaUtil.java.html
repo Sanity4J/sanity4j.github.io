@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QaUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.util</a> &gt; <span class="el_source">QaUtil.java</span></div><h1>QaUtil.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.util;
+
+import java.io.ByteArrayInputStream;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
+
+import com.github.sanity4j.report.ExtractStaticContent;
+import com.github.sanity4j.workflow.QAConfig;
+
+/**
+ * QaUtil - General utility methods.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public final class QaUtil
+{
+    /** No instance methods here. */
+    private QaUtil()
+<span class="nc" id="L36">    {</span>
+        // No instance methods here.
+<span class="nc" id="L38">    }</span>
+
+    /** The path location to the external properties file. */
+    private static String externalPropertiesPath;
+
+    /** The size of the internal &quot;copy&quot; buffer. */
+    private static final int BUFFER_SIZE = 4096;
+
+    /**
+     * This method copies the contents of an &lt;b&gt;InputStream&lt;/b&gt; to an &lt;b&gt;OutputStream&lt;/b&gt;.
+     * 
+     * @param inputStream The &lt;b&gt;InputStream&lt;/b&gt; to be copied.
+     * @param outputStream The &lt;b&gt;OutputStream&lt;/b&gt; to which the &lt;em&gt;inputStream&lt;/em&gt; is to be copied.
+     * @throws IOException if &lt;b&gt;anything&lt;/b&gt; goes wrong.
+     */
+    public static void copy(final InputStream inputStream, final OutputStream outputStream) throws IOException
+    {
+<span class="nc" id="L55">        byte[] buffer = new byte[BUFFER_SIZE];</span>
+        int read;
+
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        while ((read = inputStream.read(buffer, 0, buffer.length)) &gt; 0)</span>
+        {
+<span class="nc" id="L60">            outputStream.write(buffer, 0, read);</span>
+        }
+
+<span class="nc" id="L63">        outputStream.flush();</span>
+<span class="nc" id="L64">    }</span>
+    
+    /**
+     * Reads the internal classpath properties file located at &lt;code&gt;resourcePath&lt;/code&gt;. 
+     * 
+     * @param resourcePath the internal resource path.
+     * @return A Properties map containing the properties from the resource.
+     */
+    public static Properties readResourceProperties(final String resourcePath)
+    {
+<span class="fc" id="L74">        Properties properties = new Properties();</span>
+        
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if (FileUtil.hasValue(resourcePath))</span>
+        {
+            String resourceFile;
+            
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">            if (resourcePath.endsWith(&quot;.properties&quot;))</span>
+            {
+<span class="fc" id="L82">                resourceFile = resourcePath;</span>
+            }
+            else
+            {
+<span class="nc" id="L86">                resourceFile = new File(resourcePath, &quot;sanity4j.propeties&quot;).getPath();</span>
+            }
+            
+<span class="fc" id="L89">            InputStream inputStream = null;</span>
+            try
+            {
+<span class="fc" id="L92">                URL url = QaUtil.class.getResource(resourceFile);</span>
+                
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">                if (url != null)</span>
+                {
+<span class="fc" id="L96">                    QaLogger.getInstance().debug(&quot;Resource Url: &quot; + url);</span>
+                    
+<span class="fc" id="L98">                    inputStream = url.openStream();</span>
+                    
+<span class="fc" id="L100">                    properties.load(inputStream);</span>
+                }
+            }
+<span class="nc" id="L103">            catch (IOException e)</span>
+            {
+<span class="nc" id="L105">                QaLogger.getInstance().error(&quot;Error reading resource properties file [&quot; + resourceFile + &quot;]&quot;, e);</span>
+            }
+            finally
+            {
+<span class="pc" id="L109">                safeClose(inputStream);</span>
+<span class="pc" id="L110">            }</span>
+        }
+        
+<span class="fc" id="L113">        return properties;</span>
+    }
+    
+    /**
+     * Reads a properties string as if it were the contents of a properties file. 
+     * 
+     * @param propertiesString the string containing the properties.
+     * @return A Properties map containing the properties from the string.
+     */
+    public static Properties readStringProperties(final String propertiesString)
+    {
+<span class="fc" id="L124">        Properties stringProperties = new Properties();</span>
+        
+        // Parse the properties string as if it were a properties file.
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (FileUtil.hasValue(propertiesString))</span>
+        {
+<span class="nc" id="L129">            InputStream stringStream = null;</span>
+            try 
+            {
+<span class="nc" id="L132">                byte[] bytes = propertiesString.getBytes(&quot;UTF-8&quot;);</span>
+<span class="nc" id="L133">                stringStream =  new ByteArrayInputStream(bytes);</span>
+<span class="nc" id="L134">                stringProperties.load(stringStream);</span>
+                
+<span class="nc" id="L136">                QaLogger.getInstance().debug(&quot;Additional Properties:&quot;);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">                for (Map.Entry&lt;Object, Object&gt; entry : stringProperties.entrySet())</span>
+                {
+<span class="nc" id="L139">                    QaLogger.getInstance().debug(entry.getKey() + &quot; = &quot; + entry.getValue());</span>
+<span class="nc" id="L140">                }</span>
+            } 
+<span class="nc" id="L142">            catch (UnsupportedEncodingException e) </span>
+            {
+<span class="nc" id="L144">                QaLogger.getInstance().error(&quot;Error reading Properties String&quot;, e);</span>
+            } 
+<span class="nc" id="L146">            catch (IOException e) </span>
+            {
+<span class="nc" id="L148">                QaLogger.getInstance().error(&quot;Error reading Properties String&quot;, e);</span>
+            }
+            finally
+            {
+<span class="nc" id="L152">                safeClose(stringStream);</span>
+<span class="nc" id="L153">            }</span>
+        }
+        
+<span class="fc" id="L156">        return stringProperties;</span>
+    }
+
+    /**
+     * Reads the properties file located at &lt;code&gt;resourcePath&lt;/code&gt; and applies any overrides from external properties
+     * files. External properties files may be specified in a file &quot;sanity4j.properties&quot; in the sanity4j directory
+     * and/or in the user's home directory and/or Java system properties. Properties are given the following order of
+     * precedence:
+     * &lt;ul&gt;
+     * &lt;li&gt;A Java system property.&lt;/li&gt;
+     * &lt;li&gt;A property in sanity4j.properties in the user's home directory.&lt;/li&gt;
+     * &lt;li&gt;A property in sanity4j.properties in the sanity4j directory.&lt;/li&gt;
+     * &lt;li&gt;Internal sanity4j properties from &lt;code&gt;resourcePath&lt;/code&gt;.&lt;/li&gt;
+     * &lt;/ul&gt;
+     * 
+     * @param resourcePath the internal resource path
+     * @param propertiesString a String representing properties values (if any).
+     * @return A Properties map containing the properties from the external file (if any).
+     */
+    public static Properties getProperties(final String resourcePath, final String propertiesString)
+    {
+<span class="fc" id="L177">        Properties properties = readResourceProperties(resourcePath);</span>
+        
+<span class="fc" id="L179">        Properties stringProperties = readStringProperties(propertiesString);</span>
+<span class="fc" id="L180">        properties.putAll(stringProperties);</span>
+        
+        // Apply overrides
+        
+        // Look for the external properties on the classpath first.
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        if (FileUtil.hasValue(externalPropertiesPath))</span>
+        {
+<span class="nc bnc" id="L187" title="All 2 branches missed.">            String resource = externalPropertiesPath.startsWith(&quot;/&quot;) ? externalPropertiesPath : &quot;/&quot; + externalPropertiesPath;</span>
+            
+<span class="nc" id="L189">            Properties resourceProperties = readResourceProperties(resource);</span>
+<span class="nc" id="L190">            properties.putAll(resourceProperties);</span>
+        }
+        
+        // Then look for the external properties on the file system next.
+<span class="fc" id="L194">        Properties externalProperties = readExternalProperties();</span>
+<span class="fc" id="L195">        properties.putAll(externalProperties);</span>
+
+<span class="fc" id="L197">        Properties userHomeProperties = readUserHomeProperties();</span>
+<span class="fc" id="L198">        properties.putAll(userHomeProperties);</span>
+
+<span class="fc" id="L200">        Properties systemProperties = System.getProperties();</span>
+<span class="fc" id="L201">        properties.putAll(systemProperties);</span>
+
+<span class="fc" id="L203">        return properties;</span>
+    }
+    
+    /**
+     * @see #getProperties(String, String)
+     * 
+     * @param resourcePath the internal resource path
+     * @return A Properties map containing the properties from the external file (if any).
+     */
+    public static Properties getProperties(final String resourcePath)
+    {
+<span class="fc" id="L214">        return getProperties(resourcePath, null);</span>
+    }
+    
+
+    /**
+     * Reads in the external properties file (if it exists). External properties may be specified in a file
+     * &quot;sanity4j.properties&quot; in the sanity4j directory and/or in the user's home directory. Properties are given the
+     * following order of precedence:
+     * &lt;ul&gt;
+     * &lt;li&gt;A property in sanity4j.properties in the user's home directory&lt;/li&gt;
+     * &lt;li&gt;A property in sanity4j.properties in the sanity4j directory&lt;/li&gt;
+     * &lt;li&gt;Internal sanity4j properties&lt;/li&gt;
+     * &lt;/ul&gt;
+     * 
+     * @return A Properties map containing the properties from the external file (if any).
+     */
+    private static Properties readExternalProperties()
+    {
+<span class="fc" id="L232">        File propertiesFile = null;</span>
+
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">        if (FileUtil.hasValue(externalPropertiesPath))</span>
+        {
+<span class="nc" id="L236">            File externalProperties = new File(externalPropertiesPath);</span>
+
+<span class="nc bnc" id="L238" title="All 2 branches missed.">            if (externalProperties.isDirectory())</span>
+            {
+<span class="nc" id="L240">                propertiesFile = new File(externalProperties, &quot;sanity4j.propeties&quot;);</span>
+            }
+            else
+            {
+<span class="nc" id="L244">                propertiesFile = externalProperties;</span>
+            }
+<span class="nc" id="L246">        }</span>
+        else
+        {
+<span class="fc" id="L249">            propertiesFile = new File(&quot;sanity4j.properties&quot;);</span>
+        }
+
+<span class="fc" id="L252">        Properties externalProps = readProperties(propertiesFile);</span>
+
+<span class="fc" id="L254">        return externalProps;</span>
+    }
+
+    /**
+     * Reads in properties from the user's home directory. This method will use the java system properties &quot;user.home&quot;
+     * to search for the user's home directory, and look for a file called &quot;sanity4j.properties&quot; within this
+     * directory. If the externalPropertiesPath is set, then it will attempt to use the filename of the externalPropertiesPath
+     * (not the full path name) to lookup a properties file in the user's home directory.
+     * 
+     * @return The properties defined within the sanity4j properties file within the user's home directory.
+     */
+    private static Properties readUserHomeProperties()
+    {
+<span class="fc" id="L267">        String userHome = System.getProperty(&quot;user.home&quot;);</span>
+<span class="fc" id="L268">        File userHomeFile = null;</span>
+        
+        // We are just using the externalPropertiesPath to get the name of the file,
+        // not the full pathname. Then we use that name to check if the
+        // named file exists in the user home directory.
+        
+<span class="pc bpc" id="L274" title="1 of 2 branches missed.">        if (FileUtil.hasValue(externalPropertiesPath))</span>
+        {
+<span class="nc" id="L276">            File externalProperties = new File(externalPropertiesPath);</span>
+
+<span class="nc bnc" id="L278" title="All 2 branches missed.">            if (externalProperties.isDirectory())</span>
+            {
+<span class="nc" id="L280">                userHomeFile = new File(userHome, &quot;sanity4j.properties&quot;);</span>
+            }
+            else
+            {
+<span class="nc" id="L284">                String filename = externalProperties.getName();</span>
+<span class="nc" id="L285">                userHomeFile = new File(userHome, filename);</span>
+            }
+<span class="nc" id="L287">        }</span>
+        else
+        {
+<span class="fc" id="L290">            userHomeFile = new File(userHome, &quot;sanity4j.properties&quot;);</span>
+        }
+
+<span class="fc" id="L293">        Properties userHomeProperties = readProperties(userHomeFile);</span>
+        
+<span class="fc" id="L295">        return userHomeProperties;</span>
+    }
+
+    /**
+     * Reads in properties from an external file. If the properties file can not be read, an empty Properties is
+     * returned.
+     * 
+     * @param file the file to read the properties from.
+     * @return the properties from the given file, or an empty Properties on error.
+     */
+    private static Properties readProperties(final File file)
+    {
+<span class="fc" id="L307">        Properties properties = new Properties();</span>
+
+<span class="pc bpc" id="L309" title="1 of 2 branches missed.">        if (file.canRead())</span>
+        {
+<span class="nc" id="L311">            QaLogger.getInstance().debug(&quot;Reading properties file [&quot; + file.getPath() + &quot;]&quot;);</span>
+
+<span class="nc" id="L313">            FileInputStream fis = null;</span>
+
+            try
+            {
+<span class="nc" id="L317">                fis = new FileInputStream(file);</span>
+<span class="nc" id="L318">                properties.load(fis);</span>
+            }
+<span class="nc" id="L320">            catch (IOException e)</span>
+            {
+<span class="nc" id="L322">                QaLogger.getInstance().error(&quot;Error reading properties file [&quot; + file.getPath() + &quot;]&quot;, e);</span>
+            }
+            finally
+            {
+<span class="nc" id="L326">                safeClose(fis);</span>
+<span class="nc" id="L327">            }</span>
+<span class="nc" id="L328">        }</span>
+        else
+        {
+<span class="fc" id="L331">            QaLogger.getInstance().debug(&quot;Could not find properties file [&quot; + file.getPath() + &quot;]&quot;);</span>
+        }
+
+<span class="fc" id="L334">        return properties;</span>
+    }
+
+    /**
+     * Determines the package for an arbitrary file.
+     * 
+     * @param file the file
+     * @return the package name for the given file, or null if it could not be determined.
+     */
+    public static String getPackageForFile(final File file)
+    {
+<span class="nc" id="L345">        String name = file.getName().toLowerCase();</span>
+
+<span class="nc bnc" id="L347" title="All 2 branches missed.">        if (name.endsWith(&quot;.java&quot;))</span>
+        {
+<span class="nc" id="L349">            return getPackageForSourceFile(file);</span>
+        }
+<span class="nc bnc" id="L351" title="All 2 branches missed.">        else if (name.endsWith(&quot;.class&quot;))</span>
+        {
+<span class="nc" id="L353">            return getPackageForClassFile(file);</span>
+        }
+
+<span class="nc" id="L356">        return null;</span>
+    }
+
+    /**
+     * Determines the package for a class file, by parsing the source code.
+     * 
+     * @param file the source file
+     * @return the package name for the given source file, or null on error.
+     */
+    public static String getPackageForSourceFile(final File file)
+    {
+<span class="nc" id="L367">        final String token = &quot;package &quot;;</span>
+<span class="nc" id="L368">        StringBuffer packageName = new StringBuffer();</span>
+<span class="nc" id="L369">        FileInputStream fis = null;</span>
+
+        try
+        {
+<span class="nc" id="L373">            fis = new FileInputStream(file);</span>
+<span class="nc" id="L374">            boolean inComment = false;</span>
+<span class="nc" id="L375">            boolean lineComment = false;</span>
+<span class="nc" id="L376">            int tokenPos = 0;</span>
+<span class="nc" id="L377">            int last = 0;</span>
+
+<span class="nc bnc" id="L379" title="All 2 branches missed.">            for (int read = fis.read(); read != -1; read = fis.read())</span>
+            {
+<span class="nc bnc" id="L381" title="All 2 branches missed.">                if (inComment)</span>
+                {
+<span class="nc bnc" id="L383" title="All 4 branches missed.">                    if (last == '*' &amp;&amp; read == '/')</span>
+                    {
+<span class="nc" id="L385">                        inComment = false;</span>
+                    }
+                }
+<span class="nc bnc" id="L388" title="All 2 branches missed.">                else if (lineComment)</span>
+                {
+<span class="nc bnc" id="L390" title="All 4 branches missed.">                    if (read == '\n' || read == '\r')</span>
+                    {
+<span class="nc" id="L392">                        lineComment = false;</span>
+                    }
+                }
+                else
+                {
+<span class="nc bnc" id="L397" title="All 4 branches missed.">                    if (last == '/' &amp;&amp; read == '/')</span>
+                    {
+<span class="nc" id="L399">                        lineComment = true;</span>
+                    }
+<span class="nc bnc" id="L401" title="All 4 branches missed.">                    else if (last == '/' &amp;&amp; read == '*')</span>
+                    {
+<span class="nc" id="L403">                        inComment = true;</span>
+                    }
+<span class="nc bnc" id="L405" title="All 2 branches missed.">                    else if (tokenPos &lt; token.length())</span>
+                    {
+<span class="nc bnc" id="L407" title="All 2 branches missed.">                        tokenPos = (read == token.charAt(tokenPos)) ? tokenPos + 1 : 0;</span>
+                    }
+                    else
+                    {
+<span class="nc bnc" id="L411" title="All 2 branches missed.">                        if (read == ';')</span>
+                        {
+<span class="nc bnc" id="L413" title="All 2 branches missed.">                            return packageName.length() == 0 ? null : packageName.toString();</span>
+                        }
+
+<span class="nc bnc" id="L416" title="All 6 branches missed.">                        if (Character.isLetterOrDigit(read) || read == '.' || read == '_')</span>
+                        {
+<span class="nc" id="L418">                            packageName.append((char) read);</span>
+                        }
+                    }
+                }
+
+<span class="nc" id="L423">                last = read;</span>
+            }
+        }
+<span class="nc" id="L426">        catch (IOException e)</span>
+        {
+<span class="nc" id="L428">            QaLogger.getInstance().error(&quot;Error reading source &quot; + file.getPath(), e);</span>
+        }
+        finally
+        {
+<span class="nc" id="L432">            safeClose(fis);</span>
+<span class="nc" id="L433">        }</span>
+
+<span class="nc" id="L435">        return null;</span>
+    }
+
+    /**
+     * Determines the package for a class file, by parsing the bytecode.
+     * 
+     * @param file the class file
+     * @return the package name for the given class file, or null on error.
+     */
+    public static String getPackageForClassFile(final File file)
+    {
+        try
+        {
+<span class="nc" id="L448">            JavaClass javaClass = new ClassParser(file.getPath()).parse();</span>
+<span class="nc" id="L449">            return javaClass.getPackageName();</span>
+        }
+<span class="nc" id="L451">        catch (Exception e)</span>
+        {
+<span class="nc" id="L453">            QaLogger.getInstance().error(&quot;Error reading class &quot; + file.getPath(), e);</span>
+        }
+
+<span class="nc" id="L456">        return null;</span>
+    }
+
+    /**
+     * Closes the given Closeable, logging a message on any IO error.
+     * 
+     * @param closeable the Closeable to close.
+     */
+    public static void safeClose(final Closeable closeable)
+    {
+<span class="fc bfc" id="L466" title="All 2 branches covered.">        if (closeable != null)</span>
+        {
+            try
+            {
+<span class="fc" id="L470">                closeable.close();</span>
+            }
+<span class="nc" id="L472">            catch (IOException e)</span>
+            {
+<span class="nc" id="L474">                QaLogger.getInstance().error(&quot;Error closing: &quot; + closeable);</span>
+<span class="fc" id="L475">            }</span>
+        }
+<span class="fc" id="L477">    }</span>
+    
+    /**
+     * Closes the given Closeable, logging a message on any IO error.
+     * 
+     * @param closeable the Closeable to close.
+     */
+    public static void safeClose(final JarFile closeable)
+    {
+<span class="nc bnc" id="L486" title="All 2 branches missed.">        if (closeable != null)</span>
+        {
+            try
+            {
+<span class="nc" id="L490">                closeable.close();</span>
+            }
+<span class="nc" id="L492">            catch (IOException e)</span>
+            {
+<span class="nc" id="L494">                QaLogger.getInstance().error(&quot;Error closing: &quot; + closeable);</span>
+<span class="nc" id="L495">            }</span>
+        }
+<span class="nc" id="L497">    }</span>
+    
+    /** The length of the 3 special tokens ${}. */
+    private static final int TOKENLENGTH = 3;
+
+    /**
+     * Replaces parameter tokens in the given String with their equivalents from the given map, 
+     * System properties or resources on the classpath. Tokens are specified using ${variableName} syntax.
+     * 
+     * @param string the String to modify
+     * @param paramMap the parameter map
+     * @param config the current configuration
+     * @param auxClasspath an optional auxillary class path to search for resources.
+     * @return the modified String
+     */
+    public static String replaceTokens(final String string, final Map&lt;String, String&gt; paramMap, final QAConfig config, final String auxClasspath)
+    {
+<span class="nc" id="L514">        int lastTokenEnd = -1;</span>
+<span class="nc bnc" id="L515" title="All 2 branches missed.">        int tokenStart = ((string == null) ? -1 : string.indexOf('$'));</span>
+
+        // No tokens, just return the string
+<span class="nc bnc" id="L518" title="All 2 branches missed.">        if (tokenStart == -1)</span>
+        {
+<span class="nc" id="L520">            return string;</span>
+        }
+
+<span class="nc" id="L523">        StringBuffer result = new StringBuffer(string.length());</span>
+
+<span class="nc bnc" id="L525" title="All 4 branches missed.">        while (tokenStart != -1 &amp;&amp; tokenStart &lt; string.length() - TOKENLENGTH)</span>
+        {
+            // Append anything since the last token's end
+<span class="nc bnc" id="L528" title="All 2 branches missed.">            if (lastTokenEnd + 1 &lt; tokenStart)</span>
+            {
+<span class="nc" id="L530">                result.append(string.substring(lastTokenEnd + 1, tokenStart));</span>
+            }
+
+<span class="nc" id="L533">            int tokenEnd = string.indexOf('}', tokenStart + 2);</span>
+
+<span class="nc bnc" id="L535" title="All 4 branches missed.">            if (string.charAt(tokenStart + 1) == '{' &amp;&amp; tokenEnd != -1)</span>
+            {
+<span class="nc" id="L537">                String paramKey = string.substring(tokenStart + 2, tokenEnd);</span>
+
+                // First try substitution from the map
+<span class="nc bnc" id="L540" title="All 2 branches missed.">                if (paramMap.containsKey(paramKey))</span>
+                {
+<span class="nc" id="L542">                    result.append(paramMap.get(paramKey));</span>
+                }
+                // Next try a system property
+<span class="nc bnc" id="L545" title="All 2 branches missed.">                else if (System.getProperty(paramKey) != null)</span>
+                {
+<span class="nc" id="L547">                    result.append(System.getProperty(paramKey));</span>
+                }
+                else
+                {
+                    // Finally, see if it's a resource in the classpath which we need to extract.
+                    File expanded;
+                    
+                    try
+                    {
+<span class="nc" id="L556">                        expanded = extractResource(config, paramKey, auxClasspath);</span>
+                    }
+<span class="nc" id="L558">                    catch (IOException e)</span>
+                    {
+<span class="nc" id="L560">                        expanded = null;</span>
+<span class="nc" id="L561">                    }</span>
+                    
+<span class="nc bnc" id="L563" title="All 2 branches missed.">                    if (expanded == null)</span>
+                    {
+                        // Give up - just leave the token as is
+<span class="nc" id="L566">                        result.append(string.substring(tokenStart, tokenEnd + 1));</span>
+                    }
+                    else
+                    {
+<span class="nc" id="L570">                        result.append(expanded.getPath());</span>
+                    }
+                }
+
+<span class="nc" id="L574">                lastTokenEnd = tokenEnd;</span>
+<span class="nc" id="L575">                tokenStart = string.indexOf('$', lastTokenEnd + 1);</span>
+<span class="nc" id="L576">            }</span>
+            else
+            {
+<span class="nc" id="L579">                lastTokenEnd = tokenStart - 1;</span>
+<span class="nc" id="L580">                tokenStart = string.indexOf('$', tokenStart + 1);</span>
+            }
+<span class="nc" id="L582">        }</span>
+
+        // Append anything left over
+<span class="nc bnc" id="L585" title="All 2 branches missed.">        if (lastTokenEnd + 1 &lt; string.length())</span>
+        {
+<span class="nc" id="L587">            result.append(string.substring(lastTokenEnd + 1));</span>
+        }
+
+<span class="nc" id="L590">        return result.toString();</span>
+    }
+
+    /**
+     * Set the path location to the external properties file.
+     * 
+     * @param externalPropertiesPath the path location to the external properties file.
+     */
+    public static void setExternalPropertiesPath(final String externalPropertiesPath)
+    {
+<span class="nc" id="L600">        QaUtil.externalPropertiesPath = externalPropertiesPath;</span>
+<span class="nc" id="L601">    }</span>
+
+    /**
+     * Retrieve the path set by {@link #setExternalPropertiesPath(String)}.
+     * 
+     * @return the path set by {@link #setExternalPropertiesPath(String)}.
+     */
+    public static String getExternalPropertiesPath()
+    {
+<span class="nc" id="L610">        return externalPropertiesPath;</span>
+    }
+    
+    /**
+     * Attempts to extract a resource to the temp directory.
+     *
+     * @param config the current configuration.
+     * @param resourceName the name of the resource to extract.
+     * @param auxClasspath an optional auxillary class path to search for resources.
+     * @return the path to the extracted resource, or null if nothing was extracted
+     * @throws IOException if there is an error extracting the resource.
+     */
+    public static File extractResource(final QAConfig config, final String resourceName, final String auxClasspath) throws IOException
+    {
+        // Search for the Resource on the filesystem. 
+<span class="nc" id="L625">        File resourceFile = new File(resourceName);</span>
+        
+<span class="nc bnc" id="L627" title="All 2 branches missed.">        if (resourceFile.exists())</span>
+        {
+            // File found, add it as-is.
+<span class="nc" id="L630">            QaLogger.getInstance().debug(&quot;Resource File: &quot; + resourceName);</span>
+<span class="nc" id="L631">            return resourceFile;</span>
+        }
+        else
+        {
+            // Search for the Resource on the classpath.
+<span class="nc" id="L636">            URL resourceUrl = null;</span>
+<span class="nc" id="L637">            Enumeration&lt;URL&gt; resourceEnum = QaUtil.class.getClassLoader().getResources(resourceName);</span>
+            
+<span class="nc bnc" id="L639" title="All 4 branches missed.">            if (resourceEnum == null || !resourceEnum.hasMoreElements())</span>
+            {
+<span class="nc" id="L641">                resourceEnum = ExtractStaticContent.class.getClassLoader().getResources(resourceName);</span>
+            }
+            
+<span class="nc bnc" id="L644" title="All 4 branches missed.">            if (resourceEnum != null &amp;&amp; resourceEnum.hasMoreElements())</span>
+            {
+<span class="nc" id="L646">                QaLogger.getInstance().debug(&quot;Resource: &quot; + resourceName);</span>
+<span class="nc" id="L647">                resourceUrl = resourceEnum.nextElement();</span>
+                
+<span class="nc bnc" id="L649" title="All 2 branches missed.">                if (resourceEnum.hasMoreElements())</span>
+                {                
+<span class="nc" id="L651">                    QaLogger.getInstance().info(&quot;Resource [&quot; + resourceName + &quot;] found in multiple locations, using first.&quot;);</span>
+                }
+            }
+            
+<span class="nc bnc" id="L655" title="All 4 branches missed.">            if (resourceUrl == null &amp;&amp; !StringUtil.empty(auxClasspath))</span>
+            {
+<span class="nc" id="L657">                StringTokenizer tok = new StringTokenizer(auxClasspath, System.getProperty(&quot;path.separator&quot;));</span>
+
+<span class="nc bnc" id="L659" title="All 2 branches missed.">                while (tok.hasMoreTokens())</span>
+                {
+<span class="nc" id="L661">                    File pathElem = new File(tok.nextToken());</span>
+                    
+<span class="nc bnc" id="L663" title="All 2 branches missed.">                    if (pathElem.canRead())</span>
+                    {
+<span class="nc bnc" id="L665" title="All 2 branches missed.">                        if (pathElem.isDirectory())</span>
+                        {
+<span class="nc" id="L667">                            resourceFile = new File(pathElem, resourceName.replace('/', File.separatorChar));</span>
+                            
+<span class="nc bnc" id="L669" title="All 2 branches missed.">                            if (resourceFile.exists())</span>
+                            {
+<span class="nc" id="L671">                                QaLogger.getInstance().debug(&quot;Resource File: &quot; + resourceName);</span>
+<span class="nc" id="L672">                                return resourceFile;</span>
+                            }
+                        }
+                        else
+                        {
+                            // Try it as a jar
+<span class="nc" id="L678">                            JarFile jar = null;</span>
+                            try
+                            {
+<span class="nc" id="L681">                                jar = new JarFile(pathElem);</span>
+<span class="nc" id="L682">                                ZipEntry entry = jar.getEntry(resourceName);</span>
+                                
+<span class="nc bnc" id="L684" title="All 2 branches missed.">                                if (entry != null)</span>
+                                {
+<span class="nc" id="L686">                                    resourceUrl = new URL(&quot;jar:&quot; + pathElem.toURI().toURL().toString() + &quot;!/&quot; + resourceName);</span>
+<span class="nc" id="L687">                                    QaLogger.getInstance().debug(&quot;Resource: &quot; + resourceUrl);</span>
+                                    break;
+                                }
+                            }
+<span class="nc" id="L691">                            catch (Exception e)</span>
+                            {
+                                // Not a jar file, or could not read.
+                            }
+                            finally
+                            {
+<span class="nc" id="L697">                                safeClose(jar);</span>
+<span class="nc" id="L698">                            }</span>
+                        }
+                    }
+<span class="nc" id="L701">                }</span>
+            }
+            
+<span class="nc bnc" id="L704" title="All 2 branches missed.">            if (resourceUrl != null)</span>
+            {
+<span class="nc" id="L706">                QaLogger.getInstance().debug(&quot;Extract using URL: &quot; + resourceUrl);</span>
+                
+<span class="nc" id="L708">                InputStream inStream = null;</span>
+<span class="nc" id="L709">                FileOutputStream fos = null;</span>
+                try
+                {
+<span class="nc" id="L712">                    inStream = resourceUrl.openConnection().getInputStream();</span>
+                    
+<span class="nc bnc" id="L714" title="All 2 branches missed.">                    if (inStream == null)</span>
+                    {
+                        // If not found, try loading from the current classloader. 
+<span class="nc" id="L717">                        inStream = QaUtil.class.getClassLoader().getResourceAsStream(resourceName);</span>
+                    }
+                    
+<span class="nc bnc" id="L720" title="All 2 branches missed.">                    if (inStream == null)</span>
+                    {
+<span class="nc" id="L722">                        throw new IllegalArgumentException(&quot;Resource [&quot; + resourceName + &quot;] doesn't exist&quot;);</span>
+                    }
+    
+                    // Set up the destination file
+<span class="nc" id="L726">                    File destFile = new File(config.getTempDir(), resourceName.replaceAll(&quot;.*/&quot;, &quot;&quot;));</span>
+    
+<span class="nc bnc" id="L728" title="All 4 branches missed.">                    if (!destFile.getParentFile().exists() &amp;&amp; !destFile.getParentFile().mkdirs())</span>
+                    {
+<span class="nc" id="L730">                        throw new IOException(&quot;Failed to create parent directory for file &quot; + destFile.getPath());</span>
+                    }
+    
+                    // Copy the data
+<span class="nc" id="L734">                    fos = new FileOutputStream(destFile);</span>
+<span class="nc" id="L735">                    byte[] buf = new byte[BUFFER_SIZE];</span>
+    
+<span class="nc bnc" id="L737" title="All 2 branches missed.">                    for (int count = inStream.read(buf); count != -1; count = inStream.read(buf))</span>
+                    {
+<span class="nc" id="L739">                        fos.write(buf, 0, count);</span>
+                    }
+    
+<span class="nc" id="L742">                    return destFile;</span>
+                }
+                finally
+                {
+<span class="nc" id="L746">                    safeClose(fos);</span>
+<span class="nc" id="L747">                    safeClose(inStream);</span>
+                }
+            }
+        }
+        
+<span class="nc" id="L752">        QaLogger.getInstance().debug(&quot;Can't find file or resource on classpath: &quot; + resourceName);</span>
+<span class="nc" id="L753">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InfixExpression.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.util.math</a> &gt; <span class="el_source">InfixExpression.java</span></div><h1>InfixExpression.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.util.math;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Infix expression evaluator - evaluates infix expressions like &quot;(12.34-(2+3.3)*4/3)^2&quot;
+ * Variables can be used, prefix them with a '#'. The infix expression is parsed and 
+ * processed in postfix form.
+ *
+ * @version 1.0 02/01/2008
+ * @author Yiannis Paschalidis
+ */
+public final class InfixExpression
+{
+    /** The transformed postfix expression which is used in evaluation. */
+    private final PostfixExpression postFix;
+
+    /**
+     * Creates an InfixExpression with the given expression.
+     * 
+     * @param expression the expression to parse.
+     * @throws SyntaxException if the expression is syntactically invalid.
+     */
+    public InfixExpression(final String expression) throws SyntaxException
+<span class="fc" id="L27">    {</span>
+<span class="fc" id="L28">        postFix = new PostfixExpression(parseInfixToPostfix(expression));</span>
+<span class="fc" id="L29">    }</span>
+
+    /**
+     * Evaluates this infix expression.
+     * 
+     * @return the result of the expression
+     * 
+     * @throws SyntaxException Thrown if a problem occurs.
+     */
+    public double evaluate() throws SyntaxException
+    {
+<span class="nc" id="L40">        return postFix.evaluate();</span>
+    }
+
+    /**
+     * Evaluates this infix expression.
+     * 
+     * @param values - values for the variables
+     * @return the result of the expression
+     * 
+     * @throws SyntaxException Thrown if a problem occurs.
+     */
+    public double evaluate(final Map&lt;String, Object&gt; values) throws SyntaxException
+    {
+<span class="fc" id="L53">        return postFix.evaluate(values);</span>
+    }
+    
+    /** 
+     * Convenience method to see if an operator belongs to a certain set of operators.
+     * 
+     * @param operator the operator to search for
+     * @param operators the operators to check
+     * @return true if &lt;code&gt;operators&lt;/code&gt; contains &lt;code&gt;operator&lt;/code&gt;, false if not.
+     */
+    private static boolean charIn(final char operator, final String operators)
+    {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        return (operators.indexOf(operator) != -1);</span>
+    }
+
+    /**
+     * Evaluate an infix expression by first parsing it to postfix form, then evaluating the postfix.
+     * 
+     * @param expression - the string to evaluate
+     * @return the evaluated expression
+     * 
+     * @throws SyntaxException Thrown if a problem occurs.
+     */
+    public static double evaluateInfix(final String expression) throws SyntaxException
+    {
+<span class="nc" id="L78">        return PostfixExpression.evaluatePostfix(parseInfixToPostfix(expression));</span>
+    }
+
+    /**
+     * Parse an infix expression.
+     * 
+     * @param inval - the infix expression to be parsed
+     * @return a String array containing numbers &amp;amp; operands as strings, in postfix evaluation order
+     * 
+     * @throws SyntaxException Thrown if a problem occurs.
+     */
+    public static String[] parseInfixToPostfix(final String inval) throws SyntaxException
+    {
+<span class="fc" id="L91">        StringBuffer opString = new StringBuffer();</span>
+<span class="fc" id="L92">        char ltr = ' ';</span>
+<span class="fc" id="L93">        List&lt;String&gt; postfixOp = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L94">        boolean unary = true; // determines whether operand is unary - used for -ve</span>
+
+        try
+        {
+<span class="fc bfc" id="L98" title="All 2 branches covered.">            for (int i = 0; i &lt; inval.length(); i++)</span>
+            {
+<span class="fc" id="L100">                ltr = inval.charAt(i);</span>
+
+<span class="pc bpc" id="L102" title="1 of 8 branches missed.">                switch (ltr)</span>
+                {
+                    case ' ':
+                    case '\t':
+                    case '\r':
+                    case '\n':
+<span class="fc" id="L108">                        continue;</span>
+                        
+                    case '(':
+<span class="fc" id="L111">                        opString.append('(');</span>
+<span class="fc" id="L112">                        break;</span>
+                        
+                    case ')':
+<span class="pc bpc" id="L115" title="1 of 4 branches missed.">                        while ((opString.length() &gt; 0) &amp;&amp; (opString.charAt(opString.length() - 1) != '('))</span>
+                        {
+<span class="fc" id="L117">                            postfixOp.add(opString.substring(opString.length() - 1));</span>
+<span class="fc" id="L118">                            opString.setLength(opString.length() - 1);</span>
+                        }
+<span class="fc" id="L120">                        opString.setLength(opString.length() - 1);</span>
+<span class="fc" id="L121">                        break;</span>
+
+                    case '^':
+<span class="nc bnc" id="L124" title="All 4 branches missed.">                        while (opString.length() &gt; 0 &amp;&amp; charIn(opString.charAt(opString.length() - 1), &quot;^~&quot;))</span>
+                        // while (opString.length()&gt;0 &amp;&amp; opString.charAt(opString.length()-1)=='^')
+                        {
+<span class="nc" id="L127">                            postfixOp.add(opString.substring(opString.length() - 1));</span>
+<span class="nc" id="L128">                            opString.setLength(opString.length() - 1);</span>
+                        }
+<span class="nc" id="L130">                        opString.append('^');</span>
+<span class="nc" id="L131">                        unary = true;</span>
+<span class="nc" id="L132">                        break;</span>
+
+                    case '*':
+                    case '/':
+<span class="pc bpc" id="L136" title="2 of 4 branches missed.">                        while (opString.length() &gt; 0 &amp;&amp; charIn(opString.charAt(opString.length() - 1), &quot;^*/~&quot;))</span>
+                        {
+<span class="nc" id="L138">                            postfixOp.add(opString.substring(opString.length() - 1));</span>
+<span class="nc" id="L139">                            opString.setLength(opString.length() - 1);</span>
+                        }
+<span class="fc" id="L141">                        opString.append(ltr);</span>
+<span class="fc" id="L142">                        unary = true;</span>
+<span class="fc" id="L143">                        break;</span>
+                        
+                    case '-':
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">                        if (unary)</span>
+                        {
+<span class="nc" id="L148">                            opString.append('~'); // use tilda to show unary minus</span>
+<span class="nc" id="L149">                            break;</span>
+                        }
+
+                    case '+':
+
+<span class="fc bfc" id="L154" title="All 4 branches covered.">                        while (opString.length() &gt; 0 &amp;&amp; charIn(opString.charAt(opString.length() - 1), &quot;^*/+-~&quot;))</span>
+                        {
+<span class="fc" id="L156">                            postfixOp.add(opString.substring(opString.length() - 1));</span>
+<span class="fc" id="L157">                            opString.setLength(opString.length() - 1);</span>
+                        }
+
+<span class="fc" id="L160">                        opString.append(ltr);</span>
+<span class="fc" id="L161">                        unary = true;</span>
+<span class="fc" id="L162">                        break;</span>
+
+                    default: // is number/text
+                        
+<span class="fc" id="L166">                        StringBuffer numString = new StringBuffer();</span>
+<span class="fc" id="L167">                        numString.append(ltr);</span>
+
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">                        while (i + 1 &lt; inval.length())</span>
+                        {
+<span class="fc" id="L171">                            ltr = inval.charAt(i + 1);</span>
+
+<span class="fc bfc" id="L173" title="All 2 branches covered.">                            if (charIn(ltr, &quot;+-*/()^&quot;))</span>
+                            {
+<span class="fc" id="L175">                                break;</span>
+                            }
+                            else
+                            {
+<span class="pc bpc" id="L179" title="1 of 4 branches missed.">                                if (ltr != ' ' &amp;&amp; ltr != ',')</span>
+                                {
+<span class="fc" id="L181">                                    numString.append(ltr);</span>
+                                }
+
+<span class="fc" id="L184">                                i++;</span>
+                            }
+                        }
+
+<span class="fc" id="L188">                        postfixOp.add(numString.toString());</span>
+<span class="fc" id="L189">                        unary = false;</span>
+
+                        break;
+                }
+            }
+
+<span class="fc bfc" id="L195" title="All 2 branches covered.">            while (opString.length() &gt; 0)</span>
+            {
+<span class="fc" id="L197">                postfixOp.add(opString.substring(opString.length() - 1));</span>
+<span class="fc" id="L198">                opString.setLength(opString.length() - 1);</span>
+            }
+
+<span class="fc" id="L201">            String[] result = postfixOp.toArray(new String[postfixOp.size()]);</span>
+
+<span class="fc" id="L203">            return result;</span>
+        }
+<span class="nc" id="L205">        catch (Exception e)</span>
+        {
+<span class="nc" id="L207">            throw new SyntaxException(&quot;Error parsing expression: &quot; + e.getMessage(), e);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

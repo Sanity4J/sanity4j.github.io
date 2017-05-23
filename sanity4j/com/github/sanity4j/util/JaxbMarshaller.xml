@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.util.JaxbMarshaller" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="4" moderate="0" low="1" info="0" lineCoverage="72" branchCoverage="75" quality="52"/>
+<source>
+<line>package com.github.sanity4j.util;</line>
+<line/>
+<line>import java.io.ByteArrayInputStream;</line>
+<line>import java.io.File;</line>
+<line>import java.io.FileInputStream;</line>
+<line>import java.io.IOException;</line>
+<line>import java.io.InputStream;</line>
+<line/>
+<line>import javax.xml.bind.JAXBContext;</line>
+<line>import javax.xml.bind.Unmarshaller;</line>
+<line>import javax.xml.stream.XMLEventReader;</line>
+<line>import javax.xml.stream.XMLInputFactory;</line>
+<line>import javax.xml.stream.events.StartElement;</line>
+<line>import javax.xml.stream.events.XMLEvent;</line>
+<line>import javax.xml.transform.sax.SAXSource;</line>
+<line/>
+<line>import org.xml.sax.EntityResolver;</line>
+<line>import org.xml.sax.InputSource;</line>
+<line>import org.xml.sax.SAXException;</line>
+<line>import org.xml.sax.SAXParseException;</line>
+<line>import org.xml.sax.XMLReader;</line>
+<line>import org.xml.sax.helpers.XMLReaderFactory;</line>
+<line/>
+<line>/**</line>
+<line> * JaxbMarshaller - utility for marshalling/unmarshalling Objects to/from XML using JAXB.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public final class JaxbMarshaller </line>
+<line>{</line>
+<line>    /** No instance methods here. */</line>
+<line>    private JaxbMarshaller()</line>
+<line covered="no">    {</line>
+<line covered="no">    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Uses JAXB to unmarshal the results from a tool's XML output into a Java Object.</line>
+<line>     * As the tools often don't use namespaces, a namespace can be applied to the document.</line>
+<line>     * </line>
+<line>     * @param file the file to read from</line>
+<line>     * @param pkg the package containing the JAXB generated classes</line>
+<line>     * @param namespace the namespace to change the document to, or null to leave it as is </line>
+<line>     * @return the unmarshalled object</line>
+<line>     * </line>
+<line>     * @throws QAException thrown if a problem occurs.</line>
+<line>     */</line>
+<line>    public static Object unmarshal(final File file, final String pkg, final String namespace) throws QAException</line>
+<line>    {</line>
+<line covered="yes">        FileInputStream fis = null;</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="yes">            fis = new FileInputStream(file);</line>
+<line covered="partial">            InputStream stream = namespace == null ? fis : new RegexpReplaceInputStream(fis, &quot;&lt;([^!?])([^&gt;]*)&gt;&quot;, &quot;&lt;$1$2 xmlns=\&quot;&quot; + namespace + &quot;\&quot;&gt;&quot;);</line>
+<line/>
+<line>            //Create an XMLReader to use with our filter</line>
+<line covered="yes">            XMLReader reader = XMLReaderFactory.createXMLReader();</line>
+<line/>
+<line>            // since DNS can be be flaky (or disabled in some organisations), we want to ignore all DTDs etc.        </line>
+<line covered="yes">            reader.setEntityResolver(new EntityResolver() </line>
+<line covered="yes">            {</line>
+<line>                public InputSource resolveEntity(final String publicId, final String systemId)</line>
+<line sev="1"><diag id="703"/>                throws SAXException, java.io.IOException</line>
+<line>                {</line>
+<line>                    // this deactivates all DTDs</line>
+<line sev="3" covered="no"><diag id="311"/>                    return new InputSource(new ByteArrayInputStream(&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&quot;.getBytes()));</line>
+<line>                }</line>
+<line>            });               </line>
+<line/>
+<line>            //Create a SAXSource specifying the filter</line>
+<line covered="yes">            SAXSource source = new SAXSource(reader, new InputSource(stream));</line>
+<line/>
+<line>            //Do unmarshalling</line>
+<line covered="yes">            JAXBContext jaxbContext = JAXBContext.newInstance(pkg, JaxbMarshaller.class.getClassLoader());              </line>
+<line covered="yes">            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();</line>
+<line covered="yes">            return unmarshaller.unmarshal(source);</line>
+<line>        }</line>
+<line covered="no">        catch (SAXParseException e)</line>
+<line>        {</line>
+<line covered="no">            String details = e.toString()</line>
+<line covered="no">                + &quot;\n Line number: &quot; + e.getLineNumber()</line>
+<line covered="no">                + &quot;\n Column number: &quot; + e.getColumnNumber()</line>
+<line covered="no">                + &quot;\n Public ID: &quot; + e.getPublicId()</line>
+<line covered="no">                + &quot;\n System ID: &quot; + e.getSystemId();</line>
+<line/>
+<line covered="no">            throw new QAException(&quot;Error reading xml: &quot; + file.getName() + details, e);</line>
+<line>        }</line>
+<line covered="yes">        catch (IOException e)</line>
+<line>        {</line>
+<line covered="yes">            throw new QAException(&quot;Error reading result file: &quot; + file.getName(), e);</line>
+<line>        }</line>
+<line sev="3" covered="yes"><diag id="705"/>        catch (Exception e)</line>
+<line>        {</line>
+<line covered="yes">            throw new QAException(&quot;Error reading xml: &quot; + file.getName(), e);</line>
+<line>        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line covered="yes">            QaUtil.safeClose(fis);      </line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Traverses the XML in the given file, notifying the listener of each start element.</line>
+<line>     * As the tools often don't use namespaces, a namespace can be applied to the document.</line>
+<line>     * </line>
+<line>     * @param file the file to read from</line>
+<line>     * @param pkg the package containing the JAXB generated classes</line>
+<line>     * @param namespace the namespace to change the document to, or null to leave it as is </line>
+<line>     * @param listener the listener that will be notified of each start element.</line>
+<line>     * </line>
+<line>     * @throws QAException thrown if a problem occurs.</line>
+<line>     */</line>
+<line>    public static void traverse(final File file, final String pkg, final String namespace, final StartElementListener listener) throws QAException</line>
+<line>    {</line>
+<line covered="yes">        FileInputStream fis = null;</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="yes">            fis = new FileInputStream(file);</line>
+<line covered="partial">            InputStream stream = namespace == null ? fis : new RegexpReplaceInputStream(fis, &quot;&lt;([^!?])([^&gt;]*)&gt;&quot;, &quot;&lt;$1$2 xmlns=\&quot;&quot; + namespace + &quot;\&quot;&gt;&quot;);</line>
+<line/>
+<line covered="yes">            XMLInputFactory xmlif = XMLInputFactory.newInstance();</line>
+<line covered="yes">            xmlif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);</line>
+<line covered="yes">            XMLEventReader eventReader = xmlif.createXMLEventReader(stream);    </line>
+<line/>
+<line>            // Iterate through all the StartElement events in the filtered event reader</line>
+<line covered="yes">            JAXBContext jaxbContext = JAXBContext.newInstance(pkg, JaxbMarshaller.class.getClassLoader());</line>
+<line covered="yes">            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();</line>
+<line/>
+<line covered="yes">            for (XMLEvent currentEvent = eventReader.peek(); currentEvent != null; currentEvent = eventReader.peek())</line>
+<line>            {</line>
+<line>                // We can't use a filter on the reader, as JAXB needs all events</line>
+<line covered="yes">                if (currentEvent.isStartElement())</line>
+<line>                {</line>
+<line covered="yes">                    StartElement element = currentEvent.asStartElement();</line>
+<line covered="yes">                    listener.foundElement(element, eventReader, unmarshaller);</line>
+<line/>
+<line>                    // If the event has not been 'consumed' by the listener, move on to the next event</line>
+<line covered="yes">                    XMLEvent nextEvent = eventReader.peek();</line>
+<line/>
+<line sev="3" covered="yes"><diag id="707"/>                    if (nextEvent == currentEvent)</line>
+<line>                    {</line>
+<line covered="yes">                        eventReader.nextEvent();</line>
+<line>                    }</line>
+<line covered="yes">                }</line>
+<line>                else</line>
+<line>                {</line>
+<line covered="partial">                    if (!eventReader.hasNext())</line>
+<line>                    {</line>
+<line covered="no">                        break;</line>
+<line>                    }</line>
+<line/>
+<line covered="yes">                    eventReader.nextEvent();</line>
+<line>                }</line>
+<line>            }</line>
+<line/>
+<line covered="yes">            eventReader.close();</line>
+<line>        }</line>
+<line covered="no">        catch (IOException ex)</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;Error reading result file: &quot; + file.getName(), ex);</line>
+<line>        }</line>
+<line sev="3" covered="no"><diag id="708"/>        catch (Exception ex)</line>
+<line>        {</line>
+<line covered="no">            throw new QAException(&quot;Error reading xml: &quot; + file.getName(), ex);</line>
+<line>        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line covered="yes">            QaUtil.safeClose(fis);      </line>
+<line covered="yes">        }</line>
+<line covered="yes">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="703" sev="1" tool="PMD" rule="UnnecessaryFullyQualifiedName">
+Unnecessary use of fully qualified name 'java.io.IOException' due to existing import 'java.io.IOException'
+</diag>
+<diag id="311" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.util.JaxbMarshaller$1.resolveEntity(String, String): String.getBytes()</diag>
+<diag id="705" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</diag>
+<diag id="707" sev="3" tool="PMD" rule="CompareObjectsWithEquals">
+Use equals() to compare object references.
+</diag>
+<diag id="708" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</diag>
+</diags>
+</classDetails>

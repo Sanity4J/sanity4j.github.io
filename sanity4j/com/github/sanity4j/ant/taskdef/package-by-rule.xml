@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-by-rule.xsl"?>
+<packageByRule packageName="com.github.sanity4j.ant.taskdef" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<rule name="JavadocPackageCheck" tool="Checkstyle" severity="1">
+<class name="com.github.sanity4j.ant.taskdef.RunQA">
+<diag id="1"/>
+</class>
+</rule>
+</packageByRule>

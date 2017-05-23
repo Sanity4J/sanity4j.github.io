@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PmdCpd4Runner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow.tool</a> &gt; <span class="el_source">PmdCpd4Runner.java</span></div><h1>PmdCpd4Runner.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow.tool;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import com.github.sanity4j.util.ExternalProcessRunner;
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.QAException;
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.util.Tool;
+
+/**
+ * PmdCpd4Runner - a work unit that runs PMD CPD.
+ *
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public class PmdCpd4Runner extends AbstractToolRunner
+{
+    /**
+     * Creates a PmdCpdRunner.
+     */
+    public PmdCpd4Runner()
+    {
+<span class="nc" id="L28">        super(Tool.PMD_CPD);</span>
+<span class="nc" id="L29">    }</span>
+
+    /**
+     * Runs PMD-CPD.
+     * @param commandLine the PMD-CPD command line.
+     */
+    @Override
+    public void runTool(final String commandLine)
+    {
+<span class="nc" id="L38">        File pmdCpdXmlFile = getConfig().getToolResultFile(Tool.PMD_CPD);</span>
+<span class="nc" id="L39">        FileUtil.createDir(pmdCpdXmlFile.getParentFile().getPath());</span>
+        
+<span class="nc" id="L41">        FileOutputStream stdout = null;</span>
+<span class="nc" id="L42">        ByteArrayOutputStream stderr = new ByteArrayOutputStream();</span>
+        
+        try
+        {
+            // Run the process
+            // PMD CPD sends its output to standard out, so we need to intercept it and write it to a file ourselves
+<span class="nc" id="L48">            stdout = new FileOutputStream(pmdCpdXmlFile);</span>
+            
+<span class="nc" id="L50">            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</span>
+
+<span class="nc bnc" id="L52" title="All 2 branches missed.">            if (result != 0)</span>
+            {
+<span class="nc" id="L54">                throw new QAException(&quot;PMD CPD returned error code &quot; + result);</span>
+            }
+
+<span class="nc" id="L57">            String stderrString = new String(stderr.toByteArray());</span>
+
+<span class="nc bnc" id="L59" title="All 2 branches missed.">            if (FileUtil.hasValue(stderrString))</span>
+            {
+<span class="nc" id="L61">                QaLogger.getInstance().error(stderrString);</span>
+            }
+        }
+<span class="nc" id="L64">        catch (IOException e)</span>
+        {
+<span class="nc" id="L66">            String err = new String(stderr.toByteArray());</span>
+<span class="nc" id="L67">            throw new QAException(&quot;PMD CPD Command [&quot; + commandLine + &quot;] failed : [&quot; + err + &quot;]&quot;, e);</span>
+        }
+        finally
+        {
+<span class="nc" id="L71">            QaUtil.safeClose(stdout);</span>
+<span class="nc" id="L72">            QaUtil.safeClose(stderr);</span>
+<span class="nc" id="L73">        }</span>
+<span class="nc" id="L74">    }</span>
+    
+    /**
+     * @return the description of this WorkUnit.
+     */
+    public String getDescription()
+    {
+<span class="nc" id="L81">        return &quot;Running PMD CPD&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.util.StringUtil_Test" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="3" info="0" lineCoverage="100" branchCoverage="0" quality="90"/>
+<source>
+<line>package com.github.sanity4j.util; </line>
+<line/>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Collections;</line>
+<line>import java.util.List;</line>
+<line/>
+<line sev="1"><diag id="766"/>import com.github.sanity4j.util.StringUtil;</line>
+<line/>
+<line>import junit.framework.TestCase;</line>
+<line/>
+<line>/**</line>
+<line> * StringUtil_Test - unit tests for {@link StringUtil}.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line covered="yes">public class StringUtil_Test extends TestCase</line>
+<line>{</line>
+<line>    public void testConcatList()</line>
+<line>    {</line>
+<line covered="yes">        assertEquals(&quot;Incorrect result for empty list&quot;, </line>
+<line covered="yes">                     &quot;&quot;, StringUtil.concatList(Collections.EMPTY_LIST, &quot;,&quot;));</line>
+<line/>
+<line covered="yes">        List&lt;String&gt; list = new ArrayList&lt;String&gt;();</line>
+<line covered="yes">        list.add(&quot;testConcatList.1&quot;);</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect result for list with 1 element&quot;, </line>
+<line covered="yes">                     list.get(0), StringUtil.concatList(list, &quot;,&quot;));</line>
+<line/>
+<line covered="yes">        list.add(&quot;testConcatList.2&quot;);</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect result for list with 2 elements&quot;, </line>
+<line covered="yes">                     list.get(0) + &quot;,&quot; + list.get(1), </line>
+<line covered="yes">                     StringUtil.concatList(list, &quot;,&quot;));</line>
+<line/>
+<line covered="yes">        list.add(&quot;&quot;);</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect result for list with empty string&quot;, </line>
+<line covered="yes">                     list.get(0) + &quot;!@#&quot; + list.get(1) + &quot;!@#&quot; + list.get(2), </line>
+<line covered="yes">                     StringUtil.concatList(list, &quot;!@#&quot;));</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    /** String with non-whitespace should not be empty. */</line>
+<line sev="1"><diag id="767"/>    private static final String NON_WHITE_SPAGE_MSG = &quot;String with non-whitespace should not be empty&quot;;</line>
+<line/>
+<line>    /** String with whitespace should be empty. */</line>
+<line sev="1"><diag id="768"/>    private static final String WHITE_SPAGE_MSG = &quot;String with whitespace should be empty&quot;;</line>
+<line/>
+<line>    public void testEmpty()</line>
+<line>    {</line>
+<line covered="yes">        assertTrue(&quot;Null string should be empty&quot;, StringUtil.empty(null));</line>
+<line covered="yes">        assertTrue(&quot;Empty string should be empty&quot;, StringUtil.empty(&quot;&quot;));</line>
+<line covered="yes">        assertTrue(WHITE_SPAGE_MSG, StringUtil.empty(&quot; &quot;));</line>
+<line covered="yes">        assertTrue(WHITE_SPAGE_MSG, StringUtil.empty(&quot; \n\r\t&quot;));</line>
+<line covered="yes">        assertFalse(NON_WHITE_SPAGE_MSG, StringUtil.empty(&quot;x&quot;));</line>
+<line covered="yes">        assertFalse(NON_WHITE_SPAGE_MSG, StringUtil.empty(&quot; x&quot;));</line>
+<line covered="yes">        assertFalse(NON_WHITE_SPAGE_MSG, StringUtil.empty(&quot;x &quot;));</line>
+<line covered="yes">        assertFalse(NON_WHITE_SPAGE_MSG, StringUtil.empty(&quot;\tx\n&quot;));</line>
+<line covered="yes">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="766" sev="1" tool="PMD" rule="ImportFromSamePackage">
+No need to import a type that lives in the same package
+</diag>
+<diag id="767" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="768" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+</diags>
+</classDetails>

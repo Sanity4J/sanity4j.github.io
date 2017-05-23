@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.model.diagnostic.DiagnosticCategory_Test" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="2" info="0" lineCoverage="100" branchCoverage="0" quality="97"/>
+<source>
+<line>package com.github.sanity4j.model.diagnostic; </line>
+<line/>
+<line>import java.util.Iterator;</line>
+<line/>
+<line sev="1"><diag id="432"/>import com.github.sanity4j.model.diagnostic.Diagnostic;</line>
+<line sev="1"><diag id="433"/>import com.github.sanity4j.model.diagnostic.DiagnosticCategory;</line>
+<line/>
+<line>import junit.framework.TestCase;</line>
+<line/>
+<line>/**</line>
+<line> * DiagnosticCategory_Test - unit tests for {@link DiagnosticCategory}. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line covered="yes">public class DiagnosticCategory_Test extends TestCase</line>
+<line>{</line>
+<line>    public void testConstructors()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticCategory root = new DiagnosticCategory();</line>
+<line covered="yes">        assertNotNull(&quot;Name should not be null&quot;, root.getName());</line>
+<line covered="yes">        assertNull(&quot;Parent should be null&quot;, root.getParent());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testAddDiagnostic()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticCategory root = new DiagnosticCategory();</line>
+<line covered="yes">        assertEquals(&quot;getLevel incorrect for root&quot;, 0, root.getLevel());</line>
+<line/>
+<line covered="yes">        addDiagnostic(root, &quot;category/subcategory&quot;);</line>
+<line covered="yes">        assertTrue(&quot;root should not have diagnostics&quot;, root.getDiagnostics().isEmpty());</line>
+<line/>
+<line covered="yes">        DiagnosticCategory child = root.getSubCategories().get(0);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect child name&quot;, &quot;category&quot;, child.getName());</line>
+<line covered="yes">        assertTrue(&quot;Child should not have diagnostics&quot;, child.getDiagnostics().isEmpty());</line>
+<line/>
+<line covered="yes">        DiagnosticCategory grandChild = child.getSubCategories().get(0);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect grandchild name&quot;, &quot;subcategory&quot;, grandChild.getName());        </line>
+<line covered="yes">        assertFalse(&quot;Grandchild should have a diagnostic&quot;, grandChild.getDiagnostics().isEmpty());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testIsRoot()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticCategory root = new DiagnosticCategory();</line>
+<line covered="yes">        assertTrue(&quot;isRoot incorrect for root&quot;, root.isRoot());</line>
+<line/>
+<line covered="yes">        addDiagnostic(root, &quot;dummy&quot;);</line>
+<line covered="yes">        DiagnosticCategory child = root.getSubCategories().get(0);</line>
+<line covered="yes">        assertFalse(&quot;isRoot incorrect for child&quot;, child.isRoot());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetLevel()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticCategory root = new DiagnosticCategory();</line>
+<line covered="yes">        assertEquals(&quot;getLevel incorrect for root&quot;, 0, root.getLevel());</line>
+<line/>
+<line covered="yes">        addDiagnostic(root, &quot;category/subcategory&quot;);</line>
+<line covered="yes">        DiagnosticCategory child = root.getSubCategories().get(0);</line>
+<line covered="yes">        assertEquals(&quot;getLevel incorrect for child&quot;, 1, child.getLevel());</line>
+<line/>
+<line covered="yes">        DiagnosticCategory grandChild = child.getSubCategories().get(0);</line>
+<line covered="yes">        assertEquals(&quot;getLevel incorrect for child&quot;, 2, grandChild.getLevel());        </line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetParent()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticCategory root = new DiagnosticCategory();</line>
+<line covered="yes">        assertNull(&quot;getParent incorrect for root&quot;, root.getParent());</line>
+<line/>
+<line covered="yes">        addDiagnostic(root, &quot;dummy&quot;);</line>
+<line covered="yes">        DiagnosticCategory child = root.getSubCategories().get(0);</line>
+<line covered="yes">        assertEquals(&quot;getParent incorrect for child&quot;, root, child.getParent());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetDiagnosticCount()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticCategory root = new DiagnosticCategory();</line>
+<line covered="yes">        addDiagnostic(root, &quot;category/subcategory&quot;, Diagnostic.SEVERITY_MODERATE);</line>
+<line covered="yes">        addDiagnostic(root, &quot;category&quot;, Diagnostic.SEVERITY_HIGH);</line>
+<line/>
+<line covered="yes">        DiagnosticCategory child = root.getSubCategories().get(0);</line>
+<line covered="yes">        DiagnosticCategory grandChild = child.getSubCategories().get(0);</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount incorrect for root&quot;, </line>
+<line covered="yes">                     2, root.getDiagnosticCount());</line>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount incorrect for child&quot;, </line>
+<line covered="yes">                     2, child.getDiagnosticCount());</line>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount incorrect for grandchild&quot;, </line>
+<line covered="yes">                     1, grandChild.getDiagnosticCount());</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount sev=all incorrect for root&quot;, </line>
+<line covered="yes">                     2, root.getDiagnosticCount(Diagnostic.SEVERITY_ALL));</line>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount sev=all incorrect for child&quot;, </line>
+<line covered="yes">                     2, child.getDiagnosticCount(Diagnostic.SEVERITY_ALL));</line>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount sev=all incorrect for grandchild&quot;, </line>
+<line covered="yes">                     1, grandChild.getDiagnosticCount(Diagnostic.SEVERITY_ALL));</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount sev=moderate incorrect for root&quot;, </line>
+<line covered="yes">                     1, root.getDiagnosticCount(Diagnostic.SEVERITY_MODERATE));</line>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount sev=moderate incorrect for child&quot;, </line>
+<line covered="yes">                     1, child.getDiagnosticCount(Diagnostic.SEVERITY_MODERATE));</line>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount sev=moderate incorrect for grandchild&quot;, </line>
+<line covered="yes">                     1, grandChild.getDiagnosticCount(Diagnostic.SEVERITY_MODERATE));        </line>
+<line/>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount sev=high incorrect for root&quot;, </line>
+<line covered="yes">                     1, root.getDiagnosticCount(Diagnostic.SEVERITY_HIGH));</line>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount sev=high incorrect for child&quot;, </line>
+<line covered="yes">                     1, child.getDiagnosticCount(Diagnostic.SEVERITY_HIGH));</line>
+<line covered="yes">        assertEquals(&quot;getDiagnosticCount sev=high incorrect for grandchild&quot;, </line>
+<line covered="yes">                     0, grandChild.getDiagnosticCount(Diagnostic.SEVERITY_HIGH));        </line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testSubCategoriesIterator()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticCategory root = new DiagnosticCategory();</line>
+<line covered="yes">        assertEquals(&quot;getLevel incorrect for root&quot;, 0, root.getLevel());</line>
+<line/>
+<line covered="yes">        addDiagnostic(root, &quot;category/subcategory1&quot;);</line>
+<line covered="yes">        addDiagnostic(root, &quot;category/subcategory2&quot;);</line>
+<line/>
+<line>        // Root should have one subcategory</line>
+<line covered="yes">        Iterator&lt;DiagnosticCategory&gt; iterator = root.subCategoriesIterator();</line>
+<line covered="yes">        assertTrue(&quot;Iterator should have next&quot;, iterator.hasNext());</line>
+<line/>
+<line covered="yes">        Object next = iterator.next();</line>
+<line covered="yes">        assertTrue(&quot;Iterator next should be a DiagnosticCategory&quot;, </line>
+<line>                   next instanceof DiagnosticCategory);</line>
+<line/>
+<line covered="yes">        DiagnosticCategory child = (DiagnosticCategory) next; </line>
+<line covered="yes">        assertSame(&quot;Child's parent should be the root node&quot;, </line>
+<line covered="yes">                   root, child.getParent());</line>
+<line/>
+<line covered="yes">        assertFalse(&quot;Iterator should not have next&quot;, iterator.hasNext());</line>
+<line/>
+<line>        // Child should have two subcategories</line>
+<line covered="yes">        iterator = child.subCategoriesIterator();</line>
+<line covered="yes">        assertTrue(&quot;Iterator should have next&quot;, iterator.hasNext());        </line>
+<line covered="yes">        next = iterator.next();</line>
+<line covered="yes">        assertTrue(&quot;Iterator should have next&quot;, iterator.hasNext());        </line>
+<line covered="yes">        next = iterator.next();</line>
+<line covered="yes">        assertFalse(&quot;Iterator should not have next&quot;, iterator.hasNext());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    private void addDiagnostic(final DiagnosticCategory parent, final String category)</line>
+<line>    {</line>
+<line covered="yes">        addDiagnostic(parent, category, Diagnostic.SEVERITY_MODERATE);</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    private void addDiagnostic(final DiagnosticCategory parent, </line>
+<line>                               final String category, final int severity)</line>
+<line>    {</line>
+<line covered="yes">        Diagnostic diag = new Diagnostic()</line>
+<line covered="yes">        {</line>
+<line>            public String[] getCategories()</line>
+<line>            {</line>
+<line covered="yes">                return new String[]{category};</line>
+<line>            }</line>
+<line>        };</line>
+<line/>
+<line covered="yes">        diag.setSeverity(severity);</line>
+<line/>
+<line covered="yes">        parent.addDiagnostic(diag);</line>
+<line covered="yes">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="432" sev="1" tool="PMD" rule="ImportFromSamePackage">
+No need to import a type that lives in the same package
+</diag>
+<diag id="433" sev="1" tool="PMD" rule="ImportFromSamePackage">
+No need to import a type that lives in the same package
+</diag>
+</diags>
+</classDetails>

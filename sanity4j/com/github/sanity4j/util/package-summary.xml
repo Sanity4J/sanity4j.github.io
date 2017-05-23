@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/package-summary.xsl"?>
+<packageSummary packageName="com.github.sanity4j.util" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<issueSummary high="0" significant="11" moderate="12" low="48" info="19">
+<category name="All categories" high="0" significant="0" moderate="0" low="1" info="3">
+<category name="Exception handling" high="0" significant="2" moderate="4" low="0" info="0"/>
+<category name="Code style" high="0" significant="0" moderate="7" low="36" info="12"/>
+<category name="Correctness" high="0" significant="9" moderate="7" low="0" info="0"/>
+<category name="Performance" high="0" significant="0" moderate="1" low="1" info="9"/>
+<category name="Complexity" high="0" significant="0" moderate="0" low="8" info="4">
+<category name="Code size" high="0" significant="0" moderate="0" low="0" info="2"/>
+</category>
+</category>
+<tool name="Findbugs" high="0" significant="3" moderate="2" low="0" info="4"/>
+<tool name="PMD" high="0" significant="8" moderate="10" low="46" info="15"/>
+<tool name="Checkstyle" high="0" significant="0" moderate="0" low="2" info="0"/>
+</issueSummary>
+<qualitySummary>
+<package name="com.github.sanity4j.util" classes="21" lineCount="3587" high="0" significant="9" moderate="11" low="36" info="15" quality="91">
+<testCoverage lineCoveragePct="64" branchCoveragePct="57" lineCount="1006" coveredLineCount="648" branchCount="161" coveredBranchCount="93"/>
+</package>
+<package name="com.github.sanity4j.util.math" path="math" classes="3" lineCount="431" high="0" significant="2" moderate="1" low="12" info="4" quality="83">
+<testCoverage lineCoveragePct="75" branchCoveragePct="94" lineCount="120" coveredLineCount="91" branchCount="19" coveredBranchCount="18"/>
+</package>
+<class name="ExternalProcessRunner" high="0" significant="2" moderate="0" low="1" info="0" quality="71">
+<testCoverage lineCoveragePct="65" branchCoveragePct="41" lineCount="43" coveredLineCount="28" branchCount="10" coveredBranchCount="6"/>
+</class>
+<class name="ExternalProcessRunner_Test" high="0" significant="0" moderate="0" low="2" info="0" quality="92">
+<testCoverage lineCoveragePct="82" branchCoveragePct="50" lineCount="17" coveredLineCount="14" branchCount="1" coveredBranchCount="1"/>
+</class>
+<class name="ExtractStats" high="0" significant="0" moderate="1" low="5" info="5" quality="96">
+<testCoverage lineCoveragePct="82" branchCoveragePct="56" lineCount="154" coveredLineCount="127" branchCount="31" coveredBranchCount="24"/>
+</class>
+<class name="ExtractStats_Test" high="0" significant="0" moderate="0" low="4" info="0" quality="97">
+<testCoverage lineCoveragePct="98" branchCoveragePct="69" lineCount="150" coveredLineCount="148" branchCount="10" coveredBranchCount="10"/>
+</class>
+<class name="FileUtil" high="0" significant="0" moderate="2" low="0" info="1" quality="95">
+<testCoverage lineCoveragePct="32" branchCoveragePct="37" lineCount="71" coveredLineCount="23" branchCount="19" coveredBranchCount="10"/>
+</class>
+<class name="FileUtil_Test" high="0" significant="0" moderate="0" low="1" info="0" quality="97">
+<testCoverage lineCoveragePct="100" branchCoveragePct="25" lineCount="37" coveredLineCount="37" branchCount="1" coveredBranchCount="1"/>
+</class>
+<class name="JaxbMarshaller" high="0" significant="4" moderate="0" low="1" info="0" quality="52">
+<testCoverage lineCoveragePct="72" branchCoveragePct="75" lineCount="52" coveredLineCount="37" branchCount="6" coveredBranchCount="6"/>
+</class>
+<class name="JaxbMarshaller_Test" high="0" significant="0" moderate="0" low="3" info="0" quality="95">
+<testCoverage lineCoveragePct="84" branchCoveragePct="83" lineCount="45" coveredLineCount="38" branchCount="3" coveredBranchCount="3"/>
+</class>
+<class name="PipeInputThread" high="0" significant="0" moderate="2" low="0" info="0" quality="87">
+<testCoverage lineCoveragePct="77" branchCoveragePct="100" lineCount="18" coveredLineCount="14" branchCount="1" coveredBranchCount="1"/>
+</class>
+<class name="PipeInputThread_Test" high="0" significant="0" moderate="0" low="1" info="0" quality="96">
+<testCoverage lineCoveragePct="83" branchCoveragePct="50" lineCount="18" coveredLineCount="15" branchCount="2" coveredBranchCount="2"/>
+</class>
+<class name="QAException" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="33" branchCoveragePct="0" lineCount="6" coveredLineCount="2" branchCount="0" coveredBranchCount="0"/>
+</class>
+<class name="QaLogger" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<testCoverage lineCoveragePct="20" branchCoveragePct="0" lineCount="15" coveredLineCount="3" branchCount="0" coveredBranchCount="0"/>
+</class>
+<class name="QaLoggerAntImpl" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<class name="QaLoggerMavenImpl" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<class name="QaLoggerSystemOutImpl" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="47" branchCoveragePct="0" lineCount="21" coveredLineCount="10" branchCount="0" coveredBranchCount="0"/>
+</class>
+<class name="QaUtil" high="0" significant="3" moderate="5" low="11" info="7" quality="85">
+<testCoverage lineCoveragePct="20" branchCoveragePct="7" lineCount="232" coveredLineCount="47" branchCount="53" coveredBranchCount="9"/>
+</class>
+<class name="RegexpReplaceInputStream" high="0" significant="0" moderate="1" low="2" info="2" quality="96">
+<testCoverage lineCoveragePct="83" branchCoveragePct="66" lineCount="65" coveredLineCount="54" branchCount="16" coveredBranchCount="15"/>
+</class>
+<class name="StartElementListener" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<class name="StringUtil" high="0" significant="0" moderate="0" low="1" info="0" quality="97">
+<testCoverage lineCoveragePct="85" branchCoveragePct="100" lineCount="14" coveredLineCount="12" branchCount="5" coveredBranchCount="5"/>
+</class>
+<class name="StringUtil_Test" high="0" significant="0" moderate="0" low="3" info="0" quality="90">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="25" coveredLineCount="25" branchCount="0" coveredBranchCount="0"/>
+</class>
+<class name="Tool" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="60" branchCoveragePct="0" lineCount="23" coveredLineCount="14" branchCount="3" coveredBranchCount="0"/>
+</class>
+</qualitySummary>
+<graphs>
+</graphs>
+</packageSummary>

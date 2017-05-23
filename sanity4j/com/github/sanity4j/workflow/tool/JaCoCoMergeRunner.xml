@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.tool.JaCoCoMergeRunner" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.workflow.tool;</line>
+<line/>
+<line>import com.github.sanity4j.util.Tool;</line>
+<line/>
+<line>/**</line>
+<line> * CoberturaMergeRunner - a work unit that merges JaCoco data files.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.8.0</line>
+<line> */</line>
+<line>public class JaCoCoMergeRunner extends AbstractToolRunner</line>
+<line>{</line>
+<line>    /**</line>
+<line>     * Creates a JaCoCoMergeRunner.</line>
+<line>     */</line>
+<line>    public JaCoCoMergeRunner()</line>
+<line>    {</line>
+<line>        super(Tool.JACOCO_MERGE);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Produces the Merged JaCoco data file.</line>
+<line>     * </line>
+<line>     * @param commandLine the Merge JaCoCo data file command line.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>    public void runTool(final String commandLine)</line>
+<line>    {</line>
+<line>       // TODO: Does nothing</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the file path where the tool should place it's output.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>    protected String getToolResultFile()</line>
+<line>    {</line>
+<line>        return null;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the description of this WorkUnit.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>    public String getDescription()</line>
+<line>    {</line>
+<line>        return &quot;Running JaCoCo Data File Merge&quot;;</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

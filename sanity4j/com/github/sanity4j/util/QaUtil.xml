@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.util.QaUtil" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="3" moderate="5" low="11" info="7" lineCoverage="20" branchCoverage="7" quality="85"/>
+<source>
+<line sev="2"><diag id="723"/>package com.github.sanity4j.util;</line>
+<line sev="2"/>
+<line sev="2">import java.io.ByteArrayInputStream;</line>
+<line sev="2">import java.io.Closeable;</line>
+<line sev="2">import java.io.File;</line>
+<line sev="2">import java.io.FileInputStream;</line>
+<line sev="2">import java.io.FileOutputStream;</line>
+<line sev="2">import java.io.IOException;</line>
+<line sev="2">import java.io.InputStream;</line>
+<line sev="2">import java.io.OutputStream;</line>
+<line sev="2">import java.io.UnsupportedEncodingException;</line>
+<line sev="2">import java.net.URL;</line>
+<line sev="2">import java.util.Enumeration;</line>
+<line sev="2">import java.util.Map;</line>
+<line sev="2">import java.util.Properties;</line>
+<line sev="2">import java.util.StringTokenizer;</line>
+<line sev="2">import java.util.jar.JarFile;</line>
+<line sev="2">import java.util.zip.ZipEntry;</line>
+<line sev="2"/>
+<line sev="2">import org.apache.bcel.classfile.ClassParser;</line>
+<line sev="2">import org.apache.bcel.classfile.JavaClass;</line>
+<line sev="2"/>
+<line sev="2">import com.github.sanity4j.report.ExtractStaticContent;</line>
+<line sev="2">import com.github.sanity4j.workflow.QAConfig;</line>
+<line sev="2"/>
+<line sev="2">/**</line>
+<line sev="2"> * QaUtil - General utility methods.</line>
+<line sev="2"> * </line>
+<line sev="2"> * @author Yiannis Paschalidis</line>
+<line sev="2"> * @since Sanity4J 1.0</line>
+<line sev="2"> */</line>
+<line sev="2"><diag id="724"/>public final class QaUtil</line>
+<line sev="2">{</line>
+<line sev="2">    /** No instance methods here. */</line>
+<line sev="2">    private QaUtil()</line>
+<line sev="2" covered="no">    {</line>
+<line sev="2">        // No instance methods here.</line>
+<line sev="2" covered="no">    }</line>
+<line sev="2"/>
+<line sev="2">    /** The path location to the external properties file. */</line>
+<line sev="2"><diag id="725"/>    private static String externalPropertiesPath;</line>
+<line sev="2"/>
+<line sev="2">    /** The size of the internal &quot;copy&quot; buffer. */</line>
+<line sev="2"><diag id="726"/>    private static final int BUFFER_SIZE = 4096;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * This method copies the contents of an &lt;b&gt;InputStream&lt;/b&gt; to an &lt;b&gt;OutputStream&lt;/b&gt;.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param inputStream The &lt;b&gt;InputStream&lt;/b&gt; to be copied.</line>
+<line sev="2">     * @param outputStream The &lt;b&gt;OutputStream&lt;/b&gt; to which the &lt;em&gt;inputStream&lt;/em&gt; is to be copied.</line>
+<line sev="2">     * @throws IOException if &lt;b&gt;anything&lt;/b&gt; goes wrong.</line>
+<line sev="2">     */</line>
+<line sev="2">    public static void copy(final InputStream inputStream, final OutputStream outputStream) throws IOException</line>
+<line sev="2">    {</line>
+<line sev="2" covered="no">        byte[] buffer = new byte[BUFFER_SIZE];</line>
+<line sev="2">        int read;</line>
+<line sev="2"/>
+<line sev="2" covered="no"><diag id="727"/>        while ((read = inputStream.read(buffer, 0, buffer.length)) &gt; 0)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            outputStream.write(buffer, 0, read);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="no">        outputStream.flush();</line>
+<line sev="2" covered="no">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Reads the internal classpath properties file located at &lt;code&gt;resourcePath&lt;/code&gt;. </line>
+<line sev="2">     * </line>
+<line sev="2">     * @param resourcePath the internal resource path.</line>
+<line sev="2">     * @return A Properties map containing the properties from the resource.</line>
+<line sev="2">     */</line>
+<line sev="2">    public static Properties readResourceProperties(final String resourcePath)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        Properties properties = new Properties();</line>
+<line sev="2"/>
+<line sev="2" covered="partial">        if (FileUtil.hasValue(resourcePath))</line>
+<line sev="2">        {</line>
+<line sev="2">            String resourceFile;</line>
+<line sev="2"/>
+<line sev="2" covered="partial">            if (resourcePath.endsWith(&quot;.properties&quot;))</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                resourceFile = resourcePath;</line>
+<line sev="2">            }</line>
+<line sev="2">            else</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                resourceFile = new File(resourcePath, &quot;sanity4j.propeties&quot;).getPath();</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">            InputStream inputStream = null;</line>
+<line sev="2">            try</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                URL url = QaUtil.class.getResource(resourceFile);</line>
+<line sev="2"/>
+<line sev="2" covered="partial">                if (url != null)</line>
+<line sev="2">                {</line>
+<line sev="2" covered="yes">                    QaLogger.getInstance().debug(&quot;Resource Url: &quot; + url);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">                    inputStream = url.openStream();</line>
+<line sev="2"/>
+<line sev="2" covered="yes">                    properties.load(inputStream);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2" covered="no">            catch (IOException e)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                QaLogger.getInstance().error(&quot;Error reading resource properties file [&quot; + resourceFile + &quot;]&quot;, e);</line>
+<line sev="2">            }</line>
+<line sev="2">            finally</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                safeClose(inputStream);</line>
+<line sev="2" covered="yes">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return properties;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Reads a properties string as if it were the contents of a properties file. </line>
+<line sev="2">     * </line>
+<line sev="2">     * @param propertiesString the string containing the properties.</line>
+<line sev="2">     * @return A Properties map containing the properties from the string.</line>
+<line sev="2">     */</line>
+<line sev="2">    public static Properties readStringProperties(final String propertiesString)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        Properties stringProperties = new Properties();</line>
+<line sev="2"/>
+<line sev="2">        // Parse the properties string as if it were a properties file.</line>
+<line sev="2" covered="partial">        if (FileUtil.hasValue(propertiesString))</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            InputStream stringStream = null;</line>
+<line sev="2">            try </line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                byte[] bytes = propertiesString.getBytes(&quot;UTF-8&quot;);</line>
+<line sev="2" covered="no">                stringStream =  new ByteArrayInputStream(bytes);</line>
+<line sev="2" covered="no">                stringProperties.load(stringStream);</line>
+<line sev="2"/>
+<line sev="2" covered="no">                QaLogger.getInstance().debug(&quot;Additional Properties:&quot;);</line>
+<line sev="2" covered="no">                for (Map.Entry&lt;Object, Object&gt; entry : stringProperties.entrySet())</line>
+<line sev="2">                {</line>
+<line sev="2" covered="no">                    QaLogger.getInstance().debug(entry.getKey() + &quot; = &quot; + entry.getValue());</line>
+<line sev="2" covered="no">                }</line>
+<line sev="2">            } </line>
+<line sev="2" covered="no">            catch (UnsupportedEncodingException e) </line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                QaLogger.getInstance().error(&quot;Error reading Properties String&quot;, e);</line>
+<line sev="2">            } </line>
+<line sev="2" covered="no">            catch (IOException e) </line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                QaLogger.getInstance().error(&quot;Error reading Properties String&quot;, e);</line>
+<line sev="2">            }</line>
+<line sev="2">            finally</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                safeClose(stringStream);</line>
+<line sev="2" covered="no">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return stringProperties;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Reads the properties file located at &lt;code&gt;resourcePath&lt;/code&gt; and applies any overrides from external properties</line>
+<line sev="2">     * files. External properties files may be specified in a file &quot;sanity4j.properties&quot; in the sanity4j directory</line>
+<line sev="2">     * and/or in the user's home directory and/or Java system properties. Properties are given the following order of</line>
+<line sev="2">     * precedence:</line>
+<line sev="2">     * &lt;ul&gt;</line>
+<line sev="2">     * &lt;li&gt;A Java system property.&lt;/li&gt;</line>
+<line sev="2">     * &lt;li&gt;A property in sanity4j.properties in the user's home directory.&lt;/li&gt;</line>
+<line sev="2">     * &lt;li&gt;A property in sanity4j.properties in the sanity4j directory.&lt;/li&gt;</line>
+<line sev="2">     * &lt;li&gt;Internal sanity4j properties from &lt;code&gt;resourcePath&lt;/code&gt;.&lt;/li&gt;</line>
+<line sev="2">     * &lt;/ul&gt;</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param resourcePath the internal resource path</line>
+<line sev="2">     * @param propertiesString a String representing properties values (if any).</line>
+<line sev="2">     * @return A Properties map containing the properties from the external file (if any).</line>
+<line sev="2">     */</line>
+<line sev="2">    public static Properties getProperties(final String resourcePath, final String propertiesString)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        Properties properties = readResourceProperties(resourcePath);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        Properties stringProperties = readStringProperties(propertiesString);</line>
+<line sev="2" covered="yes">        properties.putAll(stringProperties);</line>
+<line sev="2"/>
+<line sev="2">        // Apply overrides</line>
+<line sev="2"/>
+<line sev="2">        // Look for the external properties on the classpath first.</line>
+<line sev="2" covered="partial">        if (FileUtil.hasValue(externalPropertiesPath))</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no"><diag id="728"/>            String resource = externalPropertiesPath.startsWith(&quot;/&quot;) ? externalPropertiesPath : &quot;/&quot; + externalPropertiesPath;</line>
+<line sev="2"/>
+<line sev="2" covered="no">            Properties resourceProperties = readResourceProperties(resource);</line>
+<line sev="2" covered="no">            properties.putAll(resourceProperties);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2">        // Then look for the external properties on the file system next.</line>
+<line sev="2" covered="yes">        Properties externalProperties = readExternalProperties();</line>
+<line sev="2" covered="yes">        properties.putAll(externalProperties);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        Properties userHomeProperties = readUserHomeProperties();</line>
+<line sev="2" covered="yes">        properties.putAll(userHomeProperties);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        Properties systemProperties = System.getProperties();</line>
+<line sev="2" covered="yes">        properties.putAll(systemProperties);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return properties;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * @see #getProperties(String, String)</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param resourcePath the internal resource path</line>
+<line sev="2">     * @return A Properties map containing the properties from the external file (if any).</line>
+<line sev="2">     */</line>
+<line sev="2">    public static Properties getProperties(final String resourcePath)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        return getProperties(resourcePath, null);</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Reads in the external properties file (if it exists). External properties may be specified in a file</line>
+<line sev="2">     * &quot;sanity4j.properties&quot; in the sanity4j directory and/or in the user's home directory. Properties are given the</line>
+<line sev="2">     * following order of precedence:</line>
+<line sev="2">     * &lt;ul&gt;</line>
+<line sev="2">     * &lt;li&gt;A property in sanity4j.properties in the user's home directory&lt;/li&gt;</line>
+<line sev="2">     * &lt;li&gt;A property in sanity4j.properties in the sanity4j directory&lt;/li&gt;</line>
+<line sev="2">     * &lt;li&gt;Internal sanity4j properties&lt;/li&gt;</line>
+<line sev="2">     * &lt;/ul&gt;</line>
+<line sev="2">     * </line>
+<line sev="2">     * @return A Properties map containing the properties from the external file (if any).</line>
+<line sev="2">     */</line>
+<line sev="2">    private static Properties readExternalProperties()</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        File propertiesFile = null;</line>
+<line sev="2"/>
+<line sev="2" covered="partial">        if (FileUtil.hasValue(externalPropertiesPath))</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            File externalProperties = new File(externalPropertiesPath);</line>
+<line sev="2"/>
+<line sev="2" covered="no">            if (externalProperties.isDirectory())</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                propertiesFile = new File(externalProperties, &quot;sanity4j.propeties&quot;);</line>
+<line sev="2">            }</line>
+<line sev="2">            else</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                propertiesFile = externalProperties;</line>
+<line sev="2">            }</line>
+<line sev="2" covered="no">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            propertiesFile = new File(&quot;sanity4j.properties&quot;);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        Properties externalProps = readProperties(propertiesFile);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return externalProps;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Reads in properties from the user's home directory. This method will use the java system properties &quot;user.home&quot;</line>
+<line sev="2">     * to search for the user's home directory, and look for a file called &quot;sanity4j.properties&quot; within this</line>
+<line sev="2">     * directory. If the externalPropertiesPath is set, then it will attempt to use the filename of the externalPropertiesPath</line>
+<line sev="2">     * (not the full path name) to lookup a properties file in the user's home directory.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @return The properties defined within the sanity4j properties file within the user's home directory.</line>
+<line sev="2">     */</line>
+<line sev="2">    private static Properties readUserHomeProperties()</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        String userHome = System.getProperty(&quot;user.home&quot;);</line>
+<line sev="2" covered="yes">        File userHomeFile = null;</line>
+<line sev="2"/>
+<line sev="2">        // We are just using the externalPropertiesPath to get the name of the file,</line>
+<line sev="2">        // not the full pathname. Then we use that name to check if the</line>
+<line sev="2">        // named file exists in the user home directory.</line>
+<line sev="2"/>
+<line sev="2" covered="partial">        if (FileUtil.hasValue(externalPropertiesPath))</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            File externalProperties = new File(externalPropertiesPath);</line>
+<line sev="2"/>
+<line sev="2" covered="no">            if (externalProperties.isDirectory())</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                userHomeFile = new File(userHome, &quot;sanity4j.properties&quot;);</line>
+<line sev="2">            }</line>
+<line sev="2">            else</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                String filename = externalProperties.getName();</line>
+<line sev="2" covered="no">                userHomeFile = new File(userHome, filename);</line>
+<line sev="2">            }</line>
+<line sev="2" covered="no">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            userHomeFile = new File(userHome, &quot;sanity4j.properties&quot;);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        Properties userHomeProperties = readProperties(userHomeFile);</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return userHomeProperties;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Reads in properties from an external file. If the properties file can not be read, an empty Properties is</line>
+<line sev="2">     * returned.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param file the file to read the properties from.</line>
+<line sev="2">     * @return the properties from the given file, or an empty Properties on error.</line>
+<line sev="2">     */</line>
+<line sev="2">    private static Properties readProperties(final File file)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        Properties properties = new Properties();</line>
+<line sev="2"/>
+<line sev="2" covered="partial">        if (file.canRead())</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            QaLogger.getInstance().debug(&quot;Reading properties file [&quot; + file.getPath() + &quot;]&quot;);</line>
+<line sev="2"/>
+<line sev="2" covered="no">            FileInputStream fis = null;</line>
+<line sev="2"/>
+<line sev="2">            try</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                fis = new FileInputStream(file);</line>
+<line sev="2" covered="no">                properties.load(fis);</line>
+<line sev="2">            }</line>
+<line sev="2" covered="no">            catch (IOException e)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                QaLogger.getInstance().error(&quot;Error reading properties file [&quot; + file.getPath() + &quot;]&quot;, e);</line>
+<line sev="2">            }</line>
+<line sev="2">            finally</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                safeClose(fis);</line>
+<line sev="2" covered="no">            }</line>
+<line sev="2" covered="no">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2" covered="yes">            QaLogger.getInstance().debug(&quot;Could not find properties file [&quot; + file.getPath() + &quot;]&quot;);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="yes">        return properties;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Determines the package for an arbitrary file.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param file the file</line>
+<line sev="2">     * @return the package name for the given file, or null if it could not be determined.</line>
+<line sev="2">     */</line>
+<line sev="2">    public static String getPackageForFile(final File file)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="no">        String name = file.getName().toLowerCase();</line>
+<line sev="2"/>
+<line sev="2" covered="no">        if (name.endsWith(&quot;.java&quot;))</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            return getPackageForSourceFile(file);</line>
+<line sev="2">        }</line>
+<line sev="2" covered="no">        else if (name.endsWith(&quot;.class&quot;))</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            return getPackageForClassFile(file);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="no">        return null;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Determines the package for a class file, by parsing the source code.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param file the source file</line>
+<line sev="2">     * @return the package name for the given source file, or null on error.</line>
+<line sev="2">     */</line>
+<line sev="2"><diag id="729"/>    public static String getPackageForSourceFile(final File file)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="no">        final String token = &quot;package &quot;;</line>
+<line sev="2" covered="no">        StringBuffer packageName = new StringBuffer();</line>
+<line sev="2" covered="no">        FileInputStream fis = null;</line>
+<line sev="2"/>
+<line sev="2">        try</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            fis = new FileInputStream(file);</line>
+<line sev="2" covered="no">            boolean inComment = false;</line>
+<line sev="2" covered="no">            boolean lineComment = false;</line>
+<line sev="2" covered="no">            int tokenPos = 0;</line>
+<line sev="2" covered="no">            int last = 0;</line>
+<line sev="2"/>
+<line sev="2" covered="no">            for (int read = fis.read(); read != -1; read = fis.read())</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                if (inComment)</line>
+<line sev="2">                {</line>
+<line sev="2" covered="no">                    if (last == '*' &amp;&amp; read == '/')</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        inComment = false;</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="2" covered="no">                else if (lineComment)</line>
+<line sev="2">                {</line>
+<line sev="2" covered="no">                    if (read == '\n' || read == '\r')</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        lineComment = false;</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="2">                else</line>
+<line sev="2">                {</line>
+<line sev="2" covered="no">                    if (last == '/' &amp;&amp; read == '/')</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        lineComment = true;</line>
+<line sev="2">                    }</line>
+<line sev="2" covered="no">                    else if (last == '/' &amp;&amp; read == '*')</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        inComment = true;</line>
+<line sev="2">                    }</line>
+<line sev="2" covered="no">                    else if (tokenPos &lt; token.length())</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        tokenPos = (read == token.charAt(tokenPos)) ? tokenPos + 1 : 0;</line>
+<line sev="2">                    }</line>
+<line sev="2">                    else</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no"><diag id="730"/>                        if (read == ';')</line>
+<line sev="2">                        {</line>
+<line sev="2" covered="no">                            return packageName.length() == 0 ? null : packageName.toString();</line>
+<line sev="2">                        }</line>
+<line sev="2"/>
+<line sev="2" covered="no">                        if (Character.isLetterOrDigit(read) || read == '.' || read == '_')</line>
+<line sev="2">                        {</line>
+<line sev="2" covered="no">                            packageName.append((char) read);</line>
+<line sev="2">                        }</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="2"/>
+<line sev="2" covered="no">                last = read;</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2" covered="no">        catch (IOException e)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            QaLogger.getInstance().error(&quot;Error reading source &quot; + file.getPath(), e);</line>
+<line sev="2">        }</line>
+<line sev="2">        finally</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            safeClose(fis);</line>
+<line sev="2" covered="no">        }</line>
+<line sev="2"/>
+<line sev="2" covered="no">        return null;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Determines the package for a class file, by parsing the bytecode.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param file the class file</line>
+<line sev="2">     * @return the package name for the given class file, or null on error.</line>
+<line sev="2">     */</line>
+<line sev="2">    public static String getPackageForClassFile(final File file)</line>
+<line sev="2">    {</line>
+<line sev="2">        try</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            JavaClass javaClass = new ClassParser(file.getPath()).parse();</line>
+<line sev="2" covered="no">            return javaClass.getPackageName();</line>
+<line sev="2">        }</line>
+<line sev="3" covered="no"><diag id="731"/>        catch (Exception e)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            QaLogger.getInstance().error(&quot;Error reading class &quot; + file.getPath(), e);</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="no">        return null;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Closes the given Closeable, logging a message on any IO error.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param closeable the Closeable to close.</line>
+<line sev="2">     */</line>
+<line sev="2">    public static void safeClose(final Closeable closeable)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="yes">        if (closeable != null)</line>
+<line sev="2">        {</line>
+<line sev="2">            try</line>
+<line sev="2">            {</line>
+<line sev="2" covered="yes">                closeable.close();</line>
+<line sev="2">            }</line>
+<line sev="2" covered="no">            catch (IOException e)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                QaLogger.getInstance().error(&quot;Error closing: &quot; + closeable);</line>
+<line sev="2" covered="yes">            }</line>
+<line sev="2">        }</line>
+<line sev="2" covered="yes">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Closes the given Closeable, logging a message on any IO error.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param closeable the Closeable to close.</line>
+<line sev="2">     */</line>
+<line sev="2">    public static void safeClose(final JarFile closeable)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="no">        if (closeable != null)</line>
+<line sev="2">        {</line>
+<line sev="2">            try</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                closeable.close();</line>
+<line sev="2">            }</line>
+<line sev="2" covered="no">            catch (IOException e)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                QaLogger.getInstance().error(&quot;Error closing: &quot; + closeable);</line>
+<line sev="2" covered="no">            }</line>
+<line sev="2">        }</line>
+<line sev="2" covered="no">    }</line>
+<line sev="2"/>
+<line sev="2">    /** The length of the 3 special tokens ${}. */</line>
+<line sev="2"><diag id="732"/>    private static final int TOKENLENGTH = 3;</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Replaces parameter tokens in the given String with their equivalents from the given map, </line>
+<line sev="2">     * System properties or resources on the classpath. Tokens are specified using ${variableName} syntax.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param string the String to modify</line>
+<line sev="2">     * @param paramMap the parameter map</line>
+<line sev="2">     * @param config the current configuration</line>
+<line sev="2">     * @param auxClasspath an optional auxillary class path to search for resources.</line>
+<line sev="2">     * @return the modified String</line>
+<line sev="2">     */</line>
+<line sev="2"><diag id="733"/><diag id="734"/>    public static String replaceTokens(final String string, final Map&lt;String, String&gt; paramMap, final QAConfig config, final String auxClasspath)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="no"><diag id="735"/>        int lastTokenEnd = -1;</line>
+<line sev="2" covered="no">        int tokenStart = ((string == null) ? -1 : string.indexOf('$'));</line>
+<line sev="2"/>
+<line sev="2">        // No tokens, just return the string</line>
+<line sev="2" covered="no">        if (tokenStart == -1)</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            return string;</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="no">        StringBuffer result = new StringBuffer(string.length());</line>
+<line sev="2"/>
+<line sev="2" covered="no">        while (tokenStart != -1 &amp;&amp; tokenStart &lt; string.length() - TOKENLENGTH)</line>
+<line sev="2">        {</line>
+<line sev="2">            // Append anything since the last token's end</line>
+<line sev="2" covered="no">            if (lastTokenEnd + 1 &lt; tokenStart)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                result.append(string.substring(lastTokenEnd + 1, tokenStart));</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2" covered="no">            int tokenEnd = string.indexOf('}', tokenStart + 2);</line>
+<line sev="2"/>
+<line sev="2" covered="no">            if (string.charAt(tokenStart + 1) == '{' &amp;&amp; tokenEnd != -1)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                String paramKey = string.substring(tokenStart + 2, tokenEnd);</line>
+<line sev="2"/>
+<line sev="2">                // First try substitution from the map</line>
+<line sev="2" covered="no">                if (paramMap.containsKey(paramKey))</line>
+<line sev="2">                {</line>
+<line sev="2" covered="no">                    result.append(paramMap.get(paramKey));</line>
+<line sev="2">                }</line>
+<line sev="2">                // Next try a system property</line>
+<line sev="2" covered="no"><diag id="736"/>                else if (System.getProperty(paramKey) != null)</line>
+<line sev="2">                {</line>
+<line sev="2" covered="no">                    result.append(System.getProperty(paramKey));</line>
+<line sev="2">                }</line>
+<line sev="2">                else</line>
+<line sev="2">                {</line>
+<line sev="2">                    // Finally, see if it's a resource in the classpath which we need to extract.</line>
+<line sev="2">                    File expanded;</line>
+<line sev="2"/>
+<line sev="2">                    try</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        expanded = extractResource(config, paramKey, auxClasspath);</line>
+<line sev="2">                    }</line>
+<line sev="2" covered="no">                    catch (IOException e)</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        expanded = null;</line>
+<line sev="2" covered="no">                    }</line>
+<line sev="2"/>
+<line sev="2" covered="no">                    if (expanded == null)</line>
+<line sev="2">                    {</line>
+<line sev="2">                        // Give up - just leave the token as is</line>
+<line sev="2" covered="no">                        result.append(string.substring(tokenStart, tokenEnd + 1));</line>
+<line sev="2">                    }</line>
+<line sev="2">                    else</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        result.append(expanded.getPath());</line>
+<line sev="2">                    }</line>
+<line sev="2">                }</line>
+<line sev="2"/>
+<line sev="2" covered="no">                lastTokenEnd = tokenEnd;</line>
+<line sev="2" covered="no">                tokenStart = string.indexOf('$', lastTokenEnd + 1);</line>
+<line sev="2" covered="no">            }</line>
+<line sev="2">            else</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                lastTokenEnd = tokenStart - 1;</line>
+<line sev="2" covered="no">                tokenStart = string.indexOf('$', tokenStart + 1);</line>
+<line sev="2">            }</line>
+<line sev="2" covered="no">        }</line>
+<line sev="2"/>
+<line sev="2">        // Append anything left over</line>
+<line sev="2" covered="no">        if (lastTokenEnd + 1 &lt; string.length())</line>
+<line sev="2">        {</line>
+<line sev="2" covered="no">            result.append(string.substring(lastTokenEnd + 1));</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="no">        return result.toString();</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Set the path location to the external properties file.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @param externalPropertiesPath the path location to the external properties file.</line>
+<line sev="2">     */</line>
+<line sev="2">    public static void setExternalPropertiesPath(final String externalPropertiesPath)</line>
+<line sev="2">    {</line>
+<line sev="2" covered="no">        QaUtil.externalPropertiesPath = externalPropertiesPath;</line>
+<line sev="2" covered="no">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Retrieve the path set by {@link #setExternalPropertiesPath(String)}.</line>
+<line sev="2">     * </line>
+<line sev="2">     * @return the path set by {@link #setExternalPropertiesPath(String)}.</line>
+<line sev="2">     */</line>
+<line sev="2">    public static String getExternalPropertiesPath()</line>
+<line sev="2">    {</line>
+<line sev="2" covered="no">        return externalPropertiesPath;</line>
+<line sev="2">    }</line>
+<line sev="2"/>
+<line sev="2">    /**</line>
+<line sev="2">     * Attempts to extract a resource to the temp directory.</line>
+<line sev="2">     *</line>
+<line sev="2">     * @param config the current configuration.</line>
+<line sev="2">     * @param resourceName the name of the resource to extract.</line>
+<line sev="2">     * @param auxClasspath an optional auxillary class path to search for resources.</line>
+<line sev="2">     * @return the path to the extracted resource, or null if nothing was extracted</line>
+<line sev="2">     * @throws IOException if there is an error extracting the resource.</line>
+<line sev="2">     */</line>
+<line sev="2"><diag id="737"/><diag id="738"/><diag id="739"/>    public static File extractResource(final QAConfig config, final String resourceName, final String auxClasspath) throws IOException</line>
+<line sev="2">    {</line>
+<line sev="2">        // Search for the Resource on the filesystem. </line>
+<line sev="2" covered="no">        File resourceFile = new File(resourceName);</line>
+<line sev="2"/>
+<line sev="2" covered="no">        if (resourceFile.exists())</line>
+<line sev="2">        {</line>
+<line sev="2">            // File found, add it as-is.</line>
+<line sev="2" covered="no">            QaLogger.getInstance().debug(&quot;Resource File: &quot; + resourceName);</line>
+<line sev="2" covered="no">            return resourceFile;</line>
+<line sev="2">        }</line>
+<line sev="2">        else</line>
+<line sev="2">        {</line>
+<line sev="2">            // Search for the Resource on the classpath.</line>
+<line sev="2" covered="no">            URL resourceUrl = null;</line>
+<line sev="2" covered="no">            Enumeration&lt;URL&gt; resourceEnum = QaUtil.class.getClassLoader().getResources(resourceName);</line>
+<line sev="2"/>
+<line sev="2" covered="no">            if (resourceEnum == null || !resourceEnum.hasMoreElements())</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                resourceEnum = ExtractStaticContent.class.getClassLoader().getResources(resourceName);</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2" covered="no">            if (resourceEnum != null &amp;&amp; resourceEnum.hasMoreElements())</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                QaLogger.getInstance().debug(&quot;Resource: &quot; + resourceName);</line>
+<line sev="2" covered="no">                resourceUrl = resourceEnum.nextElement();</line>
+<line sev="2"/>
+<line sev="2" covered="no">                if (resourceEnum.hasMoreElements())</line>
+<line sev="2">                {                </line>
+<line sev="2" covered="no">                    QaLogger.getInstance().info(&quot;Resource [&quot; + resourceName + &quot;] found in multiple locations, using first.&quot;);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2" covered="no">            if (resourceUrl == null &amp;&amp; !StringUtil.empty(auxClasspath))</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                StringTokenizer tok = new StringTokenizer(auxClasspath, System.getProperty(&quot;path.separator&quot;));</line>
+<line sev="2"/>
+<line sev="2" covered="no">                while (tok.hasMoreTokens())</line>
+<line sev="2">                {</line>
+<line sev="2" covered="no"><diag id="742"/>                    File pathElem = new File(tok.nextToken());</line>
+<line sev="2"/>
+<line sev="2" covered="no">                    if (pathElem.canRead())</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        if (pathElem.isDirectory())</line>
+<line sev="2">                        {</line>
+<line sev="2" covered="no"><diag id="743"/>                            resourceFile = new File(pathElem, resourceName.replace('/', File.separatorChar));</line>
+<line sev="2"/>
+<line sev="2" covered="no">                            if (resourceFile.exists())</line>
+<line sev="2">                            {</line>
+<line sev="2" covered="no">                                QaLogger.getInstance().debug(&quot;Resource File: &quot; + resourceName);</line>
+<line sev="2" covered="no">                                return resourceFile;</line>
+<line sev="2">                            }</line>
+<line sev="2">                        }</line>
+<line sev="2">                        else</line>
+<line sev="2">                        {</line>
+<line sev="2">                            // Try it as a jar</line>
+<line sev="2" covered="no">                            JarFile jar = null;</line>
+<line sev="2">                            try</line>
+<line sev="2">                            {</line>
+<line sev="2" covered="no"><diag id="744"/>                                jar = new JarFile(pathElem);</line>
+<line sev="2" covered="no">                                ZipEntry entry = jar.getEntry(resourceName);</line>
+<line sev="2"/>
+<line sev="2" covered="no">                                if (entry != null)</line>
+<line sev="2">                                {</line>
+<line sev="2" covered="no"><diag id="745"/>                                    resourceUrl = new URL(&quot;jar:&quot; + pathElem.toURI().toURL().toString() + &quot;!/&quot; + resourceName);</line>
+<line sev="2" covered="no">                                    QaLogger.getInstance().debug(&quot;Resource: &quot; + resourceUrl);</line>
+<line sev="2">                                    break;</line>
+<line sev="2">                                }</line>
+<line sev="2">                            }</line>
+<line sev="3" covered="no"><diag id="314"/><diag id="746"/><diag id="747"/>                            catch (Exception e)</line>
+<line sev="2">                            {</line>
+<line sev="2">                                // Not a jar file, or could not read.</line>
+<line sev="2">                            }</line>
+<line sev="2">                            finally</line>
+<line sev="2">                            {</line>
+<line sev="2" covered="no">                                safeClose(jar);</line>
+<line sev="2" covered="no">                            }</line>
+<line sev="2">                        }</line>
+<line sev="2">                    }</line>
+<line sev="2" covered="no">                }</line>
+<line sev="2">            }</line>
+<line sev="2"/>
+<line sev="2" covered="no">            if (resourceUrl != null)</line>
+<line sev="2">            {</line>
+<line sev="2" covered="no">                QaLogger.getInstance().debug(&quot;Extract using URL: &quot; + resourceUrl);</line>
+<line sev="2"/>
+<line sev="2" covered="no">                InputStream inStream = null;</line>
+<line sev="2" covered="no">                FileOutputStream fos = null;</line>
+<line sev="2">                try</line>
+<line sev="2">                {</line>
+<line sev="2" covered="no">                    inStream = resourceUrl.openConnection().getInputStream();</line>
+<line sev="2"/>
+<line sev="2" covered="no"><diag id="313"/>                    if (inStream == null)</line>
+<line sev="2">                    {</line>
+<line sev="2">                        // If not found, try loading from the current classloader. </line>
+<line sev="2" covered="no">                        inStream = QaUtil.class.getClassLoader().getResourceAsStream(resourceName);</line>
+<line sev="2">                    }</line>
+<line sev="2"/>
+<line sev="2" covered="no"><diag id="312"/>                    if (inStream == null)</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        throw new IllegalArgumentException(&quot;Resource [&quot; + resourceName + &quot;] doesn't exist&quot;);</line>
+<line sev="2">                    }</line>
+<line sev="2"/>
+<line sev="2">                    // Set up the destination file</line>
+<line sev="2" covered="no">                    File destFile = new File(config.getTempDir(), resourceName.replaceAll(&quot;.*/&quot;, &quot;&quot;));</line>
+<line sev="2"/>
+<line sev="2" covered="no">                    if (!destFile.getParentFile().exists() &amp;&amp; !destFile.getParentFile().mkdirs())</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        throw new IOException(&quot;Failed to create parent directory for file &quot; + destFile.getPath());</line>
+<line sev="2">                    }</line>
+<line sev="2"/>
+<line sev="2">                    // Copy the data</line>
+<line sev="2" covered="no">                    fos = new FileOutputStream(destFile);</line>
+<line sev="2" covered="no">                    byte[] buf = new byte[BUFFER_SIZE];</line>
+<line sev="2"/>
+<line sev="2" covered="no">                    for (int count = inStream.read(buf); count != -1; count = inStream.read(buf))</line>
+<line sev="2">                    {</line>
+<line sev="2" covered="no">                        fos.write(buf, 0, count);</line>
+<line sev="2">                    }</line>
+<line sev="2"/>
+<line sev="2" covered="no">                    return destFile;</line>
+<line sev="2">                }</line>
+<line sev="2">                finally</line>
+<line sev="2">                {</line>
+<line sev="2" covered="no">                    safeClose(fos);</line>
+<line sev="2" covered="no">                    safeClose(inStream);</line>
+<line sev="2">                }</line>
+<line sev="2">            }</line>
+<line sev="2">        }</line>
+<line sev="2"/>
+<line sev="2" covered="no">        QaLogger.getInstance().debug(&quot;Can't find file or resource on classpath: &quot; + resourceName);</line>
+<line sev="2" covered="no">        return null;</line>
+<line sev="2">    }</line>
+<line sev="2">}</line>
+</source>
+<diags first="false">
+<diag id="723" sev="2" tool="PMD" rule="GodClass">
+Possible God class (WMC=91, ATFD=29, TCC=0.06666666666666667)
+</diag>
+<diag id="724" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The class 'QaUtil' has a Cyclomatic Complexity of 5 (Highest = 21).
+</diag>
+<diag id="725" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="726" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="727" sev="2" tool="PMD" rule="AssignmentInOperand">
+Avoid assignments in operands
+</diag>
+<diag id="728" sev="1" tool="PMD" rule="SimplifyStartsWith">
+This call to String.startsWith can be rewritten using String.charAt(0)
+</diag>
+<diag id="729" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The method 'getPackageForSourceFile' has a Cyclomatic Complexity of 20.
+</diag>
+<diag id="730" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
+Avoid using Literals in Conditional Statements
+</diag>
+<diag id="731" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</diag>
+<diag id="732" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="733" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The method 'replaceTokens' has a Cyclomatic Complexity of 13.
+</diag>
+<diag id="734" sev="0" tool="PMD" rule="NPathComplexity">
+The method replaceTokens() has an NPath complexity of 360
+</diag>
+<diag id="735" sev="1" tool="PMD" rule="PrematureDeclaration">
+Avoid declaring a variable if it is unreferenced before a possible exit point.
+</diag>
+<diag id="736" sev="1" tool="PMD" rule="ConfusingTernary">
+Avoid if (x != y) ..; else ..;
+</diag>
+<diag id="737" sev="0" tool="PMD" rule="ExcessiveMethodLength">
+Avoid really long methods.
+</diag>
+<diag id="738" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The method 'extractResource' has a Cyclomatic Complexity of 21.
+</diag>
+<diag id="739" sev="0" tool="PMD" rule="NPathComplexity">
+The method extractResource() has an NPath complexity of 3121
+</diag>
+<diag id="742" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="743" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="744" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="745" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="314" sev="3" tool="Findbugs" rule="REC_CATCH_EXCEPTION">Exception is caught when Exception is not thrown in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
+<diag id="746" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</diag>
+<diag id="747" sev="2" tool="PMD" rule="EmptyCatchBlock">
+Avoid empty catch blocks
+</diag>
+<diag id="313" sev="2" tool="Findbugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of inStream, which is known to be non-null in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
+<diag id="312" sev="2" tool="Findbugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of inStream, which is known to be non-null in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
+</diags>
+</classDetails>

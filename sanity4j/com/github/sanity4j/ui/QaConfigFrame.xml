@@ -1,0 +1,786 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.ui.QaConfigFrame" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="20" info="54" quality="92"/>
+<source>
+<line sev="0"><diag id="589"/>package com.github.sanity4j.ui;</line>
+<line sev="0"/>
+<line sev="0">import java.awt.Dimension;</line>
+<line sev="0">import java.awt.GridBagConstraints;</line>
+<line sev="0">import java.awt.GridBagLayout;</line>
+<line sev="0">import java.awt.Insets;</line>
+<line sev="0">import java.awt.Toolkit;</line>
+<line sev="0">import java.awt.event.ActionEvent;</line>
+<line sev="0">import java.awt.event.ItemEvent;</line>
+<line sev="0">import java.awt.event.ItemListener;</line>
+<line sev="0">import java.awt.event.WindowAdapter;</line>
+<line sev="0">import java.awt.event.WindowEvent;</line>
+<line sev="0">import java.util.HashMap;</line>
+<line sev="0">import java.util.Map;</line>
+<line sev="0">import java.util.Properties;</line>
+<line sev="0">import java.util.Set;</line>
+<line sev="0">import java.util.TreeSet;</line>
+<line sev="0"/>
+<line sev="0">import javax.swing.AbstractAction;</line>
+<line sev="0">import javax.swing.Action;</line>
+<line sev="0">import javax.swing.DefaultComboBoxModel;</line>
+<line sev="0">import javax.swing.JButton;</line>
+<line sev="0">import javax.swing.JComboBox;</line>
+<line sev="0">import javax.swing.JComponent;</line>
+<line sev="0">import javax.swing.JFrame;</line>
+<line sev="0">import javax.swing.JLabel;</line>
+<line sev="0">import javax.swing.JPanel;</line>
+<line sev="0">import javax.swing.JScrollPane;</line>
+<line sev="0">import javax.swing.JTable;</line>
+<line sev="0">import javax.swing.JTextField;</line>
+<line sev="0">import javax.swing.border.EmptyBorder;</line>
+<line sev="0">import javax.swing.event.ChangeEvent;</line>
+<line sev="0">import javax.swing.table.AbstractTableModel;</line>
+<line sev="0">import javax.swing.table.TableModel;</line>
+<line sev="0"/>
+<line sev="0">import com.github.sanity4j.util.QaUtil;</line>
+<line sev="0">import com.github.sanity4j.workflow.QAConfig;</line>
+<line sev="0">import com.github.sanity4j.workflow.QAProcessor;</line>
+<line sev="0"/>
+<line sev="0">/**</line>
+<line sev="0"> * QaConfigFrame is a Java Swing Frame used to modify the configuration properties used by the {@link QaApp} Swing</line>
+<line sev="0"> * Application.</line>
+<line sev="0"> * </line>
+<line sev="0"> * @author Brian Kavanagh</line>
+<line sev="0"> * @since September 2011</line>
+<line sev="0"> */</line>
+<line sev="1"><diag id="590"/>public class QaConfigFrame extends JFrame</line>
+<line sev="1"><diag id="591"/>{</line>
+<line sev="1">    /** The column count. */</line>
+<line sev="1">    private static final int COLUMN_COUNT = 3;</line>
+<line sev="1">    /** The inset. */</line>
+<line sev="1">    private static final int INSET = 5;</line>
+<line sev="1">    /** Six. */</line>
+<line sev="1">    private static final int SIX = 6;</line>
+<line sev="1">    /** One hundred. */</line>
+<line sev="1">    private static final int ONE_HUNDRED = 100;</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * A {@link TableModel} which models three columns derived from a &lt;b&gt;Properties&lt;/b&gt; object.</line>
+<line sev="1">     * &lt;ol&gt;</line>
+<line sev="1">     * &lt;li&gt;&lt;b&gt;name&lt;/b&gt; - The name of the QaConfig property.&lt;/li&gt;</line>
+<line sev="1">     * &lt;li&gt;&lt;b&gt;value&lt;/b&gt; - The value of the QaConfig property.&lt;/li&gt;</line>
+<line sev="1">     * &lt;li&gt;&lt;b&gt;derivedValue&lt;/b&gt; - The value of the QaConfig property after a number string substitutions have been made.&lt;/li&gt;</line>
+<line sev="1">     * &lt;/ol&gt;</line>
+<line sev="1">     */</line>
+<line sev="1">    private static class QaPropertyTableModel extends AbstractTableModel</line>
+<line sev="1">    {</line>
+<line sev="1">        /** The values modelled by this object. */</line>
+<line sev="1">        private String[][] values;</line>
+<line sev="1"/>
+<line sev="1">        /**</line>
+<line sev="1">         * Creates a &lt;b&gt;QaPropertyTableModel&lt;/b&gt; for the given &lt;b&gt;Properties&lt;/b&gt; object.</line>
+<line sev="1">         * </line>
+<line sev="1">         * @param config The properties to be modelled.</line>
+<line sev="1">         */</line>
+<line sev="1">        public QaPropertyTableModel(final QAConfig config)</line>
+<line sev="1">        {</line>
+<line sev="1"><diag id="593"/>            reset(config);</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        /** {@inheritDoc} */</line>
+<line sev="1">        @Override</line>
+<line sev="1">        public boolean isCellEditable(final int rowIndex, final int columnIndex)</line>
+<line sev="1">        {</line>
+<line sev="1"><diag id="594"/>            if (columnIndex == 1)</line>
+<line sev="1">            {</line>
+<line sev="1">                return true;</line>
+<line sev="1">            }</line>
+<line sev="1">            else</line>
+<line sev="1">            {</line>
+<line sev="1">                return super.isCellEditable(rowIndex, columnIndex);</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        /** {@inheritDoc} */</line>
+<line sev="1">        @Override</line>
+<line sev="1">        public String getColumnName(final int column)</line>
+<line sev="1">        {</line>
+<line sev="1">            switch (column)</line>
+<line sev="1">            {</line>
+<line sev="1">                case 0:</line>
+<line sev="1">                    return &quot;Property&quot;;</line>
+<line sev="1">                case 1:</line>
+<line sev="1">                    return &quot;Value&quot;;</line>
+<line sev="1">                case 2:</line>
+<line sev="1">                    return &quot;Derived Value&quot;;</line>
+<line sev="1">                default:</line>
+<line sev="1">                    return &quot;&quot;;</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        /** {@inheritDoc} */</line>
+<line sev="1">        @Override</line>
+<line sev="1">      public int getRowCount()</line>
+<line sev="1">        {</line>
+<line sev="1">            return values.length;</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        /** {@inheritDoc} */</line>
+<line sev="1">        @Override</line>
+<line sev="1">      public int getColumnCount()</line>
+<line sev="1">        {</line>
+<line sev="1"><diag id="595"/>            return COLUMN_COUNT;</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        /** {@inheritDoc} */</line>
+<line sev="1">        @Override</line>
+<line sev="1">      public Object getValueAt(final int rowIndex, final int columnIndex)</line>
+<line sev="1">        {</line>
+<line sev="1">            return values[rowIndex][columnIndex];</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        /** {@inheritDoc} */</line>
+<line sev="1">        @Override</line>
+<line sev="1">        public void setValueAt(final Object aValue, final int rowIndex, final int columnIndex)</line>
+<line sev="1">        {</line>
+<line sev="1"><diag id="596"/><diag id="597"/><diag id="598"/>            if ((rowIndex &lt; values.length) &amp;&amp; (columnIndex &lt; COLUMN_COUNT))</line>
+<line sev="1">            {</line>
+<line sev="1">                if (aValue == null)</line>
+<line sev="1">                {</line>
+<line sev="1">                    values[rowIndex][columnIndex] = null;</line>
+<line sev="1">                }</line>
+<line sev="1">                else</line>
+<line sev="1">                {</line>
+<line sev="1">                    values[rowIndex][columnIndex] = aValue.toString();</line>
+<line sev="1">                }</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        /**</line>
+<line sev="1">         * This method saves the contents of the current model to a {@link QAConfig} object.</line>
+<line sev="1">         * </line>
+<line sev="1">         * @param config The {@link QAconfig} object to which the contents of the current {@link QaPropertyTableModel}</line>
+<line sev="1">         *            are to be saved.</line>
+<line sev="1">         */</line>
+<line sev="1">        public void save(final QAConfig config)</line>
+<line sev="1">        {</line>
+<line sev="1">            for (int i = 0; i &lt; values.length; i++)</line>
+<line sev="1">            {</line>
+<line sev="1">                String key = values[i][0];</line>
+<line sev="1">                String value = values[i][1];</line>
+<line sev="1"/>
+<line sev="1">                config.setToolProperty(key, value);</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        /**</line>
+<line sev="1">         * This method resets the contents of the current {@link QaPropertyTableModel} to current values within a</line>
+<line sev="1">         * {@link QAConfig} object.</line>
+<line sev="1">         * </line>
+<line sev="1">         * @param config The {@link QAconfig} object to which the contents of the current {@link QaPropertyTableModel}</line>
+<line sev="1">         *            are to be saved.</line>
+<line sev="1">         */</line>
+<line sev="1">        public void reset(final QAConfig config)</line>
+<line sev="1">        {</line>
+<line sev="1">            Set&lt;String&gt; keys = new TreeSet&lt;String&gt;();</line>
+<line sev="1"/>
+<line sev="1">            Properties properties = config.getToolProperties();</line>
+<line sev="1"/>
+<line sev="1">            for (Object o : properties.keySet())</line>
+<line sev="1">            {</line>
+<line sev="1">                keys.add(o.toString());</line>
+<line sev="1">            }</line>
+<line sev="1"/>
+<line sev="1"><diag id="599"/>            this.values = new String[keys.size()][COLUMN_COUNT];</line>
+<line sev="1"/>
+<line sev="1">            int index = 0;</line>
+<line sev="1"/>
+<line sev="1">            for (String key : keys)</line>
+<line sev="1">            {</line>
+<line sev="1">                String defaultValue = properties.getProperty(key);</line>
+<line sev="1">                String value = QaUtil.replaceTokens(defaultValue, config.asParameterMap(), config, null);</line>
+<line sev="1"/>
+<line sev="1">                this.values[index][0] = key;</line>
+<line sev="1">                this.values[index][1] = defaultValue;</line>
+<line sev="1">                this.values[index][2] = value;</line>
+<line sev="1">                index++;</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line sev="1">    }</line>
+<line sev="1"/>
+<line sev="1">    // ****************************************************************</line>
+<line sev="1">    // MEMBER VARIABLES</line>
+<line sev="1">    // ****************************************************************</line>
+<line sev="1"/>
+<line sev="1">    /** The processor that will be running the QA. */</line>
+<line sev="1"><diag id="600"/>    private final QAProcessor processor;</line>
+<line sev="1"/>
+<line sev="1">    /** The set of tools which can be configured. */</line>
+<line sev="1"><diag id="602"/>    private final JComboBox&lt;String&gt; toolCombo = new JComboBox&lt;String&gt;();</line>
+<line sev="1"/>
+<line sev="1">    /** The last tool selected within the &quot;tools&quot; drop-down list. */</line>
+<line sev="1"><diag id="604"/>    private String lastTool;</line>
+<line sev="1"/>
+<line sev="1">    /** The versions of the currently selected tool. */</line>
+<line sev="1"><diag id="606"/>    private final JComboBox&lt;String&gt; versionCombo = new JComboBox&lt;String&gt;();</line>
+<line sev="1"/>
+<line sev="1">    /** The last tool version selected within the &quot;versions&quot; drop-down list. */</line>
+<line sev="1"><diag id="608"/>    private String lastVersion;</line>
+<line sev="1"/>
+<line sev="1">    /** The label for the tool configuration. */</line>
+<line sev="1"><diag id="610"/>    private final JLabel configLabel = new JLabel();</line>
+<line sev="1"/>
+<line sev="1">    /** The label for the tool configuration. */</line>
+<line sev="1"><diag id="612"/>    private final JLabel configClasspathLabel = new JLabel();</line>
+<line sev="1"/>
+<line sev="1">    /** A text field used to enter the tool configuration. */</line>
+<line sev="1"><diag id="614"/>    private final JTextField configText = new JTextField(20);</line>
+<line sev="1"/>
+<line sev="1">    /** A text field used to enter the tool configuration class path. */</line>
+<line sev="1"><diag id="616"/>    private final JTextField configClasspathText = new JTextField();</line>
+<line sev="1"/>
+<line sev="1">    /** A table containing the QaConfig properties. */</line>
+<line sev="1"><diag id="618"/>    private final JTable table = new JTable();</line>
+<line sev="1"/>
+<line sev="1">    /** Button to save configuration changes. */</line>
+<line sev="1"><diag id="620"/>    private final JButton okButton = new JButton();</line>
+<line sev="1"/>
+<line sev="1">    /** Button to cancel configuration changes. */</line>
+<line sev="1"><diag id="622"/>    private final JButton cancelButton = new JButton();</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * A Map from a &quot;tool&quot; to the value stored within the Tool Configuration {@link JTextField}.</line>
+<line sev="1">     */</line>
+<line sev="1"><diag id="624"/>    private final Map&lt;String, String&gt; toolConfig = new HashMap&lt;String, String&gt;();</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * A Map from a &quot;tool&quot; to the value stored within the Tool Configuration class path {@link JTextField}.</line>
+<line sev="1">     */</line>
+<line sev="1"><diag id="626"/>    private final Map&lt;String, String&gt; toolConfigClasspath = new HashMap&lt;String, String&gt;();</line>
+<line sev="1"/>
+<line sev="1">    // ****************************************************************</line>
+<line sev="1">    // PRIVATE METHODS</line>
+<line sev="1">    // ****************************************************************</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * This method initializes the {@link #toolConfig} and {@link #toolConfigClasspath} variables from the</line>
+<line sev="1">     * {@link QAConfig}.</line>
+<line sev="1">     * </line>
+<line sev="1">     * @param qaConfig the config.</line>
+<line sev="1">     */</line>
+<line sev="1">    private void loadToolConfig(final QAConfig qaConfig)</line>
+<line sev="1">    {</line>
+<line sev="1">        String[] tools = qaConfig.getToolsToRun();</line>
+<line sev="1"/>
+<line sev="1">        for (String tool : tools)</line>
+<line sev="1">        {</line>
+<line sev="1">            String[] versions = qaConfig.getToolVersions(tool);</line>
+<line sev="1"/>
+<line sev="1">            for (String version : versions)</line>
+<line sev="1">            {</line>
+<line sev="1">                String key = tool + &quot;.&quot; + version;</line>
+<line sev="1"/>
+<line sev="1">                String config = qaConfig.getToolConfig(key, null);</line>
+<line sev="1"/>
+<line sev="1">                if (config == null)</line>
+<line sev="1">                {</line>
+<line sev="1">                    config = &quot;&quot;;</line>
+<line sev="1">                }</line>
+<line sev="1"/>
+<line sev="1">                toolConfig.put(key, config);</line>
+<line sev="1"/>
+<line sev="1">                String configClasspath = qaConfig.getToolConfigClasspath(key, null);</line>
+<line sev="1"/>
+<line sev="1">                if (configClasspath == null)</line>
+<line sev="1">                {</line>
+<line sev="1">                    configClasspath = &quot;&quot;;</line>
+<line sev="1">                }</line>
+<line sev="1"/>
+<line sev="1">                toolConfigClasspath.put(key, configClasspath);</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line sev="1">    }</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * This method saves the data input into the {@link QaConfigFrame} to the {@link QAConfig} object.</line>
+<line sev="1">     */</line>
+<line sev="1">    private void save()</line>
+<line sev="1">    {</line>
+<line sev="1">        QAConfig config = processor.getConfig();</line>
+<line sev="1">        ((QaPropertyTableModel) table.getModel()).save(config);</line>
+<line sev="1"/>
+<line sev="1">        toolConfig.put(lastTool + &quot;.&quot; + lastVersion, configText.getText());</line>
+<line sev="1">        toolConfigClasspath.put(lastTool + &quot;.&quot; + lastVersion, configClasspathText.getText());</line>
+<line sev="1"/>
+<line sev="1">        String[] tools = config.getToolsToRun();</line>
+<line sev="1"/>
+<line sev="1">        for (String tool : tools)</line>
+<line sev="1">        {</line>
+<line sev="1">            String[] versions = config.getToolVersions(tool);</line>
+<line sev="1"/>
+<line sev="1">            for (String version : versions)</line>
+<line sev="1">            {</line>
+<line sev="1">                String key = tool + &quot;.&quot; + version;</line>
+<line sev="1"/>
+<line sev="1">                String toolConfigString = toolConfig.get(key);</line>
+<line sev="1">                String toolConfigClasspathString = toolConfigClasspath.get(key);</line>
+<line sev="1"/>
+<line sev="1">                config.setToolConfig(tool, null, toolConfigString, toolConfigClasspathString);</line>
+<line sev="1">                config.setToolConfig(tool, version, toolConfigString, toolConfigClasspathString);</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line sev="1">    }</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * This method resets the data input within the {@link QaConfigFrame} to the values within {@link QAConfig} object.</line>
+<line sev="1">     */</line>
+<line sev="1">    private void reset()</line>
+<line sev="1">    {</line>
+<line sev="1">        QAConfig config = processor.getConfig();</line>
+<line sev="1">        ((QaPropertyTableModel) table.getModel()).reset(config);</line>
+<line sev="1">        loadToolConfig(config);</line>
+<line sev="1">    }</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Adds a component to the content pane.</line>
+<line sev="1">     * </line>
+<line sev="1">     * @param component the component to add.</line>
+<line sev="1">     * @param gridx the x grid coordinate.</line>
+<line sev="1">     * @param gridy the y grid coordinate.</line>
+<line sev="1">     * @param gridwidth the number of horizontal grid units to occupy.</line>
+<line sev="1">     * @param gridheight the number of vertical grid units to occupy.</line>
+<line sev="1">     * @param anchor the position of the component within the cell.</line>
+<line sev="1">     * @param fill the fill mode when the component is smaller than the cell.</line>
+<line sev="1">     */</line>
+<line sev="1">    private void add(final JComponent component, final int gridx, final int gridy, final int gridwidth,</line>
+<line sev="1">                     final int gridheight, final int anchor, final int fill)</line>
+<line sev="1">    {</line>
+<line sev="1">        GridBagConstraints constraints = new GridBagConstraints();</line>
+<line sev="1"/>
+<line sev="1">        constraints.gridx = gridx;</line>
+<line sev="1">        constraints.gridy = gridy;</line>
+<line sev="1">        constraints.gridwidth = gridwidth;</line>
+<line sev="1">        constraints.gridheight = gridheight;</line>
+<line sev="1">        constraints.anchor = anchor;</line>
+<line sev="1">        constraints.fill = fill;</line>
+<line sev="1">        constraints.insets = new Insets(1, 1, 1, 1);</line>
+<line sev="1"/>
+<line sev="1">        if (fill == GridBagConstraints.HORIZONTAL || fill == GridBagConstraints.BOTH)</line>
+<line sev="1">        {</line>
+<line sev="1">            constraints.weightx = 1.0;</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        if (fill == GridBagConstraints.VERTICAL || fill == GridBagConstraints.BOTH)</line>
+<line sev="1">        {</line>
+<line sev="1">            constraints.weighty = 1.0;</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        getContentPane().add(component);</line>
+<line sev="1">        ((GridBagLayout) getContentPane().getLayout()).setConstraints(component, constraints);</line>
+<line sev="1">    }</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Adds Swing components to the {@link QaConfigFrame} ContentPane.</line>
+<line sev="1">     */</line>
+<line sev="1"><diag id="628"/><diag id="629"/><diag id="630"/>    private void layoutInterface()</line>
+<line sev="1">    {</line>
+<line sev="1">        // ************************************************************</line>
+<line sev="1">        // Configure components</line>
+<line sev="1">        // ************************************************************</line>
+<line sev="1"/>
+<line sev="1">        QAConfig config = processor.getConfig();</line>
+<line sev="1"/>
+<line sev="1">        String[] tools = config.getToolsToRun();</line>
+<line sev="1">        toolCombo.setModel(new DefaultComboBoxModel&lt;String&gt;(tools));</line>
+<line sev="1">        lastTool = tools[0];</line>
+<line sev="1">        configLabel.setText(lastTool + &quot; config:&quot;);</line>
+<line sev="1">        configClasspathLabel.setText(lastTool + &quot; config classpath:&quot;);</line>
+<line sev="1"/>
+<line sev="1">        String[] versions = config.getToolVersions(tools[0]);</line>
+<line sev="1">        versionCombo.setModel(new DefaultComboBoxModel&lt;String&gt;(versions));</line>
+<line sev="1">        lastVersion = versions[0];</line>
+<line sev="1"/>
+<line sev="1">        ItemListener toolComboListener = new ItemListener()</line>
+<line sev="1">        {</line>
+<line sev="1">            @Override</line>
+<line sev="1">            public void itemStateChanged(final ItemEvent event)</line>
+<line sev="1">            {</line>
+<line sev="1"><diag id="631"/><diag id="632"/><diag id="633"/><diag id="634"/>                toolConfig.put(lastTool + &quot;.&quot; + lastVersion, configText.getText());</line>
+<line sev="1"><diag id="635"/><diag id="636"/><diag id="637"/><diag id="638"/>                toolConfigClasspath.put(lastTool + &quot;.&quot; + lastVersion, configClasspathText.getText());</line>
+<line sev="1"/>
+<line sev="1">                JComboBox&lt;String&gt; combo = (JComboBox&lt;String&gt;) event.getSource();</line>
+<line sev="1">                String prefix = &quot;&quot;;</line>
+<line sev="1"/>
+<line sev="1">                if (combo.getSelectedIndex() &gt;= 0)</line>
+<line sev="1">                {</line>
+<line sev="1"><diag id="639"/>                    lastTool = combo.getItemAt(combo.getSelectedIndex());</line>
+<line sev="1"/>
+<line sev="1"><diag id="640"/><diag id="641"/>                    String[] versions = processor.getConfig().getToolVersions(lastTool);</line>
+<line sev="1"><diag id="642"/>                    versionCombo.setModel(new DefaultComboBoxModel&lt;String&gt;(versions));</line>
+<line sev="1"><diag id="643"/>                    versionCombo.setSelectedIndex(0);</line>
+<line sev="1"/>
+<line sev="1"><diag id="644"/>                    lastVersion = versions[0];</line>
+<line sev="1"/>
+<line sev="1"><diag id="645"/><diag id="646"/><diag id="647"/>                    String config = toolConfig.get(lastTool + &quot;.&quot; + lastVersion);</line>
+<line sev="1"><diag id="648"/><diag id="649"/><diag id="650"/>                    String configClasspath = toolConfigClasspath.get(lastTool + &quot;.&quot; + lastVersion);</line>
+<line sev="1"/>
+<line sev="1"><diag id="651"/>                    configText.setText(config == null ? &quot;&quot; : config);</line>
+<line sev="1"><diag id="652"/>                    configClasspathText.setText(configClasspath == null ? &quot;&quot; : configClasspath);</line>
+<line sev="1"/>
+<line sev="1"><diag id="653"/>                    prefix = lastTool + &quot; &quot;;</line>
+<line sev="1">                }</line>
+<line sev="1"/>
+<line sev="1"><diag id="654"/>                configLabel.setText(prefix + &quot;config:&quot;);</line>
+<line sev="1"><diag id="655"/>                configClasspathLabel.setText(prefix + &quot;config classpath:&quot;);</line>
+<line sev="1">                QaConfigFrame.this.pack();</line>
+<line sev="1">            }</line>
+<line sev="1">        };</line>
+<line sev="1"/>
+<line sev="1">        toolCombo.addItemListener(toolComboListener);</line>
+<line sev="1"/>
+<line sev="1">        ItemListener versionComboListener = new ItemListener()</line>
+<line sev="1">        {</line>
+<line sev="1">            @Override</line>
+<line sev="1">            public void itemStateChanged(final ItemEvent event)</line>
+<line sev="1">            {</line>
+<line sev="1"><diag id="656"/><diag id="657"/><diag id="658"/><diag id="659"/>                toolConfig.put(lastTool + &quot;.&quot; + lastVersion, configText.getText());</line>
+<line sev="1"><diag id="660"/><diag id="661"/><diag id="662"/><diag id="663"/>                toolConfigClasspath.put(lastTool + &quot;.&quot; + lastVersion, configClasspathText.getText());</line>
+<line sev="1"/>
+<line sev="1">                JComboBox&lt;String&gt; combo = (JComboBox&lt;String&gt;) event.getSource();</line>
+<line sev="1"/>
+<line sev="1">                if (combo.getSelectedIndex() &gt;= 0)</line>
+<line sev="1">                {</line>
+<line sev="1"><diag id="664"/>                    lastVersion = combo.getItemAt(combo.getSelectedIndex());</line>
+<line sev="1"/>
+<line sev="1"><diag id="665"/><diag id="666"/><diag id="667"/>                    String config = toolConfig.get(lastTool + &quot;.&quot; + lastVersion);</line>
+<line sev="1"><diag id="668"/><diag id="669"/><diag id="670"/>                    String configClasspath = toolConfigClasspath.get(lastTool + &quot;.&quot; + lastVersion);</line>
+<line sev="1"/>
+<line sev="1"><diag id="671"/>                    configText.setText(config == null ? &quot;&quot; : config);</line>
+<line sev="1"><diag id="672"/>                    configClasspathText.setText(configClasspath == null ? &quot;&quot; : configClasspath);</line>
+<line sev="1">                }</line>
+<line sev="1"/>
+<line sev="1">                QaConfigFrame.this.pack();</line>
+<line sev="1">            }</line>
+<line sev="1">        };</line>
+<line sev="1"/>
+<line sev="1">        versionCombo.addItemListener(versionComboListener);</line>
+<line sev="1">        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();</line>
+<line sev="1"/>
+<line sev="1">        TableModel model = new QaPropertyTableModel(processor.getConfig());</line>
+<line sev="1">        table.setModel(model);</line>
+<line sev="1">        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);</line>
+<line sev="1">        JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,</line>
+<line sev="1">                                                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);</line>
+<line sev="1">        scrollPane.setPreferredSize(new Dimension(((int) screenSize.getWidth()) / 2, ONE_HUNDRED));</line>
+<line sev="1"/>
+<line sev="1">        Action okAction = new AbstractAction()</line>
+<line sev="1">        {</line>
+<line sev="1">            @Override</line>
+<line sev="1">            public void actionPerformed(final ActionEvent event)</line>
+<line sev="1">            {</line>
+<line sev="1"><diag id="673"/><diag id="674"/>                table.editingStopped(new ChangeEvent(table));</line>
+<line sev="1"><diag id="675"/>                save();</line>
+<line sev="1">                QaConfigFrame.this.setVisible(false);</line>
+<line sev="1">            }</line>
+<line sev="1">        };</line>
+<line sev="1">        okButton.setAction(okAction);</line>
+<line sev="1">        okButton.setText(&quot;OK&quot;);</line>
+<line sev="1"/>
+<line sev="1">        Action cancelAction = new AbstractAction()</line>
+<line sev="1">        {</line>
+<line sev="1">            @Override</line>
+<line sev="1">            public void actionPerformed(final ActionEvent event)</line>
+<line sev="1">            {</line>
+<line sev="1"><diag id="676"/>                reset();</line>
+<line sev="1">                QaConfigFrame.this.setVisible(false);</line>
+<line sev="1">            }</line>
+<line sev="1">        };</line>
+<line sev="1"/>
+<line sev="1">        cancelButton.setAction(cancelAction);</line>
+<line sev="1">        cancelButton.setText(&quot;Cancel&quot;);</line>
+<line sev="1"/>
+<line sev="1">        // ************************************************************</line>
+<line sev="1">        // Layout components within the GridBagLayout</line>
+<line sev="1">        // ************************************************************</line>
+<line sev="1"/>
+<line sev="1">        int gridy = 0;</line>
+<line sev="1"/>
+<line sev="1">        add(new JLabel(&quot;Tool: &quot;), 0, gridy, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</line>
+<line sev="1">        add(toolCombo, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</line>
+<line sev="1">        add(new JLabel(&quot;Version: &quot;), 0, gridy, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</line>
+<line sev="1">        add(versionCombo, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</line>
+<line sev="1">        add(configLabel, 0, gridy, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</line>
+<line sev="1">        add(configText, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</line>
+<line sev="1">        add(configClasspathLabel, 0, gridy, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</line>
+<line sev="1">        add(configClasspathText, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</line>
+<line sev="1"/>
+<line sev="1">        add(new JLabel(&quot;Sanity4J Configuration: &quot;), 0, gridy++, 2, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</line>
+<line sev="1"/>
+<line sev="1">        for (int i = 0; i &lt; table.getColumnCount(); i++)</line>
+<line sev="1">        {</line>
+<line sev="1">            table.getColumnModel().getColumn(i).setPreferredWidth(((int) screenSize.getWidth()) / SIX);</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        add(scrollPane, 0, gridy++, 2, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH);</line>
+<line sev="1"/>
+<line sev="1">        add(okButton, 0, gridy, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</line>
+<line sev="1">        add(cancelButton, 1, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE);</line>
+<line sev="1">    }</line>
+<line sev="1"/>
+<line sev="1">    // ************************************************************</line>
+<line sev="1">    // Layout components within the GridBagLayout</line>
+<line sev="1">    // ************************************************************</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * @param processor the processor.</line>
+<line sev="1">     */</line>
+<line sev="1">    QaConfigFrame(final QAProcessor processor)</line>
+<line sev="1">    {</line>
+<line sev="1">        this.processor = processor;</line>
+<line sev="1"/>
+<line sev="1">        JPanel contentPane = new JPanel();</line>
+<line sev="1">        contentPane.setBorder(new EmptyBorder(INSET, INSET, INSET, INSET));</line>
+<line sev="1">        contentPane.setLayout(new GridBagLayout());</line>
+<line sev="1"/>
+<line sev="1">        setContentPane(contentPane);</line>
+<line sev="1">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</line>
+<line sev="1"/>
+<line sev="1">        addWindowListener(new WindowAdapter()</line>
+<line sev="1">        {</line>
+<line sev="1">            @Override</line>
+<line sev="1">            public void windowClosing(final WindowEvent event)</line>
+<line sev="1">            {</line>
+<line sev="1"><diag id="677"/>                reset();</line>
+<line sev="1">            }</line>
+<line sev="1">        });</line>
+<line sev="1"/>
+<line sev="1">        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();</line>
+<line sev="1"/>
+<line sev="1">        layoutInterface();</line>
+<line sev="1">        reset();</line>
+<line sev="1">        pack();</line>
+<line sev="1">        setLocation((screenSize.width - getWidth()) / 2, (screenSize.height - getHeight()) / 2);</line>
+<line sev="1">    }</line>
+<line sev="1">}</line>
+</source>
+<diags first="false">
+<diag id="589" sev="0" tool="PMD" rule="ExcessiveImports">
+A high number of imports can indicate a high degree of coupling within an object.
+</diag>
+<diag id="590" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The class 'QaConfigFrame' has a Cyclomatic Complexity of 5 (Highest = 12).
+</diag>
+<diag id="591" sev="0" tool="PMD" rule="TooManyMethods">
+This class has too many methods, consider refactoring it.
+</diag>
+<diag id="593" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
+Overridable method 'reset' called during object construction
+</diag>
+<diag id="594" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
+Avoid using Literals in Conditional Statements
+</diag>
+<diag id="595" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="596" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="597" sev="1" tool="PMD" rule="UselessParentheses">
+Useless parentheses.
+</diag>
+<diag id="598" sev="1" tool="PMD" rule="UselessParentheses">
+Useless parentheses.
+</diag>
+<diag id="599" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="600" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="602" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="604" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="606" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="608" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="610" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="612" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="614" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="616" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="618" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="620" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="622" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="624" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="626" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="628" sev="0" tool="PMD" rule="ExcessiveMethodLength">
+Avoid really long methods.
+</diag>
+<diag id="629" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The method 'layoutInterface' has a Cyclomatic Complexity of 12.
+</diag>
+<diag id="630" sev="0" tool="PMD" rule="NPathComplexity">
+The method layoutInterface() has an NPath complexity of 1352
+</diag>
+<diag id="631" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="632" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="633" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="634" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="635" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="636" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="637" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="638" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="639" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="640" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="641" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="642" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="643" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="644" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="645" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="646" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="647" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="648" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="649" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="650" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="651" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="652" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="653" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="654" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="655" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="656" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="657" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="658" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="659" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="660" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="661" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="662" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="663" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="664" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="665" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="666" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="667" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="668" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="669" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="670" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="671" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="672" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="673" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="674" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="675" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="676" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+<diag id="677" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+Avoid autogenerated methods to access private fields and methods of inner / outer classes
+</diag>
+</diags>
+</classDetails>

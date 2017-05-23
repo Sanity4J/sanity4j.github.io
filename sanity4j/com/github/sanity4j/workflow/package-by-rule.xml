@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/package-by-rule.xsl"?>
+<packageByRule packageName="com.github.sanity4j.workflow" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<rule name="AccessorMethodGeneration" tool="PMD" severity="0">
+<class name="com.github.sanity4j.workflow.QAProcessor">
+<diag id="822"/>
+<diag id="823"/>
+</class>
+</rule>
+<rule name="AssignmentInOperand" tool="PMD" severity="2">
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="812"/>
+</class>
+</rule>
+<rule name="AvoidCatchingGenericException" tool="PMD" severity="3">
+<class name="com.github.sanity4j.workflow.tool.JaCoCoResultReader">
+<diag id="869"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.PmdResultReader">
+<diag id="879"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.ToolRunnerGroup">
+<diag id="886"/>
+<diag id="887"/>
+</class>
+</rule>
+<rule name="AvoidDeeplyNestedIfStmts" tool="PMD" severity="0">
+<class name="com.github.sanity4j.workflow.tool.FindBugsResultReader">
+<diag id="849"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.JaCoCoResultReader">
+<diag id="864"/>
+</class>
+</rule>
+<rule name="AvoidInstantiatingObjectsInLoops" tool="PMD" severity="0">
+<class name="com.github.sanity4j.workflow.AbstractFileCollector">
+<diag id="793"/>
+<diag id="794"/>
+<diag id="795"/>
+<diag id="796"/>
+</class>
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="816"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.CoberturaResultReader">
+<diag id="843"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.JaCoCoResultReader">
+<diag id="862"/>
+<diag id="863"/>
+<diag id="865"/>
+<diag id="866"/>
+<diag id="867"/>
+<diag id="868"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.ToolRunnerGroup">
+<diag id="884"/>
+<diag id="885"/>
+</class>
+</rule>
+<rule name="AvoidLiteralsInIfCondition" tool="PMD" severity="1">
+<class name="com.github.sanity4j.workflow.JavaVersionCheck">
+<diag id="800"/>
+</class>
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="810"/>
+<diag id="811"/>
+</class>
+</rule>
+<rule name="BooleanGetMethodName" tool="PMD" severity="1">
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="813"/>
+</class>
+</rule>
+<rule name="ConfusingTernary" tool="PMD" severity="1">
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="815"/>
+<diag id="817"/>
+<diag id="818"/>
+<diag id="819"/>
+<diag id="820"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.AbstractToolRunner">
+<diag id="833"/>
+</class>
+</rule>
+<rule name="CyclomaticComplexity" tool="PMD" severity="1">
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="803"/>
+<diag id="814"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.FindBugsResultReader">
+<diag id="844"/>
+<diag id="848"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.JaCoCoResultReader">
+<diag id="854"/>
+<diag id="860"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.ToolRunnerGroup">
+<diag id="880"/>
+<diag id="883"/>
+</class>
+</rule>
+<rule name="DMI_HARDCODED_ABSOLUTE_FILENAME" tool="Findbugs" severity="3">
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="317"/>
+<diag id="318"/>
+</class>
+</rule>
+<rule name="DM_DEFAULT_ENCODING" tool="Findbugs" severity="3">
+<class name="com.github.sanity4j.workflow.JavaVersionCheck">
+<diag id="316"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.CheckStyleRunner">
+<diag id="319"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.CoberturaMergeRunner">
+<diag id="320"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.CoberturaReportRunner">
+<diag id="321"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.FindBugsRunner">
+<diag id="322"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.Pmd4Runner">
+<diag id="324"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.Pmd5Runner">
+<diag id="325"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.PmdCpd4Runner">
+<diag id="326"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.PmdCpd5Runner">
+<diag id="327"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.PmdResultReader">
+<diag id="328"/>
+<diag id="329"/>
+</class>
+</rule>
+<rule name="DoNotCopyAndPasteCode" tool="PMD-CPD" severity="1">
+<class name="com.github.sanity4j.workflow.tool.CoberturaMergeRunner">
+<diag id="900"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.CoberturaReportRunner">
+<diag id="898"/>
+<diag id="901"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.FindBugsRunner">
+<diag id="899"/>
+</class>
+</rule>
+<rule name="EmptyCatchBlock" tool="PMD" severity="2">
+<class name="com.github.sanity4j.workflow.tool.PmdResultReader">
+<diag id="876"/>
+</class>
+</rule>
+<rule name="ExcessivePublicCount" tool="PMD" severity="0">
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="802"/>
+</class>
+</rule>
+<rule name="GodClass" tool="PMD" severity="2">
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="801"/>
+</class>
+</rule>
+<rule name="HiddenFieldCheck" tool="Checkstyle" severity="1">
+<class name="com.github.sanity4j.workflow.AbstractFileCollector">
+<diag id="277"/>
+<diag id="278"/>
+</class>
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="279"/>
+<diag id="280"/>
+<diag id="281"/>
+</class>
+<class name="com.github.sanity4j.workflow.QAProcessor">
+<diag id="282"/>
+</class>
+</rule>
+<rule name="InsufficientStringBufferDeclaration" tool="PMD" severity="1">
+<class name="com.github.sanity4j.workflow.tool.FindBugsRunner">
+<diag id="852"/>
+</class>
+</rule>
+<rule name="JavadocPackageCheck" tool="Checkstyle" severity="1">
+<class name="com.github.sanity4j.workflow.AbstractFileCollector">
+<diag id="276"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.AbstractToolRunner">
+<diag id="283"/>
+</class>
+</rule>
+<rule name="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" tool="Findbugs" severity="0">
+<class name="com.github.sanity4j.workflow.AbstractFileCollector">
+<diag id="315"/>
+</class>
+</rule>
+<rule name="NPathComplexity" tool="PMD" severity="0">
+<class name="com.github.sanity4j.workflow.tool.JaCoCoResultReader">
+<diag id="861"/>
+</class>
+</rule>
+<rule name="PrematureDeclaration" tool="PMD" severity="1">
+<class name="com.github.sanity4j.workflow.ReportProducer">
+<diag id="826"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.AbstractToolRunner">
+<diag id="834"/>
+<diag id="835"/>
+</class>
+<class name="com.github.sanity4j.workflow.tool.PmdResultReader">
+<diag id="877"/>
+<diag id="878"/>
+</class>
+</rule>
+<rule name="SingularField" tool="PMD" severity="1">
+<class name="com.github.sanity4j.workflow.tool.JaCoCoResultReader">
+<diag id="859"/>
+</class>
+</rule>
+<rule name="TooManyFields" tool="PMD" severity="0">
+<class name="com.github.sanity4j.workflow.QAConfig">
+<diag id="804"/>
+</class>
+</rule>
+<rule name="URF_UNREAD_FIELD" tool="Findbugs" severity="2">
+<class name="com.github.sanity4j.workflow.tool.JaCoCoResultReader">
+<diag id="323"/>
+</class>
+</rule>
+<rule name="UnusedFormalParameter" tool="PMD" severity="1">
+<class name="com.github.sanity4j.workflow.WorkUnitGroup">
+<diag id="830"/>
+</class>
+</rule>
+<rule name="UnusedPrivateField" tool="PMD" severity="2">
+<class name="com.github.sanity4j.workflow.tool.JaCoCoResultReader">
+<diag id="857"/>
+</class>
+</rule>
+<rule name="UselessParentheses" tool="PMD" severity="1">
+<class name="com.github.sanity4j.workflow.tool.FindBugsResultReader">
+<diag id="850"/>
+</class>
+</rule>
+</packageByRule>

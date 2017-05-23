@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FileUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.util</a> &gt; <span class="el_source">FileUtil.java</span></div><h1>FileUtil.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.util; 
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+
+/**
+ * FileUtil - File related utility methods.
+ * 
+ * @author Yiannis Paschalidis 
+ * @since Sanity4J 1.0
+ */
+public final class FileUtil
+{
+    /** The buffer size to use for copy operations. */
+    private static final int BUFFER_SIZE = 4096;
+    
+    /** No instance methods here. */
+    private FileUtil()
+<span class="nc" id="L23">    {</span>
+<span class="nc" id="L24">    }</span>
+    
+    /**
+     * Creates a directory if it doesn't exist.
+     * @param path the directory path.
+     * 
+     * @return a File Object representing the directory.
+     */
+    public static File createDir(final String path)
+    {
+<span class="fc" id="L34">        File dir = new File(path);</span>
+        
+<span class="pc bpc" id="L36" title="2 of 4 branches missed.">        if (!dir.exists() &amp;&amp; !dir.mkdirs())</span>
+        {
+<span class="nc" id="L38">            throw new QAException(&quot;Failed to create directory: &quot; + path);</span>
+        }
+        
+<span class="fc" id="L41">        return dir;</span>
+    }    
+    
+    /** 
+     * Searches for jar files within the given directory.
+     * The full path of each jar will be added to the given list.
+     * 
+     * @param base the base directory
+     * @param jars the list of jars to add to
+     */
+    public static void findJars(final File base, final List&lt;String&gt; jars)
+    {
+        // Does this directory contain a subdir that contains class files?
+<span class="fc" id="L54">        File[] files = base.listFiles();</span>
+        
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        if (files != null)</span>
+        {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            for (int i = 0; i &lt; files.length; i++)</span>
+            {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">                if (files[i].isDirectory())</span>
+                {
+<span class="fc" id="L62">                    findJars(files[i], jars);</span>
+                }
+<span class="pc bpc" id="L64" title="1 of 4 branches missed.">                else if (files[i].isFile() &amp;&amp; files[i].getName().toLowerCase().endsWith(&quot;.jar&quot;))</span>
+                {
+<span class="fc" id="L66">                    jars.add(files[i].getPath());</span>
+                }
+            }           
+        }
+<span class="fc" id="L70">    }</span>
+    
+    /**
+     * Deletes a file/directory and all its contents.
+     * 
+     * @param file the file to delete.
+     * @throws IOException if the delete fails.
+     */
+    public static void delete(final File file) throws IOException
+    {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (file.isDirectory())</span>
+        {
+<span class="fc" id="L82">            File[] files = file.listFiles();</span>
+            
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            for (int i = 0; i &lt; files.length; i++)</span>
+            {
+<span class="fc" id="L86">                delete(files[i]);</span>
+            }
+        }
+        
+<span class="pc bpc" id="L90" title="2 of 4 branches missed.">        if (file.exists() &amp;&amp; !file.delete())</span>
+        {
+<span class="nc" id="L92">            throw new IOException(&quot;Failed to delete &quot; + file);</span>
+        }
+<span class="fc" id="L94">    }</span>
+
+    /**
+     * Copies a file.
+     * 
+     * @param source the source file
+     * @param dest the destination file
+     * @throws IOException if there is an error during the copy.
+     */
+    public static void copy(final File source, final File dest) throws IOException
+    {
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (!source.canRead())</span>
+        {
+<span class="nc" id="L107">            throw new IOException(&quot;Unable to read from file: &quot; + source.getPath());</span>
+        }
+        
+<span class="nc bnc" id="L110" title="All 4 branches missed.">        if (dest.exists() &amp;&amp; !dest.canWrite())</span>
+        {
+<span class="nc" id="L112">            throw new IOException(&quot;Unable to read to file: &quot; + dest.getPath());</span>
+        }
+        
+<span class="nc bnc" id="L115" title="All 4 branches missed.">        if (!dest.getParentFile().exists() &amp;&amp; !dest.getParentFile().mkdirs())</span>
+        {
+<span class="nc" id="L117">            throw new IOException(&quot;Unable to create parent directory&quot; + dest.getParentFile().getPath());</span>
+        }
+        
+<span class="nc" id="L120">        FileInputStream inStream = null;</span>
+<span class="nc" id="L121">        FileOutputStream outStream = null;</span>
+        
+        try
+        {
+<span class="nc" id="L125">            inStream = new FileInputStream(source);</span>
+<span class="nc" id="L126">            outStream = new FileOutputStream(dest);</span>
+            
+<span class="nc" id="L128">            final byte[] buf = new byte[BUFFER_SIZE];</span>
+<span class="nc" id="L129">            int bytesRead = inStream.read(buf);</span>
+            
+<span class="nc bnc" id="L131" title="All 2 branches missed.">            while (bytesRead != -1)</span>
+            {
+<span class="nc" id="L133">                outStream.write(buf, 0, bytesRead);</span>
+<span class="nc" id="L134">                bytesRead = inStream.read(buf);</span>
+            }
+            
+<span class="nc" id="L137">            outStream.flush();</span>
+        }
+        finally
+        {
+<span class="nc" id="L141">            QaUtil.safeClose(inStream);</span>
+<span class="nc" id="L142">            QaUtil.safeClose(outStream);</span>
+<span class="nc" id="L143">        }        </span>
+<span class="nc" id="L144">    }</span>
+    
+    /**
+     * Reads the entire binary contents of the given file.
+     * 
+     * @param file the file to read from
+     * @return the binary content of the given file.
+     * @throws IOException if there is an error reading from the file.
+     */
+    public static byte[] read(final File file) throws IOException
+    {
+<span class="nc" id="L155">        byte[] data = new byte[(int) file.length()];</span>
+        
+<span class="nc" id="L157">        FileInputStream stream = null;</span>
+        
+        try
+        {
+<span class="nc" id="L161">            stream = new FileInputStream(file);</span>
+<span class="nc" id="L162">            int pos = 0;</span>
+<span class="nc" id="L163">            int bytesRead = stream.read(data);</span>
+            
+<span class="nc bnc" id="L165" title="All 4 branches missed.">            while (bytesRead != -1 &amp;&amp; pos &lt; data.length)</span>
+            {
+<span class="nc" id="L167">                pos += bytesRead;</span>
+<span class="nc" id="L168">                bytesRead = stream.read(data, pos, data.length - pos);</span>
+            }
+        }
+        finally
+        {
+<span class="nc" id="L173">            QaUtil.safeClose(stream);</span>
+<span class="nc" id="L174">        }</span>
+        
+<span class="nc" id="L176">        return data;</span>
+    }
+
+    /**
+     * Writes a string to a file in UTF-8. Parent directories will be created.
+     * 
+     * @param string the String to write
+     * @param file the File to write to
+     * 
+     * @throws IOException if there is an error writing to the file
+     */
+    public static void writeToFile(final String string, final File file) throws IOException
+    {
+<span class="pc bpc" id="L189" title="3 of 4 branches missed.">        if (!file.getParentFile().exists() &amp;&amp; !file.getParentFile().mkdirs())</span>
+        {
+<span class="nc" id="L191">            throw new IOException(&quot;Failed to create parent directory for &quot; + file);</span>
+        }
+        
+<span class="fc" id="L194">        FileOutputStream fos = new FileOutputStream(file);</span>
+<span class="fc" id="L195">        fos.write(string.getBytes(&quot;UTF-8&quot;));</span>
+<span class="fc" id="L196">        fos.close();</span>
+<span class="fc" id="L197">    }</span>
+    
+    /**
+     * Flattens a list of jars into a classpth.
+     * If an exitsing classpath is provided, then the new list is 
+     * appended to the end of the old classpath.
+     * 
+     * @param jarList the list of jars to flatten.
+     * @param classpath an existing classpath to append to, can be null.
+     * @return the flattened classpath.
+     */
+    public static String flattenClasspath(final List&lt;String&gt; jarList, final String classpath)
+    {
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (jarList.isEmpty())</span>
+        {
+<span class="nc" id="L212">        	return &quot;&quot;;</span>
+        }
+        else
+        {
+<span class="nc" id="L216">	        StringBuffer buf = new StringBuffer(); </span>
+
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        	if (classpath != null)</span>
+        	{
+<span class="nc" id="L220">	        	buf.append(classpath);</span>
+        	}
+	        
+<span class="nc" id="L223">        	String separator = System.getProperty(&quot;path.separator&quot;);</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        	for (String toolJar : jarList)</span>
+        	{
+<span class="nc" id="L226">        		buf.append(separator).append(toolJar);</span>
+<span class="nc" id="L227">        	}</span>
+        	
+<span class="nc bnc" id="L229" title="All 2 branches missed.">        	if (classpath == null)</span>
+        	{
+<span class="nc" id="L231">        		buf.delete(0, separator.length());</span>
+        	}
+        	
+<span class="nc" id="L234">        	return buf.toString();</span>
+        }
+    }
+    
+    /**
+     * Evaluates a string for emptiness.
+     * 
+     * @param str the string to evaluate.
+     * @return true if the string is non-null and has a trimmed length greater than zero.
+     */
+    public static boolean hasValue(final String str)
+    {
+<span class="pc bpc" id="L246" title="1 of 4 branches missed.">    	return str == null ? false : str.trim().length() &gt; 0;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

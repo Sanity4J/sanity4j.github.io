@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PackageCoverage.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.model.coverage</a> &gt; <span class="el_source">PackageCoverage.java</span></div><h1>PackageCoverage.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.model.coverage; 
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+/** 
+ * PackageCoverage - Coverage information for a package.
+ * 
+ * @author Yiannis Paschalidis 
+ * @since Sanity4J 1.0
+ */
+public class PackageCoverage extends AbstractCoverage
+{
+    /** The package name. */
+    private final String packageName;
+    
+    /** ClassCoverages in this package, keyed by name. */
+<span class="fc" id="L20">    private final Map&lt;String, ClassCoverage&gt; classesByName = new HashMap&lt;String, ClassCoverage&gt;();</span>
+    
+    /**
+     * Creates a PackageCoverage.
+     * @param packageName the package name.
+     */
+    public PackageCoverage(final String packageName)
+<span class="fc" id="L27">    {</span>
+<span class="fc" id="L28">        this.packageName = packageName;</span>
+<span class="fc" id="L29">    }</span>
+
+    /**
+     * @return the package name.
+     */
+    public String getPackageName()
+    {
+<span class="fc" id="L36">        return packageName;</span>
+    }
+    
+    /**
+     * Retrieves the coverage information for the given class.
+     *  
+     * @param className the fully qualified class name.
+     * @return the coverage for the given class, or null if there isn't any.
+     */
+    public ClassCoverage getClassCoverage(final String className)
+    {
+<span class="fc" id="L47">        return classesByName.get(className);</span>
+    }
+    
+    /**
+     * Adds class coverage.
+     * @param coverage the class coverage to add.
+     */
+    public void addClass(final ClassCoverage coverage)
+    {
+<span class="fc" id="L56">        classesByName.put(coverage.getClassName(), coverage);</span>
+<span class="fc" id="L57">    }    </span>
+
+    /**
+     * @return the number of classes in this package.
+     */
+    public int getClassCount()
+    {
+<span class="fc" id="L64">        return classesByName.size();</span>
+    }
+    
+    /**
+     * @return the number of executable lines in this package.
+     */
+    @Override
+    public int getLineCount()
+    {
+<span class="fc" id="L73">        int count = 0;</span>
+        
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        for (ClassCoverage coverage : classesByName.values())</span>
+        {
+<span class="fc" id="L77">            count += coverage.getLineCount();</span>
+<span class="fc" id="L78">        }</span>
+        
+<span class="fc" id="L80">        return count;</span>
+    }
+    
+    /**
+     * @return the number of covered lines in this package.
+     */
+    @Override
+    public int getCoveredLineCount()
+    {
+<span class="fc" id="L89">        int count = 0;</span>
+        
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        for (ClassCoverage coverage : classesByName.values())</span>
+        {
+<span class="fc" id="L93">            count += coverage.getCoveredLineCount();</span>
+<span class="fc" id="L94">        }</span>
+        
+<span class="fc" id="L96">        return count;</span>
+    }
+    
+    /**
+     * @return the number of branches in this package.
+     */
+    @Override
+    public int getBranchCount()
+    {
+<span class="fc" id="L105">        int count = 0;</span>
+        
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        for (ClassCoverage coverage : classesByName.values())</span>
+        {
+<span class="fc" id="L109">            count += coverage.getBranchCount();</span>
+<span class="fc" id="L110">        }</span>
+        
+<span class="fc" id="L112">        return count;</span>
+    }
+    
+    /**
+     * @return the number of covered branches in this package.
+     */
+    @Override
+    public int getCoveredBranchCount()
+    {
+<span class="fc" id="L121">        int count = 0;</span>
+        
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        for (ClassCoverage coverage : classesByName.values())</span>
+        {
+<span class="fc" id="L125">            count += coverage.getCoveredBranchCount();</span>
+<span class="fc" id="L126">        }</span>
+        
+<span class="fc" id="L128">        return count;</span>
+    }
+    
+    /**
+     * @return the covered classes within this package.
+     */
+    public Set&lt;String&gt; getClassNames()
+    {
+<span class="nc" id="L136">       return Collections.unmodifiableSet(classesByName.keySet());</span>
+    }    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

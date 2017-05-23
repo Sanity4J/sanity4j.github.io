@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Coordinate.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.maven.plugin</a> &gt; <span class="el_source">Coordinate.java</span></div><h1>Coordinate.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.maven.plugin;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * A Maven Coordinate.
+ * 
+ * A Coordinate can be constructed by parsing a String of the form:
+ * &lt;pre&gt;&lt;code&gt;
+ * [groupId:]artifactId[:version][:packaging][:classifier][:scope]
+ * &lt;/code&gt;&lt;/pre&gt;
+ * @author Darian Bridge.
+ * @since Sanity4J 1.1.1
+ */
+public class Coordinate
+{
+    /** The GroupId. */
+    private String groupId;
+    /** The Artifact Id. */
+    private String artifactId;
+    /** The Version. */
+    private String version;
+    /** The Packaging. */
+    private String packaging;
+    /** The Classifier. */
+    private String classifier;
+    /** The Scope. */
+    private String scope;
+
+    /**
+     * Default Constructor.
+     */
+    public Coordinate()
+<span class="nc" id="L35">    {</span>
+        // Default Constructor.
+<span class="nc" id="L37">    }</span>
+    
+    /**
+     * Construct a Coordinate by parsing the specified line and/or file.
+     * 
+     * @param line The line to parse.
+     */
+    public Coordinate(final String line)
+<span class="nc" id="L45">    {</span>
+<span class="nc" id="L46">        parse(line);</span>
+<span class="nc" id="L47">    }</span>
+
+    /**
+     * Copy Constructor.
+     * 
+     * @param coordinate The Coordinate to copy.
+     */
+    public Coordinate(final Coordinate coordinate)
+<span class="nc" id="L55">    {</span>
+<span class="nc" id="L56">        setGroupId(coordinate.getGroupId());</span>
+<span class="nc" id="L57">        setArtifactId(coordinate.getArtifactId());</span>
+<span class="nc" id="L58">        setVersion(coordinate.getVersion());</span>
+<span class="nc" id="L59">        setPackaging(coordinate.getPackaging());</span>
+<span class="nc" id="L60">        setClassifier(coordinate.getClassifier());</span>
+<span class="nc" id="L61">        setScope(coordinate.getScope());</span>
+<span class="nc" id="L62">    }</span>
+    
+    /**
+     * @return The GroupId. 
+     */
+    public String getGroupId() 
+    {
+<span class="nc" id="L69">        return groupId;</span>
+    }
+
+    /**
+     * @param groupId The GroupId. 
+     */
+    public void setGroupId(final String groupId) 
+    {
+<span class="nc" id="L77">        this.groupId = groupId;</span>
+<span class="nc" id="L78">    }</span>
+
+    /**
+     * @return The Artifact Id. 
+     */
+    public String getArtifactId() 
+    {
+<span class="nc" id="L85">        return artifactId;</span>
+    }
+
+    /**
+     * @param artifactId The Artifact Id. 
+     */
+    public void setArtifactId(final String artifactId) 
+    {
+<span class="nc" id="L93">        this.artifactId = artifactId;</span>
+<span class="nc" id="L94">    }</span>
+
+    /**
+     * @return The Version. 
+     */
+    public String getVersion() 
+    {
+<span class="nc" id="L101">        return version;</span>
+    }
+
+    /**
+     * @param version The Version. 
+     */
+    public void setVersion(final String version) 
+    {
+<span class="nc" id="L109">        this.version = version;</span>
+<span class="nc" id="L110">    }</span>
+
+    /**
+     * @return The Packaging.
+     */
+    public String getPackaging() 
+    {
+<span class="nc" id="L117">        return packaging;</span>
+    }
+
+    /**
+     * @param packaging The Packaging.
+     */
+    public void setPackaging(final String packaging) 
+    {
+<span class="nc" id="L125">        this.packaging = packaging;</span>
+<span class="nc" id="L126">    }</span>
+
+    /**
+     * @return The Classifier.
+     */
+    public String getClassifier() 
+    {
+<span class="nc" id="L133">        return classifier;</span>
+    }
+
+    /**
+     * @param classifier The Classifier.
+     */
+    public void setClassifier(final String classifier) 
+    {
+<span class="nc" id="L141">        this.classifier = classifier;</span>
+<span class="nc" id="L142">    }</span>
+
+    /**
+     * @param scope The Scope.
+     */
+    public void setScope(final String scope) 
+    {
+<span class="nc" id="L149">        this.scope = scope;</span>
+<span class="nc" id="L150">    }</span>
+
+    /**
+     * @return The Scope.
+     */
+    public String getScope() 
+    {
+<span class="nc" id="L157">        return scope;</span>
+    }
+    
+    /**
+     * The Pattern for parsing the Maven Coordinate.
+     */
+    private static final String COORDINATE_PATTERN = &quot;(?:([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?&quot;;
+    
+    /**
+     * Parse a line interpreting it as a Maven artifact.
+     * 
+     * @param line The line to parse.
+     */
+    protected void parse(final String line) 
+    {
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (line != null)</span>
+        {
+<span class="nc" id="L174">            Pattern pattern = Pattern.compile(COORDINATE_PATTERN);</span>
+<span class="nc" id="L175">            Matcher matcher = pattern.matcher(line.trim());</span>
+            
+<span class="nc bnc" id="L177" title="All 2 branches missed.">            if (matcher.matches()) </span>
+            {
+<span class="nc" id="L179">                String position1 = matcher.group(1);</span>
+<span class="nc" id="L180">                String position2 = matcher.group(2);</span>
+<span class="nc" id="L181">                String position3 = matcher.group(3);</span>
+<span class="nc" id="L182">                String position4 = matcher.group(4);</span>
+<span class="nc" id="L183">                String position5 = matcher.group(5);</span>
+<span class="nc" id="L184">                String position6 = matcher.group(6);</span>
+                
+<span class="nc" id="L186">                int colons = occurrences(line, ':');</span>
+    
+<span class="nc bnc" id="L188" title="All 7 branches missed.">                switch (colons) </span>
+                {
+                    case 0:
+<span class="nc" id="L191">                        setArtifactId(position1);</span>
+<span class="nc" id="L192">                        break;</span>
+                    case 1:
+<span class="nc" id="L194">                        setGroupId(position1);</span>
+<span class="nc" id="L195">                        setArtifactId(position2);</span>
+<span class="nc" id="L196">                        break;</span>
+                    case 2:
+<span class="nc" id="L198">                        setGroupId(position1);</span>
+<span class="nc" id="L199">                        setArtifactId(position2);</span>
+<span class="nc" id="L200">                        setVersion(position3);</span>
+<span class="nc" id="L201">                        break;</span>
+                    case 3:
+<span class="nc" id="L203">                        setGroupId(position1);</span>
+<span class="nc" id="L204">                        setArtifactId(position2);</span>
+<span class="nc" id="L205">                        setVersion(position3);</span>
+<span class="nc" id="L206">                        setPackaging(position4);</span>
+<span class="nc" id="L207">                        break;</span>
+                    case 4:
+<span class="nc" id="L209">                        setGroupId(position1);</span>
+<span class="nc" id="L210">                        setArtifactId(position2);</span>
+<span class="nc" id="L211">                        setVersion(position3);</span>
+<span class="nc" id="L212">                        setPackaging(position4);</span>
+<span class="nc" id="L213">                        setClassifier(position5);</span>
+<span class="nc" id="L214">                        break;</span>
+                    case 5:
+<span class="nc" id="L216">                        setGroupId(position1);</span>
+<span class="nc" id="L217">                        setArtifactId(position2);</span>
+<span class="nc" id="L218">                        setVersion(position3);</span>
+<span class="nc" id="L219">                        setPackaging(position4);</span>
+<span class="nc" id="L220">                        setClassifier(position5);</span>
+<span class="nc" id="L221">                        setScope(position6);</span>
+<span class="nc" id="L222">                        break;</span>
+                    default:
+                        break;
+                }
+            }
+        }
+<span class="nc" id="L228">    }</span>
+    
+    /**
+     * Count the number of occurrences of the specified item within the character sequence.
+     *  
+     * @param sequence The character sequence within to count. 
+     * @param item The item to count occurrences of.
+     * @return The count of the number of occurrences of the specified item within the character sequence.
+     */
+    private static int occurrences(final CharSequence sequence, final char item) 
+    {
+<span class="nc" id="L239">        int counter = 0;</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">        for (int i = 0; i &lt; sequence.length(); i++) </span>
+        {
+<span class="nc bnc" id="L242" title="All 2 branches missed.">            if (sequence.charAt(i) == item) </span>
+            {
+<span class="nc" id="L244">                counter++;</span>
+            }
+        }
+        
+<span class="nc" id="L248">        return counter;</span>
+    }
+
+    /**
+     * @return A String representing the Coordinate. 
+     */
+    @Override
+    public String toString()
+    {
+<span class="nc" id="L257">        return getArtifact();</span>
+    }
+    
+    /**
+     * @return A String representing the Maven Coordinate. 
+     */
+    public String getArtifact()
+    {
+<span class="nc" id="L265">        StringBuilder buf = new StringBuilder();</span>
+        
+<span class="nc" id="L267">        append(buf, null, groupId);</span>
+<span class="nc" id="L268">        append(buf, &quot;:&quot;, artifactId);</span>
+<span class="nc" id="L269">        append(buf, &quot;:&quot;, version);</span>
+<span class="nc" id="L270">        append(buf, &quot;:&quot;, packaging);</span>
+<span class="nc" id="L271">        append(buf, &quot;:&quot;, classifier);</span>
+<span class="nc" id="L272">        append(buf, &quot;:&quot;, scope);</span>
+        
+<span class="nc" id="L274">        return buf.toString();</span>
+    }
+    
+    /**
+     * Appends a delimiter and then an item to a StringBuilder.
+     * Does nothing if the item is null.
+     * 
+     * @param buf The StringBuilder to append to.
+     * @param delim A delimiter to append first (if not null).
+     * @param item The item to append.
+     */
+    private void append(final StringBuilder buf, final String delim, final String item)
+    {
+<span class="nc bnc" id="L287" title="All 2 branches missed.">        if (item != null) </span>
+        {
+<span class="nc bnc" id="L289" title="All 4 branches missed.">            if (buf.length() &gt; 0 &amp;&amp; delim != null)</span>
+            {
+<span class="nc" id="L291">                buf.append(delim);</span>
+            }
+            
+<span class="nc" id="L294">            buf.append(item);</span>
+        }
+<span class="nc" id="L296">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LibraryFileCollector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow</a> &gt; <span class="el_source">LibraryFileCollector.java</span></div><h1>LibraryFileCollector.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow; 
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.QAException;
+import com.github.sanity4j.util.QaLogger;
+
+
+/** 
+ * LibraryFileCollector collects library files from multiple directory 
+ * hierarchies and places them in a single directory hierarchy. This is 
+ * necessary, as some tools don't allow multiple library directories 
+ * to be specified.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public class LibraryFileCollector extends AbstractFileCollector
+{
+    /** The file extensions to include in the collection.  */
+<span class="nc" id="L26">    private static final Set&lt;String&gt; FILE_EXTS = new HashSet&lt;String&gt;(Arrays.asList(new String[]{&quot;class&quot;, &quot;jar&quot;}));</span>
+    
+    /**
+     * Creates a LibraryFileCollector.
+     * @param config the current QA run's configuration.
+     */
+    public LibraryFileCollector(final QAConfig config)
+    {
+<span class="nc" id="L34">        super(FILE_EXTS, config.getLibraryDirs(), config.getCombinedLibraryDir());</span>
+<span class="nc" id="L35">    }</span>
+    
+    /** {@inheritDoc} */
+    public String getDescription()
+    {
+<span class="nc" id="L40">        return &quot;Collecting library files&quot;;</span>
+    }
+    
+    /**
+     * Returns the item type being copied. 
+     * @return &quot;library&quot; 
+     */
+    @Override
+    protected String getItemType()
+    {
+<span class="nc" id="L50">        return &quot;library&quot;;</span>
+    }
+    
+    /**
+     * Returns the brief description of the item type being copied. 
+     * @return &quot;libraries&quot; 
+     */
+    @Override
+    protected String getItemDescription() 
+    {
+<span class="nc" id="L60">        return &quot;libraries&quot;;</span>
+    }
+
+    /**
+     * Copies a single file, placing it in the correct package.
+     * @param file the source file
+     * @param destDir the destination directory root.
+     */
+    protected void copyFile(final File file, final File destDir)
+    {
+        // Just copy jar archives to the top level
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (file.getName().endsWith(&quot;.jar&quot;))</span>
+        {
+<span class="nc" id="L73">            File dest = new File(destDir, file.getName());</span>
+            
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            if (dest.exists())</span>
+            {
+<span class="nc" id="L77">                String msg = &quot;Duplicate file, analysis may be innaccurate: &quot; + dest;</span>
+<span class="nc" id="L78">                QaLogger.getInstance().warn(msg); </span>
+<span class="nc" id="L79">            }</span>
+            else
+            {
+                try
+                {
+<span class="nc" id="L84">                    FileUtil.copy(file, dest);</span>
+                }
+<span class="nc" id="L86">                catch (IOException e)</span>
+                {
+<span class="nc" id="L88">                    throw new QAException(&quot;Failed to copy file&quot;, e);</span>
+<span class="nc" id="L89">                }           </span>
+            }
+<span class="nc" id="L91">        }</span>
+        else
+        {
+<span class="nc" id="L94">            super.copyFile(file, destDir);</span>
+        }
+<span class="nc" id="L96">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

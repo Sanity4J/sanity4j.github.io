@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
+<packageSummary packageName="com.github.sanity4j.ant.taskdef" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<issueSummary high="0" significant="0" moderate="0" low="1" info="0">
+<category name="All categories" high="0" significant="0" moderate="0" low="0" info="0"/>
+<tool name="Checkstyle" high="0" significant="0" moderate="0" low="1" info="0"/>
+</issueSummary>
+<qualitySummary>
+<package name="com.github.sanity4j.ant.taskdef" classes="1" lineCount="368" high="0" significant="0" moderate="0" low="1" info="0" quality="99"/>
+<class name="RunQA" high="0" significant="0" moderate="0" low="1" info="0" quality="99"/>
+</qualitySummary>
+<graphs>
+</graphs>
+</packageSummary>

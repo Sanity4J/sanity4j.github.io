@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QaConfigFrame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.ui</a> &gt; <span class="el_source">QaConfigFrame.java</span></div><h1>QaConfigFrame.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.ui;
+
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
+
+import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.workflow.QAConfig;
+import com.github.sanity4j.workflow.QAProcessor;
+
+/**
+ * QaConfigFrame is a Java Swing Frame used to modify the configuration properties used by the {@link QaApp} Swing
+ * Application.
+ * 
+ * @author Brian Kavanagh
+ * @since September 2011
+ */
+public class QaConfigFrame extends JFrame
+{
+    /** The column count. */
+    private static final int COLUMN_COUNT = 3;
+    /** The inset. */
+    private static final int INSET = 5;
+    /** Six. */
+    private static final int SIX = 6;
+    /** One hundred. */
+    private static final int ONE_HUNDRED = 100;
+
+    /**
+     * A {@link TableModel} which models three columns derived from a &lt;b&gt;Properties&lt;/b&gt; object.
+     * &lt;ol&gt;
+     * &lt;li&gt;&lt;b&gt;name&lt;/b&gt; - The name of the QaConfig property.&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;value&lt;/b&gt; - The value of the QaConfig property.&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;derivedValue&lt;/b&gt; - The value of the QaConfig property after a number string substitutions have been made.&lt;/li&gt;
+     * &lt;/ol&gt;
+     */
+    private static class QaPropertyTableModel extends AbstractTableModel
+    {
+        /** The values modelled by this object. */
+        private String[][] values;
+
+        /**
+         * Creates a &lt;b&gt;QaPropertyTableModel&lt;/b&gt; for the given &lt;b&gt;Properties&lt;/b&gt; object.
+         * 
+         * @param config The properties to be modelled.
+         */
+        public QaPropertyTableModel(final QAConfig config)
+<span class="nc" id="L77">        {</span>
+<span class="nc" id="L78">            reset(config);</span>
+<span class="nc" id="L79">        }</span>
+
+        /** {@inheritDoc} */
+        @Override
+        public boolean isCellEditable(final int rowIndex, final int columnIndex)
+        {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (columnIndex == 1)</span>
+            {
+<span class="nc" id="L87">                return true;</span>
+            }
+            else
+            {
+<span class="nc" id="L91">                return super.isCellEditable(rowIndex, columnIndex);</span>
+            }
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public String getColumnName(final int column)
+        {
+<span class="nc bnc" id="L99" title="All 4 branches missed.">            switch (column)</span>
+            {
+                case 0:
+<span class="nc" id="L102">                    return &quot;Property&quot;;</span>
+                case 1:
+<span class="nc" id="L104">                    return &quot;Value&quot;;</span>
+                case 2:
+<span class="nc" id="L106">                    return &quot;Derived Value&quot;;</span>
+                default:
+<span class="nc" id="L108">                    return &quot;&quot;;</span>
+            }
+        }
+
+        /** {@inheritDoc} */
+        @Override
+      public int getRowCount()
+        {
+<span class="nc" id="L116">            return values.length;</span>
+        }
+
+        /** {@inheritDoc} */
+        @Override
+      public int getColumnCount()
+        {
+<span class="nc" id="L123">            return COLUMN_COUNT;</span>
+        }
+
+        /** {@inheritDoc} */
+        @Override
+      public Object getValueAt(final int rowIndex, final int columnIndex)
+        {
+<span class="nc" id="L130">            return values[rowIndex][columnIndex];</span>
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void setValueAt(final Object aValue, final int rowIndex, final int columnIndex)
+        {
+<span class="nc bnc" id="L137" title="All 4 branches missed.">            if ((rowIndex &lt; values.length) &amp;&amp; (columnIndex &lt; COLUMN_COUNT))</span>
+            {
+<span class="nc bnc" id="L139" title="All 2 branches missed.">                if (aValue == null)</span>
+                {
+<span class="nc" id="L141">                    values[rowIndex][columnIndex] = null;</span>
+                }
+                else
+                {
+<span class="nc" id="L145">                    values[rowIndex][columnIndex] = aValue.toString();</span>
+                }
+            }
+<span class="nc" id="L148">        }</span>
+
+        /**
+         * This method saves the contents of the current model to a {@link QAConfig} object.
+         * 
+         * @param config The {@link QAconfig} object to which the contents of the current {@link QaPropertyTableModel}
+         *            are to be saved.
+         */
+        public void save(final QAConfig config)
+        {
+<span class="nc bnc" id="L158" title="All 2 branches missed.">            for (int i = 0; i &lt; values.length; i++)</span>
+            {
+<span class="nc" id="L160">                String key = values[i][0];</span>
+<span class="nc" id="L161">                String value = values[i][1];</span>
+
+<span class="nc" id="L163">                config.setToolProperty(key, value);</span>
+            }
+<span class="nc" id="L165">        }</span>
+
+        /**
+         * This method resets the contents of the current {@link QaPropertyTableModel} to current values within a
+         * {@link QAConfig} object.
+         * 
+         * @param config The {@link QAconfig} object to which the contents of the current {@link QaPropertyTableModel}
+         *            are to be saved.
+         */
+        public void reset(final QAConfig config)
+        {
+<span class="nc" id="L176">            Set&lt;String&gt; keys = new TreeSet&lt;String&gt;();</span>
+
+<span class="nc" id="L178">            Properties properties = config.getToolProperties();</span>
+
+<span class="nc bnc" id="L180" title="All 2 branches missed.">            for (Object o : properties.keySet())</span>
+            {
+<span class="nc" id="L182">                keys.add(o.toString());</span>
+<span class="nc" id="L183">            }</span>
+
+<span class="nc" id="L185">            this.values = new String[keys.size()][COLUMN_COUNT];</span>
+
+<span class="nc" id="L187">            int index = 0;</span>
+
+<span class="nc bnc" id="L189" title="All 2 branches missed.">            for (String key : keys)</span>
+            {
+<span class="nc" id="L191">                String defaultValue = properties.getProperty(key);</span>
+<span class="nc" id="L192">                String value = QaUtil.replaceTokens(defaultValue, config.asParameterMap(), config, null);</span>
+
+<span class="nc" id="L194">                this.values[index][0] = key;</span>
+<span class="nc" id="L195">                this.values[index][1] = defaultValue;</span>
+<span class="nc" id="L196">                this.values[index][2] = value;</span>
+<span class="nc" id="L197">                index++;</span>
+<span class="nc" id="L198">            }</span>
+<span class="nc" id="L199">        }</span>
+    }
+
+    // ****************************************************************
+    // MEMBER VARIABLES
+    // ****************************************************************
+
+    /** The processor that will be running the QA. */
+    private final QAProcessor processor;
+
+    /** The set of tools which can be configured. */
+<span class="nc" id="L210">    private final JComboBox&lt;String&gt; toolCombo = new JComboBox&lt;String&gt;();</span>
+
+    /** The last tool selected within the &quot;tools&quot; drop-down list. */
+    private String lastTool;
+
+    /** The versions of the currently selected tool. */
+<span class="nc" id="L216">    private final JComboBox&lt;String&gt; versionCombo = new JComboBox&lt;String&gt;();</span>
+
+    /** The last tool version selected within the &quot;versions&quot; drop-down list. */
+    private String lastVersion;
+
+    /** The label for the tool configuration. */
+<span class="nc" id="L222">    private final JLabel configLabel = new JLabel();</span>
+    
+    /** The label for the tool configuration. */
+<span class="nc" id="L225">    private final JLabel configClasspathLabel = new JLabel();</span>
+    
+    /** A text field used to enter the tool configuration. */
+<span class="nc" id="L228">    private final JTextField configText = new JTextField(20);</span>
+
+    /** A text field used to enter the tool configuration class path. */
+<span class="nc" id="L231">    private final JTextField configClasspathText = new JTextField();</span>
+
+    /** A table containing the QaConfig properties. */
+<span class="nc" id="L234">    private final JTable table = new JTable();</span>
+
+    /** Button to save configuration changes. */
+<span class="nc" id="L237">    private final JButton okButton = new JButton();</span>
+
+    /** Button to cancel configuration changes. */
+<span class="nc" id="L240">    private final JButton cancelButton = new JButton();</span>
+
+    /**
+     * A Map from a &quot;tool&quot; to the value stored within the Tool Configuration {@link JTextField}.
+     */
+<span class="nc" id="L245">    private final Map&lt;String, String&gt; toolConfig = new HashMap&lt;String, String&gt;();</span>
+
+    /**
+     * A Map from a &quot;tool&quot; to the value stored within the Tool Configuration class path {@link JTextField}.
+     */
+<span class="nc" id="L250">    private final Map&lt;String, String&gt; toolConfigClasspath = new HashMap&lt;String, String&gt;();</span>
+
+    // ****************************************************************
+    // PRIVATE METHODS
+    // ****************************************************************
+
+    /**
+     * This method initializes the {@link #toolConfig} and {@link #toolConfigClasspath} variables from the
+     * {@link QAConfig}.
+     * 
+     * @param qaConfig the config.
+     */
+    private void loadToolConfig(final QAConfig qaConfig)
+    {
+<span class="nc" id="L264">        String[] tools = qaConfig.getToolsToRun();</span>
+
+<span class="nc bnc" id="L266" title="All 2 branches missed.">        for (String tool : tools)</span>
+        {
+<span class="nc" id="L268">            String[] versions = qaConfig.getToolVersions(tool);</span>
+
+<span class="nc bnc" id="L270" title="All 2 branches missed.">            for (String version : versions)</span>
+            {
+<span class="nc" id="L272">                String key = tool + &quot;.&quot; + version;</span>
+
+<span class="nc" id="L274">                String config = qaConfig.getToolConfig(key, null);</span>
+
+<span class="nc bnc" id="L276" title="All 2 branches missed.">                if (config == null)</span>
+                {
+<span class="nc" id="L278">                    config = &quot;&quot;;</span>
+                }
+
+<span class="nc" id="L281">                toolConfig.put(key, config);</span>
+
+<span class="nc" id="L283">                String configClasspath = qaConfig.getToolConfigClasspath(key, null);</span>
+
+<span class="nc bnc" id="L285" title="All 2 branches missed.">                if (configClasspath == null)</span>
+                {
+<span class="nc" id="L287">                    configClasspath = &quot;&quot;;</span>
+                }
+
+<span class="nc" id="L290">                toolConfigClasspath.put(key, configClasspath);</span>
+            }
+        }
+<span class="nc" id="L293">    }</span>
+
+    /**
+     * This method saves the data input into the {@link QaConfigFrame} to the {@link QAConfig} object.
+     */
+    private void save()
+    {
+<span class="nc" id="L300">        QAConfig config = processor.getConfig();</span>
+<span class="nc" id="L301">        ((QaPropertyTableModel) table.getModel()).save(config);</span>
+
+<span class="nc" id="L303">        toolConfig.put(lastTool + &quot;.&quot; + lastVersion, configText.getText());</span>
+<span class="nc" id="L304">        toolConfigClasspath.put(lastTool + &quot;.&quot; + lastVersion, configClasspathText.getText());</span>
+        
+<span class="nc" id="L306">        String[] tools = config.getToolsToRun();</span>
+
+<span class="nc bnc" id="L308" title="All 2 branches missed.">        for (String tool : tools)</span>
+        {
+<span class="nc" id="L310">            String[] versions = config.getToolVersions(tool);</span>
+
+<span class="nc bnc" id="L312" title="All 2 branches missed.">            for (String version : versions)</span>
+            {
+<span class="nc" id="L314">                String key = tool + &quot;.&quot; + version;</span>
+
+<span class="nc" id="L316">                String toolConfigString = toolConfig.get(key);</span>
+<span class="nc" id="L317">                String toolConfigClasspathString = toolConfigClasspath.get(key);</span>
+
+<span class="nc" id="L319">                config.setToolConfig(tool, null, toolConfigString, toolConfigClasspathString);</span>
+<span class="nc" id="L320">                config.setToolConfig(tool, version, toolConfigString, toolConfigClasspathString);</span>
+            }
+        }
+<span class="nc" id="L323">    }</span>
+
+    /**
+     * This method resets the data input within the {@link QaConfigFrame} to the values within {@link QAConfig} object.
+     */
+    private void reset()
+    {
+<span class="nc" id="L330">        QAConfig config = processor.getConfig();</span>
+<span class="nc" id="L331">        ((QaPropertyTableModel) table.getModel()).reset(config);</span>
+<span class="nc" id="L332">        loadToolConfig(config);</span>
+<span class="nc" id="L333">    }</span>
+
+    /**
+     * Adds a component to the content pane.
+     * 
+     * @param component the component to add.
+     * @param gridx the x grid coordinate.
+     * @param gridy the y grid coordinate.
+     * @param gridwidth the number of horizontal grid units to occupy.
+     * @param gridheight the number of vertical grid units to occupy.
+     * @param anchor the position of the component within the cell.
+     * @param fill the fill mode when the component is smaller than the cell.
+     */
+    private void add(final JComponent component, final int gridx, final int gridy, final int gridwidth,
+                     final int gridheight, final int anchor, final int fill)
+    {
+<span class="nc" id="L349">        GridBagConstraints constraints = new GridBagConstraints();</span>
+
+<span class="nc" id="L351">        constraints.gridx = gridx;</span>
+<span class="nc" id="L352">        constraints.gridy = gridy;</span>
+<span class="nc" id="L353">        constraints.gridwidth = gridwidth;</span>
+<span class="nc" id="L354">        constraints.gridheight = gridheight;</span>
+<span class="nc" id="L355">        constraints.anchor = anchor;</span>
+<span class="nc" id="L356">        constraints.fill = fill;</span>
+<span class="nc" id="L357">        constraints.insets = new Insets(1, 1, 1, 1);</span>
+
+<span class="nc bnc" id="L359" title="All 4 branches missed.">        if (fill == GridBagConstraints.HORIZONTAL || fill == GridBagConstraints.BOTH)</span>
+        {
+<span class="nc" id="L361">            constraints.weightx = 1.0;</span>
+        }
+
+<span class="nc bnc" id="L364" title="All 4 branches missed.">        if (fill == GridBagConstraints.VERTICAL || fill == GridBagConstraints.BOTH)</span>
+        {
+<span class="nc" id="L366">            constraints.weighty = 1.0;</span>
+        }
+
+<span class="nc" id="L369">        getContentPane().add(component);</span>
+<span class="nc" id="L370">        ((GridBagLayout) getContentPane().getLayout()).setConstraints(component, constraints);</span>
+<span class="nc" id="L371">    }</span>
+
+    /**
+     * Adds Swing components to the {@link QaConfigFrame} ContentPane.
+     */
+    private void layoutInterface()
+    {
+        // ************************************************************
+        // Configure components
+        // ************************************************************
+
+<span class="nc" id="L382">        QAConfig config = processor.getConfig();</span>
+        
+<span class="nc" id="L384">        String[] tools = config.getToolsToRun();</span>
+<span class="nc" id="L385">        toolCombo.setModel(new DefaultComboBoxModel&lt;String&gt;(tools));</span>
+<span class="nc" id="L386">        lastTool = tools[0];</span>
+<span class="nc" id="L387">        configLabel.setText(lastTool + &quot; config:&quot;);</span>
+<span class="nc" id="L388">        configClasspathLabel.setText(lastTool + &quot; config classpath:&quot;);</span>
+
+<span class="nc" id="L390">        String[] versions = config.getToolVersions(tools[0]);</span>
+<span class="nc" id="L391">        versionCombo.setModel(new DefaultComboBoxModel&lt;String&gt;(versions));</span>
+<span class="nc" id="L392">        lastVersion = versions[0];</span>
+        
+<span class="nc" id="L394">        ItemListener toolComboListener = new ItemListener()</span>
+<span class="nc" id="L395">        {</span>
+            @Override
+            public void itemStateChanged(final ItemEvent event)
+            {
+<span class="nc" id="L399">                toolConfig.put(lastTool + &quot;.&quot; + lastVersion, configText.getText());</span>
+<span class="nc" id="L400">                toolConfigClasspath.put(lastTool + &quot;.&quot; + lastVersion, configClasspathText.getText());</span>
+
+<span class="nc" id="L402">                JComboBox&lt;String&gt; combo = (JComboBox&lt;String&gt;) event.getSource();</span>
+<span class="nc" id="L403">                String prefix = &quot;&quot;;</span>
+
+<span class="nc bnc" id="L405" title="All 2 branches missed.">                if (combo.getSelectedIndex() &gt;= 0)</span>
+                {
+<span class="nc" id="L407">                    lastTool = combo.getItemAt(combo.getSelectedIndex());</span>
+
+<span class="nc" id="L409">                    String[] versions = processor.getConfig().getToolVersions(lastTool);</span>
+<span class="nc" id="L410">                    versionCombo.setModel(new DefaultComboBoxModel&lt;String&gt;(versions));</span>
+<span class="nc" id="L411">                    versionCombo.setSelectedIndex(0);</span>
+                    
+<span class="nc" id="L413">                    lastVersion = versions[0];</span>
+
+<span class="nc" id="L415">                    String config = toolConfig.get(lastTool + &quot;.&quot; + lastVersion);</span>
+<span class="nc" id="L416">                    String configClasspath = toolConfigClasspath.get(lastTool + &quot;.&quot; + lastVersion);</span>
+
+<span class="nc bnc" id="L418" title="All 2 branches missed.">                    configText.setText(config == null ? &quot;&quot; : config);</span>
+<span class="nc bnc" id="L419" title="All 2 branches missed.">                    configClasspathText.setText(configClasspath == null ? &quot;&quot; : configClasspath);</span>
+
+<span class="nc" id="L421">                    prefix = lastTool + &quot; &quot;;</span>
+                }
+
+<span class="nc" id="L424">                configLabel.setText(prefix + &quot;config:&quot;);</span>
+<span class="nc" id="L425">                configClasspathLabel.setText(prefix + &quot;config classpath:&quot;);</span>
+<span class="nc" id="L426">                QaConfigFrame.this.pack();</span>
+<span class="nc" id="L427">            }</span>
+        };
+
+<span class="nc" id="L430">        toolCombo.addItemListener(toolComboListener);</span>
+
+<span class="nc" id="L432">        ItemListener versionComboListener = new ItemListener()</span>
+<span class="nc" id="L433">        {</span>
+            @Override
+            public void itemStateChanged(final ItemEvent event)
+            {
+<span class="nc" id="L437">                toolConfig.put(lastTool + &quot;.&quot; + lastVersion, configText.getText());</span>
+<span class="nc" id="L438">                toolConfigClasspath.put(lastTool + &quot;.&quot; + lastVersion, configClasspathText.getText());</span>
+
+<span class="nc" id="L440">                JComboBox&lt;String&gt; combo = (JComboBox&lt;String&gt;) event.getSource();</span>
+
+<span class="nc bnc" id="L442" title="All 2 branches missed.">                if (combo.getSelectedIndex() &gt;= 0)</span>
+                {
+<span class="nc" id="L444">                    lastVersion = combo.getItemAt(combo.getSelectedIndex());</span>
+
+<span class="nc" id="L446">                    String config = toolConfig.get(lastTool + &quot;.&quot; + lastVersion);</span>
+<span class="nc" id="L447">                    String configClasspath = toolConfigClasspath.get(lastTool + &quot;.&quot; + lastVersion);</span>
+
+<span class="nc bnc" id="L449" title="All 2 branches missed.">                    configText.setText(config == null ? &quot;&quot; : config);</span>
+<span class="nc bnc" id="L450" title="All 2 branches missed.">                    configClasspathText.setText(configClasspath == null ? &quot;&quot; : configClasspath);</span>
+                }
+
+<span class="nc" id="L453">                QaConfigFrame.this.pack();</span>
+<span class="nc" id="L454">            }</span>
+        };
+
+<span class="nc" id="L457">        versionCombo.addItemListener(versionComboListener);</span>
+<span class="nc" id="L458">        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();</span>
+
+<span class="nc" id="L460">        TableModel model = new QaPropertyTableModel(processor.getConfig());</span>
+<span class="nc" id="L461">        table.setModel(model);</span>
+<span class="nc" id="L462">        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);</span>
+<span class="nc" id="L463">        JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,</span>
+                                                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+<span class="nc" id="L465">        scrollPane.setPreferredSize(new Dimension(((int) screenSize.getWidth()) / 2, ONE_HUNDRED));</span>
+
+<span class="nc" id="L467">        Action okAction = new AbstractAction()</span>
+<span class="nc" id="L468">        {</span>
+            @Override
+            public void actionPerformed(final ActionEvent event)
+            {
+<span class="nc" id="L472">                table.editingStopped(new ChangeEvent(table));</span>
+<span class="nc" id="L473">                save();</span>
+<span class="nc" id="L474">                QaConfigFrame.this.setVisible(false);</span>
+<span class="nc" id="L475">            }</span>
+        };
+<span class="nc" id="L477">        okButton.setAction(okAction);</span>
+<span class="nc" id="L478">        okButton.setText(&quot;OK&quot;);</span>
+
+<span class="nc" id="L480">        Action cancelAction = new AbstractAction()</span>
+<span class="nc" id="L481">        {</span>
+            @Override
+            public void actionPerformed(final ActionEvent event)
+            {
+<span class="nc" id="L485">                reset();</span>
+<span class="nc" id="L486">                QaConfigFrame.this.setVisible(false);</span>
+<span class="nc" id="L487">            }</span>
+        };
+
+<span class="nc" id="L490">        cancelButton.setAction(cancelAction);</span>
+<span class="nc" id="L491">        cancelButton.setText(&quot;Cancel&quot;);</span>
+
+        // ************************************************************
+        // Layout components within the GridBagLayout
+        // ************************************************************
+
+<span class="nc" id="L497">        int gridy = 0;</span>
+
+<span class="nc" id="L499">        add(new JLabel(&quot;Tool: &quot;), 0, gridy, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L500">        add(toolCombo, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L501">        add(new JLabel(&quot;Version: &quot;), 0, gridy, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L502">        add(versionCombo, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L503">        add(configLabel, 0, gridy, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L504">        add(configText, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+<span class="nc" id="L505">        add(configClasspathLabel, 0, gridy, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L506">        add(configClasspathText, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</span>
+
+<span class="nc" id="L508">        add(new JLabel(&quot;Sanity4J Configuration: &quot;), 0, gridy++, 2, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+
+<span class="nc bnc" id="L510" title="All 2 branches missed.">        for (int i = 0; i &lt; table.getColumnCount(); i++)</span>
+        {
+<span class="nc" id="L512">            table.getColumnModel().getColumn(i).setPreferredWidth(((int) screenSize.getWidth()) / SIX);</span>
+        }
+
+<span class="nc" id="L515">        add(scrollPane, 0, gridy++, 2, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH);</span>
+
+<span class="nc" id="L517">        add(okButton, 0, gridy, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L518">        add(cancelButton, 1, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE);</span>
+<span class="nc" id="L519">    }</span>
+
+    // ************************************************************
+    // Layout components within the GridBagLayout
+    // ************************************************************
+
+    /**
+     * @param processor the processor.
+     */
+    QaConfigFrame(final QAProcessor processor)
+<span class="nc" id="L529">    {</span>
+<span class="nc" id="L530">        this.processor = processor;</span>
+
+<span class="nc" id="L532">        JPanel contentPane = new JPanel();</span>
+<span class="nc" id="L533">        contentPane.setBorder(new EmptyBorder(INSET, INSET, INSET, INSET));</span>
+<span class="nc" id="L534">        contentPane.setLayout(new GridBagLayout());</span>
+
+<span class="nc" id="L536">        setContentPane(contentPane);</span>
+<span class="nc" id="L537">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+
+<span class="nc" id="L539">        addWindowListener(new WindowAdapter()</span>
+<span class="nc" id="L540">        {</span>
+            @Override
+            public void windowClosing(final WindowEvent event)
+            {
+<span class="nc" id="L544">                reset();</span>
+<span class="nc" id="L545">            }</span>
+        });
+
+<span class="nc" id="L548">        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();</span>
+
+<span class="nc" id="L550">        layoutInterface();</span>
+<span class="nc" id="L551">        reset();</span>
+<span class="nc" id="L552">        pack();</span>
+<span class="nc" id="L553">        setLocation((screenSize.width - getWidth()) / 2, (screenSize.height - getHeight()) / 2);</span>
+<span class="nc" id="L554">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

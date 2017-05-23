@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FindBugsResultReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow.tool</a> &gt; <span class="el_source">FindBugsResultReader.java</span></div><h1>FindBugsResultReader.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow.tool;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
+
+import javax.xml.bind.JAXBElement;
+
+import com.github.sanity4j.model.diagnostic.Diagnostic;
+import com.github.sanity4j.model.diagnostic.DiagnosticFactory;
+import com.github.sanity4j.model.diagnostic.DiagnosticSet;
+import com.github.sanity4j.util.ExtractStats;
+import com.github.sanity4j.util.JaxbMarshaller;
+import com.github.sanity4j.util.QAException;
+
+import com.github.sanity4j.gen.findbugs_1_3_9.BugCollection;
+import com.github.sanity4j.gen.findbugs_1_3_9.BugInstance;
+import com.github.sanity4j.gen.findbugs_1_3_9.Clazz;
+import com.github.sanity4j.gen.findbugs_1_3_9.SourceLine;
+
+/**
+ * FindBugsResultReader - Translates FindBugs results into the common format used by the QA tool.
+ *
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+<span class="fc" id="L28">public final class FindBugsResultReader implements ResultReader</span>
+{
+	/** The properties used to configure this {@link ResultReader}. */
+<span class="fc" id="L31">	private final Properties properties = new Properties();</span>
+	
+    /** The ExtractStats to add the results to. */
+    private ExtractStats stats;
+    
+    /** The FindBugs XML result file to read from. */
+    private File findBugsResultFile;
+
+	/** {@inheritDoc} */
+	public void setProperties(final Properties properties) 
+	{
+<span class="nc" id="L42">		this.properties.putAll(properties);</span>
+<span class="nc" id="L43">	}</span>
+
+    /** {@inheritDoc} */
+    public void setResultFile(final File resultFile)
+    {
+<span class="fc" id="L48">        this.findBugsResultFile = resultFile;</span>
+<span class="fc" id="L49">    }</span>
+
+    /** {@inheritDoc} */
+    public void setStats(final ExtractStats stats)
+    {
+<span class="fc" id="L54">        this.stats = stats;</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Extracts FindBugs statistics from findBugsResultFile.
+     */
+    public void run()
+    {
+<span class="fc" id="L62">        DiagnosticFactory diagnosticFactory = DiagnosticFactory.getInstance(properties);</span>
+<span class="fc" id="L63">    	DiagnosticSet diagnostics = stats.getDiagnostics();</span>
+
+<span class="fc" id="L65">        BugCollection result = (BugCollection)</span>
+<span class="fc" id="L66">        JaxbMarshaller.unmarshal(findBugsResultFile, &quot;com.github.sanity4j.gen.findbugs_1_3_9&quot;, &quot;http://com.github.sanity4j/namespace/findbugs-1.3.9&quot;);</span>
+
+<span class="fc" id="L68">        List&lt;BugInstance&gt; bugs = result.getBugInstance();</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (BugInstance bug : bugs)</span>
+        {
+<span class="fc" id="L72">            Diagnostic diagnostic = diagnosticFactory.getDiagnostic();</span>
+<span class="fc" id="L73">            diagnostic.setSource(Diagnostic.SOURCE_FINDBUGS);</span>
+<span class="fc" id="L74">            diagnostic.setRuleName(bug.getType());</span>
+<span class="fc" id="L75">            diagnostic.calcSeverity();</span>
+
+            // Unfortunately, there is a whole set of information that may or
+            // may not be present. We have to iterate through the whole list
+            // and pick out the summary information that we're interested in.
+<span class="fc" id="L80">            List&lt;Object&gt; details = bug.getShortMessageOrLongMessageOrClazz();</span>
+
+<span class="fc bfc" id="L82" title="All 2 branches covered.">            for (Object detail : details)</span>
+            {
+<span class="fc bfc" id="L84" title="All 2 branches covered.">                if (detail instanceof Clazz)</span>
+                {
+<span class="fc" id="L86">                    Clazz clazz = (Clazz) detail;</span>
+
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">                    if (Boolean.TRUE.equals(clazz.getPrimary()))</span>
+                    {
+<span class="fc" id="L90">                        diagnostic.setClassName(clazz.getClassname());</span>
+
+<span class="fc" id="L92">                        SourceLine sourceLine = clazz.getSourceLine();</span>
+
+<span class="pc bpc" id="L94" title="2 of 4 branches missed.">                        if (sourceLine != null &amp;&amp; sourceLine.getSourcepath() != null)</span>
+                        {
+                            try
+                            {
+<span class="fc" id="L98">                                diagnostic.setFileName(stats.getCanonicalPath(sourceLine.getSourcepath()));</span>
+                            }
+<span class="nc" id="L100">                            catch (IOException e)</span>
+                            {
+<span class="nc" id="L102">                                throw new QAException(&quot;Failed to get canonicalPath for &quot;</span>
+<span class="nc" id="L103">                                                         + sourceLine.getSourcepath(), e);</span>
+<span class="fc" id="L104">                            }</span>
+
+<span class="pc bpc" id="L106" title="2 of 4 branches missed.">							if (sourceLine.getStart() != null &amp;&amp; sourceLine.getEnd() != 0</span>
+<span class="pc bpc" id="L107" title="2 of 4 branches missed.">								&amp;&amp; sourceLine.getStart() != 0 &amp;&amp; sourceLine.getEnd() != 0)</span>
+							{
+<span class="fc" id="L109">								diagnostic.setStartLine(sourceLine.getStart());</span>
+<span class="fc" id="L110">								diagnostic.setEndLine(sourceLine.getEnd());</span>
+							}
+                        }
+                    }
+<span class="fc" id="L114">                }</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">                else if (detail instanceof SourceLine)</span>
+                {
+                    // The SourceLine further narrows down where the problem is... in most cases
+<span class="fc" id="L118">                    SourceLine sourceLine = (SourceLine) detail;</span>
+
+<span class="pc bpc" id="L120" title="2 of 4 branches missed.">                    if (sourceLine.getStart() != null &amp;&amp; sourceLine.getEnd() != 0</span>
+<span class="pc bpc" id="L121" title="2 of 4 branches missed.">                        &amp;&amp; sourceLine.getStart() != 0 &amp;&amp; sourceLine.getEnd() != 0)</span>
+                    {
+<span class="fc" id="L123">                        diagnostic.setStartLine(sourceLine.getStart());</span>
+<span class="fc" id="L124">                        diagnostic.setEndLine(sourceLine.getEnd());</span>
+                    }
+<span class="fc" id="L126">                }</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">                else if (detail instanceof JAXBElement&lt;?&gt;)</span>
+                {
+<span class="fc" id="L129">                    JAXBElement&lt;?&gt; message = (JAXBElement&lt;?&gt;) detail;</span>
+<span class="fc" id="L130">                    boolean shortMessage = message.getName().getLocalPart().equals(&quot;ShortMessage&quot;);</span>
+<span class="fc" id="L131">                    boolean longMessage = message.getName().getLocalPart().equals(&quot;LongMessage&quot;);</span>
+
+                    // We don't want to overwrite a long message
+<span class="pc bpc" id="L134" title="1 of 6 branches missed.">                    if (longMessage || (shortMessage &amp;&amp; diagnostic.getMessage() == null))</span>
+                    {
+<span class="fc" id="L136">                        diagnostic.setMessage(message.getValue().toString());</span>
+                    }
+                }
+<span class="fc" id="L139">            }</span>
+
+<span class="fc" id="L141">            diagnostics.add(diagnostic);</span>
+<span class="fc" id="L142">        }</span>
+<span class="fc" id="L143">    }</span>
+
+    /** {@inheritDoc} */
+    public String getDescription()
+    {
+<span class="nc" id="L148">        return &quot;Reading FindBugs results&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

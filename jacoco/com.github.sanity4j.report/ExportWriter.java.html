@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExportWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.report</a> &gt; <span class="el_source">ExportWriter.java</span></div><h1>ExportWriter.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.report;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import com.github.sanity4j.model.coverage.CoverageItf;
+import com.github.sanity4j.model.diagnostic.Diagnostic;
+import com.github.sanity4j.model.diagnostic.DiagnosticSet;
+import com.github.sanity4j.util.ExtractStats;
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.StringUtil;
+import com.github.sanity4j.workflow.QAProcessor;
+
+
+/**
+ * ExportWriter writes an export of the entire run to a single XML file. 
+ * The output file is &lt;code&gt;export.xml&lt;/code&gt;, in the report directory.
+ *  
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public class ExportWriter 
+{
+    /** Source file paths, keyed by package name. */
+	private final Map&lt;String, List&lt;String&gt;&gt; sourcesByPackage;
+    
+    /** The diagnostics that we are writing. */
+    private final ExtractStats stats;
+    
+    /** The destination directory. */
+    private final File reportDir;
+    
+    /** One hundred. */
+    private static final double HUNDRED = 100.0;
+
+    /** One hundred. */
+    private static final int ONE_HUNDRED = 100;
+    
+    /**
+     * Creates a ExportWriter.
+     * 
+     * @param stats the stats utility containing the results
+     * @param reportDir the base directory for the report
+     * @param sourcesByPackage a map of source files by package name
+     */
+	public ExportWriter(final ExtractStats stats, final File reportDir, 
+                         final Map&lt;String, List&lt;String&gt;&gt; sourcesByPackage)
+<span class="nc" id="L52">	{</span>
+<span class="nc" id="L53">        this.stats = stats;</span>
+<span class="nc" id="L54">        this.reportDir = reportDir;        </span>
+<span class="nc" id="L55">		this.sourcesByPackage = sourcesByPackage;</span>
+<span class="nc" id="L56">	}</span>
+	
+	/**
+	 * Writes the export file to the report directory.
+	 * @throws IOException if there is an error writing any file
+	 */
+	public void writeExport() throws IOException
+	{
+<span class="nc" id="L64">        StringBuffer xml = new StringBuffer();</span>
+
+        // Write top-level package summary info        
+<span class="nc" id="L67">        xml.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</span>
+<span class="nc" id="L68">            .append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;xslt/package-frame.xsl\&quot;?&gt;\n&quot;)        </span>
+<span class="nc" id="L69">            .append(&quot;&lt;export qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</span>
+<span class="nc" id="L70">            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</span>
+
+        // Recursively write all packages
+<span class="nc" id="L73">        writePackage(&quot;&quot;, xml);</span>
+        
+<span class="nc" id="L75">        xml.append(&quot;&lt;/export&gt;\n&quot;);</span>
+        
+<span class="nc" id="L77">        FileUtil.writeToFile(xml.toString(), new File(reportDir, &quot;export.xml&quot;));</span>
+<span class="nc" id="L78">	}</span>
+	
+	/**
+	 * Writes out the findings for a single package.
+	 * 
+	 * @param packageName the name of the package to write
+	 * @param xml the StringBuffer to write the XML to.
+	 */
+	private void writePackage(final String packageName, final StringBuffer xml)
+	{
+<span class="nc" id="L88">        boolean allPackages = &quot;&quot;.equals(packageName);</span>
+
+<span class="nc" id="L90">        DiagnosticSet diags = null;</span>
+<span class="nc" id="L91">        CoverageItf coverage = null;</span>
+<span class="nc" id="L92">        int numLines = 0;</span>
+<span class="nc" id="L93">        int numExecutableLines = 0;</span>
+<span class="nc" id="L94">        int coveredLines = 0;</span>
+<span class="nc" id="L95">        int coveredLinePct = 0;</span>
+<span class="nc" id="L96">        int coveredBranchPct = 0;</span>
+<span class="nc" id="L97">        int branchCount = 0;</span>
+<span class="nc" id="L98">        int coveredBranchCount = 0;</span>
+<span class="nc" id="L99">        int classCount = 0;</span>
+
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (allPackages)</span>
+        {
+<span class="nc" id="L103">            coverage = stats.getCoverage();</span>
+<span class="nc" id="L104">            diags = stats.getDiagnostics();</span>
+<span class="nc" id="L105">            numLines = stats.getLineCount();</span>
+<span class="nc" id="L106">            classCount = stats.getClassCount();</span>
+        }
+        else
+        {
+<span class="nc" id="L110">            coverage = stats.getCoverage().getPackageCoverage(packageName);</span>
+<span class="nc" id="L111">            diags = stats.getDiagnostics().getDiagnosticsForPackage(packageName, false);</span>
+
+<span class="nc" id="L113">            numLines = stats.getPackageLineCount(packageName);</span>
+<span class="nc" id="L114">            classCount = stats.getPackageClassCount(packageName);</span>
+        }
+
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (coverage != null)</span>
+        {
+<span class="nc" id="L119">            coveredLines = (int) Math.round(numLines * coverage.getLineCoverage());</span>
+<span class="nc" id="L120">            coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);</span>
+<span class="nc" id="L121">            coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);</span>
+<span class="nc" id="L122">            coveredLines = coverage.getCoveredLineCount();</span>
+<span class="nc" id="L123">            branchCount = coverage.getBranchCount();</span>
+<span class="nc" id="L124">            coveredBranchCount = coverage.getCoveredBranchCount();</span>
+<span class="nc" id="L125">            numExecutableLines = coverage.getLineCount();</span>
+        }
+
+<span class="nc" id="L128">        xml.append(&quot;&lt;package name=\&quot;&quot;).append(packageName);</span>
+<span class="nc" id="L129">        xml.append(&quot;\&quot; classes=\&quot;&quot;).append(classCount)</span>
+<span class="nc" id="L130">           .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numLines);</span>
+        
+        // Quality
+<span class="nc" id="L133">        int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</span>
+        
+<span class="nc" id="L135">        xml.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
+<span class="nc" id="L136">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
+<span class="nc" id="L137">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
+<span class="nc" id="L138">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
+<span class="nc" id="L139">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))</span>
+<span class="nc" id="L140">            .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)</span>
+<span class="nc" id="L141">            .append(&quot;\&quot;&gt;\n&quot;);</span>
+        
+        // Test coverage
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        if (numExecutableLines != 0)</span>
+        {
+<span class="nc" id="L146">            xml.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)</span>
+<span class="nc" id="L147">                .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)</span>
+<span class="nc" id="L148">                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)</span>
+<span class="nc" id="L149">                .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)</span>
+<span class="nc" id="L150">                .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)</span>
+<span class="nc" id="L151">                .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)</span>
+<span class="nc" id="L152">                .append(&quot;\&quot;/&gt;\n&quot;);</span>
+        }
+        
+        // Classes
+        
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (sourcesByPackage.containsKey(packageName))</span>
+        {
+<span class="nc" id="L159">            writePackageClasses(packageName, xml);        </span>
+        }
+
+        // Sub-packages
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        String packagePrefix = StringUtil.empty(packageName) ? &quot;&quot; : packageName + '.';</span>
+<span class="nc" id="L164">        List&lt;String&gt; allSubPackages = new ArrayList&lt;String&gt;();</span>
+        
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        for (String otherPackageName : sourcesByPackage.keySet())</span>
+        {
+            // Find all sub-packages.
+<span class="nc bnc" id="L169" title="All 4 branches missed.">            if (!otherPackageName.equals(packageName) &amp;&amp; otherPackageName.startsWith(packagePrefix))</span>
+            {
+<span class="nc" id="L171">                allSubPackages.add(otherPackageName);</span>
+            }
+<span class="nc" id="L173">        }</span>
+        
+        // Only write sub-packages without any intermediate packages between them and this package.
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        for (String subPackage : allSubPackages)</span>
+        {
+<span class="nc" id="L178">            boolean hasIntermediatePackage = false;</span>
+            
+<span class="nc bnc" id="L180" title="All 2 branches missed.">            for (String otherSubPackage : allSubPackages)</span>
+            {
+<span class="nc bnc" id="L182" title="All 4 branches missed.">                if (!subPackage.equals(otherSubPackage) &amp;&amp; subPackage.startsWith(otherSubPackage))</span>
+                {
+<span class="nc" id="L184">                    hasIntermediatePackage = true;</span>
+<span class="nc" id="L185">                    break;</span>
+                }   
+<span class="nc" id="L187">            }</span>
+            
+<span class="nc bnc" id="L189" title="All 2 branches missed.">            if (!hasIntermediatePackage)</span>
+            {
+<span class="nc" id="L191">                writePackage(subPackage, xml);</span>
+            }
+<span class="nc" id="L193">        }</span>
+        
+<span class="nc" id="L195">        xml.append(&quot;&lt;/package&gt;\n&quot;);</span>
+<span class="nc" id="L196">	}</span>
+	
+    /**
+     * Writes out the findings for the classes in a single package.
+     * 
+     * @param packageName the name of the package to write
+     * @param xml the StringBuffer to write the XML to.
+     */
+    private void writePackageClasses(final String packageName, final StringBuffer xml)
+    {
+<span class="nc" id="L206">        List&lt;String&gt; packageSources = sourcesByPackage.get(packageName);</span>
+        
+<span class="nc bnc" id="L208" title="All 2 branches missed.">        for (String sourcePath : packageSources)</span>
+        {
+<span class="nc" id="L210">            DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</span>
+<span class="nc" id="L211">            String className = stats.getClassNameForSourcePath(sourcePath);     </span>
+<span class="nc" id="L212">            CoverageItf coverage = stats.getCoverage().getClassCoverage(className);</span>
+            
+<span class="nc" id="L214">            int numLines = stats.getClassLineCount(className);</span>
+<span class="nc" id="L215">            int numExecutableLines = 0;</span>
+<span class="nc" id="L216">            int coveredLines = 0;</span>
+<span class="nc" id="L217">            int coveredLinePct = 0;</span>
+<span class="nc" id="L218">            int coveredBranchPct = 0;</span>
+<span class="nc" id="L219">            int branchCount = 0;</span>
+<span class="nc" id="L220">            int coveredBranchCount = 0;</span>
+            
+<span class="nc bnc" id="L222" title="All 2 branches missed.">            if (coverage != null)</span>
+            {
+<span class="nc" id="L224">                numExecutableLines = coverage.getLineCount();</span>
+<span class="nc" id="L225">                coveredLines = coverage.getCoveredLineCount();</span>
+<span class="nc" id="L226">                branchCount = coverage.getBranchCount();</span>
+<span class="nc" id="L227">                coveredBranchCount = coverage.getCoveredBranchCount();</span>
+<span class="nc" id="L228">                coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);</span>
+<span class="nc" id="L229">                coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);</span>
+            }
+            
+            
+            // Quality
+<span class="nc" id="L234">            int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</span>
+            
+<span class="nc" id="L236">            xml.append(&quot;&lt;class name=\&quot;&quot;).append(className.substring(className.lastIndexOf('.') + 1))</span>
+<span class="nc" id="L237">                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numLines)</span>
+<span class="nc" id="L238">                .append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
+<span class="nc" id="L239">                .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
+<span class="nc" id="L240">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
+<span class="nc" id="L241">                .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
+<span class="nc" id="L242">                .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))</span>
+<span class="nc" id="L243">                .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)</span>
+<span class="nc" id="L244">                .append(&quot;\&quot;&gt;\n&quot;);</span>
+            
+            // Test coverage
+<span class="nc bnc" id="L247" title="All 2 branches missed.">            if (numExecutableLines != 0)</span>
+            {
+<span class="nc" id="L249">                xml.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)</span>
+<span class="nc" id="L250">                    .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)</span>
+<span class="nc" id="L251">                    .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)</span>
+<span class="nc" id="L252">                    .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)</span>
+<span class="nc" id="L253">                    .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)</span>
+<span class="nc" id="L254">                    .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)</span>
+<span class="nc" id="L255">                    .append(&quot;\&quot;/&gt;\n&quot;);</span>
+            }
+
+            // Write diagnostics for class
+<span class="nc bnc" id="L259" title="All 2 branches missed.">            for (Diagnostic diagnostic : diags)</span>
+            {
+<span class="nc" id="L261">                xml.append(&quot;&lt;diag id=\&quot;&quot;).append(diagnostic.getId())</span>
+<span class="nc" id="L262">                                          .append(&quot;\&quot; sev=\&quot;&quot;).append(diagnostic.getSeverity())</span>
+<span class="nc" id="L263">                                          .append(&quot;\&quot; tool=\&quot;&quot;).append(diagnostic.getSourceDescription())</span>
+<span class="nc" id="L264">                                          .append(&quot;\&quot; rule=\&quot;&quot;).append(diagnostic.getRuleName())</span>
+<span class="nc" id="L265">                                          .append(&quot;\&quot;&gt;&quot;);</span>
+
+<span class="nc bnc" id="L267" title="All 2 branches missed.">                if (diagnostic.getMessage() != null)</span>
+                {
+<span class="nc" id="L269">                    xml.append(ReportUtil.htmlEscape(diagnostic.getMessage().trim()));</span>
+                }
+
+<span class="nc" id="L272">                xml.append(&quot;&lt;/diag&gt;\n&quot;);</span>
+<span class="nc" id="L273">            }</span>
+            
+<span class="nc" id="L275">            xml.append(&quot;&lt;/class&gt;\n&quot;);</span>
+<span class="nc" id="L276">        }</span>
+<span class="nc" id="L277">    }	</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

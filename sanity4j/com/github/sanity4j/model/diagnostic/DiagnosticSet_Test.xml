@@ -1,0 +1,1018 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.model.diagnostic.DiagnosticSet_Test" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="15" info="0" lineCoverage="98" branchCoverage="100" quality="95"/>
+<source>
+<line>package com.github.sanity4j.model.diagnostic; </line>
+<line/>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Iterator;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Map;</line>
+<line>import java.util.NoSuchElementException;</line>
+<line/>
+<line sev="1"><diag id="444"/>import com.github.sanity4j.model.diagnostic.Diagnostic;</line>
+<line sev="1"><diag id="445"/>import com.github.sanity4j.model.diagnostic.DiagnosticSet;</line>
+<line/>
+<line>import junit.framework.TestCase;</line>
+<line/>
+<line>/**</line>
+<line> * DiagnosticSet_Test - unit tests for {@link DiagnosticSet}. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line covered="yes">public class DiagnosticSet_Test extends TestCase</line>
+<line>{</line>
+<line>	public void testIsEmpty()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line covered="yes">        assertTrue(&quot;isEmpty() returned false for empty DiagnosticSet&quot;, diagnosticSet.isEmpty());</line>
+<line/>
+<line covered="yes">        diagnosticSet.add(new Diagnostic());</line>
+<line covered="yes">        assertFalse(&quot;isEmpty() returned true for non-empty DiagnosticSet&quot;, diagnosticSet.isEmpty());</line>
+<line/>
+<line covered="yes">        diagnosticSet.add(new Diagnostic());</line>
+<line covered="yes">        assertFalse(&quot;isEmpty() returned true for non-empty DiagnosticSet&quot;, diagnosticSet.isEmpty());</line>
+<line covered="yes">    }</line>
+<line/>
+<line>	public void testSize()</line>
+<line>    {</line>
+<line covered="yes">        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line covered="yes">        assertEquals(&quot;size() returned incorrect size&quot;, 0, diagnosticSet.size());</line>
+<line/>
+<line covered="yes">        diagnosticSet.add(new Diagnostic());</line>
+<line covered="yes">        assertEquals(&quot;size() returned incorrect size&quot;, 1, diagnosticSet.size());</line>
+<line/>
+<line covered="yes">        diagnosticSet.add(new Diagnostic());</line>
+<line covered="yes">        assertEquals(&quot;size() returned incorrect size&quot;, 2, diagnosticSet.size());</line>
+<line covered="yes">    }</line>
+<line/>
+<line sev="1"><diag id="910"/>    public void testGetDiagnosticsByFileName()</line>
+<line sev="1">    {</line>
+<line sev="1" covered="yes">        String fileName1 = &quot;package/subpackage1/FileName.java&quot;; </line>
+<line sev="1" covered="yes">        String fileName2 = &quot;package/subpackage2/FileName.java&quot;;</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line sev="1"/>
+<line sev="1">        // Add three diagnostics for file 1, and two for file 2 </line>
+<line sev="1" covered="yes">        Diagnostic file1Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        file1Diag1.setFileName(fileName1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(file1Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic file1Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        file1Diag2.setFileName(fileName1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(file1Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic file1Diag3 = new Diagnostic();</line>
+<line sev="1" covered="yes">        file1Diag3.setFileName(fileName1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(file1Diag3);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic file2Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        file2Diag1.setFileName(fileName2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(file2Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic file2Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        file2Diag2.setFileName(fileName2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(file2Diag2);</line>
+<line sev="1"/>
+<line covered="yes">        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagsByName = diagnosticSet.getDiagnosticsByFileName();</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of files&quot;, 2, diagsByName.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by file missing fileName1&quot;, diagsByName.containsKey(fileName1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by file missing fileName2&quot;, diagsByName.containsKey(fileName2));</line>
+<line/>
+<line>        // Check diags for first file </line>
+<line covered="yes">        List&lt;Diagnostic&gt; diags1 = diagsByName.get(fileName1);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for file 1&quot;, 3, diags1.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for file 1 missing diagnostic 1&quot;, diags1.contains(file1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for file 1 missing diagnostic 2&quot;, diags1.contains(file1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for file 1 missing diagnostic 3&quot;, diags1.contains(file1Diag3));</line>
+<line/>
+<line>        // Check diags for 2nd file </line>
+<line covered="yes">        List&lt;Diagnostic&gt; diags2 = diagsByName.get(fileName2);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for file 2&quot;, 2, diags2.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for file 2 missing diagnostic 1&quot;, diags2.contains(file2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for file 2 missing diagnostic 2&quot;, diags2.contains(file2Diag2));</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetDiagnosticsByClassName()</line>
+<line>    {</line>
+<line covered="yes">        String className1 = &quot;package.subpackage1.ClassName&quot;; </line>
+<line covered="yes">        String className2 = &quot;package.subpackage2.ClassName&quot;;</line>
+<line/>
+<line sev="1" covered="yes"><diag id="908"/><diag id="912"/>        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line sev="1"/>
+<line sev="1">        // Add three diagnostics for class 1, and two for class 2 </line>
+<line sev="1" covered="yes">        Diagnostic class1Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class1Diag1.setClassName(className1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class1Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class1Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class1Diag2.setClassName(className1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class1Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class1Diag3 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class1Diag3.setClassName(className1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class1Diag3);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class2Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class2Diag1.setClassName(className2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class2Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class2Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class2Diag2.setClassName(className2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class2Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagsByName = diagnosticSet.getDiagnosticsByClassName();</line>
+<line sev="1" covered="yes">        assertEquals(&quot;Incorrect number of classes&quot;, 2, diagsByName.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by class missing className1&quot;, diagsByName.containsKey(className1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by class missing className2&quot;, diagsByName.containsKey(className2));</line>
+<line/>
+<line>        // Check diags for first Class </line>
+<line covered="yes">        List&lt;Diagnostic&gt; diags1 = diagsByName.get(className1);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for class 1&quot;, 3, diags1.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for class 1 missing diagnostic 1&quot;, diags1.contains(class1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for class 1 missing diagnostic 2&quot;, diags1.contains(class1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for class 1 missing diagnostic 3&quot;, diags1.contains(class1Diag3));</line>
+<line/>
+<line>        // Check diags for 2nd Class </line>
+<line covered="yes">        List&lt;Diagnostic&gt; diags2 = diagsByName.get(className2);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for class 2&quot;, 2, diags2.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for class 2 missing diagnostic 1&quot;, diags2.contains(class2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for class 2 missing diagnostic 2&quot;, diags2.contains(class2Diag2));</line>
+<line covered="yes">    }</line>
+<line/>
+<line sev="1"><diag id="902"/>    public void testGetDiagnosticsByPackageName()</line>
+<line sev="1">    {</line>
+<line sev="1" covered="yes">        String topPackage = &quot;package&quot;;</line>
+<line sev="1" covered="yes">        String packageName1 = topPackage + &quot;.subpackage1&quot;; </line>
+<line sev="1" covered="yes"><diag id="446"/>        String className1 = packageName1 + &quot;.ClassName&quot;; </line>
+<line sev="1" covered="yes">        String packageName2 = topPackage + &quot;.subpackage2&quot;; </line>
+<line sev="1" covered="yes">        String className2 = packageName2 + &quot;.ClassName&quot;; </line>
+<line sev="1"/>
+<line sev="1" covered="yes"><diag id="909"/>        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line sev="1"/>
+<line sev="1">        // Add three diagnostics for class 1, and two for class 2 </line>
+<line sev="1" covered="yes">        Diagnostic class1Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class1Diag1.setClassName(className1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class1Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class1Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class1Diag2.setClassName(className1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class1Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class1Diag3 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class1Diag3.setClassName(className1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class1Diag3);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class2Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class2Diag1.setClassName(className2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class2Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class2Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class2Diag2.setClassName(className2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class2Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagsByName = diagnosticSet.getDiagnosticsByPackageName();</line>
+<line sev="1" covered="yes">        assertEquals(&quot;Incorrect number of packages&quot;, 3, diagsByName.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by package missing top package&quot;, diagsByName.containsKey(topPackage));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by package missing package 1&quot;, diagsByName.containsKey(packageName1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by package missing package 2&quot;, diagsByName.containsKey(packageName2));</line>
+<line/>
+<line>        // Check diags for first package </line>
+<line covered="yes">        List&lt;Diagnostic&gt; diags1 = diagsByName.get(packageName1);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for package 1&quot;, 3, diags1.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for package 1 missing diagnostic 1&quot;, diags1.contains(class1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for package 1 missing diagnostic 2&quot;, diags1.contains(class1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for package 1 missing diagnostic 3&quot;, diags1.contains(class1Diag3));</line>
+<line/>
+<line>        // Check diags for 2nd package </line>
+<line covered="yes">        List&lt;Diagnostic&gt; diags2 = diagsByName.get(packageName2);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for package 2&quot;, 2, diags2.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for package 1 missing diagnostic 1&quot;, diags2.contains(class2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for package 2 missing diagnostic 2&quot;, diags2.contains(class2Diag2));</line>
+<line/>
+<line>        // Check that diags for top package contains all diags</line>
+<line covered="yes">        List&lt;Diagnostic&gt; topDiags = diagsByName.get(topPackage);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for top package&quot;, 5, topDiags.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for top package missing diagnostic 1-1&quot;, topDiags.contains(class1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for top package missing diagnostic 1-2&quot;, topDiags.contains(class1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for top package missing diagnostic 1-3&quot;, topDiags.contains(class1Diag3));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for top package missing diagnostic 2-1&quot;, topDiags.contains(class2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for top package missing diagnostic 2-2&quot;, topDiags.contains(class2Diag2));</line>
+<line covered="yes">    }</line>
+<line/>
+<line sev="1"><diag id="906"/>    public void testGetDiagnosticsBySeverity()</line>
+<line sev="1">    {</line>
+<line sev="1" covered="yes">        int severity1 = Diagnostic.SEVERITY_MODERATE; </line>
+<line sev="1" covered="yes">        int severity2 = Diagnostic.SEVERITY_HIGH;</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line sev="1"/>
+<line sev="1">        // Add three diagnostics for file 1, and two for file 2 </line>
+<line sev="1" covered="yes">        Diagnostic severity1Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        severity1Diag1.setSeverity(severity1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(severity1Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic severity1Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        severity1Diag2.setSeverity(severity1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(severity1Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic severity1Diag3 = new Diagnostic();</line>
+<line sev="1" covered="yes">        severity1Diag3.setSeverity(severity1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(severity1Diag3);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic severity2Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        severity2Diag1.setSeverity(severity2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(severity2Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic severity2Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        severity2Diag2.setSeverity(severity2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(severity2Diag2);</line>
+<line sev="1"/>
+<line covered="yes">        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagsBySeverity = diagnosticSet.getDiagnosticsBySeverity();</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of severities&quot;, 2, diagsBySeverity.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by severity missing severity 1&quot;, diagsBySeverity.containsKey(String.valueOf(severity1)));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by severity missing severity 2&quot;, diagsBySeverity.containsKey(String.valueOf(severity2)));</line>
+<line/>
+<line>        // Check diags for first file </line>
+<line covered="yes">        List&lt;Diagnostic&gt; diags1 = diagsBySeverity.get(String.valueOf(severity1));</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for severity 1&quot;, 3, diags1.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for severity 1 missing diagnostic 1&quot;, diags1.contains(severity1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for severity 1 missing diagnostic 2&quot;, diags1.contains(severity1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for severity 1 missing diagnostic 3&quot;, diags1.contains(severity1Diag3));</line>
+<line/>
+<line>        // Check diags for 2nd file </line>
+<line covered="yes">        List&lt;Diagnostic&gt; diags2 = diagsBySeverity.get(String.valueOf(severity2));</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for severity 2&quot;, 2, diags2.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for severity 2 missing diagnostic 1&quot;, diags2.contains(severity2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for severity 2 missing diagnostic 2&quot;, diags2.contains(severity2Diag2));</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetDiagnosticsByTool()</line>
+<line>    {</line>
+<line covered="yes">        int tool1 = Diagnostic.SOURCE_PMD; </line>
+<line covered="yes">        int tool2 = Diagnostic.SOURCE_FINDBUGS;</line>
+<line/>
+<line sev="1" covered="yes"><diag id="914"/>        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line sev="1"/>
+<line sev="1">        // Add three diagnostics for tool 1, and two for tool 2 </line>
+<line sev="1" covered="yes">        Diagnostic tool1Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        tool1Diag1.setSource(tool1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(tool1Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic tool1Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        tool1Diag2.setSource(tool1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(tool1Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic tool1Diag3 = new Diagnostic();</line>
+<line sev="1" covered="yes">        tool1Diag3.setSource(tool1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(tool1Diag3);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic tool2Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        tool2Diag1.setSource(tool2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(tool2Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic tool2Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        tool2Diag2.setSource(tool2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(tool2Diag2);</line>
+<line sev="1"/>
+<line covered="yes">        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagsByTool = diagnosticSet.getDiagnosticsByTool();</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of tools&quot;, 2, diagsByTool.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by tool missing tool 1&quot;, diagsByTool.containsKey(String.valueOf(tool1)));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics by tool missing tool 2&quot;, diagsByTool.containsKey(String.valueOf(tool2)));</line>
+<line/>
+<line>        // Check diags for first file </line>
+<line covered="yes">        List&lt;Diagnostic&gt; diags1 = diagsByTool.get(String.valueOf(tool1));</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for tool 1&quot;, 3, diags1.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for tool 1 missing diagnostic 1&quot;, diags1.contains(tool1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for tool 1 missing diagnostic 2&quot;, diags1.contains(tool1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for tool 1 missing diagnostic 3&quot;, diags1.contains(tool1Diag3));</line>
+<line/>
+<line>        // Check diags for 2nd file </line>
+<line covered="yes">        List&lt;Diagnostic&gt; diags2 = diagsByTool.get(String.valueOf(tool2));</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for tool 2&quot;, 2, diags2.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for tool 2 missing diagnostic 1&quot;, diags2.contains(tool2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for tool 2 missing diagnostic 2&quot;, diags2.contains(tool2Diag2));</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetDiagnosticsForTool()</line>
+<line>    {</line>
+<line covered="yes">        int tool1 = Diagnostic.SOURCE_CHECKSTYLE; </line>
+<line covered="yes">        int tool2 = Diagnostic.SOURCE_PMD_CPD;</line>
+<line/>
+<line sev="1" covered="yes"><diag id="915"/>        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line sev="1"/>
+<line sev="1">        // Add three diagnostics for tool 1, and two for tool 2 </line>
+<line sev="1" covered="yes">        Diagnostic tool1Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        tool1Diag1.setSource(tool1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(tool1Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic tool1Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        tool1Diag2.setSource(tool1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(tool1Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic tool1Diag3 = new Diagnostic();</line>
+<line sev="1" covered="yes">        tool1Diag3.setSource(tool1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(tool1Diag3);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic tool2Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        tool2Diag1.setSource(tool2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(tool2Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic tool2Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        tool2Diag2.setSource(tool2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(tool2Diag2);</line>
+<line sev="1"/>
+<line>        // Check diagnostics for tool 1</line>
+<line covered="yes">        DiagnosticSet diagnosticsForTool = diagnosticSet.getDiagnosticsForTool(tool1);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for tool 1&quot;, 3, diagnosticsForTool.size());</line>
+<line/>
+<line covered="yes">        List&lt;Diagnostic&gt; diagsFromIter = new ArrayList&lt;Diagnostic&gt;(3);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForTool.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for tool 1&quot;, 3, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for tool 1 missing diagnostic 1&quot;, diagsFromIter.contains(tool1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for tool 1 missing diagnostic 2&quot;, diagsFromIter.contains(tool1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for tool 1 missing diagnostic 3&quot;, diagsFromIter.contains(tool1Diag3));</line>
+<line/>
+<line>        // Check diagnostics for tool 2</line>
+<line covered="yes">        diagnosticsForTool = diagnosticSet.getDiagnosticsForTool(tool2);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for tool 2&quot;, 2, diagnosticsForTool.size());</line>
+<line/>
+<line covered="yes">        diagsFromIter = new ArrayList&lt;Diagnostic&gt;(2);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForTool.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for tool 2&quot;, 2, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for tool 2 missing diagnostic 1&quot;, diagsFromIter.contains(tool2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for tool 2 missing diagnostic 2&quot;, diagsFromIter.contains(tool2Diag2));</line>
+<line/>
+<line>        // Check diagnostics for all tools        </line>
+<line covered="yes">        diagnosticsForTool = diagnosticSet.getDiagnosticsForTool(Diagnostic.SOURCE_ALL);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for all tools&quot;, 5, diagnosticsForTool.size());</line>
+<line/>
+<line covered="yes">        diagsFromIter = new ArrayList&lt;Diagnostic&gt;(5);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForTool.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for all tools&quot;, 5, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for all tools missing diagnostic 1-1&quot;, diagsFromIter.contains(tool1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for all tools missing diagnostic 1-2&quot;, diagsFromIter.contains(tool1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for all tools missing diagnostic 1-3&quot;, diagsFromIter.contains(tool1Diag3));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for all tools missing diagnostic 2-1&quot;, diagsFromIter.contains(tool2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for all tools missing diagnostic 2-2&quot;, diagsFromIter.contains(tool2Diag2));</line>
+<line covered="yes">    }</line>
+<line/>
+<line sev="1"><diag id="907"/>    public void testGetDiagnosticsForSeverity()</line>
+<line sev="1">    {</line>
+<line sev="1" covered="yes">        int severity1 = Diagnostic.SEVERITY_MODERATE; </line>
+<line sev="1" covered="yes">        int severity2 = Diagnostic.SEVERITY_HIGH;</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line sev="1"/>
+<line sev="1">        // Add three diagnostics for severity 1, and two for severity 2 </line>
+<line sev="1" covered="yes">        Diagnostic severity1Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        severity1Diag1.setSeverity(severity1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(severity1Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic severity1Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        severity1Diag2.setSeverity(severity1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(severity1Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic severity1Diag3 = new Diagnostic();</line>
+<line sev="1" covered="yes">        severity1Diag3.setSeverity(severity1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(severity1Diag3);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic severity2Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        severity2Diag1.setSeverity(severity2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(severity2Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic severity2Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        severity2Diag2.setSeverity(severity2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(severity2Diag2);</line>
+<line sev="1"/>
+<line>        // Check diagnostics for severity 1</line>
+<line covered="yes">        DiagnosticSet diagnosticsForSev = diagnosticSet.getDiagnosticsForSeverity(severity1);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for severity 1&quot;, 3, diagnosticsForSev.size());</line>
+<line/>
+<line covered="yes">        List&lt;Diagnostic&gt; diagsFromIter = new ArrayList&lt;Diagnostic&gt;(3);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForSev.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for severity 1&quot;, 3, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for severity 1 missing diagnostic 1&quot;, diagsFromIter.contains(severity1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for severity 1 missing diagnostic 2&quot;, diagsFromIter.contains(severity1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for severity 1 missing diagnostic 3&quot;, diagsFromIter.contains(severity1Diag3));</line>
+<line/>
+<line>        // Check diagnostics for severity 2</line>
+<line covered="yes">        diagnosticsForSev = diagnosticSet.getDiagnosticsForSeverity(severity2);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for severity 2&quot;, 2, diagnosticsForSev.size());</line>
+<line/>
+<line covered="yes">        diagsFromIter = new ArrayList&lt;Diagnostic&gt;(2);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForSev.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for severity 2&quot;, 2, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for severity 2 missing diagnostic 1&quot;, diagsFromIter.contains(severity2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for severity 2 missing diagnostic 2&quot;, diagsFromIter.contains(severity2Diag2));</line>
+<line/>
+<line>        // Check diagnostics for all severities        </line>
+<line covered="yes">        diagnosticsForSev = diagnosticSet.getDiagnosticsForSeverity(Diagnostic.SEVERITY_ALL);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for all severities&quot;, 5, diagnosticsForSev.size());</line>
+<line/>
+<line covered="yes">        diagsFromIter = new ArrayList&lt;Diagnostic&gt;(5);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForSev.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for all severities&quot;, 5, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for all severities missing diagnostic 1-1&quot;, diagsFromIter.contains(severity1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for all severities missing diagnostic 1-2&quot;, diagsFromIter.contains(severity1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for all severities missing diagnostic 1-3&quot;, diagsFromIter.contains(severity1Diag3));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for all severities missing diagnostic 2-1&quot;, diagsFromIter.contains(severity2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for all severities missing diagnostic 2-2&quot;, diagsFromIter.contains(severity2Diag2));</line>
+<line covered="yes">    }</line>
+<line/>
+<line sev="1"><diag id="903"/>    public void testGetDiagnosticsForPackage()</line>
+<line sev="1">    {</line>
+<line sev="1" covered="yes">        String topPackage = &quot;package&quot;;</line>
+<line sev="1" covered="yes">        String packageName1 = topPackage + &quot;.subpackage1&quot;; </line>
+<line sev="1" covered="yes">        String className1 = packageName1 + &quot;.ClassName&quot;; </line>
+<line sev="1" covered="yes">        String packageName2 = topPackage + &quot;.subpackage2&quot;; </line>
+<line sev="1" covered="yes">        String className2 = packageName2 + &quot;.ClassName&quot;; </line>
+<line sev="1"/>
+<line sev="1" covered="yes"><diag id="913"/>        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line sev="1"/>
+<line sev="1">        // Add three diagnostics for class 1, and two for class 2 </line>
+<line sev="1" covered="yes">        Diagnostic class1Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class1Diag1.setClassName(className1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class1Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class1Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class1Diag2.setClassName(className1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class1Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class1Diag3 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class1Diag3.setClassName(className1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class1Diag3);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class2Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class2Diag1.setClassName(className2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class2Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic class2Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        class2Diag2.setClassName(className2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(class2Diag2);</line>
+<line sev="1"/>
+<line>        // Check diagnostics for package 1</line>
+<line covered="yes">        DiagnosticSet diagnosticsForPackage = diagnosticSet.getDiagnosticsForPackage(packageName1);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for package 1&quot;, 3, diagnosticsForPackage.size());</line>
+<line/>
+<line covered="yes">        List&lt;Diagnostic&gt; diagsFromIter = new ArrayList&lt;Diagnostic&gt;(3);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForPackage.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for package 1&quot;, 3, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for package 1 missing diagnostic 1&quot;, diagsFromIter.contains(class1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for package 1 missing diagnostic 2&quot;, diagsFromIter.contains(class1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for package 1 missing diagnostic 3&quot;, diagsFromIter.contains(class1Diag3));</line>
+<line/>
+<line>        // Check diagnostics for package 2</line>
+<line covered="yes">        diagnosticsForPackage = diagnosticSet.getDiagnosticsForPackage(packageName2);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for package 2&quot;, 2, diagnosticsForPackage.size());</line>
+<line/>
+<line covered="yes">        diagsFromIter = new ArrayList&lt;Diagnostic&gt;(2);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForPackage.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for package 2&quot;, 2, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for package 2 missing diagnostic 1&quot;, diagsFromIter.contains(class2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for package 2 missing diagnostic 2&quot;, diagsFromIter.contains(class2Diag2));</line>
+<line/>
+<line>        // Check diagnostics for top package - subpackages excluded</line>
+<line covered="yes">        diagnosticsForPackage = diagnosticSet.getDiagnosticsForPackage(topPackage, false);</line>
+<line covered="yes">        assertTrue(&quot;Top package should not have any diagnostics&quot;, diagnosticsForPackage.isEmpty());</line>
+<line/>
+<line>        // Check diagnostics for top package - subpackages included</line>
+<line covered="yes">        diagnosticsForPackage = diagnosticSet.getDiagnosticsForPackage(topPackage, true);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for all packages&quot;, 5, diagnosticsForPackage.size());</line>
+<line/>
+<line covered="yes">        diagsFromIter = new ArrayList&lt;Diagnostic&gt;(2);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForPackage.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for top package&quot;, 5, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for top package missing diagnostic 1-1&quot;, diagsFromIter.contains(class1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for top package missing diagnostic 1-2&quot;, diagsFromIter.contains(class1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for top package missing diagnostic 1-3&quot;, diagsFromIter.contains(class1Diag3));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for top package missing diagnostic 2-1&quot;, diagsFromIter.contains(class2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for top package missing diagnostic 2-2&quot;, diagsFromIter.contains(class2Diag2));</line>
+<line covered="yes">    }</line>
+<line/>
+<line sev="1"><diag id="911"/>    public void testGetDiagnosticsForFile()</line>
+<line sev="1">    {</line>
+<line sev="1" covered="yes">        String fileName1 = &quot;package/subpackage1/FileName.java&quot;; </line>
+<line sev="1" covered="yes">        String fileName2 = &quot;package/subpackage2/FileName.java&quot;;</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line sev="1"/>
+<line sev="1">        // Add three diagnostics for file 1, and two for file 2 </line>
+<line sev="1" covered="yes">        Diagnostic file1Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        file1Diag1.setFileName(fileName1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(file1Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic file1Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        file1Diag2.setFileName(fileName1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(file1Diag2);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic file1Diag3 = new Diagnostic();</line>
+<line sev="1" covered="yes">        file1Diag3.setFileName(fileName1);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(file1Diag3);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic file2Diag1 = new Diagnostic();</line>
+<line sev="1" covered="yes">        file2Diag1.setFileName(fileName2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(file2Diag1);</line>
+<line sev="1"/>
+<line sev="1" covered="yes">        Diagnostic file2Diag2 = new Diagnostic();</line>
+<line sev="1" covered="yes">        file2Diag2.setFileName(fileName2);</line>
+<line sev="1" covered="yes">        diagnosticSet.add(file2Diag2);</line>
+<line sev="1"/>
+<line>        // Check diagnostics for file 1</line>
+<line covered="yes">        DiagnosticSet diagnosticsForFile = diagnosticSet.getDiagnosticsForFile(fileName1);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for file 1&quot;, 3, diagnosticsForFile.size());</line>
+<line/>
+<line covered="yes">        List&lt;Diagnostic&gt; diagsFromIter = new ArrayList&lt;Diagnostic&gt;(3);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForFile.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for file 1&quot;, 3, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for file 1 missing diagnostic 1&quot;, diagsFromIter.contains(file1Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for file 1 missing diagnostic 2&quot;, diagsFromIter.contains(file1Diag2));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for file 1 missing diagnostic 3&quot;, diagsFromIter.contains(file1Diag3));</line>
+<line/>
+<line>        // Check diagnostics for file 2</line>
+<line covered="yes">        diagnosticsForFile = diagnosticSet.getDiagnosticsForFile(fileName2);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for file 2&quot;, 2, diagnosticsForFile.size());</line>
+<line/>
+<line covered="yes">        diagsFromIter = new ArrayList&lt;Diagnostic&gt;(2);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticsForFile.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for file 2&quot;, 2, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for file 2 missing diagnostic 1&quot;, diagsFromIter.contains(file2Diag1));</line>
+<line covered="yes">        assertTrue(&quot;Diagnostics for file 2 missing diagnostic 2&quot;, diagsFromIter.contains(file2Diag2));</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testGetCountForSeverity()</line>
+<line>    {</line>
+<line covered="yes">        int severity1 = Diagnostic.SEVERITY_MODERATE; </line>
+<line covered="yes">        int severity2 = Diagnostic.SEVERITY_HIGH;</line>
+<line/>
+<line covered="yes">        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line covered="yes">        assertEquals(&quot;Count for severity returned non-zero for empty DiagnosticSet&quot;, 0, diagnosticSet.getCountForSeverity(Diagnostic.SEVERITY_ALL));</line>
+<line/>
+<line>        // Add three diagnostics for severity 1, and two for severity 2 </line>
+<line covered="yes">        Diagnostic severity1Diag1 = new Diagnostic();</line>
+<line covered="yes">        severity1Diag1.setSeverity(severity1);</line>
+<line covered="yes">        diagnosticSet.add(severity1Diag1);</line>
+<line/>
+<line covered="yes">        Diagnostic severity1Diag2 = new Diagnostic();</line>
+<line covered="yes">        severity1Diag2.setSeverity(severity1);</line>
+<line covered="yes">        diagnosticSet.add(severity1Diag2);</line>
+<line/>
+<line covered="yes">        Diagnostic severity1Diag3 = new Diagnostic();</line>
+<line covered="yes">        severity1Diag3.setSeverity(severity1);</line>
+<line covered="yes">        diagnosticSet.add(severity1Diag3);</line>
+<line/>
+<line covered="yes">        Diagnostic severity2Diag1 = new Diagnostic();</line>
+<line covered="yes">        severity2Diag1.setSeverity(severity2);</line>
+<line covered="yes">        diagnosticSet.add(severity2Diag1);</line>
+<line/>
+<line covered="yes">        Diagnostic severity2Diag2 = new Diagnostic();</line>
+<line covered="yes">        severity2Diag2.setSeverity(severity2);</line>
+<line covered="yes">        diagnosticSet.add(severity2Diag2);</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Count for severity incorrect for severity 1&quot;, 3, diagnosticSet.getCountForSeverity(severity1));</line>
+<line covered="yes">        assertEquals(&quot;Count for severity incorrect for severity 2&quot;, 2, diagnosticSet.getCountForSeverity(severity2));</line>
+<line covered="yes">        assertEquals(&quot;Count for severity incorrect for all severities&quot;, 5, diagnosticSet.getCountForSeverity(Diagnostic.SEVERITY_ALL));</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testIterator()</line>
+<line>    {</line>
+<line>        // Test that iterator returns all diagnostics</line>
+<line covered="yes">        Diagnostic diagnostic1 = new Diagnostic();</line>
+<line covered="yes">        Diagnostic diagnostic2 = new Diagnostic();</line>
+<line covered="yes">        Diagnostic diagnostic3 = new Diagnostic();</line>
+<line covered="yes">        DiagnosticSet diagnosticSet = new DiagnosticSet();</line>
+<line/>
+<line covered="yes">        diagnosticSet.add(diagnostic1);</line>
+<line covered="yes">        diagnosticSet.add(diagnostic2);</line>
+<line covered="yes">        diagnosticSet.add(diagnostic3);</line>
+<line/>
+<line covered="yes">        List&lt;Diagnostic&gt; diagsFromIter = new ArrayList&lt;Diagnostic&gt;(3);</line>
+<line/>
+<line covered="yes">        for (Iterator&lt;Diagnostic&gt; i = diagnosticSet.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line covered="yes">            diagsFromIter.add(i.next());</line>
+<line>        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Iterator returned incorrect number of elements&quot;, 3, diagsFromIter.size());</line>
+<line covered="yes">        assertTrue(&quot;Iterator missed diagnostic 1&quot;, diagsFromIter.contains(diagnostic1));</line>
+<line covered="yes">        assertTrue(&quot;Iterator missed diagnostic 2&quot;, diagsFromIter.contains(diagnostic2));</line>
+<line covered="yes">        assertTrue(&quot;Iterator missed diagnostic 3&quot;, diagsFromIter.contains(diagnostic3));</line>
+<line/>
+<line>        // Test that iterator doesn't support remove</line>
+<line>        try</line>
+<line>        {</line>
+<line covered="yes">            Iterator&lt;Diagnostic&gt; iterator = diagnosticSet.iterator();</line>
+<line covered="yes">            iterator.next();</line>
+<line covered="no">            iterator.remove();</line>
+<line/>
+<line covered="no">            fail(&quot;Should have thrown an UnsupportedOperationException&quot;);</line>
+<line>        }</line>
+<line covered="yes">        catch (UnsupportedOperationException expected)</line>
+<line>        {</line>
+<line covered="yes">            assertEquals(&quot;Diagnostic should not have been removed&quot;, 3, diagnosticSet.size());</line>
+<line covered="no">        }</line>
+<line/>
+<line>        // Test that the iterator throws the correct exception </line>
+<line>        // when it runs out of Diagnostics</line>
+<line covered="yes">        Iterator&lt;Diagnostic&gt; iterator = diagnosticSet.iterator();</line>
+<line covered="yes">        iterator.next();</line>
+<line covered="yes">        iterator.next();</line>
+<line covered="yes">        iterator.next();</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line covered="no">            iterator.next();</line>
+<line covered="no">            fail(&quot;Should have thrown a NoSuchElementException&quot;);</line>
+<line>        }</line>
+<line covered="yes">        catch (NoSuchElementException ex)</line>
+<line>        {</line>
+<line covered="yes">            assertFalse(&quot;hasNext should still return false&quot;, iterator.hasNext());</line>
+<line covered="no">        }</line>
+<line covered="yes">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="444" sev="1" tool="PMD" rule="ImportFromSamePackage">
+No need to import a type that lives in the same package
+</diag>
+<diag id="445" sev="1" tool="PMD" rule="ImportFromSamePackage">
+No need to import a type that lives in the same package
+</diag>
+<diag id="910" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+    public void testGetDiagnosticsByFileName()
+    {
+        String fileName1 = &quot;package/subpackage1/FileName.java&quot;; 
+        String fileName2 = &quot;package/subpackage2/FileName.java&quot;;
+        
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for file 1, and two for file 2 
+        Diagnostic file1Diag1 = new Diagnostic();
+        file1Diag1.setFileName(fileName1);
+        diagnosticSet.add(file1Diag1);
+        
+        Diagnostic file1Diag2 = new Diagnostic();
+        file1Diag2.setFileName(fileName1);
+        diagnosticSet.add(file1Diag2);
+        
+        Diagnostic file1Diag3 = new Diagnostic();
+        file1Diag3.setFileName(fileName1);
+        diagnosticSet.add(file1Diag3);
+
+        Diagnostic file2Diag1 = new Diagnostic();
+        file2Diag1.setFileName(fileName2);
+        diagnosticSet.add(file2Diag1);
+
+        Diagnostic file2Diag2 = new Diagnostic();
+        file2Diag2.setFileName(fileName2);
+        diagnosticSet.add(file2Diag2);</diag>
+<diag id="908" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for class 1, and two for class 2 
+        Diagnostic class1Diag1 = new Diagnostic();
+        class1Diag1.setClassName(className1);
+        diagnosticSet.add(class1Diag1);
+        
+        Diagnostic class1Diag2 = new Diagnostic();
+        class1Diag2.setClassName(className1);
+        diagnosticSet.add(class1Diag2);
+        
+        Diagnostic class1Diag3 = new Diagnostic();
+        class1Diag3.setClassName(className1);
+        diagnosticSet.add(class1Diag3);
+
+        Diagnostic class2Diag1 = new Diagnostic();
+        class2Diag1.setClassName(className2);
+        diagnosticSet.add(class2Diag1);
+
+        Diagnostic class2Diag2 = new Diagnostic();
+        class2Diag2.setClassName(className2);
+        diagnosticSet.add(class2Diag2);
+        
+        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagsByName = diagnosticSet.getDiagnosticsByClassName();</diag>
+<diag id="912" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for class 1, and two for class 2 
+        Diagnostic class1Diag1 = new Diagnostic();
+        class1Diag1.setClassName(className1);
+        diagnosticSet.add(class1Diag1);
+        
+        Diagnostic class1Diag2 = new Diagnostic();
+        class1Diag2.setClassName(className1);
+        diagnosticSet.add(class1Diag2);
+        
+        Diagnostic class1Diag3 = new Diagnostic();
+        class1Diag3.setClassName(className1);
+        diagnosticSet.add(class1Diag3);
+
+        Diagnostic class2Diag1 = new Diagnostic();
+        class2Diag1.setClassName(className2);
+        diagnosticSet.add(class2Diag1);
+
+        Diagnostic class2Diag2 = new Diagnostic();
+        class2Diag2.setClassName(className2);
+        diagnosticSet.add(class2Diag2);</diag>
+<diag id="902" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+    public void testGetDiagnosticsByPackageName()
+    {
+        String topPackage = &quot;package&quot;;
+        String packageName1 = topPackage + &quot;.subpackage1&quot;; 
+        String className1 = packageName1 + &quot;.ClassName&quot;; 
+        String packageName2 = topPackage + &quot;.subpackage2&quot;; 
+        String className2 = packageName2 + &quot;.ClassName&quot;; 
+        
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for class 1, and two for class 2 
+        Diagnostic class1Diag1 = new Diagnostic();
+        class1Diag1.setClassName(className1);
+        diagnosticSet.add(class1Diag1);
+        
+        Diagnostic class1Diag2 = new Diagnostic();
+        class1Diag2.setClassName(className1);
+        diagnosticSet.add(class1Diag2);
+        
+        Diagnostic class1Diag3 = new Diagnostic();
+        class1Diag3.setClassName(className1);
+        diagnosticSet.add(class1Diag3);
+
+        Diagnostic class2Diag1 = new Diagnostic();
+        class2Diag1.setClassName(className2);
+        diagnosticSet.add(class2Diag1);
+
+        Diagnostic class2Diag2 = new Diagnostic();
+        class2Diag2.setClassName(className2);
+        diagnosticSet.add(class2Diag2);</diag>
+<diag id="446" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">
+The String literal &quot;.ClassName&quot; appears 4 times in this file; the first occurrence is on line 144
+</diag>
+<diag id="909" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for class 1, and two for class 2 
+        Diagnostic class1Diag1 = new Diagnostic();
+        class1Diag1.setClassName(className1);
+        diagnosticSet.add(class1Diag1);
+        
+        Diagnostic class1Diag2 = new Diagnostic();
+        class1Diag2.setClassName(className1);
+        diagnosticSet.add(class1Diag2);
+        
+        Diagnostic class1Diag3 = new Diagnostic();
+        class1Diag3.setClassName(className1);
+        diagnosticSet.add(class1Diag3);
+
+        Diagnostic class2Diag1 = new Diagnostic();
+        class2Diag1.setClassName(className2);
+        diagnosticSet.add(class2Diag1);
+
+        Diagnostic class2Diag2 = new Diagnostic();
+        class2Diag2.setClassName(className2);
+        diagnosticSet.add(class2Diag2);
+        
+        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagsByName = diagnosticSet.getDiagnosticsByClassName();</diag>
+<diag id="906" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+    public void testGetDiagnosticsBySeverity()
+    {
+        int severity1 = Diagnostic.SEVERITY_MODERATE; 
+        int severity2 = Diagnostic.SEVERITY_HIGH;
+        
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for file 1, and two for file 2 
+        Diagnostic severity1Diag1 = new Diagnostic();
+        severity1Diag1.setSeverity(severity1);
+        diagnosticSet.add(severity1Diag1);
+        
+        Diagnostic severity1Diag2 = new Diagnostic();
+        severity1Diag2.setSeverity(severity1);
+        diagnosticSet.add(severity1Diag2);
+        
+        Diagnostic severity1Diag3 = new Diagnostic();
+        severity1Diag3.setSeverity(severity1);
+        diagnosticSet.add(severity1Diag3);
+
+        Diagnostic severity2Diag1 = new Diagnostic();
+        severity2Diag1.setSeverity(severity2);
+        diagnosticSet.add(severity2Diag1);
+
+        Diagnostic severity2Diag2 = new Diagnostic();
+        severity2Diag2.setSeverity(severity2);
+        diagnosticSet.add(severity2Diag2);</diag>
+<diag id="914" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for tool 1, and two for tool 2 
+        Diagnostic tool1Diag1 = new Diagnostic();
+        tool1Diag1.setSource(tool1);
+        diagnosticSet.add(tool1Diag1);
+        
+        Diagnostic tool1Diag2 = new Diagnostic();
+        tool1Diag2.setSource(tool1);
+        diagnosticSet.add(tool1Diag2);
+        
+        Diagnostic tool1Diag3 = new Diagnostic();
+        tool1Diag3.setSource(tool1);
+        diagnosticSet.add(tool1Diag3);
+
+        Diagnostic tool2Diag1 = new Diagnostic();
+        tool2Diag1.setSource(tool2);
+        diagnosticSet.add(tool2Diag1);
+
+        Diagnostic tool2Diag2 = new Diagnostic();
+        tool2Diag2.setSource(tool2);
+        diagnosticSet.add(tool2Diag2);</diag>
+<diag id="915" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for tool 1, and two for tool 2 
+        Diagnostic tool1Diag1 = new Diagnostic();
+        tool1Diag1.setSource(tool1);
+        diagnosticSet.add(tool1Diag1);
+        
+        Diagnostic tool1Diag2 = new Diagnostic();
+        tool1Diag2.setSource(tool1);
+        diagnosticSet.add(tool1Diag2);
+        
+        Diagnostic tool1Diag3 = new Diagnostic();
+        tool1Diag3.setSource(tool1);
+        diagnosticSet.add(tool1Diag3);
+
+        Diagnostic tool2Diag1 = new Diagnostic();
+        tool2Diag1.setSource(tool2);
+        diagnosticSet.add(tool2Diag1);
+
+        Diagnostic tool2Diag2 = new Diagnostic();
+        tool2Diag2.setSource(tool2);
+        diagnosticSet.add(tool2Diag2);</diag>
+<diag id="907" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+    public void testGetDiagnosticsBySeverity()
+    {
+        int severity1 = Diagnostic.SEVERITY_MODERATE; 
+        int severity2 = Diagnostic.SEVERITY_HIGH;
+        
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for file 1, and two for file 2 
+        Diagnostic severity1Diag1 = new Diagnostic();
+        severity1Diag1.setSeverity(severity1);
+        diagnosticSet.add(severity1Diag1);
+        
+        Diagnostic severity1Diag2 = new Diagnostic();
+        severity1Diag2.setSeverity(severity1);
+        diagnosticSet.add(severity1Diag2);
+        
+        Diagnostic severity1Diag3 = new Diagnostic();
+        severity1Diag3.setSeverity(severity1);
+        diagnosticSet.add(severity1Diag3);
+
+        Diagnostic severity2Diag1 = new Diagnostic();
+        severity2Diag1.setSeverity(severity2);
+        diagnosticSet.add(severity2Diag1);
+
+        Diagnostic severity2Diag2 = new Diagnostic();
+        severity2Diag2.setSeverity(severity2);
+        diagnosticSet.add(severity2Diag2);</diag>
+<diag id="903" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+    public void testGetDiagnosticsByPackageName()
+    {
+        String topPackage = &quot;package&quot;;
+        String packageName1 = topPackage + &quot;.subpackage1&quot;; 
+        String className1 = packageName1 + &quot;.ClassName&quot;; 
+        String packageName2 = topPackage + &quot;.subpackage2&quot;; 
+        String className2 = packageName2 + &quot;.ClassName&quot;; 
+        
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for class 1, and two for class 2 
+        Diagnostic class1Diag1 = new Diagnostic();
+        class1Diag1.setClassName(className1);
+        diagnosticSet.add(class1Diag1);
+        
+        Diagnostic class1Diag2 = new Diagnostic();
+        class1Diag2.setClassName(className1);
+        diagnosticSet.add(class1Diag2);
+        
+        Diagnostic class1Diag3 = new Diagnostic();
+        class1Diag3.setClassName(className1);
+        diagnosticSet.add(class1Diag3);
+
+        Diagnostic class2Diag1 = new Diagnostic();
+        class2Diag1.setClassName(className2);
+        diagnosticSet.add(class2Diag1);
+
+        Diagnostic class2Diag2 = new Diagnostic();
+        class2Diag2.setClassName(className2);
+        diagnosticSet.add(class2Diag2);</diag>
+<diag id="913" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for class 1, and two for class 2 
+        Diagnostic class1Diag1 = new Diagnostic();
+        class1Diag1.setClassName(className1);
+        diagnosticSet.add(class1Diag1);
+        
+        Diagnostic class1Diag2 = new Diagnostic();
+        class1Diag2.setClassName(className1);
+        diagnosticSet.add(class1Diag2);
+        
+        Diagnostic class1Diag3 = new Diagnostic();
+        class1Diag3.setClassName(className1);
+        diagnosticSet.add(class1Diag3);
+
+        Diagnostic class2Diag1 = new Diagnostic();
+        class2Diag1.setClassName(className2);
+        diagnosticSet.add(class2Diag1);
+
+        Diagnostic class2Diag2 = new Diagnostic();
+        class2Diag2.setClassName(className2);
+        diagnosticSet.add(class2Diag2);</diag>
+<diag id="911" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
+    public void testGetDiagnosticsByFileName()
+    {
+        String fileName1 = &quot;package/subpackage1/FileName.java&quot;; 
+        String fileName2 = &quot;package/subpackage2/FileName.java&quot;;
+        
+        DiagnosticSet diagnosticSet = new DiagnosticSet();
+
+        // Add three diagnostics for file 1, and two for file 2 
+        Diagnostic file1Diag1 = new Diagnostic();
+        file1Diag1.setFileName(fileName1);
+        diagnosticSet.add(file1Diag1);
+        
+        Diagnostic file1Diag2 = new Diagnostic();
+        file1Diag2.setFileName(fileName1);
+        diagnosticSet.add(file1Diag2);
+        
+        Diagnostic file1Diag3 = new Diagnostic();
+        file1Diag3.setFileName(fileName1);
+        diagnosticSet.add(file1Diag3);
+
+        Diagnostic file2Diag1 = new Diagnostic();
+        file2Diag1.setFileName(fileName2);
+        diagnosticSet.add(file2Diag1);
+
+        Diagnostic file2Diag2 = new Diagnostic();
+        file2Diag2.setFileName(fileName2);
+        diagnosticSet.add(file2Diag2);</diag>
+</diags>
+</classDetails>

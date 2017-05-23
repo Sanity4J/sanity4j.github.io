@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-by-rule.xsl"?>
+<packageByRule packageName="com.github.sanity4j.model.diagnostic" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<rule name="AvoidDuplicateLiterals" tool="PMD" severity="1">
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticSet_Test">
+<diag id="446"/>
+</class>
+</rule>
+<rule name="AvoidInstantiatingObjectsInLoops" tool="PMD" severity="0">
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticCategory">
+<diag id="431"/>
+</class>
+</rule>
+<rule name="AvoidSynchronizedAtMethodLevel" tool="PMD" severity="2">
+<class name="com.github.sanity4j.model.diagnostic.Diagnostic">
+<diag id="429"/>
+</class>
+</rule>
+<rule name="CloneMethodReturnTypeMustMatchClassName" tool="PMD" severity="3">
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticSet">
+<diag id="441"/>
+</class>
+</rule>
+<rule name="ConstantNameCheck" tool="Checkstyle" severity="1">
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticFactory">
+<diag id="106"/>
+</class>
+</rule>
+<rule name="DMI_HARDCODED_ABSOLUTE_FILENAME" tool="Findbugs" severity="3">
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticFactory">
+<diag id="294"/>
+</class>
+</rule>
+<rule name="DoNotCopyAndPasteCode" tool="PMD-CPD" severity="1">
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticSet_Test">
+<diag id="902"/>
+<diag id="903"/>
+<diag id="906"/>
+<diag id="907"/>
+<diag id="908"/>
+<diag id="909"/>
+<diag id="910"/>
+<diag id="911"/>
+<diag id="912"/>
+<diag id="913"/>
+<diag id="914"/>
+<diag id="915"/>
+</class>
+</rule>
+<rule name="GodClass" tool="PMD" severity="2">
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticSet">
+<diag id="434"/>
+</class>
+</rule>
+<rule name="HiddenFieldCheck" tool="Checkstyle" severity="1">
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticCategory">
+<diag id="96"/>
+</class>
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticFactory">
+<diag id="107"/>
+</class>
+</rule>
+<rule name="ImportFromSamePackage" tool="PMD" severity="1">
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticCategory_Test">
+<diag id="432"/>
+<diag id="433"/>
+</class>
+<class name="com.github.sanity4j.model.diagnostic.DiagnosticSet_Test">
+<diag id="444"/>
+<diag id="445"/>
+</class>
+<class name="com.github.sanity4j.model.diagnostic.Diagnostic_Test">
+<diag id="447"/>
+</class>
+</rule>
+<rule name="JavadocPackageCheck" tool="Checkstyle" severity="1">
+<class name="com.github.sanity4j.model.diagnostic.Diagnostic">
+<diag id="68"/>
+</class>
+</rule>
+<rule name="PrematureDeclaration" tool="PMD" severity="1">
+<class name="com.github.sanity4j.model.diagnostic.Diagnostic">
+<diag id="430"/>
+</class>
+</rule>
+</packageByRule>

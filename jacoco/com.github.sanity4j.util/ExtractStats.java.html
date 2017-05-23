@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExtractStats.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.util</a> &gt; <span class="el_source">ExtractStats.java</span></div><h1>ExtractStats.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.github.sanity4j.model.coverage.Coverage;
+import com.github.sanity4j.model.coverage.PackageCoverage;
+import com.github.sanity4j.model.diagnostic.Diagnostic;
+import com.github.sanity4j.model.diagnostic.DiagnosticSet;
+import com.github.sanity4j.model.summary.PackageSummary;
+import com.github.sanity4j.model.summary.SummaryCsvMarshaller;
+
+/**
+ * Utility class for extracting statistics from the various tool's XML outputs.
+ * Since many of the tools use different versions of paths (e.g. short
+ * file names on win32), the canonical path must be used when referring
+ * to any path.
+ *  
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public final class ExtractStats
+{
+    /** The directory containing the source code. */
+    private final String sourceDirectory;
+    
+    /** The set of diagnostics for the current run. */
+<span class="fc" id="L35">    private final DiagnosticSet diagnostics = new DiagnosticSet();</span>
+    
+    /** Top-level Unit test coverage. */
+<span class="fc" id="L38">    private final Coverage coverage = new Coverage();</span>
+    
+    /** Lines of code, by package name. */
+<span class="fc" id="L41">    private final Map&lt;String, Integer&gt; lineCountByPackage = new HashMap&lt;String, Integer&gt;();</span>
+    
+    /** Lines of code, by class name. */
+<span class="fc" id="L44">    private final Map&lt;String, Integer&gt; lineCountByClass = new HashMap&lt;String, Integer&gt;();</span>
+    
+    /** Number of classes per package, by package name. */
+<span class="fc" id="L47">    private final Map&lt;String, Integer&gt; classCountByPackage = new HashMap&lt;String, Integer&gt;();</span>
+    
+    /** Run summaries, by package name. */
+<span class="fc" id="L50">    private final Map&lt;String, List&lt;PackageSummary&gt;&gt; summaryByPackage = new HashMap&lt;String, List&lt;PackageSummary&gt;&gt;();</span>
+    
+    /** Summarised data for the current run. */
+    private PackageSummary[] currentRunSummary;
+    
+    /** A default size for a buffer. */
+    private static final int BUF_SIZE = 4096;
+	
+	/**
+     * Creates an ExtractStats.
+     * 
+     * @param sourceDirectory the source directory
+     * @throws IOException if there is an error determining the canonical path of the source directory
+     */
+    public ExtractStats(final String sourceDirectory) throws IOException
+<span class="fc" id="L65">    {</span>
+<span class="fc" id="L66">        this.sourceDirectory = getCanonicalPath(sourceDirectory);</span>
+<span class="fc" id="L67">    }</span>
+	
+	/**
+     * @return the source directory
+     */
+    public String getSourceDirectory()
+    {
+<span class="fc" id="L74">        return sourceDirectory;</span>
+    }
+
+    /** @return the set of Diagnostics */
+    public DiagnosticSet getDiagnostics()
+    {
+<span class="fc" id="L80">        return diagnostics;</span>
+    }
+
+    /** @return the coverage */
+    public Coverage getCoverage()
+    {
+<span class="fc" id="L86">        return coverage;</span>
+    }
+	
+	/**
+	 * Extracts source file line counts for all source files .
+     * @throws IOException if there is an error reading from a file
+	 */
+	public void extractLineCounts() throws IOException
+	{
+<span class="fc" id="L95">	    extractLineCounts(new File(sourceDirectory));</span>
+<span class="fc" id="L96">	}</span>
+
+	/**
+     * Extract source file line counts.
+     * 
+     * @param file the file to count lines for
+     * @throws IOException if there is an error reading from a file
+     */
+    private void extractLineCounts(final File file) throws IOException
+    {
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (file.isDirectory())</span>
+        {
+<span class="fc" id="L108">            File[] children = file.listFiles();</span>
+
+<span class="fc bfc" id="L110" title="All 2 branches covered.">            for (int i = 0; i &lt; children.length; i++)</span>
+            {
+<span class="fc" id="L112">                extractLineCounts(children[i]);</span>
+            }
+<span class="fc" id="L114">        }</span>
+        else
+        {
+<span class="fc" id="L117">            int lineCount = countLines(file);</span>
+<span class="fc" id="L118">            String path = file.getCanonicalPath();</span>
+<span class="fc" id="L119">            String className = getClassNameForSourcePath(path);</span>
+<span class="fc" id="L120">            String packageName = getPackageName(path);</span>
+
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">            if (&quot;&quot;.equals(packageName))</span>
+            {
+<span class="nc" id="L124">                packageName = &quot;default&quot;;</span>
+            }
+
+<span class="fc" id="L127">            lineCountByClass.put(className, lineCount);</span>
+
+<span class="fc" id="L129">            Integer packageLineCount = lineCountByPackage.get(packageName);</span>
+
+<span class="fc bfc" id="L131" title="All 2 branches covered.">            if (packageLineCount == null)</span>
+            {
+<span class="fc" id="L133">                lineCountByPackage.put(packageName, lineCount);</span>
+            }
+            else
+            {
+<span class="fc" id="L137">                packageLineCount = packageLineCount.intValue() + lineCount;</span>
+<span class="fc" id="L138">                lineCountByPackage.put(packageName, packageLineCount);</span>
+            }
+
+<span class="fc" id="L141">            Integer packageClassCount = classCountByPackage.get(packageName);</span>
+
+<span class="fc bfc" id="L143" title="All 2 branches covered.">            if (packageClassCount == null)</span>
+            {
+<span class="fc" id="L145">                classCountByPackage.put(packageName, 1);</span>
+            }
+            else
+            {
+<span class="fc" id="L149">                packageClassCount = packageClassCount.intValue() + 1;</span>
+<span class="fc" id="L150">                classCountByPackage.put(packageName, packageClassCount);</span>
+            }
+        }
+<span class="fc" id="L153">    }</span>
+	
+	/**
+     * Counts the number of lines in a file.
+     * 
+     * @param file the text file to count lines for
+     * @return the number of lines in the file
+     * @throws IOException if there is an error reading from the file
+     */
+    private int countLines(final File file) throws IOException
+    {
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">        int count = file.length() == 0 ? 0 : 1;</span>
+
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">        if (file.length() &gt; 0)</span>
+        {
+<span class="nc" id="L168">            byte[] buf = new byte[BUF_SIZE];</span>
+<span class="nc" id="L169">            FileInputStream fis = null;</span>
+
+            try
+            {
+<span class="nc" id="L173">                fis = new FileInputStream(file);</span>
+
+<span class="nc bnc" id="L175" title="All 2 branches missed.">                for (int len = fis.read(buf); len != -1; len = fis.read(buf))</span>
+                {
+<span class="nc bnc" id="L177" title="All 2 branches missed.">                    for (int i = 0; i &lt; len; i++)</span>
+                    {
+<span class="nc bnc" id="L179" title="All 2 branches missed.">                        if (buf[i] == '\n')</span>
+                        {
+<span class="nc" id="L181">                            count++;</span>
+                        }
+                    }
+                }
+            }
+            finally
+            {
+<span class="nc" id="L188">                QaUtil.safeClose(fis);</span>
+<span class="nc" id="L189">            }</span>
+        }
+
+<span class="fc" id="L192">        return count;</span>
+    }
+	
+	/**
+     * Returns the canonical (unique) version of the given path. See File.getCanonicalPath().
+     * 
+     * @param path the path
+     * @return the canonical version of the path
+     * @throws IOException if there is a problem retrieving the path
+     */
+    public String getCanonicalPath(final String path) throws IOException
+    {
+<span class="fc" id="L204">        File file = new File(path);</span>
+
+        // May be relative to the source directory
+<span class="fc bfc" id="L207" title="All 2 branches covered.">        if (!file.exists())</span>
+        {
+<span class="fc" id="L209">            File relativeFile = new File(sourceDirectory, path);</span>
+
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">            if (relativeFile.exists())</span>
+            {
+<span class="fc" id="L213">                file = relativeFile;</span>
+            }
+        }
+
+        // The file still may not exist, for example, generated classes,
+        // with debugging info, where the source was deleted afterwards
+
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">        return file.exists() ? file.getCanonicalPath() : null;</span>
+    }
+	
+	/**
+     * Returns the class name for the given source path.
+     * 
+     * @param sourcePath the source path
+     * @return the class name, or &quot;unknown&quot; if not a class
+     */
+    public String getClassNameForSourcePath(final String sourcePath)
+    {
+<span class="fc" id="L231">        String className = &quot;unknown&quot;;</span>
+
+<span class="pc bpc" id="L233" title="2 of 4 branches missed.">        if (sourcePath != null &amp;&amp; sourcePath.toLowerCase().endsWith(&quot;.java&quot;))</span>
+        {
+<span class="fc" id="L235">            int basePathLength = getSourceDirectory().length() + 1;</span>
+<span class="fc" id="L236">            String relativeSourcePath = sourcePath.substring(basePathLength);</span>
+
+            // Strip off the file extension (if any)
+<span class="fc" id="L239">            int dotIndex = relativeSourcePath.lastIndexOf('.');</span>
+<span class="fc" id="L240">            int lastPathIndex = relativeSourcePath.lastIndexOf(File.separatorChar);</span>
+
+<span class="pc bpc" id="L242" title="1 of 2 branches missed.">            if (dotIndex &gt; lastPathIndex)</span>
+            {
+<span class="fc" id="L244">                relativeSourcePath = relativeSourcePath.substring(0, dotIndex);</span>
+            }
+
+<span class="fc" id="L247">            className = relativeSourcePath.replace(File.separatorChar, '.');</span>
+        }
+
+<span class="fc" id="L250">        return className;</span>
+    }
+	
+	/**
+     * Determines the &quot;correct&quot; package name for a java source file, given its 
+     * full path. The path is assumed to be inside getSourceDirectory() .
+     * 
+     * @param sourceFilePath the full path to the source file
+     * @return the package name for the given source file.
+     */
+    public String getPackageName(final String sourceFilePath)
+    {
+    	// Find the directory containing for the given sourceFilePath.
+<span class="fc" id="L263">    	String sourceDir = sourceFilePath;</span>
+<span class="fc" id="L264">        File sourceFile = new File(sourceFilePath);</span>
+
+<span class="pc bpc" id="L266" title="1 of 2 branches missed.">        if (!sourceFile.isDirectory())</span>
+        {
+<span class="fc" id="L268">            sourceDir = sourceFile.getParent();</span>
+        }
+
+        // If we are in the default package return &quot;&quot;;
+<span class="fc" id="L272">        int sourceDirectoryLength = getSourceDirectory().length() + 1;</span>
+
+<span class="pc bpc" id="L274" title="2 of 4 branches missed.">        if (sourceDir.equals(getSourceDirectory()) || sourceDir.length() &lt; sourceDirectoryLength)</span>
+        {
+<span class="nc" id="L276">            return &quot;&quot;;</span>
+        }
+
+<span class="fc" id="L279">        String relativePath = sourceDir.substring(sourceDirectoryLength);</span>
+<span class="fc" id="L280">        String packageName = relativePath.replace(File.separatorChar, '.');</span>
+        
+<span class="fc" id="L282">        return packageName;</span>
+    }
+
+    /**
+     * @return the total line count
+     */
+    public int getLineCount()
+    {
+<span class="fc" id="L290">        int count = 0;</span>
+
+<span class="fc bfc" id="L292" title="All 2 branches covered.">        for (Integer packageCount : lineCountByPackage.values())</span>
+        {
+<span class="fc" id="L294">            count += packageCount;</span>
+<span class="fc" id="L295">        }</span>
+
+<span class="fc" id="L297">        return count;</span>
+    }
+
+    /**
+     * @return the total class count
+     */
+    public int getClassCount()
+    {
+<span class="fc" id="L305">        int count = 0;</span>
+
+<span class="fc bfc" id="L307" title="All 2 branches covered.">        for (Integer classCount : classCountByPackage.values())</span>
+        {
+<span class="fc" id="L309">            count += classCount;</span>
+<span class="fc" id="L310">        }</span>
+
+<span class="fc" id="L312">        return count;</span>
+    }
+	
+	/**
+     * Retrieves the line count for the given package.
+     * 
+     * @param packageName the package name
+     * @return the line count for the given package
+     */
+    public int getPackageLineCount(final String packageName)
+    {
+<span class="nc" id="L323">        Integer count = lineCountByPackage.get(packageName);</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">        return count == null ? 0 : count.intValue();</span>
+    }
+
+    /**
+     * Retrieves the class count for the given package.
+     * 
+     * @param packageName the package name
+     * @return the class count for the given package
+     */
+    public int getPackageClassCount(final String packageName)
+    {
+<span class="fc" id="L335">        Integer count = classCountByPackage.get(packageName);</span>
+<span class="pc bpc" id="L336" title="1 of 2 branches missed.">        return count == null ? 0 : count.intValue();</span>
+    }
+	
+	/**
+	 * Retrieves the line count for the given class.
+	 * 
+	 * @param className the class name
+	 * @return the line count for the given class
+	 */
+	public int getClassLineCount(final String className)
+	{
+<span class="nc" id="L347">	    Integer count = lineCountByClass.get(className);	    </span>
+<span class="nc bnc" id="L348" title="All 2 branches missed.">	    return count == null ? 0 : count.intValue();</span>
+	}
+	
+	/**
+     * Reads the historical summary information.
+     * 
+     * @param summaryFile the file to read from
+     * @throws IOException if there is an error reading from the summary file 
+     */
+	public void extractHistoricalSummary(final File summaryFile) throws IOException
+	{
+	    // Retrieve the summaries
+<span class="nc" id="L360">	    SummaryCsvMarshaller marshaller = new SummaryCsvMarshaller();</span>
+<span class="nc" id="L361">	    PackageSummary[] summaries = marshaller.read(summaryFile);</span>
+	    
+	    // Hash them by package name for efficiency
+<span class="nc" id="L364">	    addSummariesToSummaryMap(summaries);</span>
+<span class="nc" id="L365">	}</span>
+	
+	/**
+     * Retrieves the summary for the given package.
+     * 
+     * @param packageName the package name
+	 * @return a summary of the package quality over time, may be empty
+	 */
+	public PackageSummary[] getPackageSummary(final String packageName)
+	{
+<span class="nc bnc" id="L375" title="All 2 branches missed.">	    if (currentRunSummary == null)</span>
+	    {
+<span class="nc" id="L377">	        summariseCurrentRun();</span>
+	    }
+	    
+<span class="nc" id="L380">	    List&lt;PackageSummary&gt; summaries = summaryByPackage.get(packageName);</span>
+
+<span class="nc bnc" id="L382" title="All 2 branches missed.">	    if (summaries == null)</span>
+	    {
+<span class="nc" id="L384">	        return new PackageSummary[0];</span>
+	    }
+	    else
+	    {
+<span class="nc" id="L388">	        return summaries.toArray(new PackageSummary[summaries.size()]); </span>
+	    }
+	}
+	
+	/**
+	 * @return a summary of the quality for this run
+	 */
+	public PackageSummary[] getRunSummary()
+	{
+<span class="pc bpc" id="L397" title="1 of 2 branches missed.">	    if (currentRunSummary == null)</span>
+	    {
+<span class="fc" id="L399">	        summariseCurrentRun();</span>
+	    }	
+	    
+<span class="fc" id="L402">	    return currentRunSummary;</span>
+	}
+	
+	/**
+	 * Appends the current run into the package summary map.
+	 */
+	private void summariseCurrentRun()
+	{
+<span class="fc" id="L410">        List&lt;PackageSummary&gt; entries = new ArrayList&lt;PackageSummary&gt;();</span>
+<span class="fc" id="L411">        Set&lt;String&gt; packageNames = classCountByPackage.keySet();</span>
+<span class="fc" id="L412">        Date currentDate = new Date();</span>
+        
+        // Summary for all packages
+<span class="fc" id="L415">	    PackageSummary rootEntry = new PackageSummary();</span>
+<span class="fc" id="L416">	    rootEntry.setPackageName(&quot;&quot;);</span>
+<span class="fc" id="L417">	    rootEntry.setRunDate(currentDate);</span>
+<span class="fc" id="L418">	    rootEntry.setLineCoverage(coverage.getLineCoverage());</span>
+<span class="fc" id="L419">	    rootEntry.setBranchCoverage(coverage.getBranchCoverage());</span>
+<span class="fc" id="L420">	    rootEntry.setInfoCount(diagnostics.getCountForSeverity(Diagnostic.SEVERITY_INFO));</span>
+<span class="fc" id="L421">        rootEntry.setLowCount(diagnostics.getCountForSeverity(Diagnostic.SEVERITY_LOW));</span>
+<span class="fc" id="L422">        rootEntry.setModerateCount(diagnostics.getCountForSeverity(Diagnostic.SEVERITY_MODERATE));</span>
+<span class="fc" id="L423">        rootEntry.setSignificantCount(diagnostics.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT));</span>
+<span class="fc" id="L424">        rootEntry.setHighCount(diagnostics.getCountForSeverity(Diagnostic.SEVERITY_HIGH));</span>
+<span class="fc" id="L425">        rootEntry.setLineCount(getLineCount());</span>
+<span class="fc" id="L426">        entries.add(rootEntry);</span>
+        
+        // For each package
+<span class="fc bfc" id="L429" title="All 2 branches covered.">    	for (String packageName : packageNames)</span>
+    	{
+<span class="fc" id="L431">    	    PackageSummary entry = new PackageSummary();</span>
+<span class="fc" id="L432">            entry.setPackageName(packageName);</span>
+<span class="fc" id="L433">    	    entry.setRunDate(currentDate);</span>
+            
+<span class="fc" id="L435">            PackageCoverage packageCoverage = coverage.getPackageCoverage(packageName);</span>
+            
+<span class="pc bpc" id="L437" title="1 of 2 branches missed.">            if (packageCoverage != null)</span>
+            {
+<span class="nc" id="L439">	            entry.setLineCoverage(packageCoverage.getLineCoverage());</span>
+<span class="nc" id="L440">	            entry.setBranchCoverage(packageCoverage.getBranchCoverage());</span>
+            }
+            
+            // Diagnostics &amp; line-counts for this package and sub-packages
+<span class="fc" id="L444">            DiagnosticSet diagsForPackage = diagnostics.getDiagnosticsForPackage(packageName);</span>
+<span class="fc" id="L445">            int lineCountForPackage = (lineCountByPackage.get(packageName)).intValue();</span>
+<span class="fc" id="L446">            String packageNamePlusDot = packageName + '.';</span>
+            
+<span class="fc bfc" id="L448" title="All 2 branches covered.">            for (String otherPackageName : lineCountByPackage.keySet())</span>
+            {
+<span class="fc bfc" id="L450" title="All 2 branches covered.">                if (otherPackageName.startsWith(packageNamePlusDot))</span>
+                {
+<span class="fc" id="L452">                    Integer lineCount = (lineCountByPackage.get(otherPackageName));</span>
+<span class="fc" id="L453">                    lineCountForPackage += lineCount.intValue();</span>
+                }
+<span class="fc" id="L455">            }</span>
+            
+<span class="fc" id="L457">            entry.setInfoCount(diagsForPackage.getCountForSeverity(Diagnostic.SEVERITY_INFO));</span>
+<span class="fc" id="L458">            entry.setLowCount(diagsForPackage.getCountForSeverity(Diagnostic.SEVERITY_LOW));</span>
+<span class="fc" id="L459">            entry.setModerateCount(diagsForPackage.getCountForSeverity(Diagnostic.SEVERITY_MODERATE));</span>
+<span class="fc" id="L460">            entry.setSignificantCount(diagsForPackage.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT));</span>
+<span class="fc" id="L461">            entry.setHighCount(diagsForPackage.getCountForSeverity(Diagnostic.SEVERITY_HIGH));</span>
+<span class="fc" id="L462">            entry.setLineCount(lineCountForPackage);</span>
+            
+<span class="fc" id="L464">            entries.add(entry);</span>
+<span class="fc" id="L465">    	}        </span>
+
+<span class="fc" id="L467">    	currentRunSummary = entries.toArray(new PackageSummary[entries.size()]);</span>
+    	
+    	// Now add them to the summary map
+<span class="fc" id="L470">    	addSummariesToSummaryMap(currentRunSummary);</span>
+<span class="fc" id="L471">	}</span>
+	
+	/**
+	 * Adds the given package summaries to the summary by package map.
+	 * @param summaries the summaries to add
+	 */
+	private void addSummariesToSummaryMap(final PackageSummary[] summaries)
+	{
+<span class="fc bfc" id="L479" title="All 2 branches covered.">	    for (int i = 0; i &lt; summaries.length; i++)</span>
+	    {
+<span class="fc" id="L481">	        PackageSummary summary = summaries[i];</span>
+<span class="fc" id="L482">	        List&lt;PackageSummary&gt; summariesForPackage = summaryByPackage.get(summary.getPackageName());</span>
+	        
+<span class="pc bpc" id="L484" title="1 of 2 branches missed.">	        if (summariesForPackage == null)</span>
+	        {
+<span class="fc" id="L486">	            summariesForPackage = new ArrayList&lt;PackageSummary&gt;();</span>
+<span class="fc" id="L487">	            summaryByPackage.put(summary.getPackageName(), summariesForPackage);	            </span>
+	        }
+	        
+<span class="fc" id="L490">	        summariesForPackage.add(summary);</span>
+	    }	    
+<span class="fc" id="L492">	}	</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

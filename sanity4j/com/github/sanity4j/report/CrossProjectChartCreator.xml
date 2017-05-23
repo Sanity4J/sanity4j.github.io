@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.report.CrossProjectChartCreator" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="2" info="7" quality="98"/>
+<source>
+<line>package com.github.sanity4j.report;</line>
+<line/>
+<line>import java.awt.BasicStroke;</line>
+<line>import java.awt.Color;</line>
+<line>import java.awt.image.BufferedImage;</line>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.text.SimpleDateFormat;</line>
+<line/>
+<line>import javax.imageio.ImageIO;</line>
+<line/>
+<line>import org.jfree.chart.JFreeChart;</line>
+<line>import org.jfree.chart.axis.DateAxis;</line>
+<line>import org.jfree.chart.plot.XYPlot;</line>
+<line>import org.jfree.chart.renderer.xy.XYItemRenderer;</line>
+<line>import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;</line>
+<line>import org.jfree.data.time.Second;</line>
+<line>import org.jfree.data.time.TimeSeries;</line>
+<line>import org.jfree.data.time.TimeSeriesCollection;</line>
+<line>import org.jfree.data.xy.XYDataset;</line>
+<line>import org.jfree.ui.RectangleInsets;</line>
+<line/>
+<line>import com.github.sanity4j.model.summary.PackageSummary;</line>
+<line>import com.github.sanity4j.model.summary.SummaryCsvMarshaller;</line>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line>import com.github.sanity4j.util.StringUtil;</line>
+<line/>
+<line>/**</line>
+<line> * CrossProjectChartCreator - a command-line utility for creating cross-project comparison charts.</line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public final class CrossProjectChartCreator</line>
+<line>{</line>
+<line>    /** The width of the generated chart, in pixels. */</line>
+<line>    private static final int IMAGE_WIDTH = 600;</line>
+<line/>
+<line>    /** The height of the generated chart, in pixels. */</line>
+<line>    private static final int IMAGE_HEIGHT = 400;</line>
+<line/>
+<line>    /** The maximum number of data points before data point markers are turned off. */</line>
+<line>    private static final int MAX_RUNS_FOR_SHAPES = 20;</line>
+<line/>
+<line>    /** The inset. */</line>
+<line>    private static final double INSET = 5.0;</line>
+<line/>
+<line>    /** One hundred. */</line>
+<line>    private static final double HUNDRED = 100.0;</line>
+<line/>
+<line>    /** ChartFactory should never be instantiated. */</line>
+<line>    private CrossProjectChartCreator()</line>
+<line>    {</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Main entry point to the CrossProjectChartCreator application. Expects each command-line argument to be the path</line>
+<line>     * to a QA summary CSV file for a project.</line>
+<line>     * </line>
+<line>     * @param args the program command-line arguments.</line>
+<line>     */</line>
+<line>    public static void main(final String[] args)</line>
+<line>    {</line>
+<line>        PackageSummary[][] summaries = new PackageSummary[args.length][];</line>
+<line/>
+<line>        for (int i = 0; i &lt; summaries.length; i++)</line>
+<line>        {</line>
+<line sev="0"><diag id="467"/><diag id="468"/>            summaries[i] = new SummaryCsvMarshaller().read(new File(args[i]));</line>
+<line>        }</line>
+<line/>
+<line>        XYDataset[] dataSets = createDatasets(args, summaries);</line>
+<line/>
+<line>        BufferedImage lineCoverageChart = createImage(dataSets[0], &quot;jUnit Line coverage&quot;);</line>
+<line>        BufferedImage branchCoverageChart = createImage(dataSets[1], &quot;jUnit Branch coverage&quot;);</line>
+<line>        BufferedImage qualityChart = createImage(dataSets[2], &quot;Code quality&quot;);</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line>            ImageIO.write(lineCoverageChart, &quot;PNG&quot;, new File(&quot;allProjectLineCoverage.png&quot;));</line>
+<line>            ImageIO.write(branchCoverageChart, &quot;PNG&quot;, new File(&quot;allProjectBranchCoverage.png&quot;));</line>
+<line>            ImageIO.write(qualityChart, &quot;PNG&quot;, new File(&quot;allProjectQuality.png&quot;));</line>
+<line>        }</line>
+<line>        catch (IOException e)</line>
+<line>        {</line>
+<line>            QaLogger.getInstance().error(&quot;Failed to write cross project charts&quot;, e);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates the chart data sets.</line>
+<line>     * </line>
+<line>     * @param fileNames the chart file name for each project.</line>
+<line>     * @param summaries the PackageSummaries for the current and historical runs for several projects.</line>
+<line>     * @return the chart Datasets [line coverage, branch coverage, quality]</line>
+<line>     */</line>
+<line sev="1"><diag id="469"/>    private static XYDataset[] createDatasets(final String[] fileNames, final PackageSummary[][] summaries)</line>
+<line>    {</line>
+<line>        TimeSeriesCollection lineCoverage = new TimeSeriesCollection();</line>
+<line>        TimeSeriesCollection branchCoverage = new TimeSeriesCollection();</line>
+<line>        TimeSeriesCollection quality = new TimeSeriesCollection();</line>
+<line/>
+<line>        XYDataset[] dataSets = new XYDataset[] { lineCoverage, branchCoverage, quality };</line>
+<line/>
+<line>        for (int i = 0; i &lt; summaries.length; i++)</line>
+<line>        {</line>
+<line sev="0"><diag id="470"/>            String projectName = new File(fileNames[i]).getName().replaceAll(&quot;\\.csv&quot;, &quot;&quot;);</line>
+<line/>
+<line sev="0"><diag id="471"/>            TimeSeries lineCoverageForProject = new TimeSeries(projectName, Second.class);</line>
+<line sev="0"><diag id="472"/>            TimeSeries branchCoverageForProject = new TimeSeries(projectName, Second.class);</line>
+<line sev="0"><diag id="473"/>            TimeSeries qualityForProject = new TimeSeries(projectName, Second.class);</line>
+<line/>
+<line>            for (int j = 0; j &lt; summaries[i].length; j++)</line>
+<line>            {</line>
+<line>                // Only want top-level package summary.</line>
+<line>                if (StringUtil.empty(summaries[i][j].getPackageName()))</line>
+<line>                {</line>
+<line sev="0"><diag id="474"/>                    Second second = new Second(summaries[i][j].getRunDate());</line>
+<line/>
+<line>                    lineCoverageForProject.addOrUpdate(second, HUNDRED * summaries[i][j].getLineCoverage());</line>
+<line>                    branchCoverageForProject.addOrUpdate(second, HUNDRED * summaries[i][j].getBranchCoverage());</line>
+<line/>
+<line>                    double qualityValue = ReportUtil.evaluateMetric(&quot;quality&quot;, summaries[i][j]);</line>
+<line>                    qualityForProject.addOrUpdate(second, HUNDRED * qualityValue);</line>
+<line>                }</line>
+<line>            }</line>
+<line/>
+<line>            lineCoverage.addSeries(lineCoverageForProject);</line>
+<line>            branchCoverage.addSeries(branchCoverageForProject);</line>
+<line>            quality.addSeries(qualityForProject);</line>
+<line>        }</line>
+<line/>
+<line>        return dataSets;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a chart for the given package and run summaries.</line>
+<line>     * </line>
+<line>     * @param dataset the data set to plot on the char</line>
+<line>     * @param title the chart title.</line>
+<line>     * @return A chart.</line>
+<line>     */</line>
+<line>    private static JFreeChart createChart(final XYDataset dataset, final String title)</line>
+<line>    {</line>
+<line sev="1"><diag id="889"/>        JFreeChart chart = org.jfree.chart.ChartFactory.createTimeSeriesChart(title, // title</line>
+<line sev="1">                                                                              &quot;Date&quot;, // x-axis label</line>
+<line sev="1">                                                                              &quot;%&quot;, // y-axis label</line>
+<line sev="1">                                                                              dataset, // data</line>
+<line sev="1">                                                                              true, // create legend?</line>
+<line sev="1">                                                                              false, // generate tooltips?</line>
+<line sev="1">                                                                              false // generate URLs?</line>
+<line sev="1">            );</line>
+<line sev="1"/>
+<line sev="1">        chart.setBackgroundPaint(Color.white);</line>
+<line sev="1"/>
+<line sev="1">        XYPlot plot = (XYPlot) chart.getPlot();</line>
+<line sev="1">        plot.setBackgroundPaint(Color.lightGray);</line>
+<line sev="1">        plot.setDomainGridlinePaint(Color.white);</line>
+<line sev="1">        plot.setRangeGridlinePaint(Color.white);</line>
+<line sev="1">        plot.setAxisOffset(new RectangleInsets(INSET, INSET, INSET, INSET));</line>
+<line sev="1">        plot.setDomainCrosshairVisible(true);</line>
+<line sev="1">        plot.setRangeCrosshairVisible(true);</line>
+<line sev="1"/>
+<line sev="1">        XYItemRenderer renderer = plot.getRenderer();</line>
+<line sev="1"/>
+<line sev="1">        if (renderer instanceof XYLineAndShapeRenderer)</line>
+<line sev="1">        {</line>
+<line sev="1">            XYLineAndShapeRenderer shapeRenderer = (XYLineAndShapeRenderer) renderer;</line>
+<line sev="1"/>
+<line sev="1">            // If there are too many runs, don't draw shapes on the lines as it clutters up the graph</line>
+<line sev="1">            boolean showShapes = dataset.getSeriesCount() &gt; 0 &amp;&amp; dataset.getItemCount(0) &lt;= MAX_RUNS_FOR_SHAPES;</line>
+<line sev="1">            shapeRenderer.setBaseShapesFilled(true);</line>
+<line sev="1">            shapeRenderer.setBaseShapesVisible(showShapes);</line>
+<line sev="1"/>
+<line sev="1">            if (!showShapes)</line>
+<line sev="1">            {</line>
+<line sev="1">                renderer.setBaseStroke(new BasicStroke(2f, BasicStroke.JOIN_ROUND, BasicStroke.JOIN_BEVEL));</line>
+<line sev="1">            }</line>
+<line sev="1">        }</line>
+<line sev="1"/>
+<line sev="1">        DateAxis axis = (DateAxis) plot.getDomainAxis();</line>
+<line sev="1">        axis.setDateFormatOverride(new SimpleDateFormat(&quot;dd/MM/yy&quot;));</line>
+<line sev="1"/>
+<line sev="1">        plot.getRangeAxis().setAutoRange(false);</line>
+<line sev="1">        plot.getRangeAxis().setLowerBound(0.0);</line>
+<line sev="1">        plot.getRangeAxis().setUpperBound(HUNDRED);</line>
+<line sev="1"/>
+<line sev="1">        return chart;</line>
+<line sev="1">    }</line>
+<line sev="1"/>
+<line sev="1">    /**</line>
+<line sev="1">     * Creates a chart image.</line>
+<line sev="1">     * </line>
+<line sev="1">     * @param dataset the data set to plot on the char</line>
+<line sev="1">     * @param title the chart title.</line>
+<line sev="1">     * @return an Image containing the generated chart.</line>
+<line sev="1">     */</line>
+<line sev="1">    public static BufferedImage createImage(final XYDataset dataset, final String title)</line>
+<line sev="1">    {</line>
+<line sev="1">        JFreeChart chart = createChart(dataset, title);</line>
+<line sev="1">        return chart.createBufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT);</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="467" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="468" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="469" sev="1" tool="PMD" rule="UseVarargs">
+Consider using varargs for methods or constructors which take an array the last parameter.
+</diag>
+<diag id="470" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="471" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="472" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="473" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="474" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="889" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/ChartFactory.java:
+        JFreeChart chart = org.jfree.chart.ChartFactory.createTimeSeriesChart(
+          title,	  // title
+          &quot;Date&quot;,     // x-axis label
+          &quot;%&quot;,   	  // y-axis label
+          dataset,    // data
+          true,       // create legend?
+          false,      // generate tooltips?
+          false       // generate URLs?
+        );
+
+        chart.setBackgroundPaint(Color.white);
+
+        XYPlot plot = (XYPlot) chart.getPlot();
+        plot.setBackgroundPaint(Color.lightGray);
+        plot.setDomainGridlinePaint(Color.white);
+        plot.setRangeGridlinePaint(Color.white);
+        plot.setAxisOffset(new RectangleInsets(INSET, INSET, INSET, INSET));
+        plot.setDomainCrosshairVisible(true);
+        plot.setRangeCrosshairVisible(true);
+        
+        XYItemRenderer renderer = plot.getRenderer();
+        
+        if (renderer instanceof XYLineAndShapeRenderer)
+        {
+            XYLineAndShapeRenderer shapeRenderer = (XYLineAndShapeRenderer) renderer;
+            
+            // If there are too many runs, don't draw shapes on the lines as it clutters up the graph
+            boolean showShapes = dataset.getSeriesCount() &gt; 0 &amp;&amp; dataset.getItemCount(0) &lt;= MAX_RUNS_FOR_SHAPES; 
+            shapeRenderer.setBaseShapesFilled(true);
+            shapeRenderer.setBaseShapesVisible(showShapes);
+            
+            if (!showShapes)
+            {
+                renderer.setBaseStroke(new BasicStroke(2f, BasicStroke.JOIN_ROUND, BasicStroke.JOIN_BEVEL));
+            }
+        }
+
+        DateAxis axis = (DateAxis) plot.getDomainAxis();
+        axis.setDateFormatOverride(new SimpleDateFormat(&quot;dd/MM/yy&quot;));
+        
+        plot.getRangeAxis().setAutoRange(false);
+        plot.getRangeAxis().setLowerBound(0.0);
+        plot.getRangeAxis().setUpperBound(HUNDRED);
+
+        return chart;
+    }
+    
+    /**
+     * Creates a chart image.
+     * 
+     * @param summaries the PackageSummaries for the current and historical runs 
+     * @param packageName the package name
+     * 
+     * @return an Image showing the summary for the given package
+     */
+    public static BufferedImage createImage(final PackageSummary[] summaries, final String packageName)</diag>
+</diags>
+</classDetails>

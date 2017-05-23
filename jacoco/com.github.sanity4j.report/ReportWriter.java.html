@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReportWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.report</a> &gt; <span class="el_source">ReportWriter.java</span></div><h1>ReportWriter.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.report;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.github.sanity4j.model.diagnostic.Diagnostic;
+import com.github.sanity4j.model.diagnostic.DiagnosticSet;
+import com.github.sanity4j.util.ExtractStats;
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.QAException;
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.workflow.QAConfig;
+import com.github.sanity4j.workflow.QAProcessor;
+
+
+/**
+ * ReportWriter - utility class to write the combined report.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public class ReportWriter
+{
+    /** A list of package names that need to be written. */
+<span class="nc" id="L31">    private final List&lt;String&gt; packages = new ArrayList&lt;String&gt;();</span>
+    
+    /** A list of source file paths that need to be written. */
+<span class="nc" id="L34">    private final List&lt;String&gt; sources = new ArrayList&lt;String&gt;();</span>
+    
+    /** Source file paths, keyed by their package name. */
+<span class="nc" id="L37">    private final Map&lt;String, List&lt;String&gt;&gt; sourcesByPackage = new HashMap&lt;String, List&lt;String&gt;&gt;();</span>
+
+    /** The diagnostics that we are writing. */
+    private final ExtractStats stats;
+
+    /** Whether or not diagnostics should be printed first or last. */
+    private final boolean diagnosticsFirst;
+    
+    /** The destination directory. */
+    private final File reportDir;
+
+    /**
+     * Creates a ReportWriter.
+     * 
+     * @param stats the stats utility containing the results
+     * @param diagnosticsFirst flag for diagnostics first
+     * @param reportDir the base directory for the report
+     */
+    public ReportWriter(final ExtractStats stats, final boolean diagnosticsFirst, final File reportDir)
+<span class="nc" id="L56">    {</span>
+<span class="nc" id="L57">        this.stats = stats;</span>
+<span class="nc" id="L58">        this.diagnosticsFirst = diagnosticsFirst;</span>
+<span class="nc" id="L59">        this.reportDir = reportDir;</span>
+<span class="nc" id="L60">    }</span>
+    
+    /**
+     * Produces the combined report in the given directory.
+     * 
+     * @param config The configuration object for the Sanity4J tool.
+     * @throws IOException if there is an error writing any file.
+     */
+    public void produceReport(final QAConfig config) throws IOException
+    {
+<span class="nc" id="L70">        findSourceFiles(new File(stats.getSourceDirectory()));</span>
+
+<span class="nc" id="L72">        Collections.sort(packages);</span>
+<span class="nc" id="L73">        Collections.sort(sources);</span>
+
+<span class="nc bnc" id="L75" title="All 4 branches missed.">        if (!reportDir.exists() &amp;&amp; !reportDir.mkdirs())</span>
+        {
+<span class="nc" id="L77">            throw new IOException(&quot;Failed to create report directory: &quot; + reportDir);</span>
+        }
+
+        // Write export
+<span class="nc" id="L81">        QaLogger.getInstance().debug(&quot;Writing export&quot;);</span>
+<span class="nc" id="L82">        ExportWriter writer = new ExportWriter(stats, reportDir, sourcesByPackage);</span>
+<span class="nc" id="L83">        writer.writeExport();</span>
+        
+        // Set up the default frames
+<span class="nc" id="L86">        QaLogger.getInstance().debug(&quot;Extracting static content&quot;);</span>
+<span class="nc" id="L87">        ExtractStaticContent.extractContent(config, reportDir, &quot;ExtractStaticContent.properties&quot;);</span>
+
+<span class="nc" id="L89">        writePackagesFrame();</span>
+        
+        // Write rule catalogue
+<span class="nc" id="L92">        QaLogger.getInstance().debug(&quot;Writing rule catalogue&quot;);</span>
+<span class="nc" id="L93">        RuleCatalogueWriter ruleCatalogueWriter = new RuleCatalogueWriter(reportDir);</span>
+<span class="nc" id="L94">        ruleCatalogueWriter.writeRuleCatalogue();</span>
+
+        // Write categories
+<span class="nc" id="L97">        QaLogger.getInstance().debug(&quot;Writing top-level categories&quot;);</span>
+<span class="nc" id="L98">        CategoryWriter categoryWriter = new CategoryWriter(stats, reportDir);</span>
+<span class="nc" id="L99">        categoryWriter.writeCategories(null);</span>
+
+        // Write packages
+<span class="nc" id="L102">        QaLogger.getInstance().debug(&quot;Writing top-level package summary&quot;);</span>
+<span class="nc" id="L103">        PackageWriter packageWriter = new PackageWriter(stats, reportDir, sourcesByPackage);</span>
+<span class="nc" id="L104">        packageWriter.writePackage(&quot;&quot;); // write top-level package</span>
+
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        for (String packageName : packages)</span>
+        {
+<span class="nc" id="L108">            QaLogger.getInstance().debug(&quot;Writing package &quot; + packageName);</span>
+<span class="nc" id="L109">            packageWriter.writePackage(packageName);</span>
+<span class="nc" id="L110">        }</span>
+        
+        // Write sources
+<span class="nc" id="L113">        JavaSourceWriter sourceWriter = new JavaSourceWriter(stats, diagnosticsFirst, reportDir);</span>
+
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        for (String sourceName : sources)</span>
+        {
+<span class="nc" id="L117">            QaLogger.getInstance().debug(&quot;Writing source for &quot; + sourceName);</span>
+<span class="nc" id="L118">            sourceWriter.writeSourceFile(sourceName);</span>
+<span class="nc" id="L119">        }</span>
+        
+<span class="nc" id="L121">        QaLogger.getInstance().info(&quot;Report generated successfully in &quot; + reportDir);</span>
+<span class="nc" id="L122">    }</span>
+
+    /** 
+     * Build up the list of packages, source files and 
+     * source files by package.
+     * 
+     * @param base the directory to search
+     */
+    private void findSourceFiles(final File base)
+    {
+        // Determine package name
+<span class="nc" id="L133">        String packageName = stats.getPackageName(base.getPath());</span>
+<span class="nc" id="L134">        boolean packageAdded = false;</span>
+
+<span class="nc" id="L136">        List&lt;String&gt; sourcesForPackage = null;</span>
+
+        // Iterate for all files and sub-dirs
+<span class="nc" id="L139">        File[] files = base.listFiles();</span>
+
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (files != null)</span>
+        {
+<span class="nc bnc" id="L143" title="All 2 branches missed.">            for (int i = 0; i &lt; files.length; i++)</span>
+            {
+<span class="nc bnc" id="L145" title="All 2 branches missed.">                if (files[i].isDirectory())</span>
+                {
+<span class="nc" id="L147">                    findSourceFiles(files[i]);</span>
+                }
+<span class="nc bnc" id="L149" title="All 4 branches missed.">                else if (files[i].isFile() &amp;&amp; files[i].getName().toLowerCase().endsWith(&quot;.java&quot;))</span>
+                {
+<span class="nc" id="L151">                    String filePath = null;</span>
+
+                    try
+                    {
+<span class="nc" id="L155">                        filePath = files[i].getCanonicalPath();</span>
+                    }
+<span class="nc" id="L157">                    catch (IOException e)</span>
+                    {
+<span class="nc" id="L159">                        throw new QAException(&quot;Failed to get canonical path for &quot; + files[i].getPath(), e);</span>
+<span class="nc" id="L160">                    }</span>
+
+<span class="nc" id="L162">                    sources.add(filePath);</span>
+
+<span class="nc bnc" id="L164" title="All 2 branches missed.">                    if (!packageAdded)</span>
+                    {
+<span class="nc" id="L166">                        packages.add(packageName);</span>
+<span class="nc" id="L167">                        packageAdded = true;</span>
+
+<span class="nc" id="L169">                        sourcesForPackage = new ArrayList&lt;String&gt;();</span>
+<span class="nc" id="L170">                        sourcesByPackage.put(packageName, sourcesForPackage);</span>
+                    }
+
+<span class="nc" id="L173">                    sourcesForPackage.add(filePath);</span>
+                }
+            }
+        }
+
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (sourcesForPackage != null)</span>
+        {
+<span class="nc" id="L180">            Collections.sort(sourcesForPackage);</span>
+        }
+<span class="nc" id="L182">    }</span>
+
+    /**
+     * Writes the packages frame.
+     * 
+     * @throws IOException if there is an error writing any of the package frame files
+     */
+    private void writePackagesFrame() throws IOException
+    {
+<span class="nc" id="L191">        StringBuffer html = new StringBuffer();</span>
+
+        // Write top-level package summary info        
+<span class="nc" id="L194">        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;</span>
+                  + &quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;xslt/overview-frame.xsl\&quot;?&gt;\n&quot;        
+<span class="nc" id="L196">                  + &quot;&lt;packages qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</span>
+<span class="nc" id="L197">            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</span>
+        
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        for (String packageName : packages)</span>
+        {
+<span class="nc" id="L201">            DiagnosticSet diagsForPackage = stats.getDiagnostics().getDiagnosticsForPackage(packageName);</span>
+
+<span class="nc" id="L203">            html.append(&quot;&lt;package name=\&quot;&quot;).append(packageName)</span>
+<span class="nc" id="L204">                .append(&quot;\&quot; high=\&quot;&quot;).append(diagsForPackage.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
+<span class="nc" id="L205">                .append(&quot;\&quot; significant=\&quot;&quot;).append(diagsForPackage.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
+<span class="nc" id="L206">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(diagsForPackage.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
+<span class="nc" id="L207">                .append(&quot;\&quot; low=\&quot;&quot;).append(diagsForPackage.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
+<span class="nc" id="L208">                .append(&quot;\&quot; info=\&quot;&quot;).append(diagsForPackage.getCountForSeverity(Diagnostic.SEVERITY_INFO))</span>
+<span class="nc" id="L209">                .append(&quot;\&quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L210">        }</span>
+        
+<span class="nc" id="L212">        html.append(&quot;&lt;/packages&gt;\n&quot;);</span>
+        
+<span class="nc" id="L214">        File destFile = new File(reportDir, &quot;overview-frame.xml&quot;);</span>
+<span class="nc" id="L215">        FileUtil.writeToFile(html.toString(), destFile);</span>
+
+<span class="nc" id="L217">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

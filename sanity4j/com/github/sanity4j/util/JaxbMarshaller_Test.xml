@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.util.JaxbMarshaller_Test" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="3" info="0" lineCoverage="84" branchCoverage="83" quality="95"/>
+<source>
+<line>package com.github.sanity4j.util;</line>
+<line/>
+<line>import java.io.IOException;</line>
+<line>import java.math.BigDecimal;</line>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.List;</line>
+<line/>
+<line sev="1"><diag id="709"/>import com.github.sanity4j.util.FileUtil;</line>
+<line sev="1"><diag id="710"/>import com.github.sanity4j.util.JaxbMarshaller;</line>
+<line sev="1"><diag id="711"/>import com.github.sanity4j.util.QAException;</line>
+<line/>
+<line>import junit.framework.TestCase;</line>
+<line>import com.github.sanity4j.gen.checkstyle_4_4.Checkstyle;</line>
+<line>import com.github.sanity4j.gen.checkstyle_4_4.File;</line>
+<line/>
+<line>/**</line>
+<line> * JaxbMarshaller_Test - unit test for JaxbMarshaller.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line covered="yes">public class JaxbMarshaller_Test extends TestCase</line>
+<line>{</line>
+<line>    /** A temporary file to write the test data to. */</line>
+<line>    private java.io.File tempFile;</line>
+<line/>
+<line>    /** The target java package for unmarshalling the test data. */</line>
+<line>    private static final String TARGET_PACKAGE = &quot;com.github.sanity4j.gen.checkstyle_4_4&quot;;</line>
+<line/>
+<line>    /** The XML data used for testing. */</line>
+<line>    private static final String XML =</line>
+<line>        &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;</line>
+<line>      + &quot;&lt;checkstyle version=\&quot;4.4\&quot;&gt;\n&quot;</line>
+<line>      + &quot;    &lt;file name=\&quot;/someDir/SomeJavaFile.java\&quot;&gt;\n&quot;</line>
+<line>      + &quot;        &lt;error line=\&quot;33\&quot; column=\&quot;53\&quot; severity=\&quot;warning\&quot; message=\&quot;&amp;apos;;&amp;apos; is preceded with whitespace.\&quot; source=\&quot;com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck\&quot;/&gt;\n&quot;</line>
+<line>      + &quot;        &lt;error line=\&quot;33\&quot; column=\&quot;67\&quot; severity=\&quot;warning\&quot; message=\&quot;&amp;apos;;&amp;apos; is preceded with whitespace.\&quot; source=\&quot;com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck\&quot;/&gt;\n&quot;</line>
+<line>      + &quot;        &lt;error line=\&quot;33\&quot; column=\&quot;69\&quot; severity=\&quot;warning\&quot; message=\&quot;&amp;apos;;&amp;apos; is followed by whitespace.\&quot; source=\&quot;com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyForIteratorPadCheck\&quot;/&gt;\n&quot;</line>
+<line>      + &quot;    &lt;/file&gt;\n&quot;</line>
+<line>      + &quot;&lt;/checkstyle&gt;\n&quot;;</line>
+<line/>
+<line>    @Override</line>
+<line>    public void setUp() throws Exception</line>
+<line>    {</line>
+<line covered="yes">        super.setUp();</line>
+<line/>
+<line covered="yes">        tempFile = java.io.File.createTempFile(&quot;JaxbMarshaller_Test&quot;, &quot;.xml&quot;);</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    @Override</line>
+<line>    public void tearDown() throws Exception</line>
+<line>    {</line>
+<line covered="yes">        super.tearDown();</line>
+<line/>
+<line covered="partial">        if (!tempFile.delete())</line>
+<line>        {</line>
+<line covered="no">            throw new IOException(&quot;Failed to delete temp file: &quot; + tempFile.getPath());</line>
+<line>        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testUnmarshalMissingFile()</line>
+<line>    {</line>
+<line>        try</line>
+<line>        {</line>
+<line covered="yes">            java.io.File file = new java.io.File(&quot;JaxbMarshaller_Test.nonExistantFile&quot;);</line>
+<line covered="no">            JaxbMarshaller.unmarshal(file, TARGET_PACKAGE, &quot;http://com.github.sanity4j/namespace/dummy&quot;);</line>
+<line covered="no">            fail(&quot;Should have thrown a QAException&quot;);</line>
+<line>        }</line>
+<line covered="yes">        catch (QAException expected)</line>
+<line>        {</line>
+<line covered="yes">            assertNotNull(&quot;Thrown exception should contain a message&quot;, expected.getMessage());</line>
+<line covered="yes">            assertTrue(&quot;Throws exception should contain the original cause&quot;, expected.getCause() instanceof IOException);</line>
+<line covered="no">        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testUnmarshallMalformedFile() throws IOException</line>
+<line>    {</line>
+<line>        try</line>
+<line>        {</line>
+<line covered="yes">            FileUtil.writeToFile(XML.substring(0, XML.length() / 2), tempFile);</line>
+<line covered="no">            JaxbMarshaller.unmarshal(tempFile, TARGET_PACKAGE, &quot;http://com.github.sanity4j/namespace/dummy&quot;);</line>
+<line covered="no">            fail(&quot;Should have thrown a QAException&quot;);</line>
+<line>        }</line>
+<line covered="yes">        catch (QAException expected)</line>
+<line>        {</line>
+<line covered="yes">            assertNotNull(&quot;Thrown exception should contain a message&quot;, expected.getMessage());</line>
+<line covered="yes">            assertNotNull(&quot;Throws exception should contain the original cause&quot;, expected.getCause());</line>
+<line covered="no">        }</line>
+<line covered="yes">    }</line>
+<line/>
+<line>    public void testUnmarshall() throws IOException</line>
+<line>    {</line>
+<line covered="yes">        FileUtil.writeToFile(XML, tempFile);</line>
+<line/>
+<line covered="yes">        Object result = JaxbMarshaller.unmarshal(tempFile, TARGET_PACKAGE, &quot;http://com.github.sanity4j/namespace/checkstyle-4.4&quot;);</line>
+<line/>
+<line covered="yes">        assertNotNull(&quot;unmarshall returned null&quot;, result);</line>
+<line/>
+<line covered="yes">        assertTrue(&quot;Incorrect type unmarshalled&quot;,</line>
+<line covered="yes">                   Checkstyle.class.isAssignableFrom(result.getClass()));</line>
+<line/>
+<line covered="yes">        Checkstyle checkStyle = (Checkstyle) result;</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect version field value unmarshalled&quot;,</line>
+<line covered="yes">                     new BigDecimal(&quot;4.4&quot;), checkStyle.getVersion());</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of files unmarshalled&quot;,</line>
+<line covered="yes">                     1, checkStyle.getFile().size());</line>
+<line/>
+<line covered="yes">        File file = checkStyle.getFile().get(0);</line>
+<line covered="yes">        assertEquals(&quot;Incorrect file name value unmarshalled&quot;,</line>
+<line covered="yes">                     &quot;/someDir/SomeJavaFile.java&quot;, file.getName());</line>
+<line/>
+<line covered="yes">        List&lt;Object&gt; errors = new ArrayList&lt;Object&gt;();</line>
+<line/>
+<line covered="yes">        for (Object obj : file.getContent())</line>
+<line>        {</line>
+<line covered="yes">            if (obj instanceof com.github.sanity4j.gen.checkstyle_4_4.Error)</line>
+<line>            {</line>
+<line covered="yes">                errors.add(obj);</line>
+<line>            }</line>
+<line covered="yes">        }</line>
+<line/>
+<line covered="yes">        assertEquals(&quot;Incorrect number of errors unmarshalled&quot;,</line>
+<line covered="yes">                     3, errors.size());</line>
+<line covered="yes">    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="709" sev="1" tool="PMD" rule="ImportFromSamePackage">
+No need to import a type that lives in the same package
+</diag>
+<diag id="710" sev="1" tool="PMD" rule="ImportFromSamePackage">
+No need to import a type that lives in the same package
+</diag>
+<diag id="711" sev="1" tool="PMD" rule="ImportFromSamePackage">
+No need to import a type that lives in the same package
+</diag>
+</diags>
+</classDetails>

@@ -1,0 +1,1272 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RunQAMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.maven.plugin</a> &gt; <span class="el_source">RunQAMojo.java</span></div><h1>RunQAMojo.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.maven.plugin;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
+import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.doxia.siterenderer.Renderer;
+import org.apache.maven.model.DistributionManagement;
+import org.apache.maven.model.Site;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.dependency.utils.resolvers.ArtifactsResolver;
+import org.apache.maven.plugin.dependency.utils.resolvers.DefaultArtifactsResolver;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.reporting.AbstractMavenReport;
+import org.apache.maven.reporting.MavenReportException;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilderException;
+import org.apache.maven.shared.dependency.graph.DependencyNode;
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.Invoker;
+
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.QAException;
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.util.QaLoggerMavenImpl;
+import com.github.sanity4j.util.Tool;
+import com.github.sanity4j.workflow.QAConfig;
+import com.github.sanity4j.workflow.QAProcessor;
+
+/**
+ * &lt;p&gt;
+ * This class is a Maven plugin that runs Sanity4J against a project's source
+ * code and classes.
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * This task simply configures up a {@link QAProcessor} and then runs it in the
+ * {@link QAProcessor#run()} method.
+ * &lt;/p&gt;
+ *
+ * @author Darian Bridge
+ * @since Sanity4J 1.0
+ */
+@Mojo(name = &quot;sanity4j&quot;, requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST, requiresDependencyCollection = ResolutionScope.TEST)
+public class RunQAMojo extends AbstractMavenReport
+{
+    /** Mojo and goal to download historical coverage stats. */
+    private static final String DOWNLOAD_SINGLE_MOJO = &quot;org.codehaus.mojo:wagon-maven-plugin:1.0-beta-5:download-single&quot;;
+
+    /**
+     * The Maven Project to interact with.
+     */
+    @Parameter(defaultValue = &quot;${project}&quot;, readonly = true, required = true)
+    private MavenProject project;
+
+    /**
+     * The projects in the reactor for aggregation report.
+     */
+    @Parameter(defaultValue = &quot;${reactorProjects}&quot;, readonly = true, required = true)    
+    private List&lt;MavenProject&gt; reactorProjects;
+
+    /**
+     * Helper for locating Dependencies.
+     */
+    @Component(hint = &quot;default&quot;)
+    private DependencyGraphBuilder dependencyGraphBuilder;
+    
+    /**
+     * Helper for resolving Artifacts against the Repository.
+     */
+    @Component
+    private ArtifactResolver resolver;
+    
+    /**
+     * Helper for creating a Maven Project.
+     */
+    @Component(role = ProjectBuilder.class)
+    private ProjectBuilder projectBuilder;
+    
+    /**
+     * Can be one of the below.
+     * &lt;pre&gt; 
+     * org.sonatype.aether.RepositorySystemSession
+     * org.eclipse.aether.RepositorySystemSession
+     * &lt;/pre&gt;
+     */
+    @Parameter(defaultValue = &quot;${repositorySystemSession}&quot;, readonly = true, required = true)
+    private Object session;
+
+    /**
+     * The Local Repository.
+     */
+    @Parameter(defaultValue = &quot;${localRepository}&quot;, readonly = true, required = true)
+    private ArtifactRepository localRepo;
+
+    /**
+     * The Remote Repositories.
+     */
+    @Parameter(defaultValue = &quot;${project.remoteArtifactRepositories}&quot;, readonly = true, required = true)
+    private List&lt;ArtifactRepository&gt; remoteRepos;    
+
+    /**
+     * Flag to indicate that this mojo should run it in a multi module way.
+     */
+    @Parameter(defaultValue = &quot;false&quot;)
+    private boolean aggregate;
+
+    /**
+     * &lt;i&gt;Maven Internal&lt;/i&gt;: The Doxia Site Renderer.
+     */
+    @Component
+    private Renderer siteRenderer;
+
+    /**
+     * The source file paths for analysis.
+     */
+    @Parameter    
+    private String[] sources;
+
+    /**
+     * The test source file paths for analysis.
+     */
+    @Parameter    
+    private String[] testSources;
+
+    /**
+     * The class file paths for analysis.
+     */
+    @Parameter    
+    private String[] classes;
+
+    /**
+     * The test class file paths for analysis.
+     */
+    @Parameter    
+    private String[] testClasses;
+
+    /**
+     * The library file paths for analysis.
+     */
+    @Parameter    
+    private String[] libraries;
+
+    /**
+     * The location of the directory containing the various tools.
+     */
+    @Parameter
+    private String productsDir;
+
+    /**
+     * The directory in which to place report output.
+     */
+    @Parameter(defaultValue = &quot;${project.reporting.outputDirectory}/sanity4j&quot;)  
+    private String reportDir;
+
+    /**
+     * The file containing the jUnit coverage data.
+     */
+    @Parameter(defaultValue = &quot;target/jacoco.exec&quot;)    
+    private String coverageDataFile;
+
+    /**
+     * The file containing the merged jUnit coverage data.
+     */
+    @Parameter(defaultValue = &quot;${project.build.directory}/jacoco-merged.exec&quot;)
+    private String coverageMergeDataFile;
+
+    /**
+     * The summary data file, if used.
+     */
+    @Parameter(defaultValue = &quot;${project.reporting.outputDirectory}/${project.name}_analyse_summary.csv&quot;)    
+    private String summaryDataFile;
+
+    /**
+     * The path location to the external properties file (sanity4j.properties).
+     */
+    @Parameter(defaultValue = &quot;&quot;)    
+    private String externalPropertiesPath;
+
+    /**
+     * The configuration passed to the checkStyle ${sanity4j.tool.checkstyle.command} as ${sanity4j.tool.checkstyle.config}.
+     */
+    @Parameter    
+    private String checkStyleConfig;
+
+    /**
+     * The class path used by the configuration passed to the checkStyle ${sanity4j.tool.checkstyle.command} as ${sanity4j.tool.checkstyle.config}.
+     */
+    @Parameter    
+    private String checkStyleConfigClasspath;
+
+    /**
+     * The configuration passed to the FindBugs ${sanity4j.tool.findbugs.command} as ${sanity4j.tool.findbugs.config}.
+     */
+    @Parameter    
+    private String findBugsConfig;
+
+    /**
+     * The class path used by the configuration passed to the FindBugs ${sanity4j.tool.findbugs.command} as ${sanity4j.tool.findbugs.config}.
+     */
+    @Parameter    
+    private String findBugsConfigClasspath;
+
+    /**
+     * The configuration passed to the PMD ${sanity4j.tool.pmd.command} as ${sanity4j.tool.pmd.config}.
+     */
+    @Parameter    
+    private String pmdConfig;
+
+    /**
+     * Any additional properties to be passed to the tools.
+     */
+    @Parameter    
+    private String additionalProperties;
+    
+    /**
+     * The class path used by the configuration passed to the PMD ${sanity4j.tool.pmd.command} as ${sanity4j.tool.pmd.config}.
+     */
+    @Parameter    
+    private String pmdConfigClasspath;
+
+    /**
+     * The temporary directory.
+     */
+    @Parameter(defaultValue = &quot;${project.build.directory}/sanity4jAnalysis&quot;)    
+    private File tempDir;
+
+    /**
+     * The java runtime to use when running external tasks.
+     */
+    @Parameter(defaultValue = QAProcessor.DEFAULT_JAVA_RUNTIME)    
+    private String javaRuntime;
+    
+    /**
+     * The java args to use when running external tasks.
+     */
+    @Parameter(defaultValue = &quot;${env.MAVEN_OPTS}&quot;)    
+    private String javaArgs;
+
+    /**
+     * If true, the raw tool output is included in the report directory.
+     */
+    @Parameter(defaultValue = &quot;false&quot;)
+    private boolean includeToolOutput;
+
+    /**
+     * The number of threads to use to run the tools and produce the report
+     * output.
+     */
+    @Parameter(defaultValue = &quot;1&quot;)
+    private int numThreads; 
+    // TODO: Add support for concurrent tasks
+    // (Note: some tasks can not be run in parallel).
+
+    /**
+     * Whether to use historical statistics when generating sanity4j reports.
+     */
+    @Parameter(defaultValue = &quot;true&quot;)    
+    private boolean useHistory;
+
+    /**
+     * Override the default constructor to initialise the logger. No logging
+     * methods should be called before this method.
+     */
+    public RunQAMojo()
+<span class="nc" id="L294">    {</span>
+<span class="nc" id="L295">        QaLogger.setLogger(new QaLoggerMavenImpl(this));</span>
+<span class="nc" id="L296">    }</span>
+
+    /**
+     * Executes this mojo, invoking the {@link QAProcessor} which has already
+     * been configured by Maven using either the annotations or the POM (through
+     * reflection).
+     *
+     * @param locale The locale
+     * @throws MavenReportException Thrown if a problem occurs generating the report.
+     */
+    @Override
+    public void executeReport(final Locale locale) throws MavenReportException
+    {
+<span class="nc bnc" id="L309" title="All 4 branches missed.">        if (isAggregate() &amp;&amp; !getProject().isExecutionRoot())</span>
+        {
+<span class="nc" id="L311">            getLog().info(getProject().getName() + &quot; aggregation is on, but this is not the execution root. Skipping 'sanity4j' check.&quot;);</span>
+
+            // Write out an small index.html file so that Maven
+            // doesn't complain about empty files when deploying the site.
+<span class="nc" id="L315">            File index = new File(getReportDir(), &quot;index.html&quot;);</span>
+<span class="nc" id="L316">            writeTextFile(index, &quot; &quot;);</span>
+
+<span class="nc" id="L318">            return;</span>
+        }
+
+<span class="nc" id="L321">        FileUtil.createDir(getReportDir());</span>
+        
+<span class="nc bnc" id="L323" title="All 4 branches missed.">        boolean aggregating = isAggregate() &amp;&amp; getProject().isExecutionRoot();</span>
+
+<span class="nc" id="L325">        QAProcessor sanity4j = new QAProcessor();</span>
+<span class="nc" id="L326">        QAConfig qaConfig = sanity4j.getConfig();</span>
+<span class="nc" id="L327">        qaConfig.setRunQAMojo(this);</span>
+        
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        if (aggregating)</span>
+        {
+<span class="nc bnc" id="L331" title="All 2 branches missed.">            for (MavenProject reactorProject : getReactorProjects())</span>
+            {
+<span class="nc bnc" id="L333" title="All 2 branches missed.">                if (getSources() == null)</span>
+                {
+<span class="nc" id="L335">                    qaConfig.addSourcePath(</span>
+<span class="nc" id="L336">                        new File(reactorProject.getBasedir(), &quot;src/main&quot;).getPath());</span>
+                }
+                else
+                {
+<span class="nc bnc" id="L340" title="All 2 branches missed.">                    for (String source : getSources())</span>
+                    {
+<span class="nc" id="L342">                        qaConfig.addSourcePath(</span>
+<span class="nc" id="L343">                            new File(reactorProject.getBasedir(), source).getPath());</span>
+                    }
+                }
+<span class="nc" id="L346">            }</span>
+        }
+<span class="nc bnc" id="L348" title="All 2 branches missed.">        else if (getSources() == null)</span>
+        {
+<span class="nc" id="L350">            qaConfig.addSourcePath(</span>
+<span class="nc" id="L351">                new File(getProject().getBasedir(), &quot;src/main&quot;).getPath());</span>
+        }
+        else
+        {
+<span class="nc bnc" id="L355" title="All 2 branches missed.">            for (String source : getSources())</span>
+            {
+<span class="nc" id="L357">                qaConfig.addSourcePath(</span>
+<span class="nc" id="L358">                     new File(getProject().getBasedir(), source).getPath());</span>
+            }
+        }
+
+<span class="nc bnc" id="L362" title="All 2 branches missed.">        if (aggregating)</span>
+        {
+<span class="nc bnc" id="L364" title="All 2 branches missed.">            for (MavenProject reactorProject : getReactorProjects())</span>
+            {
+<span class="nc bnc" id="L366" title="All 2 branches missed.">                if (getTestSources() == null)</span>
+                {
+<span class="nc" id="L368">                    qaConfig.addSourcePath(</span>
+<span class="nc" id="L369">                        new File(reactorProject.getBasedir(), &quot;src/test&quot;).getPath());</span>
+                }
+                else
+                {
+<span class="nc bnc" id="L373" title="All 2 branches missed.">                    for (String testSource : getTestSources())</span>
+                    {
+<span class="nc" id="L375">                        qaConfig.addSourcePath(</span>
+<span class="nc" id="L376">                            new File(reactorProject.getBasedir(), testSource).getPath());</span>
+                    }
+                }
+<span class="nc" id="L379">            }</span>
+        }
+<span class="nc bnc" id="L381" title="All 2 branches missed.">        else if (getTestSources() == null)</span>
+        {
+<span class="nc" id="L383">            qaConfig.addSourcePath(</span>
+<span class="nc" id="L384">                new File(getProject().getBasedir(), &quot;src/test&quot;).getPath());</span>
+        }
+        else
+        {
+<span class="nc bnc" id="L388" title="All 2 branches missed.">            for (String testSource : getTestSources())</span>
+            {
+<span class="nc" id="L390">                qaConfig.addSourcePath(</span>
+<span class="nc" id="L391">                    new File(getProject().getBasedir(), testSource).getPath());</span>
+            }
+        }
+
+<span class="nc" id="L395">        boolean sourceFileDetected = false;</span>
+        
+<span class="nc bnc" id="L397" title="All 2 branches missed.">        for (String srcDir : qaConfig.getSourceDirs())</span>
+        {
+<span class="nc bnc" id="L399" title="All 2 branches missed.">            if (checkForSource(new File(srcDir)))</span>
+            {
+<span class="nc" id="L401">                sourceFileDetected = true;</span>
+<span class="nc" id="L402">                break;</span>
+            }
+<span class="nc" id="L404">        }</span>
+<span class="nc bnc" id="L405" title="All 2 branches missed.">        if (!sourceFileDetected)</span>
+        {
+<span class="nc" id="L407">            getLog().info(getProject().getName() + &quot; contains no source code. Skipping 'sanity4j' check.&quot;);</span>
+<span class="nc" id="L408">            return;</span>
+        }
+
+<span class="nc bnc" id="L411" title="All 2 branches missed.">        if (aggregating)</span>
+        {
+<span class="nc bnc" id="L413" title="All 2 branches missed.">            for (MavenProject reactorProject : getReactorProjects())</span>
+            {
+<span class="nc bnc" id="L415" title="All 2 branches missed.">                if (getClasses() == null)</span>
+                {
+<span class="nc" id="L417">                qaConfig.addClassPath(</span>
+<span class="nc" id="L418">                        new File(reactorProject.getBasedir(), &quot;target/classes&quot;).getPath());</span>
+                }
+                else
+                {
+<span class="nc bnc" id="L422" title="All 2 branches missed.">                    for (String clazz : getClasses())</span>
+                    {
+<span class="nc" id="L424">                        qaConfig.addClassPath(</span>
+<span class="nc" id="L425">                            new File(reactorProject.getBasedir(), clazz).getPath());</span>
+                    }
+                }
+<span class="nc" id="L428">            }</span>
+        }
+<span class="nc bnc" id="L430" title="All 2 branches missed.">        else if (getClasses() == null)</span>
+        {
+<span class="nc" id="L432">            qaConfig.addClassPath(</span>
+<span class="nc" id="L433">                new File(getProject().getBasedir(), &quot;target/classes&quot;).getPath());</span>
+        }
+        else
+        {
+<span class="nc bnc" id="L437" title="All 2 branches missed.">            for (String clazz : getClasses())</span>
+            {
+<span class="nc" id="L439">                qaConfig.addClassPath(</span>
+<span class="nc" id="L440">                    new File(getProject().getBasedir(), clazz).getPath());</span>
+            }
+        }
+        
+<span class="nc bnc" id="L444" title="All 2 branches missed.">        if (aggregating)</span>
+        {
+<span class="nc bnc" id="L446" title="All 2 branches missed.">            for (MavenProject reactorProject : getReactorProjects())</span>
+            {
+<span class="nc bnc" id="L448" title="All 2 branches missed.">                if (getTestClasses() == null)</span>
+                {
+<span class="nc" id="L450">                    qaConfig.addClassPath(</span>
+<span class="nc" id="L451">                        new File(reactorProject.getBasedir(), &quot;target/test-classes&quot;).getPath());</span>
+                }
+                else
+                {
+<span class="nc bnc" id="L455" title="All 2 branches missed.">                    for (String testClazz : getTestClasses())</span>
+                    {
+<span class="nc" id="L457">                        qaConfig.addClassPath(</span>
+<span class="nc" id="L458">                            new File(reactorProject.getBasedir(), testClazz).getPath());</span>
+                    }
+                }
+<span class="nc" id="L461">            }</span>
+        }
+<span class="nc bnc" id="L463" title="All 2 branches missed.">        else if (getTestClasses() == null)</span>
+        {
+<span class="nc" id="L465">            qaConfig.addClassPath(</span>
+<span class="nc" id="L466">                new File(getProject().getBasedir(), &quot;target/test-classes&quot;).getPath());</span>
+        }
+        else
+        {
+<span class="nc bnc" id="L470" title="All 2 branches missed.">            for (String testClazz : getTestClasses())</span>
+            {
+<span class="nc" id="L472">                qaConfig.addClassPath(</span>
+<span class="nc" id="L473">                    new File(getProject().getBasedir(), testClazz).getPath());</span>
+            }
+        }
+
+<span class="nc bnc" id="L477" title="All 2 branches missed.">        if (aggregating)</span>
+        {
+<span class="nc bnc" id="L479" title="All 2 branches missed.">            if (getLibraries() == null)</span>
+            {
+<span class="nc bnc" id="L481" title="All 2 branches missed.">                for (MavenProject reactorProject : getReactorProjects())</span>
+            {
+                try
+                {
+<span class="nc bnc" id="L485" title="All 2 branches missed.">                    for (Artifact artifact : getTransitiveDependencies(reactorProject))</span>
+                    {
+<span class="nc" id="L487">                        qaConfig.addLibraryPath(artifact.getFile().getPath());</span>
+<span class="nc" id="L488">                    }</span>
+                }
+<span class="nc" id="L490">                catch (Exception e)</span>
+                {
+                    // QA task will not be as accurate, log a warning
+<span class="nc" id="L493">                    getLog().warn(&quot;Unable to resolve library dependencies, analysis may not be as accurate.&quot;, e);</span>
+<span class="nc" id="L494">                }</span>
+<span class="nc" id="L495">            }</span>
+        }
+            else
+            {
+<span class="nc bnc" id="L499" title="All 2 branches missed.">                for (String library : getLibraries())</span>
+                {
+<span class="nc" id="L501">                    qaConfig.addLibraryPath(library);</span>
+                }
+            }
+        }
+<span class="nc bnc" id="L505" title="All 2 branches missed.">        else if (getLibraries() == null)</span>
+        {
+            try
+            {
+<span class="nc bnc" id="L509" title="All 2 branches missed.">                for (Artifact artifact : getTransitiveDependencies(getProject()))</span>
+                {
+<span class="nc" id="L511">                    qaConfig.addLibraryPath(artifact.getFile().getPath());</span>
+<span class="nc" id="L512">                }</span>
+            }
+<span class="nc" id="L514">            catch (Exception e)</span>
+            {
+                // QA task will not be as accurate, log a warning
+<span class="nc" id="L517">                getLog().warn(&quot;Unable to resolve library dependencies, analysis may not be as accurate.&quot;, e);</span>
+<span class="nc" id="L518">            }</span>
+        }
+        else
+        {
+<span class="nc bnc" id="L522" title="All 2 branches missed.">            for (String library : getLibraries())</span>
+            {
+<span class="nc" id="L524">                qaConfig.addLibraryPath(library);</span>
+            }
+        }
+
+<span class="nc bnc" id="L528" title="All 2 branches missed.">        if (aggregating)</span>
+        {
+<span class="nc bnc" id="L530" title="All 2 branches missed.">            for (MavenProject reactorProject : getReactorProjects())</span>
+            {
+<span class="nc" id="L532">                qaConfig.addCoverageDataFile(</span>
+<span class="nc" id="L533">                    new File(reactorProject.getBasedir(), getCoverageDataFile()).getPath());</span>
+<span class="nc" id="L534">            }</span>
+        }
+        else
+        {
+<span class="nc" id="L538">            qaConfig.setCoverageDataFile(</span>
+<span class="nc" id="L539">                new File(getProject().getBasedir(), getCoverageDataFile()).getPath());</span>
+        }
+
+<span class="nc" id="L542">        qaConfig.setCoverageMergeDataFile(getCoverageMergeDataFile());</span>
+<span class="nc" id="L543">        qaConfig.setIncludeToolOutput(isIncludeToolOutput());</span>
+<span class="nc" id="L544">        qaConfig.setJavaRuntime(getJavaRuntime());</span>
+<span class="nc" id="L545">        qaConfig.setJavaArgs(getJavaArgs());</span>
+<span class="nc" id="L546">        qaConfig.setNumThreads(getNumThreads());</span>
+<span class="nc" id="L547">        qaConfig.setProductsDir(getProductsDir());</span>
+<span class="nc" id="L548">        qaConfig.setReportDir(getReportDir());</span>
+<span class="nc" id="L549">        qaConfig.setSummaryDataFile(getSummaryDataFile().replaceAll(&quot; &quot;, &quot;&quot;));</span>
+<span class="nc" id="L550">        qaConfig.setTempDir(getTempDir());</span>
+<span class="nc" id="L551">        qaConfig.setExternalPropertiesPath(getExternalPropertiesPath(), getAdditionalProperties());</span>
+
+<span class="nc bnc" id="L553" title="All 2 branches missed.">        if (isUseHistory())</span>
+        {
+<span class="nc" id="L555">            retrieveSanity4jStats();</span>
+        }
+
+<span class="nc bnc" id="L558" title="All 2 branches missed.">        if (getCheckStyleConfig() != null)</span>
+        {
+<span class="nc" id="L560">            String version = qaConfig.getToolVersion(Tool.CHECKSTYLE.getId());</span>
+<span class="nc" id="L561">            qaConfig.setToolConfig(Tool.CHECKSTYLE.getId(), null, getCheckStyleConfig(), getCheckStyleConfigClasspath());</span>
+<span class="nc" id="L562">            qaConfig.setToolConfig(Tool.CHECKSTYLE.getId(), version, getCheckStyleConfig(), getCheckStyleConfigClasspath());</span>
+        }
+
+<span class="nc bnc" id="L565" title="All 2 branches missed.">        if (getFindBugsConfig() != null)</span>
+        {
+<span class="nc" id="L567">            String version = qaConfig.getToolVersion(Tool.FINDBUGS.getId());</span>
+<span class="nc" id="L568">            qaConfig.setToolConfig(Tool.FINDBUGS.getId(), null, getFindBugsConfig(), getFindBugsConfigClasspath());</span>
+<span class="nc" id="L569">            qaConfig.setToolConfig(Tool.FINDBUGS.getId(), version, getFindBugsConfig(), getFindBugsConfigClasspath());</span>
+        }
+
+<span class="nc bnc" id="L572" title="All 2 branches missed.">        if (getPmdConfig() != null)</span>
+        {
+<span class="nc" id="L574">            String version = qaConfig.getToolVersion(Tool.PMD.getId());</span>
+<span class="nc" id="L575">            qaConfig.setToolConfig(Tool.PMD.getId(), null, getPmdConfig(), getPmdConfigClasspath());</span>
+<span class="nc" id="L576">            qaConfig.setToolConfig(Tool.PMD.getId(), version, getPmdConfig(), getPmdConfigClasspath());</span>
+        }
+       
+        // TODO: HACK! Get around Stax using the context classloader rather than this class's.
+        // Need to write a custom class loader which combines the two.
+<span class="nc" id="L581">        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();</span>
+<span class="nc" id="L582">        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());</span>
+<span class="nc" id="L583">        sanity4j.run();</span>
+<span class="nc" id="L584">        Thread.currentThread().setContextClassLoader(oldLoader);</span>
+<span class="nc" id="L585">    }</span>
+    
+    /**
+     * Resolves the list of Transitive Dependencies for the specified artifact.
+     * 
+     * @param artifact The artifact for which to resolve the transitive dependencies.
+     * @param jars The list for which to populate the resolved file paths for all the transitive dependencies.
+     */
+    public void getTransitiveDependencies(final String artifact, final List&lt;String&gt; jars) 
+    {
+        try 
+        {
+<span class="nc bnc" id="L597" title="All 2 branches missed.">            for (Artifact artifactItem : getTransitiveDependencies(artifact))</span>
+            {
+<span class="nc" id="L599">                jars.add(artifactItem.getFile().getPath());</span>
+<span class="nc" id="L600">            }</span>
+        } 
+<span class="nc" id="L602">        catch (Exception ex) </span>
+        {
+<span class="nc" id="L604">            throw new QAException(ex.getClass().getName() + &quot;: &quot;, ex);</span>
+<span class="nc" id="L605">        }</span>
+<span class="nc" id="L606">    }</span>
+    
+    /**
+     * Resolves the list of Transitive Dependencies for the specified artifact.
+     * 
+     * @param artifact The artifact for which to resolve the transitive dependencies.
+     * @return The set of resolved transitive dependencies.
+     * 
+     * @throws DependencyGraphBuilderException Thrown if a problem occurs.
+     * @throws MojoExecutionException Thrown if a problem occurs.
+     * @throws CloneNotSupportedException Thrown if a problem occurs.
+     * @throws InvalidVersionSpecificationException Thrown if a problem occurs.
+     * @throws ProjectBuildingException Thrown if a problem occurs.
+     * @throws IllegalAccessException Thrown if a problem occurs.
+     * @throws InvocationTargetException Thrown if a problem occurs.
+     * @throws NoSuchMethodException Thrown if a problem occurs.
+     */
+    private Set&lt;Artifact&gt; getTransitiveDependencies(final String artifact) 
+        throws DependencyGraphBuilderException, MojoExecutionException, CloneNotSupportedException, InvalidVersionSpecificationException, ProjectBuildingException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
+    {
+<span class="nc" id="L626">        Coordinate coordinate = new Coordinate(artifact);</span>
+<span class="nc" id="L627">        Artifact mavenArtifact = getArtifact(coordinate.getGroupId(), coordinate.getArtifactId(), coordinate.getVersion(), coordinate.getScope(), coordinate.getPackaging(), coordinate.getClassifier());</span>
+<span class="nc" id="L628">        return getTransitiveDependencies(mavenArtifact);</span>
+    }
+
+    /**
+     * Assembles a Maven Artifact object.
+     * 
+     * @param groupId The groupId.
+     * @param artifactId The artifactId.
+     * @param version The version.
+     * @param scope The scope.
+     * @param type The type.
+     * @param classifier The classifier.
+     * @return The assembled Maven Artifact object.
+     * @throws InvalidVersionSpecificationException Thrown if the version could not be idientified.
+     */
+    private Artifact getArtifact(final String groupId, final String artifactId, final String version, final String scope, final String type, final String classifier) 
+        throws InvalidVersionSpecificationException
+    {
+<span class="nc" id="L646">        return new DefaultArtifact(</span>
+<span class="nc" id="L647">            groupId, artifactId, VersionRange.createFromVersionSpec(version), scope, type, classifier, new DefaultArtifactHandler(type));</span>
+    }
+    
+    /**
+     * Resolves the list of Transitive Dependencies for the specified artifact.
+     * 
+     * @param artifact The artifact for which to resolve the transitive dependencies.
+     * @return The set of resolved transitive dependencies.
+     * 
+     * @throws DependencyGraphBuilderException Thrown if a problem occurs.
+     * @throws MojoExecutionException Thrown if a problem occurs.
+     * @throws CloneNotSupportedException Thrown if a problem occurs.
+     * @throws InvalidVersionSpecificationException Thrown if a problem occurs.
+     * @throws ProjectBuildingException Thrown if a problem occurs.
+     * @throws IllegalAccessException Thrown if a problem occurs.
+     * @throws InvocationTargetException Thrown if a problem occurs.
+     * @throws NoSuchMethodException Thrown if a problem occurs.
+     */
+    private Set&lt;Artifact&gt; getTransitiveDependencies(final Artifact artifact) 
+        throws DependencyGraphBuilderException, MojoExecutionException, CloneNotSupportedException, InvalidVersionSpecificationException, ProjectBuildingException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
+    {
+<span class="nc" id="L668">        ProjectBuildingRequest request = new DefaultProjectBuildingRequest();</span>
+        //request.setUserProperties(getProject().getProperties());
+<span class="nc" id="L670">        request.setSystemProperties(System.getProperties());</span>
+<span class="nc" id="L671">        request.setLocalRepository(getLocalRepo());</span>
+<span class="nc" id="L672">        request.setRemoteRepositories(getRemoteRepos());</span>
+        
+        // Support for Maven 3.0 / 3.1+ (Move from Sonatype-Aether to Eclipse-Aether).
+        //request.setRepositorySession(session);
+<span class="nc" id="L676">        invoke(request, &quot;setRepositorySession&quot;, getSession());</span>
+
+<span class="nc" id="L678">        MavenProject project = getProjectBuilder().build(artifact, request).getProject();</span>
+        
+<span class="nc" id="L680">        return getTransitiveDependencies(project);</span>
+    }
+    
+    /**
+     * Uses reflection to invoke a method on an object, passing in the arguments as parameters.
+     * Attempts to determine the method signature by using the first Interface of each argument's Class. 
+     * 
+     * Note, we should probably try to make a better attempt at identifying the method signature rather 
+     * than simply using the first Interface of the argument's Class. However for the moment it is enough 
+     * for it to support the use by it's only caller. 
+     * 
+     * @param object The Object on which to invoke the method.
+     * @param method The name of the method to invoke on the Object.
+     * @param args The parameters to pass to the method.
+     * @return The returned object of the method invoked.
+     * 
+     * @throws IllegalAccessException Thrown if the method cannot be invoked.
+     * @throws InvocationTargetException Thrown if the invoked method throws an Exception. 
+     * @throws NoSuchMethodException Thrown if the method cannot be identified.
+     */
+    private Object invoke(final Object object, final String method, final Object... args)
+        throws IllegalAccessException, InvocationTargetException, NoSuchMethodException
+    {
+<span class="nc" id="L703">        Class&lt;?&gt;[] types = new Class&lt;?&gt;[args.length];</span>
+        
+<span class="nc bnc" id="L705" title="All 2 branches missed.">        for (int i = 0; i &lt; args.length; i++)</span>
+        {
+<span class="nc" id="L707">            types[i] = args[i].getClass().getInterfaces()[0];</span>
+        }
+        
+<span class="nc" id="L710">        return object.getClass().getMethod(method, types).invoke(object, args);</span>
+    }
+    
+    /**
+     * Resolves the list of Transitive Dependencies for the specified Maven Project.
+     * 
+     * @param project The Maven Project for which to resolve the transitive dependencies.
+     * @return The set of resolved transitive dependencies.
+     * 
+     * @throws DependencyGraphBuilderException Thrown if a problem occurs.
+     * @throws MojoExecutionException Thrown if a problem occurs.
+     */
+    private Set&lt;Artifact&gt; getTransitiveDependencies(final MavenProject project) 
+        throws DependencyGraphBuilderException, MojoExecutionException
+    {
+<span class="nc" id="L725">        DependencyNode rootNode = getDependencyGraphBuilder().buildDependencyGraph(project, new ArtifactFilter()</span>
+<span class="nc" id="L726">        {</span>
+            @Override
+            public boolean include(final Artifact artifact) 
+            {
+<span class="nc bnc" id="L730" title="All 2 branches missed.">                return !Artifact.SCOPE_SYSTEM.equals(artifact.getScope());</span>
+            }
+        });
+            
+<span class="nc" id="L734">        Set&lt;Artifact&gt; sortedArtifacts = new LinkedHashSet&lt;Artifact&gt;();</span>
+        
+<span class="nc" id="L736">        sortedArtifacts.add(rootNode.getArtifact());</span>
+<span class="nc" id="L737">        flattenChildren(sortedArtifacts, rootNode);</span>
+        
+<span class="nc" id="L739">        ArtifactsResolver artifactsResolver = new DefaultArtifactsResolver(getResolver(), getLocalRepo(), getRemoteRepos(), true);</span>
+        
+<span class="nc" id="L741">        Set&lt;Artifact&gt; resolvedArtifacts = artifactsResolver.resolve(sortedArtifacts, getLog());</span>
+        
+<span class="nc" id="L743">        Set&lt;Artifact&gt; orderedArtifacts = new LinkedHashSet&lt;Artifact&gt;();</span>
+        
+<span class="nc bnc" id="L745" title="All 2 branches missed.">        for (Artifact sortedArtifact : sortedArtifacts)</span>
+        {
+<span class="nc bnc" id="L747" title="All 2 branches missed.">            for (Artifact resolvedArtifact : resolvedArtifacts)</span>
+            {
+<span class="nc bnc" id="L749" title="All 2 branches missed.">                if (sortedArtifact.compareTo(resolvedArtifact) == 0)</span>
+                {
+<span class="nc" id="L751">                    orderedArtifacts.add(resolvedArtifact);</span>
+                }
+<span class="nc" id="L753">            }</span>
+<span class="nc" id="L754">        }</span>
+        
+<span class="nc" id="L756">        return orderedArtifacts;</span>
+    }
+    
+    /**
+     * Resolves a single Artifact.
+     * 
+     * @param artifact The Artifact for which to resolve.
+     * @return The File referencing the resolved Artifact.
+     */
+    public File resolveArtifact(final String artifact) 
+    {
+        try
+        {
+<span class="nc" id="L769">            Coordinate coordinate = new Coordinate(artifact);</span>
+            
+<span class="nc" id="L771">        Set&lt;Artifact&gt; artifacts = new HashSet&lt;Artifact&gt;();</span>
+<span class="nc" id="L772">            artifacts.add(getArtifact(coordinate.getGroupId(), coordinate.getArtifactId(), coordinate.getVersion(), coordinate.getScope(), coordinate.getPackaging(), coordinate.getClassifier()));</span>
+            
+<span class="nc" id="L774">            ArtifactsResolver artifactsResolver = new DefaultArtifactsResolver(getResolver(), getLocalRepo(), getRemoteRepos(), true);</span>
+            
+<span class="nc" id="L776">            artifacts = artifactsResolver.resolve(artifacts, getLog());</span>
+            
+<span class="nc" id="L778">            return artifacts.toArray(new Artifact[1])[0].getFile();</span>
+            
+        } 
+<span class="nc" id="L781">        catch (Exception ex) </span>
+        {
+<span class="nc" id="L783">            throw new QAException(ex.getClass().getName() + &quot;: &quot;, ex);</span>
+        }
+    }
+    
+    /**
+     * Recursively traverses the hierarchy of the dependency tree flattening it's contents into a Set of Artifacts.
+     * 
+     * @param artifacts The Set for which to populate the Artifacts. 
+     * @param rootNode The start or currently positioned node within the dependency tree.
+     * @return The same Set of Artifacts as passed in, with the Artifacts populated.
+     */
+    private Set&lt;Artifact&gt; flattenChildren(final Set&lt;Artifact&gt; artifacts, final DependencyNode rootNode)
+    {
+<span class="nc bnc" id="L796" title="All 2 branches missed.">        if (rootNode.getChildren() != null)</span>
+        {
+            // Add all the child artifacts first.
+<span class="nc bnc" id="L799" title="All 2 branches missed.">            for (DependencyNode node : rootNode.getChildren())</span>
+            {
+<span class="nc" id="L801">                artifacts.add(node.getArtifact());</span>
+<span class="nc" id="L802">            }</span>
+
+            // Then add all the grand children second.
+<span class="nc bnc" id="L805" title="All 2 branches missed.">            for (DependencyNode node : rootNode.getChildren())</span>
+            {
+<span class="nc" id="L807">                flattenChildren(artifacts, node);</span>
+<span class="nc" id="L808">            }</span>
+        }
+        
+<span class="nc" id="L811">        return artifacts;</span>
+    }
+
+    /**
+     * If available, retrieves sanity4j historical results from 'site' repository.
+     */
+    private void retrieveSanity4jStats()
+    {
+        try
+        {
+<span class="nc" id="L821">            DistributionManagement distributionManagement = getProject().getDistributionManagement();</span>
+<span class="nc bnc" id="L822" title="All 2 branches missed.">            if (distributionManagement == null)</span>
+            {
+<span class="nc" id="L824">                getLog().info(&quot;'Site' distribution management not defined. No build history will be graphed. Continuing 'sanity4j' checks.&quot;);</span>
+            }
+            else
+            {
+<span class="nc" id="L828">                Site site = distributionManagement.getSite();</span>
+
+<span class="nc bnc" id="L830" title="All 2 branches missed.">                if (site == null)</span>
+                {
+<span class="nc" id="L832">                    getLog().info(&quot;'Site' distribution management not defined. No build history will be graphed. Continuing 'sanity4j' checks.&quot;);</span>
+                }
+                else
+                {
+<span class="nc" id="L836">                    InvocationRequest request = new DefaultInvocationRequest();</span>
+<span class="nc" id="L837">                    request.setGoals(Collections.singletonList(DOWNLOAD_SINGLE_MOJO));</span>
+<span class="nc" id="L838">                    Properties props = new Properties();</span>
+
+<span class="nc" id="L840">                    String siteUrl = site.getUrl();</span>
+<span class="nc" id="L841">                    props.put(&quot;wagon.url&quot;, siteUrl);</span>
+<span class="nc" id="L842">                    String dataFileName = getSummaryDataFile().replaceAll(&quot; &quot;, &quot;&quot;);</span>
+<span class="nc" id="L843">                    props.put(&quot;wagon.fromFile&quot;, new File(dataFileName).getName());</span>
+<span class="nc" id="L844">                    props.put(&quot;wagon.toDir&quot;, getProject().getReporting().getOutputDirectory());</span>
+<span class="nc" id="L845">                    request.setProperties(props);</span>
+
+<span class="nc" id="L847">                    getLog().info(&quot;Retrieveing 'sanity4j' statistics from URL: &quot; + props);</span>
+<span class="nc" id="L848">                    Invoker invoker = new DefaultInvoker();</span>
+<span class="nc" id="L849">                    invoker.execute(request);</span>
+                }
+            }
+        }
+<span class="nc" id="L853">        catch (Exception e)</span>
+        {
+<span class="nc" id="L855">            getLog().error(&quot;Unable to retrieve extisting report statistics. Continuing 'sanity4j' checks.&quot;, e);</span>
+<span class="nc" id="L856">        }</span>
+<span class="nc" id="L857">    }</span>
+
+    /**
+     * Recursive check for existence of .java file.
+     *
+     * @param srcFile the &lt;code&gt;File&lt;/code&gt; to start .java check from
+     * @return true if .java file exists; otherwise false
+     */
+    private boolean checkForSource(final File srcFile)
+    {
+<span class="nc bnc" id="L867" title="All 2 branches missed.">        if (getLog().isDebugEnabled())</span>
+        {
+<span class="nc" id="L869">            getLog().debug(&quot;checking if '.java' file: Location: &quot; + srcFile.getAbsolutePath());</span>
+        }
+        
+<span class="nc" id="L872">        boolean srcFileMatch = false;</span>
+        
+<span class="nc bnc" id="L874" title="All 2 branches missed.">        if (srcFile.isDirectory())</span>
+        {
+<span class="nc" id="L876">            File[] srcFiles = srcFile.listFiles();</span>
+<span class="nc bnc" id="L877" title="All 2 branches missed.">            for (File files : srcFiles)</span>
+            {
+<span class="nc bnc" id="L879" title="All 2 branches missed.">                if (checkForSource(files))</span>
+                {
+<span class="nc" id="L881">                    srcFileMatch = true;</span>
+<span class="nc" id="L882">                    break;</span>
+                }
+            }
+        }
+        
+<span class="nc bnc" id="L887" title="All 2 branches missed.">        if (srcFile.getName().endsWith(&quot;.java&quot;))</span>
+        {
+<span class="nc" id="L889">            srcFileMatch = true;</span>
+<span class="nc" id="L890">            getLog().debug(&quot;Found '.java' file. Remaining recursive call will be skipped&quot;);</span>
+        }
+        
+<span class="nc" id="L893">        return srcFileMatch;</span>
+    }
+
+    /**
+     * Write out some small text to a file.
+     *
+     * @param file The file to write to.
+     * @param text The text to write to that file.
+     */
+    private void writeTextFile(final File file, final String text)
+    {
+        try
+        {
+<span class="nc" id="L906">            BufferedWriter writer = new BufferedWriter(new FileWriter(file));</span>
+<span class="nc" id="L907">            writer.write(text);</span>
+<span class="nc" id="L908">            writer.close();</span>
+        }
+<span class="nc" id="L910">        catch (IOException ex)</span>
+        {
+<span class="nc" id="L912">            getLog().warn(&quot;Unable to write file: &quot; + file.getName());</span>
+<span class="nc" id="L913">        }</span>
+<span class="nc" id="L914">    }</span>
+
+    /**
+     * @see org.apache.maven.reporting.AbstractMavenReport#getProject()
+     *
+     * @return the maven project.
+     */
+    @Override
+    public MavenProject getProject()
+    {
+<span class="nc" id="L924">        return project;</span>
+    }
+
+    /**
+     * @see org.apache.maven.reporting.AbstractMavenReport#getOutputDirectory()
+     *
+     * @return the output directory.
+     */
+    @Override
+    protected String getOutputDirectory()
+    {
+<span class="nc" id="L935">        return reportDir;</span>
+    }
+
+    /**
+     * @see org.apache.maven.reporting.AbstractMavenReport#getSiteRenderer()
+     *
+     * @return the site renderer.
+     */
+    @Override
+    protected Renderer getSiteRenderer()
+    {
+<span class="nc" id="L946">        return siteRenderer;</span>
+    }
+
+    /**
+     * @see org.apache.maven.reporting.MavenReport#getDescription(java.util.Locale)
+     *
+     * @param locale the locale
+     * @return the description.
+     */
+    @Override
+   public String getDescription(final Locale locale)
+    {
+<span class="nc" id="L958">        return getBundle(locale).getString(&quot;report.sanity4j.description&quot;);</span>
+    }
+
+    /**
+     * @see org.apache.maven.reporting.MavenReport#getName(java.util.Locale)
+     *
+     * @param locale the locale
+     * @return the name.
+     */
+    @Override
+   public String getName(final Locale locale)
+    {
+<span class="nc" id="L970">        return getBundle(locale).getString(&quot;report.sanity4j.name&quot;);</span>
+    }
+
+    /**
+     * @see org.apache.maven.reporting.MavenReport#getOutputName()
+     *
+     * @return the output name.
+     */
+    @Override
+   public String getOutputName()
+    {
+<span class="nc" id="L981">        return &quot;sanity4j/index&quot;;</span>
+    }
+
+    /**
+     * Indicates that this report is external so that the generated index.html
+     * file is not overwritten by the default maven template.
+     *
+     * @see org.apache.maven.reporting.MavenReport#isExternalReport()
+     *
+     * @return true to indicate that the report is external.
+     */
+    @Override
+    public boolean isExternalReport()
+    {
+<span class="nc" id="L995">        return true;</span>
+    }
+
+    /**
+     * Gets the resource bundle for the report text.
+     *
+     * @param locale The locale for the report, must not be &lt;code&gt;null&lt;/code&gt;.
+     * @return The resource bundle for the requested locale.
+     */
+    private ResourceBundle getBundle(final Locale locale)
+    {
+<span class="nc" id="L1006">        return ResourceBundle.getBundle(&quot;sanity4j-maven-report&quot;, locale,</span>
+<span class="nc" id="L1007">            getClass().getClassLoader());</span>
+    }
+
+    /**
+     * @return The Reactor Projects.
+     */
+    public List&lt;MavenProject&gt; getReactorProjects() 
+    {
+<span class="nc" id="L1015">        return reactorProjects;</span>
+    }
+
+    /**
+     * @return The Dependency Graph Builder. 
+     */
+    public DependencyGraphBuilder getDependencyGraphBuilder() 
+    {
+<span class="nc" id="L1023">        return dependencyGraphBuilder;</span>
+    }
+
+    /**
+     * @return The Artifact Resolver.
+     */
+    public ArtifactResolver getResolver() 
+    {
+<span class="nc" id="L1031">        return resolver;</span>
+    }
+
+    /**
+     * @return The Project Builder.
+     */
+    public ProjectBuilder getProjectBuilder() 
+    {
+<span class="nc" id="L1039">        return projectBuilder;</span>
+    }
+
+    /**
+     * Can be one of the below.
+     * &lt;pre&gt; 
+     * org.sonatype.aether.RepositorySystemSession
+     * org.eclipse.aether.RepositorySystemSession
+     * &lt;/pre&gt;
+     * 
+     * @return The Repository System Session.
+     */
+    public Object getSession() 
+    {
+<span class="nc" id="L1053">        return session;</span>
+    }
+
+    /**
+     * @return The Local Artifact Repsoitory.
+     */
+    public ArtifactRepository getLocalRepo() 
+    {
+<span class="nc" id="L1061">        return localRepo;</span>
+    }
+
+    /**
+     * @return The List of Remote Artifact Repositories.  
+     */
+    public List&lt;ArtifactRepository&gt; getRemoteRepos() 
+    {
+<span class="nc" id="L1069">        return remoteRepos;</span>
+    }
+
+    /**
+     * @return Is Aggregate.
+     */
+    public boolean isAggregate() 
+    {
+<span class="nc" id="L1077">        return aggregate;</span>
+    }
+
+    /**
+     * @return The Sources.
+     */
+    public String[] getSources() 
+    {
+<span class="nc" id="L1085">        return sources;</span>
+    }
+
+    /**
+     * @return The Test Sources.
+     */
+    public String[] getTestSources() 
+    {
+<span class="nc" id="L1093">        return testSources;</span>
+    }
+
+    /**
+     * @return The Classes.
+     */
+    public String[] getClasses() 
+    {
+<span class="nc" id="L1101">        return classes;</span>
+    }
+
+    /**
+     * @return The Test Classes.
+     */
+    public String[] getTestClasses() 
+    {
+<span class="nc" id="L1109">        return testClasses;</span>
+    }
+
+    /**
+     * @return The Libraries.
+     */
+    public String[] getLibraries() 
+    {
+<span class="nc" id="L1117">        return libraries;</span>
+    }
+
+    /**
+     * @return The Products Dir.
+     */
+    public String getProductsDir() 
+    {
+<span class="nc" id="L1125">        return productsDir;</span>
+    }
+
+    /**
+     * @return The Report Dir.
+     */
+    public String getReportDir() 
+    {
+<span class="nc" id="L1133">        return reportDir;</span>
+    }
+
+    /**
+     * @return The Coverage Data File.
+     */
+    public String getCoverageDataFile() 
+    {
+<span class="nc" id="L1141">        return coverageDataFile;</span>
+    }
+
+    /**
+     * @return The Coverage Merge Data File.
+     */
+    public String getCoverageMergeDataFile() 
+    {
+<span class="nc" id="L1149">        return coverageMergeDataFile;</span>
+    }
+
+    /**
+     * @return The Summary Data File.
+     */
+    public String getSummaryDataFile() 
+    {
+<span class="nc" id="L1157">        return summaryDataFile;</span>
+    }
+
+    /**
+     * @return The External Properties Path.
+     */
+    public String getExternalPropertiesPath() 
+    {
+<span class="nc" id="L1165">        return externalPropertiesPath;</span>
+    }
+
+    /**
+     * @return The Check Style Config.
+     */
+    public String getCheckStyleConfig() 
+    {
+<span class="nc" id="L1173">        return checkStyleConfig;</span>
+    }
+
+    /**
+     * @return The Check Style Config Classpath.
+     */
+    public String getCheckStyleConfigClasspath() 
+    {
+<span class="nc" id="L1181">        return checkStyleConfigClasspath;</span>
+    }
+
+    /**
+     * @return The Fins Bugs Config.
+     */
+    public String getFindBugsConfig() 
+    {
+<span class="nc" id="L1189">        return findBugsConfig;</span>
+    }
+
+    /**
+     * @return The Find Bugs Config Classpath. 
+     */
+    public String getFindBugsConfigClasspath() 
+    {
+<span class="nc" id="L1197">        return findBugsConfigClasspath;</span>
+    }
+
+    /**
+     * @return The Pmd Config.
+     */
+    public String getPmdConfig() 
+    {
+<span class="nc" id="L1205">        return pmdConfig;</span>
+    }
+
+    /**
+     * @return The Additional Properties.
+     */
+    public String getAdditionalProperties() 
+    {
+<span class="nc" id="L1213">        return additionalProperties;</span>
+    }
+
+    /**
+     * @return The Pmd Config Classpath.
+     */
+    public String getPmdConfigClasspath() 
+    {
+<span class="nc" id="L1221">        return pmdConfigClasspath;</span>
+    }
+
+    /**
+     * @return The Temp Dir.
+     */
+    public File getTempDir() 
+    {
+<span class="nc" id="L1229">        return tempDir;</span>
+    }
+
+    /**
+     * @return The Java Runtime. 
+     */
+    public String getJavaRuntime() 
+    {
+<span class="nc" id="L1237">        return javaRuntime;</span>
+    }
+
+    /**
+     * @return The Java Args.
+     */
+    public String getJavaArgs() 
+    {
+<span class="nc" id="L1245">        return javaArgs;</span>
+    }
+
+    /**
+     * @return Is Include Tool Output.
+     */
+    public boolean isIncludeToolOutput() 
+    {
+<span class="nc" id="L1253">        return includeToolOutput;</span>
+    }
+
+    /**
+     * @return The Num Threads.
+     */
+    public int getNumThreads() 
+    {
+<span class="nc" id="L1261">        return numThreads;</span>
+    }
+
+    /**
+     * @return Is Use History.
+     */
+    public boolean isUseHistory() 
+    {
+<span class="nc" id="L1269">        return useHistory;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostfixExpression.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.util.math</a> &gt; <span class="el_source">PostfixExpression.java</span></div><h1>PostfixExpression.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.util.math;
+
+import java.util.Map;
+
+/**
+ * PostFixExpression - evaluates postfix expressions like [1, 2, +]. Variables can be used, prefix them with a '#'.
+ * 
+ * @version 1.0 02/01/2008
+ * @author Yiannis Paschalidis
+ */
+public class PostfixExpression
+{
+    /** The string array containing operators &amp;amp; operands as strings, in postfix evaluation order. */
+    private final String[] terms;
+
+    /**
+     * Evaluates a postfix expression.
+     * 
+     * @param terms - a String array containing operators &amp;amp; operands as strings, in postfix evaluation order.
+     * @return the result of the expression.
+     * 
+     * @throws SyntaxException Thrown if a problem occurs.
+     */
+    public static double evaluatePostfix(final String[] terms) throws SyntaxException
+    {
+        // an instance of the Stack class is an overkill, we can just get away using an array
+<span class="fc" id="L27">        double[] stack = new double[terms.length]; // worst-case</span>
+<span class="fc" id="L28">        int stackIndex = 0;</span>
+
+<span class="fc" id="L30">        double result = 0.0;</span>
+        double operand1, operand2;
+
+        try
+        {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">            for (int i = 0; i &lt; terms.length; i++)</span>
+            {
+<span class="fc" id="L37">                String temp = terms[i];</span>
+
+<span class="fc bfc" id="L39" title="All 2 branches covered.">                if (temp.length() == 1)</span>
+                {
+<span class="pc bpc" id="L41" title="2 of 7 branches missed.">                    switch (temp.charAt(0))</span>
+                    {
+                        case '+': // Addition
+<span class="fc" id="L44">                            operand1 = stack[--stackIndex];</span>
+<span class="fc" id="L45">                            operand2 = stack[--stackIndex];</span>
+<span class="fc" id="L46">                            stack[stackIndex++] = operand1 + operand2;</span>
+<span class="fc" id="L47">                            break;</span>
+
+                        case '-': // Subtraction\
+<span class="fc" id="L50">                            operand1 = stack[--stackIndex];</span>
+<span class="fc" id="L51">                            operand2 = stack[--stackIndex];</span>
+<span class="fc" id="L52">                            stack[stackIndex++] = operand2 - operand1;</span>
+<span class="fc" id="L53">                            break;</span>
+
+                        case '*': // Multiplication
+<span class="fc" id="L56">                            operand1 = stack[--stackIndex];</span>
+<span class="fc" id="L57">                            operand2 = stack[--stackIndex];</span>
+<span class="fc" id="L58">                            stack[stackIndex++] = operand1 * operand2;</span>
+<span class="fc" id="L59">                            break;</span>
+
+                        case '/': // Division
+<span class="fc" id="L62">                            operand1 = stack[--stackIndex];</span>
+<span class="fc" id="L63">                            operand2 = stack[--stackIndex];</span>
+<span class="fc" id="L64">                            stack[stackIndex++] = operand2 / operand1;</span>
+<span class="fc" id="L65">                            break;</span>
+
+                        case '^': // Power operator
+<span class="nc" id="L68">                            operand1 = stack[--stackIndex];</span>
+<span class="nc" id="L69">                            operand2 = stack[--stackIndex];</span>
+<span class="nc" id="L70">                            stack[stackIndex++] = Math.pow(operand2, operand1);</span>
+<span class="nc" id="L71">                            break;</span>
+
+                        case '~': // Unary minus
+<span class="nc" id="L74">                            stack[stackIndex - 1] = -stack[stackIndex - 1];</span>
+<span class="nc" id="L75">                            break;</span>
+
+                        default: // is 1 digit number
+<span class="fc" id="L78">                            stack[stackIndex++] = new Double(temp).doubleValue();</span>
+                    }
+                }
+                else
+                {
+                    // is multiple-digit number
+<span class="fc" id="L84">                    stack[stackIndex++] = new Double(temp).doubleValue();</span>
+                }
+            }
+
+            // The result should now be the only element on the stack.
+<span class="fc" id="L89">            result = stack[--stackIndex];</span>
+        }
+<span class="nc" id="L91">        catch (ArrayIndexOutOfBoundsException ex)</span>
+        {
+<span class="nc" id="L93">            throw new SyntaxException(&quot;Stack underflow&quot;, ex);</span>
+        }
+<span class="nc" id="L95">        catch (NumberFormatException ex)</span>
+        {
+<span class="nc" id="L97">            throw new SyntaxException(&quot;Number format exception / Illegal operator&quot;, ex);</span>
+        }
+<span class="nc" id="L99">        catch (Exception ex)</span>
+        {
+<span class="nc" id="L101">            throw new SyntaxException(&quot;Unknown error during evaluation: &quot; + ex.getMessage(), ex);</span>
+<span class="fc" id="L102">        }</span>
+
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (stackIndex != 0)</span>
+        {
+<span class="nc" id="L106">            throw new SyntaxException(&quot;Expression incomplete&quot;);</span>
+        }
+
+<span class="fc" id="L109">        return result;</span>
+    }
+
+    /**
+     * Evaluates a postfix expression.
+     * 
+     * @param terms - a String array containing operators &amp;amp; operands as strings, in postfix evaluation order. It can also
+     *            contain variables (string keys prefixed by a hash sign &quot;#&quot;)
+     * @param values - values for the variables
+     * @return the result of the expression
+     * 
+     * @throws SyntaxException Thrown if a problem occurs.
+     */
+    public static double evaluatePostfixWithVariables(final String[] terms, final Map&lt;String, Object&gt;values) throws SyntaxException
+    {
+<span class="fc" id="L124">        String[] newOp = new String[terms.length];</span>
+
+        // Create a new expression by replacing variables with their values
+
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        for (int i = 0; i &lt; terms.length; i++)</span>
+        {
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            if (terms[i].charAt(0) == '#')</span>
+            {
+<span class="fc" id="L132">                String key = terms[i].substring(1);</span>
+<span class="fc" id="L133">                Object value = values.get(key);</span>
+                
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">                if (value == null)</span>
+                {
+<span class="nc" id="L137">                    throw new SyntaxException(&quot;Bad variable id: &quot; + key);</span>
+                }
+                
+<span class="fc" id="L140">                newOp[i] = value.toString();</span>
+<span class="fc" id="L141">            }</span>
+            else
+            {
+<span class="fc" id="L144">                newOp[i] = terms[i];</span>
+            }
+        }
+
+        // Now evaluate the new expression
+<span class="fc" id="L149">        return evaluatePostfix(newOp);</span>
+    }
+
+    /**
+     * Creates a postfix expression.
+     * 
+     * @param terms - a String array containing operators &amp;amp; operands as strings, in postfix evaluation order
+     */
+    public PostfixExpression(final String[] terms)
+<span class="fc" id="L158">    {</span>
+<span class="fc" id="L159">        this.terms = new String[terms.length];</span>
+<span class="fc" id="L160">        System.arraycopy(terms, 0, this.terms, 0, terms.length);</span>
+<span class="fc" id="L161">    }</span>
+
+    /**
+     * Evaluates this postfix expression.
+     * 
+     * @return the result of the expression
+     * 
+     * @throws SyntaxException Thrown if a problem occurs.
+     */
+    public double evaluate() throws SyntaxException
+    {
+<span class="nc" id="L172">        return evaluatePostfix(terms);</span>
+    }
+
+    /**
+     * Evaluates this postfix expression.
+     * 
+     * @param values - values for the variables
+     * @return the result of the expression
+     * 
+     * @throws SyntaxException Thrown if a problem occurs.
+     */
+    public double evaluate(final Map&lt;String, Object&gt; values) throws SyntaxException
+    {
+<span class="fc" id="L185">        return evaluatePostfixWithVariables(terms, values);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

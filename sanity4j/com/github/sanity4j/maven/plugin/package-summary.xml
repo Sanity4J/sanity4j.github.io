@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
+<packageSummary packageName="com.github.sanity4j.maven.plugin" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<issueSummary high="0" significant="6" moderate="1" low="19" info="27">
+<category name="All categories" high="0" significant="0" moderate="0" low="0" info="1">
+<category name="Correctness" high="0" significant="6" moderate="0" low="7" info="0"/>
+<category name="Code style" high="0" significant="0" moderate="1" low="6" info="20"/>
+<category name="Complexity" high="0" significant="0" moderate="0" low="2" info="5">
+<category name="Code size" high="0" significant="0" moderate="0" low="0" info="2"/>
+</category>
+<category name="Performance" high="0" significant="0" moderate="0" low="0" info="14"/>
+</category>
+<tool name="Findbugs" high="0" significant="1" moderate="0" low="0" info="6"/>
+<tool name="PMD" high="0" significant="5" moderate="1" low="15" info="21"/>
+<tool name="Checkstyle" high="0" significant="0" moderate="0" low="4" info="0"/>
+</issueSummary>
+<qualitySummary>
+<package name="com.github.sanity4j.maven.plugin" classes="2" lineCount="1570" high="0" significant="6" moderate="1" low="19" info="27" quality="89"/>
+<class name="Coordinate" high="0" significant="0" moderate="0" low="9" info="0" quality="93"/>
+<class name="RunQAMojo" high="0" significant="6" moderate="1" low="10" info="27" quality="88"/>
+</qualitySummary>
+<graphs>
+</graphs>
+</packageSummary>

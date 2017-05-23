@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CheckStyleResultReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow.tool</a> &gt; <span class="el_source">CheckStyleResultReader.java</span></div><h1>CheckStyleResultReader.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow.tool;
+
+import java.io.File;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Properties;
+
+import com.github.sanity4j.model.diagnostic.Diagnostic;
+import com.github.sanity4j.model.diagnostic.DiagnosticFactory;
+import com.github.sanity4j.model.diagnostic.DiagnosticSet;
+import com.github.sanity4j.util.ExtractStats;
+import com.github.sanity4j.util.JaxbMarshaller;
+import com.github.sanity4j.util.QAException;
+
+import com.github.sanity4j.gen.checkstyle_4_4.Checkstyle;
+import com.github.sanity4j.gen.checkstyle_4_4.Error;
+
+/**
+ * CheckStyleResultReader - Translates CheckStyle results into the common format used by the QA tool.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+<span class="fc" id="L25">public final class CheckStyleResultReader implements ResultReader</span>
+{
+    /** The properties used to configure the {@link CheckStyleResultReader}. */
+<span class="fc" id="L28">    private final Properties properties = new Properties();</span>
+
+    /** The ExtractStats to add the results to. */
+    private ExtractStats stats;
+
+    /** The CheckStyle XML result file to read from. */
+    private File checkStyleResultFile;
+
+    /** {@inheritDoc} */
+    public void setProperties(final Properties properties)
+    {
+<span class="nc" id="L39">        this.properties.putAll(properties);</span>
+<span class="nc" id="L40">    }</span>
+
+    /** {@inheritDoc} */
+    public void setResultFile(final File resultFile)
+    {
+<span class="fc" id="L45">        this.checkStyleResultFile = resultFile;</span>
+<span class="fc" id="L46">    }</span>
+
+    /** {@inheritDoc} */
+    public void setStats(final ExtractStats stats)
+    {
+<span class="fc" id="L51">        this.stats = stats;</span>
+<span class="fc" id="L52">    }</span>
+
+    /**
+     * Extracts CheckStyle statistics from the given file.
+     */
+    public void run()
+    {
+<span class="fc" id="L59">        DiagnosticFactory diagnosticFactory = DiagnosticFactory.getInstance(properties);</span>
+<span class="fc" id="L60">        DiagnosticSet diagnostics = stats.getDiagnostics();</span>
+
+<span class="fc" id="L62">        Checkstyle result = (Checkstyle) JaxbMarshaller.unmarshal(checkStyleResultFile,</span>
+                                                                  &quot;com.github.sanity4j.gen.checkstyle_4_4&quot;,
+                                                                  &quot;http://com.github.sanity4j/namespace/checkstyle-4.4&quot;);
+
+<span class="fc" id="L66">        List&lt;com.github.sanity4j.gen.checkstyle_4_4.File&gt; files = result.getFile();</span>
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        for (com.github.sanity4j.gen.checkstyle_4_4.File file : files)</span>
+        {
+<span class="fc" id="L70">            List&lt;Object&gt; errors = file.getContent();</span>
+
+<span class="fc bfc" id="L72" title="All 2 branches covered.">            for (Object obj : errors)</span>
+            {
+<span class="fc bfc" id="L74" title="All 2 branches covered.">                if (obj instanceof Error)</span>
+                {
+<span class="fc" id="L76">                    Error error = (Error) obj;</span>
+
+                    // Work-around for Checkstyle bugs
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">                    if (error.getLine().intValue() == 0)</span>
+                    {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">                        if (error.getMessage().startsWith(&quot;Got an exception - java.lang.RuntimeException:&quot;))</span>
+                        {
+                            // Checkstyle fails on methods that throw custom exception types
+                            // http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1462282&amp;group_id=29721&amp;atid=397078
+<span class="nc" id="L85">                            continue;</span>
+                        }
+                        else
+                        {
+                            // Some findings are reported as line 0, so change this
+                            // to line 1 so that they appear on reports
+<span class="nc" id="L91">                            error.setLine(BigInteger.ONE);</span>
+                        }
+                    }
+
+<span class="fc" id="L95">                    Diagnostic diagnostic = diagnosticFactory.getDiagnostic();</span>
+<span class="fc" id="L96">                    diagnostic.setSource(Diagnostic.SOURCE_CHECKSTYLE);</span>
+
+                    try
+                    {
+<span class="fc" id="L100">                        diagnostic.setFileName(stats.getCanonicalPath(file.getName()));</span>
+                    }
+<span class="nc" id="L102">                    catch (IOException e)</span>
+                    {
+<span class="nc" id="L104">                        throw new QAException(&quot;Failed to get canonicalPath for &quot; + file.getName(), e);</span>
+<span class="fc" id="L105">                    }</span>
+
+<span class="fc" id="L107">                    diagnostic.setStartLine(error.getLine().intValue());</span>
+<span class="fc" id="L108">                    diagnostic.setMessage(error.getMessage());</span>
+
+<span class="fc" id="L110">                    String ruleName = error.getSource();</span>
+<span class="fc" id="L111">                    ruleName = ruleName.substring(ruleName.lastIndexOf('.') + 1);</span>
+<span class="fc" id="L112">                    diagnostic.setRuleName(ruleName);</span>
+<span class="fc" id="L113">                    diagnostic.calcSeverity();</span>
+
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">                    if (error.getColumn() != null)</span>
+                    {
+<span class="fc" id="L117">                        diagnostic.setStartColumn(error.getColumn().intValue());</span>
+                    }
+
+                    // Checkstyle is source file based, so guess the class name
+<span class="fc" id="L121">                    diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</span>
+
+<span class="fc" id="L123">                    diagnostics.add(diagnostic);</span>
+                }
+<span class="fc" id="L125">            }</span>
+<span class="fc" id="L126">        }</span>
+<span class="fc" id="L127">    }</span>
+
+    /** {@inheritDoc} */
+    public String getDescription()
+    {
+<span class="nc" id="L132">        return &quot;Reading CheckStyle results&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

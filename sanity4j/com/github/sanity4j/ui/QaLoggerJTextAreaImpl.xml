@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.ui.QaLoggerJTextAreaImpl" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<source>
+<line>package com.github.sanity4j.ui; </line>
+<line/>
+<line>import javax.swing.JTextArea;</line>
+<line/>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line/>
+<line>/** </line>
+<line> * A QaLogger implementation that logs to a JTextArea. </line>
+<line> * </line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class QaLoggerJTextAreaImpl extends QaLogger</line>
+<line>{</line>
+<line>    /** The text area to log to. */</line>
+<line>    private final JTextArea textArea;</line>
+<line/>
+<line>    /** </line>
+<line>     * Creates a QaLoggerJTextAreaImpl.</line>
+<line>     * @param textArea the text area to log to. </line>
+<line>     */</line>
+<line>    public QaLoggerJTextAreaImpl(final JTextArea textArea)</line>
+<line>    {</line>
+<line>        this.textArea = textArea;</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    @Override</line>
+<line>    public void debug(final String message, final Throwable throwable)</line>
+<line>    {</line>
+<line>        log(&quot;[DEBUG] &quot; + stackTraceToString(message, throwable));</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    @Override</line>
+<line>    public void debug(final String message)</line>
+<line>    {</line>
+<line>        log(&quot;[DEBUG] &quot; + message);</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    @Override</line>
+<line>    public void error(final String message, final Throwable throwable)</line>
+<line>    {</line>
+<line>        log(&quot;[ERROR] &quot; + stackTraceToString(message, throwable));</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    @Override</line>
+<line>    public void error(final String message)</line>
+<line>    {</line>
+<line>        log(&quot;[ERROR] &quot; + message);</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    @Override</line>
+<line>    public void info(final String message)</line>
+<line>    {</line>
+<line>        log(&quot;[INFO] &quot; + message);</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    @Override</line>
+<line>    public void warn(final String message, final Throwable throwable)</line>
+<line>    {</line>
+<line>        log(&quot;[WARN] &quot; + stackTraceToString(message, throwable));</line>
+<line>    }</line>
+<line/>
+<line>    /** {@inheritDoc} */</line>
+<line>    @Override</line>
+<line>    public void warn(final String message)</line>
+<line>    {</line>
+<line>        log(&quot;[WARN] &quot; + message);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Appends a message to the text area and scrolls to the bottom.</line>
+<line>     * @param message the message to append.</line>
+<line>     */</line>
+<line>    private void log(final String message)</line>
+<line>    {</line>
+<line>        textArea.append(message + '\n');</line>
+<line>        textArea.setCaretPosition(textArea.getText().length());</line>
+<line>    }</line>
+<line>}</line>
+</source>
+</classDetails>

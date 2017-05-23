@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RunQA.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.ant.taskdef</a> &gt; <span class="el_source">RunQA.java</span></div><h1>RunQA.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.ant.taskdef;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Reference;
+
+import com.github.sanity4j.util.QAException;
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.util.QaLoggerAntImpl;
+import com.github.sanity4j.workflow.QAProcessor;
+
+/**
+ * This class is an Apache ANT task that runs Sanity4J against a project's source code and classes.
+ * &lt;p&gt;
+ * This task simply configures up a {@link QAProcessor} and then runs it in the {@link #execute()} method.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+<span class="nc" id="L22">public class RunQA extends Task</span>
+{
+    /** The QAProcessor that runs the QA process. */
+<span class="nc" id="L25">    private final QAProcessor qaProcessor = new QAProcessor();</span>
+
+    /**
+     * An ant type that stores a tool name / tool version / and the 'location' of a configuration file for the given
+     * tool.
+     */
+    public static class Configuration
+    {
+        /** The ANT project in which this Configuration was created. */
+        private final Project project;
+    	
+        /** The name of the tool to be configured. */
+        private String tool;
+
+        /** The version of the tool to be configured. */
+        private String version;
+
+        /** The additional class path used by the custom configuration. */
+        private Path classpath;
+
+        /** The 'location' of the configuration file for the given tool. */
+        private String config;
+        
+        /**
+         * Creates a {@link Configuration} associated with the given ANT {@link Project}.
+         * 
+         * @param project The ant project which created this {@link Configuration}.
+         */
+        public Configuration(final Project project)
+<span class="nc" id="L54">        {</span>
+<span class="nc" id="L55">            this.project = project;</span>
+<span class="nc" id="L56">        }</span>
+        
+        /**
+         * @return the {@link #tool}.
+         */
+        public String getTool()
+        {
+<span class="nc" id="L63">            return tool;</span>
+        }
+
+        /**
+         * @return the {@link #version}
+         */
+        public String getVersion()
+        {
+<span class="nc" id="L71">            return version;</span>
+        }
+
+        /**
+         * @return the {@link #config}.
+         */
+        public String getConfig()
+        {
+<span class="nc" id="L79">            return config;</span>
+        }
+
+        /**
+         * @return the {@link #classpath}.
+         */
+        public String getClasspath()
+        {
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        	if (classpath == null)</span>
+        	{
+<span class="nc" id="L89">        		return null;</span>
+        	}
+        	else
+        	{
+<span class="nc" id="L93">        		return classpath.toString();</span>
+        	}
+        }
+        
+        /**
+         * @param tool the value to which to set {@link #tool}.
+         */
+        public void setTool(final String tool)
+        {
+<span class="nc" id="L102">            this.tool = tool;</span>
+<span class="nc" id="L103">        }</span>
+
+        /**
+         * @param version the value to which to set {@link #version}.
+         */
+        public void setVersion(final String version)
+        {
+<span class="nc" id="L110">            this.version = version;</span>
+<span class="nc" id="L111">        }</span>
+
+        /**
+         * @param config the value to which to set {@link #config}.
+         */
+        public void setConfig(final String config)
+        {
+<span class="nc" id="L118">            this.config = config;</span>
+<span class="nc" id="L119">        }</span>
+
+        /**
+         * @return the created classpath from the project.
+         */
+        public Path createClasspath()
+        {
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        	if (classpath == null)</span>
+        	{
+<span class="nc" id="L128">        		classpath = new Path(project); </span>
+        	}
+        	
+<span class="nc" id="L131">        	return classpath.createPath();</span>
+        }
+        
+        /**
+         * @param classpath the value to which to set {@link #classpath}.
+         */
+        public void setClasspath(final Path classpath)
+        {
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        	if (this.classpath == null)</span>
+        	{
+<span class="nc" id="L141">        		this.classpath = classpath;</span>
+        	}
+        	else
+        	{
+<span class="nc" id="L145">        		this.classpath.append(classpath);</span>
+        	}
+<span class="nc" id="L147">        }</span>
+        
+        /**
+         * Set the {@link #classpath} from a reference to another classpath.
+         * 
+         * @param reference The reference from which the value of {@link #classpath} is to be derived. 
+         */
+        public void setClasspathRef(final Reference reference)
+        {
+<span class="nc" id="L156">        	createClasspath().setRefid(reference);</span>
+<span class="nc" id="L157">        }</span>
+    }
+
+    /**
+     * Adds the given path to the list of sources.
+     * 
+     * @param path the source path to add.
+     */
+    public void addConfiguredSourcepath(final Path path)
+    {
+<span class="nc bnc" id="L167" title="All 2 branches missed.">        for (String pathElement : path.list())</span>
+        {
+<span class="nc" id="L169">            qaProcessor.getConfig().addSourcePath(pathElement);</span>
+        }
+<span class="nc" id="L171">    }</span>
+
+    /**
+     * Adds the given path to the list of classes.
+     * 
+     * @param path the class path to add.
+     */
+    public void addConfiguredClasspath(final Path path)
+    {
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        for (String pathElement : path.list())</span>
+        {
+<span class="nc" id="L182">            qaProcessor.getConfig().addClassPath(pathElement);</span>
+        }
+<span class="nc" id="L184">    }</span>
+
+    /**
+     * Adds the given path to the list of libraries.
+     * 
+     * @param path the library path to add.
+     */
+    public void addConfiguredLibraryPath(final Path path)
+    {
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        for (String pathElement : path.list())</span>
+        {
+<span class="nc" id="L195">            qaProcessor.getConfig().addLibraryPath(pathElement);</span>
+        }
+<span class="nc" id="L197">    }</span>
+
+    /**
+     * @return a newly created {@link Configuration}.
+     */
+    public Configuration createConfiguration()
+    {
+<span class="nc" id="L204">        return new Configuration(getProject());</span>
+    }
+
+    /**
+     * @param configuration The tool configuration to be added to the QA Configuration.
+     */
+    public void addConfiguredConfiguration(final Configuration configuration)
+    {
+<span class="nc bnc" id="L212" title="All 2 branches missed.">    	if (configuration.getConfig() != null)</span>
+    	{
+<span class="nc" id="L214">	        qaProcessor.getConfig().setToolConfig(</span>
+<span class="nc" id="L215">	        	configuration.getTool(), configuration.getVersion(),</span>
+<span class="nc" id="L216">	            configuration.getConfig(), configuration.getClasspath());</span>
+	
+<span class="nc bnc" id="L218" title="All 2 branches missed.">	        if (configuration.getVersion() == null)</span>
+	        {
+<span class="nc" id="L220">	            String version = qaProcessor.getConfig().getToolVersion(configuration.getTool());</span>
+	
+<span class="nc" id="L222">	            qaProcessor.getConfig().setToolConfig(</span>
+<span class="nc" id="L223">	            	configuration.getTool(), version, </span>
+<span class="nc" id="L224">	            	configuration.getConfig(), configuration.getClasspath());</span>
+	        }
+    	}
+<span class="nc" id="L227">    }</span>
+
+    /**
+     * @param javaRuntime The javaRuntime to set.
+     */
+    public void setJavaRuntime(final String javaRuntime)
+    {
+<span class="nc" id="L234">        qaProcessor.getConfig().setJavaRuntime(javaRuntime);</span>
+<span class="nc" id="L235">    }</span>
+    
+    /**
+     * @param javaArgs The javaArgs to set.
+     */
+    public void setJavaArgs(final String javaArgs)
+    {
+<span class="nc" id="L242">        qaProcessor.getConfig().setJavaArgs(javaArgs);</span>
+<span class="nc" id="L243">    }</span>
+
+    /**
+     * @param productsDir The productsDir to set.
+     */
+    public void setProductsDir(final String productsDir)
+    {
+<span class="nc" id="L250">        qaProcessor.getConfig().setProductsDir(productsDir);</span>
+<span class="nc" id="L251">    }</span>
+
+    /**
+     * @param reportDir The reportDir to set.
+     */
+    public void setReportDir(final String reportDir)
+    {
+<span class="nc" id="L258">        qaProcessor.getConfig().setReportDir(reportDir);</span>
+<span class="nc" id="L259">    }</span>
+
+    /**
+     * @param coverageDataFile The coverageDataFile to set.
+     */
+    public void setCoverageDataFile(final String coverageDataFile)
+    {
+<span class="nc" id="L266">        qaProcessor.getConfig().setCoverageDataFile(coverageDataFile);</span>
+<span class="nc" id="L267">    }</span>
+
+    /**
+     * @param path The coverageDataFile to add to the list.
+     */
+    public void addConfiguredCoverageDataFiles(final Path path)
+    {
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        for (String pathElement : path.list())</span>
+        {
+<span class="nc" id="L276">            qaProcessor.getConfig().addCoverageDataFile(pathElement);</span>
+        }
+<span class="nc" id="L278">    }</span>
+
+    /**
+     * @param coverageMergeDataFile The coverageMergeDataFile to set.
+     */
+    public void setCoverageMergeDataFile(final String coverageMergeDataFile)
+    {
+<span class="nc" id="L285">        qaProcessor.getConfig().setCoverageMergeDataFile(coverageMergeDataFile);</span>
+<span class="nc" id="L286">    }</span>
+
+    /**
+     * @param externalPropertiesPath The externalPropertiesPath to set.
+     */
+    public void setExternalPropertiesPath(final String externalPropertiesPath)
+    {
+<span class="nc" id="L293">        qaProcessor.getConfig().setExternalPropertiesPath(externalPropertiesPath);</span>
+<span class="nc" id="L294">    }</span>
+
+    /**
+     * @param summaryDataFile The summaryDataFile to set.
+     */
+    public void setSummaryDataFile(final String summaryDataFile)
+    {
+<span class="nc" id="L301">        qaProcessor.getConfig().setSummaryDataFile(summaryDataFile);</span>
+<span class="nc" id="L302">    }</span>
+
+    /**
+     * @param includeToolOutput The includeToolOutput to set.
+     */
+    public void setIncludeToolOutput(final String includeToolOutput)
+    {
+<span class="nc" id="L309">        qaProcessor.getConfig().setIncludeToolOutput(&quot;true&quot;.equalsIgnoreCase(includeToolOutput));</span>
+<span class="nc" id="L310">    }</span>
+
+    /**
+     * Sets the maximum number of threads to use (default is 1).
+     * 
+     * @param numThreads the maximum number of threads to use.
+     */
+    public void setNumThreads(final int numThreads)
+    {
+<span class="nc" id="L319">        qaProcessor.getConfig().setNumThreads(numThreads);</span>
+<span class="nc" id="L320">    }</span>
+
+    /**
+     * Executes this task, invoking the {@link QAProcessor} which has already been configured by Ant using the setters
+     * in this Task.
+     * 
+     * @throws BuildException if there is an error executing the task.
+     */
+    @Override
+   public void execute() throws BuildException
+    {
+<span class="nc" id="L331">        QaLogger.getInstance().debug(&quot;Coverage Data File:       [&quot; + qaProcessor.getConfig().getCoverageDataFile() + &quot;]&quot;);</span>
+<span class="nc" id="L332">        QaLogger.getInstance().debug(&quot;Coverage Merge Data File: [&quot; + qaProcessor.getConfig().getCoverageMergeDataFile() + &quot;]&quot;);</span>
+<span class="nc" id="L333">        QaLogger.getInstance().debug(&quot;External Properties Path: [&quot; + qaProcessor.getConfig().getExternalPropertiesPath() + &quot;]&quot;);</span>
+<span class="nc" id="L334">        QaLogger.getInstance().debug(&quot;Java Runtime:             [&quot; + qaProcessor.getConfig().getJavaRuntime() + &quot;]&quot;);</span>
+<span class="nc" id="L335">        QaLogger.getInstance().debug(&quot;Java Args:                [&quot; + qaProcessor.getConfig().getJavaArgs() + &quot;]&quot;);</span>
+<span class="nc" id="L336">        QaLogger.getInstance().debug(&quot;Number of Threads:        [&quot; + qaProcessor.getConfig().getNumThreads() + &quot;]&quot;);</span>
+<span class="nc" id="L337">        QaLogger.getInstance().debug(&quot;Products Directory:       [&quot; + qaProcessor.getConfig().getProductsDir() + &quot;]&quot;);</span>
+<span class="nc" id="L338">        QaLogger.getInstance().debug(&quot;Report Directory:         [&quot; + qaProcessor.getConfig().getReportDir() + &quot;]&quot;);</span>
+<span class="nc" id="L339">        QaLogger.getInstance().debug(&quot;Summary DataFile:         [&quot; + qaProcessor.getConfig().getSummaryDataFile() + &quot;]&quot;);</span>
+        
+        try
+        {
+            // TODO: HACK! Get around Stax using the context classloader rather than this class's.
+            // Need to write a custom class loader which combines the two.
+<span class="nc" id="L345">            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();</span>
+<span class="nc" id="L346">            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());</span>
+<span class="nc" id="L347">            qaProcessor.run();</span>
+<span class="nc" id="L348">            Thread.currentThread().setContextClassLoader(oldLoader);</span>
+        }
+<span class="nc" id="L350">        catch (QAException ex)</span>
+        {
+<span class="nc" id="L352">            throw new BuildException(ex.getMessage(), ex);</span>
+<span class="nc" id="L353">        }</span>
+<span class="nc" id="L354">    }</span>
+
+    /**
+     * Override setProject to initialise the logger. No logging methods should be called before this method.
+     * 
+     * @param project the project to set.
+     */
+    @Override
+   public void setProject(final Project project)
+    {
+<span class="nc" id="L364">        super.setProject(project);</span>
+<span class="nc" id="L365">        QaLogger.setLogger(new QaLoggerAntImpl(this));</span>
+<span class="nc" id="L366">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

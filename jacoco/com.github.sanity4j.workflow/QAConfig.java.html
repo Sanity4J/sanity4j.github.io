@@ -1,0 +1,1013 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QAConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow</a> &gt; <span class="el_source">QAConfig.java</span></div><h1>QAConfig.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import com.github.sanity4j.maven.plugin.RunQAMojo;
+import com.github.sanity4j.util.QAException;
+import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.util.StringUtil;
+import com.github.sanity4j.util.Tool;
+
+/**
+ * This class holds all the configuration attributes for the QA process.
+ *
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+<span class="fc" id="L25">public final class QAConfig</span>
+{
+    /** The location of the &quot;tools&quot; configuration properties file. */
+    private static final String TOOL_PROPERTIES = &quot;/com/github/sanity4j/workflow/tool/tools.properties&quot;;
+
+    /** The property key for the tools to be run. */
+    private static final String TOOLS_TO_RUN_PROPERTY = &quot;sanity4j.toolsToRun&quot;;
+
+    /** Prefix used within properties for QA tool properties. */
+    private static final String QA_TOOL_PREFIX = &quot;sanity4j.tool.&quot;;
+
+    /**
+     * A list of source file paths.
+     */
+<span class="fc" id="L39">    private final List&lt;String&gt; sources = new ArrayList&lt;String&gt;();</span>
+
+    /**
+     * A list of class file paths.
+     */
+<span class="fc" id="L44">    private final List&lt;String&gt; classes = new ArrayList&lt;String&gt;();</span>
+
+    /**
+     * A list of library file paths.
+     */
+<span class="fc" id="L49">    private final List&lt;String&gt; libraries = new ArrayList&lt;String&gt;();</span>
+
+    /**
+     * The location of the directory containing the various tools.
+     */
+    private String productsDir;
+    
+    /**
+     * The RunQAMojo.
+     */
+    private RunQAMojo runQAMojo;
+
+    /**
+     * A flag indicating whether diagnostics should be displayed first.
+     */
+    private boolean diagnosticsFirst;
+
+    /**
+     * The directory in which to place report output.
+     */
+    private String reportDir;
+
+    /**
+     * The file containing the merged jUnit coverage data.
+     */
+    private String coverageMergeDataFile;
+
+    /**
+     * The list of files containing the jUnit coverage data.
+     */
+<span class="fc" id="L79">    private final List&lt;String&gt; coverageDataFiles = new ArrayList&lt;String&gt;();</span>
+
+    /**
+     * The summary data file, if used.
+     */
+    private String summaryDataFile;
+
+    /**
+     * The temporary directory.
+     */
+<span class="fc" id="L89">    private File tempDir = new File(System.getProperty(&quot;java.io.tmpdir&quot;), &quot;sanity4j-temp-&quot; + System.currentTimeMillis());</span>
+    
+    /**
+     * The java runtime to use when running external tasks.
+     */
+<span class="fc" id="L94">    private String javaRuntime = QAProcessor.DEFAULT_JAVA_RUNTIME;</span>
+    
+    /**
+     * The java arguments to use when running external tasks.
+     */
+<span class="fc" id="L99">    private String javaArgs = QAProcessor.JAVA_RUNTIME_MAX_MEMORY;</span>
+
+    /**
+     * A Map from a tool / version to a configuration file.
+     */
+<span class="fc" id="L104">    private final Map&lt;String, String&gt; toolConfig = new HashMap&lt;String, String&gt;();</span>
+
+    /**
+     * If true, the raw tool output is included in the report directory.
+     */
+<span class="fc" id="L109">    private boolean includeToolOutput = false;</span>
+
+    /**
+     * The number of threads to use to run the tools and produce the report output.
+     */
+<span class="fc" id="L114">    private int numThreads = 1; // TODO: Add support for concurrent tasks (Note: some tasks can not be run in parallel).</span>
+
+    /**
+     * The configuration properties. This is a combination of the internal defaults {@link #TOOL_PROPERTIES}
+     * and the {@link #externalPropertiesPath}.
+     */
+<span class="fc" id="L120">    private Properties properties = QaUtil.getProperties(TOOL_PROPERTIES);</span>
+
+    /**
+     * Adds a source path to the list of source paths to analyse.
+     *
+     * @param sourcePath the source path to add.
+     */
+    public void addSourcePath(final String sourcePath)
+    {
+<span class="nc bnc" id="L129" title="All 4 branches missed.">        if (!sources.contains(sourcePath) &amp;&amp; new File(sourcePath).exists())</span>
+        {
+<span class="nc" id="L131">            sources.add(sourcePath);</span>
+        }
+<span class="nc" id="L133">    }</span>
+
+    /**
+     * Adds a class path to the list of class paths to analyse.
+     *
+     * @param classPath the class path to add.
+     */
+    public void addClassPath(final String classPath)
+    {
+<span class="nc bnc" id="L142" title="All 4 branches missed.">        if (!classes.contains(classPath) &amp;&amp; new File(classPath).exists())</span>
+        {
+<span class="nc" id="L144">            classes.add(classPath);</span>
+        }
+<span class="nc" id="L146">    }</span>
+
+    /**
+     * Adds a library path to the list of library paths.
+     *
+     * @param libraryPath the library path to add.
+     */
+    public void addLibraryPath(final String libraryPath)
+    {
+<span class="nc bnc" id="L155" title="All 4 branches missed.">        if (!libraries.contains(libraryPath) &amp;&amp; new File(libraryPath).exists())</span>
+        {
+<span class="nc" id="L157">            libraries.add(libraryPath);</span>
+        }
+<span class="nc" id="L159">    }</span>
+
+    /**
+     * @return the list of source directories to analyse.
+     */
+    public List&lt;String&gt; getSourceDirs()
+    {
+<span class="nc" id="L166">        return sources;</span>
+    }
+
+    /**
+     * @return the list of class directories to analyse.
+     */
+    public List&lt;String&gt; getClassDirs()
+    {
+<span class="nc" id="L174">        return classes;</span>
+    }
+
+    /**
+     * @return the list of library directories that are necessary for analysis.
+     */
+    public List&lt;String&gt; getLibraryDirs()
+    {
+<span class="nc" id="L182">        return libraries;</span>
+    }
+
+    /**
+     * @return Returns the java runtime.
+     */
+    public String getJavaRuntime()
+    {
+<span class="nc" id="L190">        return javaRuntime;</span>
+    }
+    
+    /**
+     * @param javaRuntime The java runtime to set.
+     */
+    public void setJavaRuntime(final String javaRuntime)
+    {
+<span class="nc bnc" id="L198" title="All 4 branches missed.">        if (javaRuntime == null || javaRuntime.length() == 0)</span>
+        {
+<span class="nc" id="L200">            this.javaRuntime = QAProcessor.DEFAULT_JAVA_RUNTIME;</span>
+        }
+        else
+        {
+<span class="nc" id="L204">            this.javaRuntime = javaRuntime;</span>
+        }
+<span class="nc" id="L206">    }</span>
+    
+    /**
+     * @return Returns the java arguments.
+     */
+    public String getJavaArgs()
+    {
+<span class="nc" id="L213">        return javaArgs;</span>
+    }
+    
+    /**
+     * @param javaArgs The java args to set.
+     */
+    public void setJavaArgs(final String javaArgs)
+    {
+<span class="nc bnc" id="L221" title="All 4 branches missed.">        if (javaArgs == null || javaArgs.length() == 0)</span>
+        {
+<span class="nc" id="L223">            this.javaArgs = QAProcessor.JAVA_RUNTIME_MAX_MEMORY;</span>
+        }
+        else
+        {
+<span class="nc" id="L227">            this.javaArgs = javaArgs;</span>
+        }
+<span class="nc" id="L229">    }</span>
+
+    /**
+     * @return Returns the productsDir.
+     */
+    public String getProductsDir()
+    {
+<span class="nc" id="L236">        return productsDir;</span>
+    }
+
+    /**
+     * @param productsDir The productsDir to set.
+     */
+    public void setProductsDir(final String productsDir)
+    {
+<span class="nc" id="L244">        this.productsDir = productsDir;</span>
+<span class="nc" id="L245">    }</span>
+
+    /**
+     * @return Returns the RunQAMojo.
+     */
+    public RunQAMojo getRunQAMojo()
+    {
+<span class="nc" id="L252">        return runQAMojo;</span>
+    }
+
+    /**
+     * @param runQAMojo The RunQAMojo to set.
+     */
+    public void setRunQAMojo(final RunQAMojo runQAMojo)
+    {
+<span class="nc" id="L260">        this.runQAMojo = runQAMojo;</span>
+<span class="nc" id="L261">    }    </span>
+    /**
+     * @return Returns the reportDir.
+     */
+    public String getReportDir()
+    {
+<span class="nc" id="L267">        return reportDir;</span>
+    }
+
+    /**
+     * @param reportDir The reportDir to set.
+     */
+    public void setReportDir(final String reportDir)
+    {
+<span class="nc" id="L275">        this.reportDir = reportDir;</span>
+<span class="nc" id="L276">    }</span>
+
+    /**
+     * @param coverageDataFile The coverage data file to set.
+     */
+    public void setCoverageDataFile(final String coverageDataFile)
+    {
+<span class="nc" id="L283">        addCoverageDataFile(coverageDataFile);</span>
+<span class="nc" id="L284">    }</span>
+
+    /**
+     * @param coverageDataFile The coverage data file to add to the list.
+     */
+    public void addCoverageDataFile(final String coverageDataFile)
+    {
+<span class="nc bnc" id="L291" title="All 4 branches missed.">        if (coverageDataFile != null &amp;&amp; coverageDataFile.length() &gt; 0)</span>
+        {
+<span class="nc" id="L293">            File file = new File(coverageDataFile);</span>
+
+<span class="nc bnc" id="L295" title="All 4 branches missed.">            if (file.exists() &amp;&amp; file.isFile())</span>
+            {
+<span class="nc bnc" id="L297" title="All 2 branches missed.">                if (coverageDataFiles.contains(coverageDataFile))</span>
+                {
+<span class="nc" id="L299">                    QaLogger.getInstance().debug(&quot;Coverage data file is already in the list: &quot; + coverageDataFile);</span>
+                }
+                else
+                {
+<span class="nc" id="L303">                    coverageDataFiles.add(coverageDataFile);</span>
+<span class="nc" id="L304">                    QaLogger.getInstance().debug(&quot;Added coverage data file to list: &quot; + coverageDataFile);</span>
+                }
+            }
+            else
+            {
+<span class="nc" id="L309">                QaLogger.getInstance().warn(&quot;Unable to locate coverage data file: &quot; + coverageDataFile);</span>
+            }
+<span class="nc" id="L311">        }</span>
+        else
+        {
+<span class="nc" id="L314">            QaLogger.getInstance().debug(&quot;Invalid coverage data file name: &quot; + coverageDataFile);</span>
+        }
+<span class="nc" id="L316">    }</span>
+
+    /**
+     * @return Returns the coverage data file.
+     */
+    public String getCoverageDataFile()
+    {
+<span class="nc bnc" id="L323" title="All 2 branches missed.">        if (coverageDataFiles.isEmpty())</span>
+        {
+<span class="nc" id="L325">            return null;</span>
+        }
+<span class="nc bnc" id="L327" title="All 2 branches missed.">        else if (coverageDataFiles.size() &gt; 1)</span>
+        {
+<span class="nc" id="L329">            return getCoverageMergeDataFile();</span>
+        }
+        else
+        {
+<span class="nc" id="L333">            return coverageDataFiles.get(0);</span>
+        }
+    }
+
+    /**
+     * @return Returns the coverage data file.
+     */
+    public String getCoverageMergeDataFiles()
+    {
+<span class="nc bnc" id="L342" title="All 2 branches missed.">        if (coverageDataFiles.isEmpty())</span>
+        {
+<span class="nc" id="L344">            return null;</span>
+        }
+<span class="nc bnc" id="L346" title="All 2 branches missed.">        else if (coverageDataFiles.size() &gt; 1)</span>
+        {
+<span class="nc" id="L348">            StringBuilder builder = new StringBuilder();</span>
+
+<span class="nc" id="L350">            int index = 0;</span>
+<span class="nc bnc" id="L351" title="All 2 branches missed.">            for (String coverageDataFile : coverageDataFiles)</span>
+            {
+<span class="nc" id="L353">                builder.append(coverageDataFile);</span>
+
+<span class="nc bnc" id="L355" title="All 2 branches missed.">                if (++index &lt; coverageDataFiles.size())</span>
+                {
+<span class="nc" id="L357">                    builder.append(' ');</span>
+                }
+<span class="nc" id="L359">            }</span>
+
+<span class="nc" id="L361">            return builder.toString();</span>
+        }
+        else
+        {
+<span class="nc" id="L365">            return coverageDataFiles.get(0);</span>
+        }
+    }
+    
+    /**
+     * @return Returns the coverage data files as a list.
+     */
+    public List&lt;String&gt; getCoverageMergeDataFileList()
+    {
+<span class="nc" id="L374">    	return coverageDataFiles;</span>
+    }
+
+    /**
+     * @return The number of coverage data files.
+     */
+    public int getCoverageDataFileCount()
+    {
+<span class="nc" id="L382">        return coverageDataFiles.size();</span>
+    }
+
+    /**
+     * @param summaryDataFile The summaryDataFile to set.
+     */
+    public void setSummaryDataFile(final String summaryDataFile)
+    {
+<span class="nc" id="L390">        this.summaryDataFile = summaryDataFile;</span>
+<span class="nc" id="L391">    }</span>
+
+    /**
+     * @return Returns the summaryDataFile.
+     */
+    public String getSummaryDataFile()
+    {
+<span class="nc" id="L398">        return summaryDataFile;</span>
+    }
+
+    /**
+     * @return Returns the includeToolOutput.
+     */
+    public boolean isIncludeToolOutput()
+    {
+<span class="nc" id="L406">        return includeToolOutput;</span>
+    }
+
+    /**
+     * @param includeToolOutput The includeToolOutput to set.
+     */
+    public void setIncludeToolOutput(final boolean includeToolOutput)
+    {
+<span class="nc" id="L414">        this.includeToolOutput = includeToolOutput;</span>
+<span class="nc" id="L415">    }</span>
+
+    /**
+     * Sets the maximum number of WorkUnits which can be run concurrently.
+     *
+     * @param numThreads the number of simultaneous WorkUnits to allow
+     */
+    public void setNumThreads(final int numThreads)
+    {
+<span class="nc" id="L424">        this.numThreads = numThreads;</span>
+<span class="nc" id="L425">    }</span>
+
+    /**
+     * @return the number of simultaneous WorkUnits to allow
+     */
+    public int getNumThreads()
+    {
+<span class="nc" id="L432">        return numThreads;</span>
+    }
+
+    /**
+     * @return the temporary directory used during analysis.
+     */
+    public File getTempDir()
+    {
+<span class="fc" id="L440">        return tempDir;</span>
+    }
+
+    /**
+     * Sets the temporary directory used during analysis.
+     *
+     * @param tempDir the temporary directory.
+     */
+    public void setTempDir(final File tempDir)
+    {
+<span class="pc bpc" id="L450" title="1 of 2 branches missed.">        if (tempDir == null)</span>
+        {
+<span class="nc" id="L452">            this.tempDir = new File(System.getProperty(&quot;java.io.tmpdir&quot;), &quot;sanity4j-temp-&quot; + System.currentTimeMillis());            </span>
+        }
+        
+<span class="fc" id="L455">        this.tempDir = tempDir;</span>
+<span class="fc" id="L456">    }</span>
+
+    /**
+     * @return the location of the combined sources directory
+     */
+    public File getCombinedSourceDir()
+    {
+<span class="fc" id="L463">        return new File(getTempDir(), &quot;source&quot;);</span>
+    }
+
+    /**
+     * @return the location of the combined classes directory
+     */
+    public File getCombinedClassDir()
+    {
+<span class="nc" id="L471">        return new File(getTempDir(), &quot;classes&quot;);</span>
+    }
+
+    /**
+     * @return the location of the combined library directory
+     */
+    public File getCombinedLibraryDir()
+    {
+<span class="nc" id="L479">        return new File(getTempDir(), &quot;lib&quot;);</span>
+    }
+
+    /**
+     * Returns a map view of this configuration to be used in e.g. performing variable substitution. Some additional
+     * parameters are added to the map for convenience.
+     *
+     * @return a view of this configuration as a map
+     */
+    public Map&lt;String, String&gt; asParameterMap()
+    {
+<span class="nc" id="L490">        Map&lt;String, String&gt; params = new HashMap&lt;String, String&gt;();</span>
+
+<span class="nc bnc" id="L492" title="All 2 branches missed.">        for (Map.Entry&lt;Object, Object&gt; entry : properties.entrySet())</span>
+        {
+<span class="nc" id="L494">            params.put((String) entry.getKey(), (String) entry.getValue());</span>
+<span class="nc" id="L495">        }</span>
+
+<span class="nc" id="L497">        params.put(&quot;java&quot;, getJavaRuntime());</span>
+<span class="nc" id="L498">        params.put(&quot;javaArgs&quot;, getJavaArgs());</span>
+<span class="nc" id="L499">        params.put(&quot;products&quot;, getProductsDir());</span>
+<span class="nc" id="L500">        params.put(&quot;source&quot;, getCombinedSourceDir().getPath());</span>
+<span class="nc" id="L501">        params.put(&quot;classes&quot;, getCombinedClassDir().getPath());</span>
+<span class="nc" id="L502">        params.put(&quot;libs&quot;, getCombinedLibraryDir().getPath());</span>
+<span class="nc" id="L503">        params.put(&quot;coverageDataFile&quot;, getCoverageDataFile());</span>
+<span class="nc" id="L504">        params.put(&quot;coverageMergeDataFiles&quot;, getCoverageMergeDataFiles());</span>
+<span class="nc" id="L505">        params.put(&quot;tempDir&quot;, getTempDir().getPath());</span>
+<span class="nc" id="L506">        params.put(&quot;File.separatorChar&quot;, File.separator);</span>
+<span class="nc" id="L507">        params.put(&quot;File.pathSeparator&quot;, File.pathSeparator);</span>
+
+<span class="nc bnc" id="L509" title="All 2 branches missed.">        for (Entry&lt;String, String&gt; toolConfig : this.toolConfig.entrySet())</span>
+        {
+<span class="nc" id="L511">            String tool = toolConfig.getKey();</span>
+<span class="nc" id="L512">            String config = toolConfig.getValue();</span>
+
+<span class="nc" id="L514">            params.put(QA_TOOL_PREFIX + tool + &quot;.config&quot;, config);</span>
+<span class="nc" id="L515">        }</span>
+
+<span class="nc" id="L517">        return params;</span>
+    }
+
+    /**
+     * The path location to the external properties file (sanity4j.properties).
+     *
+     * @param externalPropertiesPath the path location to the external properties file.
+     * @param additionalProperties a String representing additional properties values (if any). 
+     */
+    public void setExternalPropertiesPath(final String externalPropertiesPath, final String additionalProperties)
+    {
+<span class="nc" id="L528">        QaUtil.setExternalPropertiesPath(externalPropertiesPath);</span>
+<span class="nc" id="L529">        properties = QaUtil.getProperties(TOOL_PROPERTIES, additionalProperties);</span>
+<span class="nc" id="L530">    }</span>
+
+    /**
+     * The path location to the external properties file (sanity4j.properties).
+     *
+     * @param externalPropertiesPath the path location to the external properties file.
+     */
+    public void setExternalPropertiesPath(final String externalPropertiesPath)
+    {
+<span class="nc" id="L539">        setExternalPropertiesPath(externalPropertiesPath, null);</span>
+<span class="nc" id="L540">    }</span>
+    
+    /**
+     * Returns the path location to the external properties file (sanity4j.properties).
+     *
+     * @return the path location to the external properties file.
+     */
+    public String getExternalPropertiesPath()
+    {
+<span class="nc" id="L549">        return QaUtil.getExternalPropertiesPath();</span>
+    }
+
+    /**
+     * @return &lt;b&gt;true&lt;/b&gt; if the diagnostics should be displayed first, &lt;b&gt;false&lt;/b&gt; otherwise.
+     */
+    public boolean getDiagnosticsFirst()
+    {
+<span class="nc" id="L557">        return this.diagnosticsFirst;</span>
+    }
+
+    /**
+     * @param diagnosticsFirst &lt;b&gt;true&lt;/b&gt; if the diagnostics should be displayed first, &lt;b&gt;false&lt;/b&gt; otherwise.
+     */
+    public void setDiagnosticsFirst(final boolean diagnosticsFirst)
+    {
+<span class="nc" id="L565">        this.diagnosticsFirst = diagnosticsFirst;</span>
+<span class="nc" id="L566">    }</span>
+
+    /**
+     * Set the file containing the merged jUnit coverage data.
+     *
+     * @param coverageMergeDataFile the file containing the merged jUnit coverage data.
+     */
+    public void setCoverageMergeDataFile(final String coverageMergeDataFile)
+    {
+<span class="nc" id="L575">        this.coverageMergeDataFile = coverageMergeDataFile;</span>
+<span class="nc" id="L576">    }</span>
+
+    /**
+     * Get the file containing the merged jUnit coverage data.
+     *
+     * @return the file containing the merged jUnit coverage data.
+     */
+    public String getCoverageMergeDataFile()
+    {
+<span class="nc" id="L585">        return coverageMergeDataFile;</span>
+    }
+
+    /**
+     * Retrieve the properties for the QA tools.
+     *
+     * @return The Properties for the QA tools.
+     */
+    public Properties getToolProperties()
+    {
+<span class="nc" id="L595">        return properties;</span>
+    }
+
+    /**
+     * Set the value of a internal tool property.
+     *
+     * @param key the name of the internal tool property.
+     * @param value the value of the internal tool property.
+     */
+    public void setToolProperty(final String key, final String value)
+    {
+<span class="nc bnc" id="L606" title="All 2 branches missed.">        if (key != null)</span>
+        {
+<span class="nc bnc" id="L608" title="All 2 branches missed.">            if (value == null)</span>
+            {
+<span class="nc" id="L610">                properties.remove(key);</span>
+            }
+            else
+            {
+<span class="nc" id="L614">                properties.setProperty(key, value);</span>
+            }
+        }
+<span class="nc" id="L617">    }</span>
+
+    /**
+     * Finds the names of the set of tool which should be run by the QA tool. A {@link QAException} will be thrown if
+     * the {@link #TOOLS_TO_RUN_PROPERTY} is not set.
+     *
+     * @return the latest version number for the given Tool.
+     */
+    public String[] getToolsToRun()
+    {
+<span class="nc bnc" id="L627" title="All 2 branches missed.">        if (!properties.containsKey(TOOLS_TO_RUN_PROPERTY))</span>
+        {
+<span class="nc" id="L629">            String message = &quot;Missing tools to run, please set property &quot; + TOOLS_TO_RUN_PROPERTY</span>
+                             + &quot;in external sanity4j.properties&quot;;
+
+<span class="nc" id="L632">            throw new QAException(message);</span>
+        }
+
+<span class="nc" id="L635">        String[] toolsToRun = properties.getProperty(TOOLS_TO_RUN_PROPERTY).split(&quot;,&quot;);</span>
+
+<span class="nc" id="L637">        return toolsToRun;</span>
+    }
+
+    /**
+     * Finds the versions of the tool which are defined within the Sanity4J properties file.
+     *
+     * @param tool the Tool for which to find version definitions.
+     * @return An array of string representing the version definitions for the given &lt;em&gt;tool&lt;/em&gt;.
+     */
+    public String[] getToolVersions(final String tool)
+    {
+<span class="nc" id="L648">        String versions = properties.getProperty(QA_TOOL_PREFIX + tool + &quot;.versions&quot;);</span>
+
+<span class="nc bnc" id="L650" title="All 2 branches missed.">        if (versions == null)</span>
+        {
+<span class="nc" id="L652">            return new String[0];</span>
+        }
+
+<span class="nc" id="L655">        List&lt;String&gt; versionsList = new ArrayList&lt;String&gt;();</span>
+
+<span class="nc bnc" id="L657" title="All 2 branches missed.">        for (StringTokenizer versionTokenizer = new StringTokenizer(versions, &quot;, &quot;); versionTokenizer.hasMoreTokens();)</span>
+        {
+<span class="nc" id="L659">            String version = versionTokenizer.nextToken();</span>
+<span class="nc" id="L660">            versionsList.add(version);</span>
+<span class="nc" id="L661">        }</span>
+
+<span class="nc" id="L663">        return versionsList.toArray(new String[versionsList.size()]);</span>
+    }
+
+    /**
+     * Finds the latest version of the tool which is available to be run. i.e. the directory for it can be found on the
+     * file system. A {@link QAException} will be thrown if the tool properties are incorrect or the tool can not be
+     * found.
+     *
+     * @param tool the Tool to find.
+     * @return the latest version number for the given &lt;em&gt;tool&lt;/em&gt;.
+     */
+    public String getToolVersion(final String tool)
+    {
+<span class="nc" id="L676">        String availableVersions = properties.getProperty(QA_TOOL_PREFIX + tool + &quot;.versions&quot;);</span>
+
+<span class="nc bnc" id="L678" title="All 2 branches missed.">        if (availableVersions == null)</span>
+        {
+<span class="nc" id="L680">            throw new QAException(&quot;Missing tool version information for &quot; + tool);</span>
+        }
+
+<span class="nc" id="L683">        String firstVersion = null;</span>
+
+<span class="nc bnc" id="L685" title="All 2 branches missed.">        for (StringTokenizer tok = new StringTokenizer(availableVersions, &quot;, &quot;); tok.hasMoreTokens();)</span>
+        {
+<span class="nc" id="L687">            String version = tok.nextToken();</span>
+
+<span class="nc bnc" id="L689" title="All 2 branches missed.">            if (firstVersion == null)</span>
+            {
+<span class="nc" id="L691">                firstVersion = version;</span>
+            }
+
+<span class="nc bnc" id="L694" title="All 2 branches missed.">            if (productsDir != null)</span>
+            {
+<span class="nc" id="L696">                String homeKey = QA_TOOL_PREFIX + tool + '.' + version + &quot;.home&quot;;</span>
+    
+<span class="nc bnc" id="L698" title="All 2 branches missed.">                if (!properties.containsKey(homeKey))</span>
+                {
+<span class="nc" id="L700">                    String message = &quot;Missing tool home for &quot; + tool + ' ' + version </span>
+                        + &quot;. Please set parameter: &quot; + homeKey
+                        + &quot; in external sanity4j.properties&quot;;
+    
+<span class="nc" id="L704">                    throw new QAException(message);</span>
+                }
+    
+<span class="nc" id="L707">                String versionHome = properties.getProperty(homeKey);</span>
+<span class="nc" id="L708">                versionHome = QaUtil.replaceTokens(versionHome, asParameterMap(), this, null);</span>
+    
+<span class="nc bnc" id="L710" title="All 2 branches missed.">                if (new File(versionHome).exists())</span>
+                {
+<span class="nc bnc" id="L712" title="All 2 branches missed.">                    if (!version.equals(firstVersion))</span>
+                    {
+<span class="nc" id="L714">                        String msg = &quot;WARNING: Running an out-dated version [&quot; + version + &quot;] of tool [&quot; + tool</span>
+                             + &quot;]. The current version is [&quot; + firstVersion + &quot;]&quot;;
+    
+<span class="nc" id="L717">                        QaLogger.getInstance().warn(msg);</span>
+                    }
+    
+<span class="nc" id="L720">                    return version;</span>
+                }
+                else
+                {
+<span class="nc" id="L724">                    String msg = &quot;WARNING: Could not find [&quot; + versionHome + &quot;] directory&quot;;</span>
+<span class="nc" id="L725">                    QaLogger.getInstance().warn(msg);</span>
+                }
+<span class="nc" id="L727">            }</span>
+<span class="nc bnc" id="L728" title="All 2 branches missed.">            else if (runQAMojo != null)</span>
+            {
+<span class="nc" id="L730">                String mavenKey = QA_TOOL_PREFIX + tool + '.' + version + &quot;.maven&quot;;</span>
+                
+<span class="nc bnc" id="L732" title="All 2 branches missed.">                if (!properties.containsKey(mavenKey))</span>
+                {
+<span class="nc" id="L734">                    String message = &quot;Missing Maven Coordinate for &quot; + tool + ' ' + version </span>
+                        + &quot;. Please set parameter: &quot; + mavenKey
+                        + &quot; in external sanity4j.properties&quot;;
+    
+<span class="nc" id="L738">                    throw new QAException(message);</span>
+                }
+    
+<span class="nc bnc" id="L741" title="All 2 branches missed.">                if (!version.equals(firstVersion))</span>
+                {
+<span class="nc" id="L743">                    String msg = &quot;WARNING: Running an out-dated version [&quot; + version + &quot;] of tool [&quot; + tool</span>
+                         + &quot;]. The current version is [&quot; + firstVersion + &quot;]&quot;;
+
+<span class="nc" id="L746">                    QaLogger.getInstance().warn(msg);</span>
+                }
+    
+<span class="nc" id="L749">                return version;</span>
+            }
+            else
+            {
+<span class="nc" id="L753">                throw new QAException(&quot;Parameter 'productsDir' must be set.&quot;);</span>
+            }
+<span class="nc" id="L755">        }</span>
+
+<span class="nc" id="L757">        QaLogger.getInstance().warn(&quot;Unable to find home directory for any version of tool [&quot; + tool + &quot;]&quot;);</span>
+
+<span class="nc" id="L759">        return firstVersion;</span>
+    }
+
+    /**
+     * This method retrieve the home directory for a given tool version.
+     *
+     * @param tool The tool for which the home directory is to be retrieved.
+     * @param version The version number of the given &lt;em&gt;tool&lt;/em&gt; for which the home directory is to be retrieved.
+     * @return The home directory for the given &lt;em&gt;tool&lt;/em&gt; / &lt;em&gt; version&lt;/em&gt;.
+     */
+    public String getToolHome(final String tool, final String version)
+    {
+<span class="nc bnc" id="L771" title="All 2 branches missed.">        if (productsDir != null)</span>
+        {
+<span class="nc" id="L773">            String homeKey = QA_TOOL_PREFIX + tool + '.' + version + &quot;.home&quot;;</span>
+<span class="nc" id="L774">            String toolHome = properties.getProperty(homeKey);</span>
+<span class="nc" id="L775">            toolHome = QaUtil.replaceTokens(toolHome, asParameterMap(), this, null);</span>
+            
+<span class="nc" id="L777">            QaLogger.getInstance().debug(&quot;Tool Home: &quot; + toolHome);</span>
+<span class="nc" id="L778">            return toolHome;</span>
+        }
+<span class="nc bnc" id="L780" title="All 2 branches missed.">        else if (runQAMojo != null)</span>
+        {
+<span class="nc" id="L782">            String mavenKey = QA_TOOL_PREFIX + tool + '.' + version + &quot;.maven&quot;;</span>
+<span class="nc" id="L783">            String artifact = properties.getProperty(mavenKey);</span>
+<span class="nc" id="L784">            File toolFile = runQAMojo.resolveArtifact(artifact);</span>
+            
+<span class="nc bnc" id="L786" title="All 2 branches missed.">            String toolHome = toolFile.isDirectory() ? toolFile.getPath() : toolFile.getParent();</span>
+            
+<span class="nc" id="L788">            QaLogger.getInstance().debug(&quot;Tool Home: &quot; + toolHome);</span>
+<span class="nc" id="L789">            return toolHome;</span>
+        }
+        else
+        {
+<span class="nc" id="L793">            throw new QAException(&quot;Parameter 'productsDir' must be set.&quot;);</span>
+        }
+    }
+    
+    /**
+     * This method retrieve the home directory for a given tool Maven artifact.
+     *
+     * @param tool The tool for which the artifact is to be retrieved.
+     * @param version The version number of the given &lt;em&gt;tool&lt;/em&gt; for which the artifact is to be retrieved.
+     * @return The artifact for the given &lt;em&gt;tool&lt;/em&gt; / &lt;em&gt; version&lt;/em&gt;.
+     */
+    public String getToolArtifact(final String tool, final String version)
+    {
+<span class="nc bnc" id="L806" title="All 2 branches missed.">        if (runQAMojo != null)</span>
+        {
+<span class="nc" id="L808">            String homeKey = QA_TOOL_PREFIX + tool + '.' + version + &quot;.maven&quot;;</span>
+<span class="nc" id="L809">            String toolArtifact = properties.getProperty(homeKey);</span>
+<span class="nc" id="L810">            toolArtifact = QaUtil.replaceTokens(toolArtifact, asParameterMap(), this, null);</span>
+            
+<span class="nc" id="L812">            QaLogger.getInstance().debug(&quot;Tool Artifact: &quot; + toolArtifact);</span>
+<span class="nc" id="L813">            return toolArtifact;</span>
+        }
+        else
+        {
+<span class="nc" id="L817">            return null;</span>
+        }
+    }
+    
+    /**
+     * This method returns the name of the configuration parameter that specifies the configuration for a given tool.
+     *
+     * @param tool The name of the tool for which the configuration parameter is to be retrieved.
+     * @param version The version of the tool for which the configuration parameter is to be retrieved.
+     * @return the &lt;b&gt;name&lt;/b&gt; of the tool &quot;configuration&quot; parameter.
+     */
+    public String getToolConfigParam(final String tool, final String version)
+    {
+<span class="nc" id="L830">        return getToolParam(tool, version, &quot;config&quot;);</span>
+    }
+    
+    /**
+     * This method returns the name of a parameter that specifies the configuration for a given tool.
+     *
+     * @param tool The name of the tool for which the parameter is to be retrieved.
+     * @param version The version of the tool for which the parameter is to be retrieved.
+     * @param key the name of the key for the parameter.
+     * @return the name of the tool parameter.
+     */
+    private String getToolParam(final String tool, final String version, final String key)
+    {
+<span class="nc" id="L843">        StringBuffer configBuf = new StringBuffer();</span>
+        
+<span class="nc" id="L845">        configBuf.append(QA_TOOL_PREFIX).append(tool).append('.');</span>
+        
+<span class="nc bnc" id="L847" title="All 2 branches missed.">        if (version != null)</span>
+        {
+<span class="nc" id="L849">            configBuf.append(version).append('.');</span>
+        }
+        
+<span class="nc" id="L852">        configBuf.append(key);</span>
+        
+<span class="nc" id="L854">        String configKey = configBuf.toString();</span>
+        
+<span class="nc" id="L856">        return configKey;</span>
+    }
+    
+    /**
+     * This method returns the externally specified configuration for a given tool.
+     *
+     * @param tool The tool for which the configuration is to be retrieved.
+     * @param version the version of the tool for which the configuration is to be retrieved.
+     * @return the &lt;b&gt;value&lt;/b&gt; of the tool &quot;configuration&quot; parameter.
+     */
+    public String getToolConfig(final String tool, final String version)
+    {
+<span class="nc" id="L868">        String configKey = getToolConfigParam(tool, version);</span>
+<span class="nc" id="L869">        String toolConfig = properties.getProperty(configKey);</span>
+<span class="nc" id="L870">        toolConfig = QaUtil.replaceTokens(toolConfig, asParameterMap(), this, null);</span>
+
+<span class="nc" id="L872">        return toolConfig;</span>
+    }
+
+    /**
+     * This method sets the configuration used for a given &lt;em&gt;tool&lt;/em&gt; / &lt;em&gt;version&lt;/em&gt;.
+     *
+     * @param tool The tool for which the configuration is to be set.
+     * @param version the version of the tool for which the configuration is to be set.
+     * @param config the value of the tool &quot;configuration&quot; parameter.
+     * @param classpath the classpath used by the &quot;configuration&quot;.
+     */
+    public void setToolConfig(final String tool, final String version, final String config, final String classpath)
+    {
+<span class="nc" id="L885">        String configKey = getToolConfigParam(tool, version);</span>
+<span class="nc" id="L886">        String toolConfig = QaUtil.replaceTokens(config, asParameterMap(), this, null);</span>
+<span class="nc" id="L887">        properties.setProperty(configKey, toolConfig);</span>
+
+<span class="nc" id="L889">        QaLogger.getInstance().debug(&quot;Config set: &quot; + configKey + &quot; = &quot; + toolConfig);</span>
+        
+<span class="nc bnc" id="L891" title="All 2 branches missed.">        if (classpath != null)</span>
+        {
+<span class="nc" id="L893">            String configClasspathKey = getToolConfigClasspathParam(tool, version);</span>
+<span class="nc" id="L894">            String configClasspath = QaUtil.replaceTokens(classpath, asParameterMap(), this, null);</span>
+
+<span class="nc" id="L896">            properties.setProperty(configClasspathKey, configClasspath);</span>
+        }
+<span class="nc" id="L898">    }</span>
+    
+    /**
+     * This method returns the name of the configuration parameter that specifies the configuration classpath for a
+     * given tool.
+     *
+     * @param tool The name of the tool for which the configuration classpath parameter is to be retrieved.
+     * @param version The version of the tool for which the configuration classpath parameter is to be retrieved. If the
+     *            configuration is valid for &quot;all&quot; versions of a given tool, then this parameter may be null.
+     * @return the name of the tool &quot;configuration&quot; parameter.
+     */
+    public String getToolConfigClasspathParam(final String tool, final String version)
+    {
+<span class="nc" id="L911">        return getToolParam(tool, version, &quot;classpath&quot;);</span>
+    }
+
+    /**
+     * This method returns the externally specified configuration for a given tool.
+     *
+     * @param tool The tool for which the configuration is to be retrieved.
+     * @param version the version of the tool for which the configuration is to be retrieved.
+     * @return the &lt;b&gt;value&lt;/b&gt; of the tool &quot;configuration&quot; parameter.
+     */
+    public String getToolConfigClasspath(final String tool, final String version)
+    {
+<span class="nc" id="L923">        String configClasspathKey = getToolConfigClasspathParam(tool, version);</span>
+<span class="nc" id="L924">        String toolConfigClasspath = properties.getProperty(configClasspathKey);</span>
+<span class="nc" id="L925">        toolConfigClasspath = QaUtil.replaceTokens(toolConfigClasspath, asParameterMap(), this, null);</span>
+
+<span class="nc" id="L927">        return toolConfigClasspath;</span>
+    }
+    
+    /**
+     * This method retrieve the &quot;Runner&quot; class used to run a given tool.
+     *
+     * @param tool The tool to be run.
+     * @param version The version of the tool to be run.
+     * @return A String representing the fully qualified name of the &quot;runner&quot; class.
+     */
+    public String getToolRunner(final String tool, final String version)
+    {
+<span class="nc" id="L939">        String property = getToolParam(tool, version, &quot;runner&quot;);</span>
+        
+<span class="nc" id="L941">        String runnerClassName = properties.getProperty(property);</span>
+
+<span class="nc bnc" id="L943" title="All 2 branches missed.">        if (StringUtil.empty(runnerClassName))</span>
+        {
+<span class="nc" id="L945">            String message = &quot;Missing runner for &quot; + tool + ' ' + version + &quot;, please set property '&quot; + property</span>
+                             + &quot;' in external sanity4j.properties&quot;;
+
+<span class="nc" id="L948">            throw new QAException(message);</span>
+        }
+
+<span class="nc" id="L951">        return runnerClassName;</span>
+    }
+
+    /**
+     * This method retrieve the &quot;Reader&quot; class used to parse the output from a given tool.
+     *
+     * @param tool The tool to be run.
+     * @param version The version of the tool to be run.
+     * @return A String representing the fully qualified name of the &quot;reader&quot; class.
+     */
+    public String getToolReader(final String tool, final String version)
+    {
+<span class="nc" id="L963">        String property = getToolParam(tool, version, &quot;reader&quot;);</span>
+        
+<span class="nc" id="L965">        String readerClassName = properties.getProperty(property);</span>
+
+<span class="nc bnc" id="L967" title="All 2 branches missed.">        if (StringUtil.empty(readerClassName))</span>
+        {
+<span class="nc" id="L969">            String message = &quot;Missing reader for &quot; + tool + ' ' + version + &quot;, &quot; + &quot;please set property '&quot;</span>
+                             + property + &quot;' &quot; + &quot;in external sanity4j.properties&quot;;
+
+<span class="nc" id="L972">            throw new QAException(message);</span>
+        }
+
+<span class="nc" id="L975">        return readerClassName;</span>
+    }
+
+    /**
+     * Returns the result file for the given tool.
+     *
+     * @param tool the tool.
+     * @return the result file for the given tool.
+     */
+    public File getToolResultFile(final Tool tool)
+    {
+<span class="fc" id="L986">        return new File(getTempDir(), tool.getId() + &quot;_result.xml&quot;);</span>
+    }
+
+    /**
+     * Returns the command line used to run a given tool.
+     *
+     * @param tool The tool to be run.
+     * @param version The version of the tool to be run.
+     * @return A command line that can be run from a shell to invoke the given tool.
+     */
+    public String getToolCommandLine(final String tool, final String version)
+    {
+<span class="nc" id="L998">        String commandKey = getToolParam(tool, version, &quot;command&quot;);</span>
+
+<span class="nc bnc" id="L1000" title="All 2 branches missed.">        if (!properties.containsKey(commandKey))</span>
+        {
+<span class="nc" id="L1002">            String message = &quot;Missing tool command for &quot; + tool + ' ' + version + &quot;. Please set parameter: &quot;</span>
+                             + commandKey + &quot; in external sanity4j.properties&quot;;
+
+<span class="nc" id="L1005">            throw new QAException(message);</span>
+        }
+
+<span class="nc" id="L1008">        String toolCommandLine = properties.getProperty(commandKey);</span>
+
+<span class="nc" id="L1010">        return toolCommandLine;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

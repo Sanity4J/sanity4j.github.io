@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-frame.xsl"?>
+<packageClasses packageName="com.github.sanity4j.workflow.tool" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<class name="com.github.sanity4j.workflow.tool.AbstractToolRunner" high="0" significant="0" moderate="0" low="4" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.CheckStyleResultReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.CheckStyleRunner" high="0" significant="1" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.CoberturaMergeReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.CoberturaMergeRunner" high="0" significant="1" moderate="0" low="1" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.CoberturaReportRunner" high="0" significant="1" moderate="0" low="2" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.CoberturaResultReader" high="0" significant="0" moderate="0" low="0" info="1"/>
+<class name="com.github.sanity4j.workflow.tool.FindBugsResultReader" high="0" significant="0" moderate="0" low="3" info="1"/>
+<class name="com.github.sanity4j.workflow.tool.FindBugsRunner" high="0" significant="1" moderate="0" low="2" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.JaCoCoMergeReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.JaCoCoMergeRunner" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.JaCoCoResultReader" high="0" significant="1" moderate="2" low="3" info="8"/>
+<class name="com.github.sanity4j.workflow.tool.JaCoCoRunner" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.Pmd4Runner" high="0" significant="1" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.Pmd5Runner" high="0" significant="1" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.PmdCpd4ResultReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.PmdCpd4Runner" high="0" significant="1" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.PmdCpd5ResultReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.PmdCpd5Runner" high="0" significant="1" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.PmdCpdResultReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.PmdCpdRunner" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.PmdResultReader" high="0" significant="3" moderate="1" low="2" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.PmdRunner" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.ResultReader" high="0" significant="0" moderate="0" low="0" info="0"/>
+<class name="com.github.sanity4j.workflow.tool.ToolRunnerGroup" high="0" significant="2" moderate="0" low="2" info="2"/>
+</packageClasses>

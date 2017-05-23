@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JaxbMarshaller.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.util</a> &gt; <span class="el_source">JaxbMarshaller.java</span></div><h1>JaxbMarshaller.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.util;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.sax.SAXSource;
+
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+
+/**
+ * JaxbMarshaller - utility for marshalling/unmarshalling Objects to/from XML using JAXB.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public final class JaxbMarshaller 
+{
+    /** No instance methods here. */
+    private JaxbMarshaller()
+<span class="nc" id="L34">    {</span>
+<span class="nc" id="L35">    }</span>
+
+    /**
+     * Uses JAXB to unmarshal the results from a tool's XML output into a Java Object.
+     * As the tools often don't use namespaces, a namespace can be applied to the document.
+     * 
+     * @param file the file to read from
+     * @param pkg the package containing the JAXB generated classes
+     * @param namespace the namespace to change the document to, or null to leave it as is 
+     * @return the unmarshalled object
+     * 
+     * @throws QAException thrown if a problem occurs.
+     */
+    public static Object unmarshal(final File file, final String pkg, final String namespace) throws QAException
+    {
+<span class="fc" id="L50">        FileInputStream fis = null;</span>
+
+        try
+        {
+<span class="fc" id="L54">            fis = new FileInputStream(file);</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">            InputStream stream = namespace == null ? fis : new RegexpReplaceInputStream(fis, &quot;&lt;([^!?])([^&gt;]*)&gt;&quot;, &quot;&lt;$1$2 xmlns=\&quot;&quot; + namespace + &quot;\&quot;&gt;&quot;);</span>
+
+            //Create an XMLReader to use with our filter
+<span class="fc" id="L58">            XMLReader reader = XMLReaderFactory.createXMLReader();</span>
+
+            // since DNS can be be flaky (or disabled in some organisations), we want to ignore all DTDs etc.        
+<span class="fc" id="L61">            reader.setEntityResolver(new EntityResolver() </span>
+<span class="fc" id="L62">            {</span>
+                public InputSource resolveEntity(final String publicId, final String systemId)
+                throws SAXException, java.io.IOException
+                {
+                    // this deactivates all DTDs
+<span class="nc" id="L67">                    return new InputSource(new ByteArrayInputStream(&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&quot;.getBytes()));</span>
+                }
+            });               
+
+            //Create a SAXSource specifying the filter
+<span class="fc" id="L72">            SAXSource source = new SAXSource(reader, new InputSource(stream));</span>
+
+            //Do unmarshalling
+<span class="fc" id="L75">            JAXBContext jaxbContext = JAXBContext.newInstance(pkg, JaxbMarshaller.class.getClassLoader());              </span>
+<span class="fc" id="L76">            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();</span>
+<span class="fc" id="L77">            return unmarshaller.unmarshal(source);</span>
+        }
+<span class="nc" id="L79">        catch (SAXParseException e)</span>
+        {
+<span class="nc" id="L81">            String details = e.toString()</span>
+<span class="nc" id="L82">                + &quot;\n Line number: &quot; + e.getLineNumber()</span>
+<span class="nc" id="L83">                + &quot;\n Column number: &quot; + e.getColumnNumber()</span>
+<span class="nc" id="L84">                + &quot;\n Public ID: &quot; + e.getPublicId()</span>
+<span class="nc" id="L85">                + &quot;\n System ID: &quot; + e.getSystemId();</span>
+
+<span class="nc" id="L87">            throw new QAException(&quot;Error reading xml: &quot; + file.getName() + details, e);</span>
+        }
+<span class="fc" id="L89">        catch (IOException e)</span>
+        {
+<span class="fc" id="L91">            throw new QAException(&quot;Error reading result file: &quot; + file.getName(), e);</span>
+        }
+<span class="fc" id="L93">        catch (Exception e)</span>
+        {
+<span class="fc" id="L95">            throw new QAException(&quot;Error reading xml: &quot; + file.getName(), e);</span>
+        }
+        finally
+        {
+<span class="fc" id="L99">            QaUtil.safeClose(fis);      </span>
+        }
+    }
+
+    /**
+     * Traverses the XML in the given file, notifying the listener of each start element.
+     * As the tools often don't use namespaces, a namespace can be applied to the document.
+     * 
+     * @param file the file to read from
+     * @param pkg the package containing the JAXB generated classes
+     * @param namespace the namespace to change the document to, or null to leave it as is 
+     * @param listener the listener that will be notified of each start element.
+     * 
+     * @throws QAException thrown if a problem occurs.
+     */
+    public static void traverse(final File file, final String pkg, final String namespace, final StartElementListener listener) throws QAException
+    {
+<span class="fc" id="L116">        FileInputStream fis = null;</span>
+
+        try
+        {
+<span class="fc" id="L120">            fis = new FileInputStream(file);</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">            InputStream stream = namespace == null ? fis : new RegexpReplaceInputStream(fis, &quot;&lt;([^!?])([^&gt;]*)&gt;&quot;, &quot;&lt;$1$2 xmlns=\&quot;&quot; + namespace + &quot;\&quot;&gt;&quot;);</span>
+            
+<span class="fc" id="L123">            XMLInputFactory xmlif = XMLInputFactory.newInstance();</span>
+<span class="fc" id="L124">            xmlif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);</span>
+<span class="fc" id="L125">            XMLEventReader eventReader = xmlif.createXMLEventReader(stream);    </span>
+            
+            // Iterate through all the StartElement events in the filtered event reader
+<span class="fc" id="L128">            JAXBContext jaxbContext = JAXBContext.newInstance(pkg, JaxbMarshaller.class.getClassLoader());</span>
+<span class="fc" id="L129">            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();</span>
+
+<span class="fc bfc" id="L131" title="All 2 branches covered.">            for (XMLEvent currentEvent = eventReader.peek(); currentEvent != null; currentEvent = eventReader.peek())</span>
+            {
+                // We can't use a filter on the reader, as JAXB needs all events
+<span class="fc bfc" id="L134" title="All 2 branches covered.">                if (currentEvent.isStartElement())</span>
+                {
+<span class="fc" id="L136">                    StartElement element = currentEvent.asStartElement();</span>
+<span class="fc" id="L137">                    listener.foundElement(element, eventReader, unmarshaller);</span>
+
+                    // If the event has not been 'consumed' by the listener, move on to the next event
+<span class="fc" id="L140">                    XMLEvent nextEvent = eventReader.peek();</span>
+
+<span class="fc bfc" id="L142" title="All 2 branches covered.">                    if (nextEvent == currentEvent)</span>
+                    {
+<span class="fc" id="L144">                        eventReader.nextEvent();</span>
+                    }
+<span class="fc" id="L146">                }</span>
+                else
+                {
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">                    if (!eventReader.hasNext())</span>
+                    {
+<span class="nc" id="L151">                        break;</span>
+                    }
+
+<span class="fc" id="L154">                    eventReader.nextEvent();</span>
+                }
+            }
+
+<span class="fc" id="L158">            eventReader.close();</span>
+        }
+<span class="nc" id="L160">        catch (IOException ex)</span>
+        {
+<span class="nc" id="L162">            throw new QAException(&quot;Error reading result file: &quot; + file.getName(), ex);</span>
+        }
+<span class="nc" id="L164">        catch (Exception ex)</span>
+        {
+<span class="nc" id="L166">            throw new QAException(&quot;Error reading xml: &quot; + file.getName(), ex);</span>
+        }
+        finally
+        {
+<span class="pc" id="L170">            QaUtil.safeClose(fis);      </span>
+<span class="fc" id="L171">        }</span>
+<span class="fc" id="L172">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JavaSourceWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.report</a> &gt; <span class="el_source">JavaSourceWriter.java</span></div><h1>JavaSourceWriter.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.report;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
+import com.github.sanity4j.model.coverage.ClassCoverage;
+import com.github.sanity4j.model.diagnostic.Diagnostic;
+import com.github.sanity4j.model.diagnostic.DiagnosticSet;
+import com.github.sanity4j.util.ExtractStats;
+import com.github.sanity4j.util.FileUtil;
+import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.util.StringUtil;
+import com.github.sanity4j.workflow.QAProcessor;
+
+/**
+ * JavaSourceWriter writes out java source.
+ * 
+ * @author Yiannis Paschalidis
+ * @since Sanity4J 1.0
+ */
+public class JavaSourceWriter
+{   
+    /** The diagnostics that we are writing. */
+    private final ExtractStats stats;
+    
+    /** Whether or not diagnostics should be printed first or last. */
+    private final boolean diagnosticsFirst;
+
+    /** The destination directory. */
+    private final File reportDir;
+    
+    /** One hundred. */
+    private static final double HUNDRED = 100.0;
+
+    /** One hundred. */
+    private static final int ONE_HUNDRED = 100;
+    
+    /**
+     * Creates a JavaSourceWriter.
+     * 
+     * @param stats the stats utility containing the results
+     * @param diagnositcsFirst a flag for diagnositcs first
+     * @param reportDir the base directory for the report
+     */
+    public JavaSourceWriter(final ExtractStats stats, final boolean diagnositcsFirst, final File reportDir)
+<span class="nc" id="L55">    {</span>
+<span class="nc" id="L56">        this.stats = stats;</span>
+<span class="nc" id="L57">        this.diagnosticsFirst = diagnositcsFirst;</span>
+<span class="nc" id="L58">        this.reportDir = reportDir;</span>
+<span class="nc" id="L59">    }</span>
+    
+    /**
+     * Annotates the given source file and places the output in the given directory.
+     * 
+     * @param sourcePath the path to the source file
+     * @throws IOException if there is an error reading/writing
+     */
+    public void writeSourceFile(final String sourcePath) throws IOException
+    {
+        // Source and destination files
+<span class="nc" id="L70">        File sourceFile = new File(sourcePath);</span>
+<span class="nc" id="L71">        String relativeDestPath = ReportUtil.getRelativeSourcePath(stats.getSourceDirectory(), sourcePath);</span>
+<span class="nc" id="L72">        String pathToRoot = ReportUtil.getHtmlPathToRoot(relativeDestPath);</span>
+<span class="nc" id="L73">        File destFile = new File(reportDir, relativeDestPath);</span>
+
+        // Buffer and diagnostics for this source file
+<span class="nc" id="L76">        StringBuffer html = new StringBuffer((int) sourceFile.length());</span>
+<span class="nc" id="L77">        DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</span>
+<span class="nc" id="L78">        List&lt;Diagnostic&gt; orderedDiags = sortDiags(diags);</span>
+
+        // We always use the enclosing class's name for coverage
+<span class="nc" id="L81">        String className = stats.getClassNameForSourcePath(sourcePath);</span>
+<span class="nc" id="L82">        ClassCoverage coverage = stats.getCoverage().getClassCoverage(className);</span>
+
+<span class="nc" id="L84">        int lineCount = stats.getClassLineCount(className);</span>
+
+        // Write Header        
+<span class="nc" id="L87">        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;);</span>
+<span class="nc" id="L88">        html.append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/source-code.xsl\&quot;?&gt;\n&quot;);        </span>
+<span class="nc" id="L89">        html.append(&quot;&lt;classDetails className=\&quot;&quot;).append(className).append(&quot;\&quot; pathToRoot=\&quot;&quot;)</span>
+<span class="nc" id="L90">            .append(pathToRoot).append(&quot;\&quot; qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</span>
+<span class="nc" id="L91">            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</span>
+        
+<span class="nc" id="L93">        html.append(&quot;&lt;summary high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
+<span class="nc" id="L94">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
+<span class="nc" id="L95">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
+<span class="nc" id="L96">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
+<span class="nc" id="L97">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO));</span>
+        
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (coverage != null)</span>
+        {
+<span class="nc" id="L101">            html.append(&quot;\&quot; lineCoverage=\&quot;&quot;).append((int) (ONE_HUNDRED * coverage.getLineCoverage()))</span>
+<span class="nc" id="L102">                .append(&quot;\&quot; branchCoverage=\&quot;&quot;).append((int) (ONE_HUNDRED * coverage.getBranchCoverage()));</span>
+        }
+        
+<span class="nc" id="L105">        html.append(&quot;\&quot; quality=\&quot;&quot;).append((int) (ReportUtil.evaluateMetric(&quot;quality&quot;, diags, lineCount) * HUNDRED))</span>
+<span class="nc" id="L106">            .append(&quot;\&quot;/&gt;\n&quot;);</span>
+        
+<span class="nc" id="L108">        writeSourceLines(sourceFile, diags, orderedDiags, coverage, html);</span>
+<span class="nc" id="L109">        writeErrorsSummary(orderedDiags, diagnosticsFirst, html);</span>
+
+<span class="nc" id="L111">        html.append(&quot;&lt;/classDetails&gt;\n&quot;);</span>
+        
+        // Write to file &quot;com/foo/FooBar.xml&quot;
+<span class="nc" id="L114">        FileUtil.writeToFile(html.toString(), destFile);</span>
+<span class="nc" id="L115">    }</span>
+
+    /**
+     * Writes the source code information.
+     * 
+     * @param sourceFile the source file
+     * @param diags the set of diagnostics for the file
+     * @param orderedDiags the diagnostics for the file, sorted by line number
+     * @param coverage the coverage statistics for the file
+     * @param html the buffer to write the output to.
+     * 
+     * @throws IOException if there is an error reading from the source file
+     */
+    private void writeSourceLines(final File sourceFile, final DiagnosticSet diags, final List&lt;Diagnostic&gt; orderedDiags, final ClassCoverage coverage, final StringBuffer html) throws IOException
+    {
+<span class="nc" id="L130">        FileInputStream fis = new FileInputStream(sourceFile);</span>
+        
+        try
+        {
+<span class="nc" id="L134">            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));</span>
+<span class="nc" id="L135">            int lineNum = 1;</span>
+<span class="nc" id="L136">            int orderedDiagPos = 0;</span>
+            
+<span class="nc" id="L138">            html.append(&quot;&lt;source&gt;\n&quot;);</span>
+    
+            // Output source code, with line numbers + errors
+<span class="nc bnc" id="L141" title="All 2 branches missed.">            for (String line = reader.readLine(); line != null; line = reader.readLine())</span>
+            {
+                // Max severity for this line
+<span class="nc" id="L144">                int maxSev = -1;</span>
+    
+<span class="nc bnc" id="L146" title="All 2 branches missed.">                for (Diagnostic diagnostic : diags)</span>
+                {
+<span class="nc bnc" id="L148" title="All 4 branches missed.">                    if (diagnostic.getStartLine() &lt;= lineNum &amp;&amp; diagnostic.getEndLine() &gt;= lineNum)</span>
+                    {
+<span class="nc" id="L150">                        maxSev = Math.max(maxSev, diagnostic.getSeverity());</span>
+                    }
+<span class="nc" id="L152">                }</span>
+                
+<span class="nc" id="L154">                html.append(&quot;&lt;line&quot;);</span>
+                
+<span class="nc bnc" id="L156" title="All 2 branches missed.">                if (maxSev != -1)</span>
+                {
+<span class="nc" id="L158">                    html.append(&quot; sev=\&quot;&quot;).append(maxSev).append('&quot;');</span>
+                }
+                
+<span class="nc bnc" id="L161" title="All 4 branches missed.">                if (coverage != null &amp;&amp; coverage.getInvocationsForLine(lineNum) &gt;= 0)</span>
+                {
+<span class="nc" id="L163">                    int invocations = coverage.getInvocationsForLine(lineNum);</span>
+<span class="nc" id="L164">                    double branchCoverage = coverage.getBranchCoverageForLine(lineNum);</span>
+                    
+<span class="nc bnc" id="L166" title="All 2 branches missed.">                    if (invocations == 0)</span>
+                    {
+                        // Not covered at all
+<span class="nc" id="L169">                        html.append(&quot; covered=\&quot;no\&quot;&quot;);</span>
+                    }
+<span class="nc bnc" id="L171" title="All 4 branches missed.">                    else if (branchCoverage == -1.0 || branchCoverage == 1.0)</span>
+                    {
+                        // Not a branch, or branch covered 100%
+<span class="nc" id="L174">                        html.append(&quot; covered=\&quot;yes\&quot;&quot;);</span>
+                    }
+                    else
+                    {
+                        // Partially covered
+<span class="nc" id="L179">                        html.append(&quot; covered=\&quot;partial\&quot;&quot;);</span>
+                    }
+                }
+                
+<span class="nc" id="L183">                boolean hasContent = false;</span>
+                
+<span class="nc bnc" id="L185" title="All 2 branches missed.">                for (int i = orderedDiagPos; i &lt; orderedDiags.size(); i++)</span>
+                {
+<span class="nc" id="L187">                    Diagnostic diagnostic = orderedDiags.get(i);</span>
+    
+<span class="nc bnc" id="L189" title="All 2 branches missed.">                    if (lineNum == diagnostic.getStartLine())</span>
+                    {
+<span class="nc bnc" id="L191" title="All 2 branches missed.">                        if (!hasContent)</span>
+                        {
+<span class="nc" id="L193">                            html.append('&gt;');</span>
+<span class="nc" id="L194">                            hasContent = true;</span>
+                        }
+                        
+<span class="nc" id="L197">                        html.append(&quot;&lt;diag id=\&quot;&quot;).append(diagnostic.getId()).append(&quot;\&quot;/&gt;&quot;);</span>
+<span class="nc" id="L198">                        orderedDiagPos++;</span>
+                    }
+                    else
+                    {
+                        // Since the list is ordered, the next diagnostic won't match either
+                        break;
+                    }
+                }
+                
+<span class="nc bnc" id="L207" title="All 2 branches missed.">                if (!StringUtil.empty(line))</span>
+                {
+<span class="nc bnc" id="L209" title="All 2 branches missed.">                    if (!hasContent)</span>
+                    {
+<span class="nc" id="L211">                        html.append('&gt;');</span>
+<span class="nc" id="L212">                        hasContent = true;</span>
+                    }
+                    
+<span class="nc" id="L215">                    html.append(ReportUtil.htmlEscape(line));</span>
+                }
+                
+<span class="nc bnc" id="L218" title="All 2 branches missed.">                html.append(hasContent ? &quot;&lt;/line&gt;\n&quot; : &quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L219">                lineNum++;</span>
+            }
+            
+<span class="nc" id="L222">            html.append(&quot;&lt;/source&gt;\n&quot;);</span>
+        }
+        finally
+        {
+<span class="nc" id="L226">            QaUtil.safeClose(fis);</span>
+<span class="nc" id="L227">        }</span>
+<span class="nc" id="L228">    }</span>
+    
+    /**
+     * Writes a diagnostic summary block at the bottom of the source page.
+     * 
+     * @param orderedDiags a list of diagnostics for the file, in line number order.
+     * @param diagsFirst a flag indicating whether the diagnostics should be printed first or last.
+     * @param html the buffer to write the HTML output to.
+     */
+    private void writeErrorsSummary(final List&lt;Diagnostic&gt; orderedDiags, 
+                                    final boolean diagsFirst,
+                                    final StringBuffer html)
+    {
+<span class="nc bnc" id="L241" title="All 4 branches missed.">        if (orderedDiags != null &amp;&amp; !orderedDiags.isEmpty())</span>
+        {
+<span class="nc" id="L243">            html.append(&quot;&lt;diags first=\&quot;&quot;).append(diagsFirst).append(&quot;\&quot;&gt;\n&quot;);</span>
+            
+<span class="nc bnc" id="L245" title="All 2 branches missed.">            for (Diagnostic diagnostic : orderedDiags)</span>
+            {
+<span class="nc" id="L247">                html.append(&quot;&lt;diag id=\&quot;&quot;).append(diagnostic.getId())</span>
+<span class="nc" id="L248">                                          .append(&quot;\&quot; sev=\&quot;&quot;).append(diagnostic.getSeverity())</span>
+<span class="nc" id="L249">                                          .append(&quot;\&quot; tool=\&quot;&quot;).append(diagnostic.getSourceDescription())</span>
+<span class="nc" id="L250">                                          .append(&quot;\&quot; rule=\&quot;&quot;).append(diagnostic.getRuleName())</span>
+<span class="nc" id="L251">                                          .append(&quot;\&quot;&gt;&quot;);</span>
+
+<span class="nc" id="L253">                html.append(ReportUtil.htmlEscape(diagnostic.getMessage()));</span>
+
+<span class="nc" id="L255">                html.append(&quot;&lt;/diag&gt;\n&quot;);</span>
+<span class="nc" id="L256">            }</span>
+            
+<span class="nc" id="L258">            html.append(&quot;&lt;/diags&gt;\n&quot;);</span>
+        }
+<span class="nc" id="L260">    }</span>
+    
+    /**
+     * Sorts the diagnostics by starting line number.
+     * 
+     * @param diags the diagnostics to sort
+     * @return a list containing the diagnostics, sorted by ascending start line
+     */
+    private List&lt;Diagnostic&gt; sortDiags(final DiagnosticSet diags)
+    {
+<span class="nc" id="L270">        List&lt;Diagnostic&gt; sortedDiags = new ArrayList&lt;Diagnostic&gt;(diags.size());</span>
+        
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        for (Diagnostic diag : diags)</span>
+        {
+<span class="nc" id="L274">            sortedDiags.add(diag);</span>
+<span class="nc" id="L275">        }</span>
+        
+<span class="nc" id="L277">        Collections.sort(sortedDiags, new DiagnosticStartLineComparator());</span>
+<span class="nc" id="L278">        return sortedDiags;</span>
+    }
+
+    /**
+     * A comparator to sort Diagnostics based on their start line.
+     */
+<span class="nc" id="L284">    private static final class DiagnosticStartLineComparator implements Comparator&lt;Diagnostic&gt;, Serializable </span>
+    {
+        /**
+         * Compares its two arguments for order.  Returns a negative integer,
+         * zero, or a positive integer as the first argument is less than, equal
+         * to, or greater than the second.&lt;p&gt;
+         *
+         * @param diag1 the first object to be compared.
+         * @param diag2 the second object to be compared.
+         * @return a negative integer, zero, or a positive integer as the
+         *         first argument is less than, equal to, or greater than the
+         *         second. 
+         */
+        public int compare(final Diagnostic diag1, final Diagnostic diag2)
+        {
+<span class="nc bnc" id="L299" title="All 2 branches missed.">            if (diag1 == null)</span>
+            {
+<span class="nc bnc" id="L301" title="All 2 branches missed.">                return diag2 == null ? 0 : -1;</span>
+            }
+            
+<span class="nc" id="L304">            return diag1.getStartLine() - diag2.getStartLine();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
