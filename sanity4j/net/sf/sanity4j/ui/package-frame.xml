@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../../../../xslt/package-frame.xsl"?>
-<packageClasses packageName="net.sf.sanity4j.ui" pathToRoot="../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
-<class name="net.sf.sanity4j.ui.FieldLabel" high="0" significant="0" moderate="0" low="0" info="1"/>
-<class name="net.sf.sanity4j.ui.FileInput" high="0" significant="0" moderate="0" low="0" info="0"/>
-<class name="net.sf.sanity4j.ui.QaApp" high="0" significant="1" moderate="0" low="2" info="2"/>
-<class name="net.sf.sanity4j.ui.QaConfigFrame" high="0" significant="0" moderate="0" low="3" info="4"/>
-<class name="net.sf.sanity4j.ui.QaLoggerJTextAreaImpl" high="0" significant="0" moderate="0" low="0" info="0"/>
-</packageClasses>

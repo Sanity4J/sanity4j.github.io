@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-by-rule.xsl"?>
-<packageByRule packageName="net.sf.sanity4j.model.coverage" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
-<rule name="JavadocPackageCheck" tool="Checkstyle" severity="0">
-<class name="net.sf.sanity4j.model.coverage.AbstractCoverage">
-<diag id="33"/>
-</class>
-</rule>
-</packageByRule>

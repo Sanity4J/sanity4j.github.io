@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-frame.xsl"?>
-<packageClasses packageName="net.sf.sanity4j.maven.plugin" pathToRoot="../../../../../" qaVersion="1.1.1" runDate="Thu Aug 21 12:46:30 EST 2014">
-<class name="net.sf.sanity4j.maven.plugin.Coordinate" high="0" significant="0" moderate="0" low="7" info="1"/>
-<class name="net.sf.sanity4j.maven.plugin.RunQAMojo" high="0" significant="0" moderate="0" low="29" info="27"/>
-</packageClasses>

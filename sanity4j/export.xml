@@ -1,111 +1,344 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="xslt/package-frame.xsl"?>
-<export qaVersion="1.1.1" runDate="Thu Aug 21 12:46:29 EST 2014">
-<package name="" classes="97" lineCount="18330" high="0" significant="4" moderate="18" low="172" info="136" quality="97">
-<testCoverage lineCoveragePct="26" branchCoveragePct="26" lineCount="4970" coveredLineCount="1297" branchCount="672" coveredBranchCount="221"/>
-<package name="net.sf.sanity4j" classes="1" lineCount="66" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
-<class name="Sanity4J_Suite" lineCount="66" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
-<diag id="252" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<export qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<package name="" classes="101" lineCount="18883" high="0" significant="41" moderate="23" low="231" info="167" quality="92">
+<testCoverage lineCoveragePct="67" branchCoveragePct="65" lineCount="3827" coveredLineCount="2594" branchCount="389" coveredBranchCount="255"/>
+<package name="com.github.sanity4j" classes="1" lineCount="67" high="0" significant="0" moderate="0" low="1" info="0" quality="97">
+<class name="Sanity4J_Suite" lineCount="67" high="0" significant="0" moderate="0" low="1" info="0" quality="97">
+<diag id="231" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
 </class>
-<package name="net.sf.sanity4j.workflow" classes="12" lineCount="2082" high="0" significant="0" moderate="5" low="21" info="9" quality="96">
-<testCoverage lineCoveragePct="3" branchCoveragePct="0" lineCount="492" coveredLineCount="18" branchCount="68" coveredBranchCount="1"/>
-<class name="AbstractFileCollector" lineCount="203" high="0" significant="0" moderate="0" low="3" info="5" quality="97">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="57" coveredLineCount="0" branchCount="11" coveredBranchCount="0"/>
-<diag id="314" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="315" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'destDir' hides a field.</diag>
-<diag id="316" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'destDir' hides a field.</diag>
-<diag id="686" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="687" sev="1" tool="PMD" rule="EmptyMethodInAbstractClassShouldBeAbstract">An empty method in an abstract class should be abstract instead</diag>
-<diag id="688" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="689" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<package name="com.github.sanity4j.maven.plugin" classes="2" lineCount="1570" high="0" significant="6" moderate="1" low="19" info="27" quality="89">
+<class name="Coordinate" lineCount="298" high="0" significant="0" moderate="0" low="9" info="0" quality="93">
+<diag id="2" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="333" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">Overridable method 'parse' called during object construction</diag>
+<diag id="334" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">Overridable method 'setGroupId' called during object construction</diag>
+<diag id="335" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">Overridable method 'setArtifactId' called during object construction</diag>
+<diag id="336" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">Overridable method 'setVersion' called during object construction</diag>
+<diag id="337" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">Overridable method 'setPackaging' called during object construction</diag>
+<diag id="338" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">Overridable method 'setClassifier' called during object construction</diag>
+<diag id="339" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">Overridable method 'setScope' called during object construction</diag>
+<diag id="340" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+</class>
+<class name="RunQAMojo" lineCount="1272" high="0" significant="6" moderate="1" low="10" info="27" quality="88">
+<diag id="10" sev="1" tool="Checkstyle" rule="MethodLengthCheck">Method length is 278 lines (max allowed is 150).</diag>
+<diag id="11" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'project' hides a field.</diag>
+<diag id="12" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'project' hides a field.</diag>
+<diag id="287" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.maven.plugin.RunQAMojo.writeTextFile(File, String): new java.io.FileWriter(File)</diag>
+<diag id="288" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getClasses() may expose internal representation by returning RunQAMojo.classes</diag>
+<diag id="289" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getLibraries() may expose internal representation by returning RunQAMojo.libraries</diag>
+<diag id="290" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getSources() may expose internal representation by returning RunQAMojo.sources</diag>
+<diag id="291" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getTestClasses() may expose internal representation by returning RunQAMojo.testClasses</diag>
+<diag id="292" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getTestSources() may expose internal representation by returning RunQAMojo.testSources</diag>
+<diag id="293" sev="0" tool="Findbugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.maven.plugin.RunQAMojo.checkForSource(File) due to return value of called method</diag>
+<diag id="341" sev="0" tool="PMD" rule="ExcessiveImports">A high number of imports can indicate a high degree of coupling within an object.</diag>
+<diag id="342" sev="2" tool="PMD" rule="GodClass">Possible God class (WMC=118, ATFD=45, TCC=0.0016326530612244899)</diag>
+<diag id="343" sev="0" tool="PMD" rule="ExcessiveClassLength">Avoid really long classes.</diag>
+<diag id="344" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'RunQAMojo' has a Cyclomatic Complexity of 2 (Highest = 46).</diag>
+<diag id="345" sev="0" tool="PMD" rule="TooManyFields">Too many fields</diag>
+<diag id="346" sev="0" tool="PMD" rule="TooManyMethods">This class has too many methods, consider refactoring it.</diag>
+<diag id="381" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
+<diag id="382" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'executeReport' has a Cyclomatic Complexity of 46.</diag>
+<diag id="383" sev="0" tool="PMD" rule="NcssMethodCount">The method executeReport() has an NCSS line count of 142</diag>
+<diag id="384" sev="0" tool="PMD" rule="NPathComplexity">The method executeReport() has an NPath complexity of 22819104</diag>
+<diag id="385" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="386" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="387" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="388" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="389" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="390" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="391" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="392" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="393" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="394" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="395" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="396" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="397" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="398" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="399" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="400" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="402" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="403" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="404" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="406" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'sources' may expose an internal array.</diag>
+<diag id="407" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'testSources' may expose an internal array.</diag>
+<diag id="408" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'classes' may expose an internal array.</diag>
+<diag id="409" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'testClasses' may expose an internal array.</diag>
+<diag id="410" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'libraries' may expose an internal array.</diag>
+</class>
+</package>
+<package name="com.github.sanity4j.util" classes="21" lineCount="3587" high="0" significant="9" moderate="11" low="36" info="15" quality="91">
+<testCoverage lineCoveragePct="64" branchCoveragePct="57" lineCount="1006" coveredLineCount="648" branchCount="161" coveredBranchCount="93"/>
+<class name="ExternalProcessRunner" lineCount="145" high="0" significant="2" moderate="0" low="1" info="0" quality="71">
+<testCoverage lineCoveragePct="65" branchCoveragePct="41" lineCount="43" coveredLineCount="28" branchCount="10" coveredBranchCount="6"/>
+<diag id="233" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="305" sev="3" tool="Findbugs" rule="REC_CATCH_EXCEPTION">Exception is caught when Exception is not thrown in com.github.sanity4j.util.ExternalProcessRunner.runProcess(String, OutputStream, OutputStream)</diag>
+<diag id="679" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+</class>
+<class name="ExternalProcessRunner_Test" lineCount="53" high="0" significant="0" moderate="0" low="2" info="0" quality="92">
+<testCoverage lineCoveragePct="82" branchCoveragePct="50" lineCount="17" coveredLineCount="14" branchCount="1" coveredBranchCount="1"/>
+<diag id="680" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="681" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+</class>
+<class name="ExtractStats" lineCount="494" high="0" significant="0" moderate="1" low="5" info="5" quality="96">
+<testCoverage lineCoveragePct="82" branchCoveragePct="56" lineCount="154" coveredLineCount="127" branchCount="31" coveredBranchCount="24"/>
+<diag id="306" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.util.ExtractStats.getRunSummary() may expose internal representation by returning ExtractStats.currentRunSummary</diag>
+<diag id="307" sev="0" tool="Findbugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.util.ExtractStats.extractLineCounts(File) due to return value of called method</diag>
+<diag id="308" sev="0" tool="Findbugs" rule="WMI_WRONG_MAP_ITERATOR">com.github.sanity4j.util.ExtractStats.summariseCurrentRun() makes inefficient use of keySet iterator instead of entrySet iterator</diag>
+<diag id="682" sev="2" tool="PMD" rule="GodClass">Possible God class (WMC=52, ATFD=52, TCC=0.026143790849673203)</diag>
+<diag id="688" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">Avoid using Literals in Conditional Statements</diag>
+<diag id="689" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'currentRunSummary' may expose an internal array.</diag>
 <diag id="690" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="691" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="692" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="693" sev="1" tool="PMD" rule="UseVarargs">Consider using varargs for methods or constructors which take an array the last parameter.</diag>
+<diag id="694" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+</class>
+<class name="ExtractStats_Test" lineCount="337" high="0" significant="0" moderate="0" low="4" info="0" quality="97">
+<testCoverage lineCoveragePct="98" branchCoveragePct="69" lineCount="150" coveredLineCount="148" branchCount="10" coveredBranchCount="10"/>
+<diag id="695" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="696" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="697" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="698" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+</class>
+<class name="FileUtil" lineCount="249" high="0" significant="0" moderate="2" low="0" info="1" quality="95">
+<testCoverage lineCoveragePct="32" branchCoveragePct="37" lineCount="71" coveredLineCount="23" branchCount="19" coveredBranchCount="10"/>
+<diag id="309" sev="0" tool="Findbugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.util.FileUtil.delete(File) due to return value of called method</diag>
+<diag id="700" sev="2" tool="PMD" rule="InefficientEmptyStringCheck">String.trim().length()==0 is an inefficient way to validate an empty String.</diag>
+<diag id="701" sev="2" tool="PMD" rule="SimplifiedTernary">Ternary operators that can be simplified with || or &amp;&amp;</diag>
+</class>
+<class name="FileUtil_Test" lineCount="89" high="0" significant="0" moderate="0" low="1" info="0" quality="97">
+<testCoverage lineCoveragePct="100" branchCoveragePct="25" lineCount="37" coveredLineCount="37" branchCount="1" coveredBranchCount="1"/>
+<diag id="702" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+</class>
+<class name="JaxbMarshaller" lineCount="174" high="0" significant="4" moderate="0" low="1" info="0" quality="52">
+<testCoverage lineCoveragePct="72" branchCoveragePct="75" lineCount="52" coveredLineCount="37" branchCount="6" coveredBranchCount="6"/>
+<diag id="311" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.util.JaxbMarshaller$1.resolveEntity(String, String): String.getBytes()</diag>
+<diag id="703" sev="1" tool="PMD" rule="UnnecessaryFullyQualifiedName">Unnecessary use of fully qualified name 'java.io.IOException' due to existing import 'java.io.IOException'</diag>
+<diag id="705" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="707" sev="3" tool="PMD" rule="CompareObjectsWithEquals">Use equals() to compare object references.</diag>
+<diag id="708" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+</class>
+<class name="JaxbMarshaller_Test" lineCount="127" high="0" significant="0" moderate="0" low="3" info="0" quality="95">
+<testCoverage lineCoveragePct="84" branchCoveragePct="83" lineCount="45" coveredLineCount="38" branchCount="3" coveredBranchCount="3"/>
+<diag id="709" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="710" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="711" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+</class>
+<class name="PipeInputThread" lineCount="81" high="0" significant="0" moderate="2" low="0" info="0" quality="87">
+<testCoverage lineCoveragePct="77" branchCoveragePct="100" lineCount="18" coveredLineCount="14" branchCount="1" coveredBranchCount="1"/>
+<diag id="717" sev="2" tool="PMD" rule="EmptyCatchBlock">Avoid empty catch blocks</diag>
+<diag id="718" sev="2" tool="PMD" rule="EmptyCatchBlock">Avoid empty catch blocks</diag>
+</class>
+<class name="PipeInputThread_Test" lineCount="62" high="0" significant="0" moderate="0" low="1" info="0" quality="96">
+<testCoverage lineCoveragePct="83" branchCoveragePct="50" lineCount="18" coveredLineCount="15" branchCount="2" coveredBranchCount="2"/>
+<diag id="719" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+</class>
+<class name="QAException" lineCount="42" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="33" branchCoveragePct="0" lineCount="6" coveredLineCount="2" branchCount="0" coveredBranchCount="0"/>
+</class>
+<class name="QaLogger" lineCount="104" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<testCoverage lineCoveragePct="20" branchCoveragePct="0" lineCount="15" coveredLineCount="3" branchCount="0" coveredBranchCount="0"/>
+<diag id="720" sev="1" tool="PMD" rule="AbstractNaming">Abstract classes should be named AbstractXXX</diag>
+</class>
+<class name="QaLoggerAntImpl" lineCount="99" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+</class>
+<class name="QaLoggerMavenImpl" lineCount="97" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+</class>
+<class name="QaLoggerSystemOutImpl" lineCount="99" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="47" branchCoveragePct="0" lineCount="21" coveredLineCount="10" branchCount="0" coveredBranchCount="0"/>
+</class>
+<class name="QaUtil" lineCount="756" high="0" significant="3" moderate="5" low="11" info="7" quality="85">
+<testCoverage lineCoveragePct="20" branchCoveragePct="7" lineCount="232" coveredLineCount="47" branchCount="53" coveredBranchCount="9"/>
+<diag id="312" sev="2" tool="Findbugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of inStream, which is known to be non-null in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
+<diag id="313" sev="2" tool="Findbugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of inStream, which is known to be non-null in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
+<diag id="314" sev="3" tool="Findbugs" rule="REC_CATCH_EXCEPTION">Exception is caught when Exception is not thrown in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
+<diag id="723" sev="2" tool="PMD" rule="GodClass">Possible God class (WMC=91, ATFD=29, TCC=0.06666666666666667)</diag>
+<diag id="724" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'QaUtil' has a Cyclomatic Complexity of 5 (Highest = 21).</diag>
+<diag id="725" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="726" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="727" sev="2" tool="PMD" rule="AssignmentInOperand">Avoid assignments in operands</diag>
+<diag id="728" sev="1" tool="PMD" rule="SimplifyStartsWith">This call to String.startsWith can be rewritten using String.charAt(0)</diag>
+<diag id="729" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'getPackageForSourceFile' has a Cyclomatic Complexity of 20.</diag>
+<diag id="730" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">Avoid using Literals in Conditional Statements</diag>
+<diag id="731" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="732" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="733" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'replaceTokens' has a Cyclomatic Complexity of 13.</diag>
+<diag id="734" sev="0" tool="PMD" rule="NPathComplexity">The method replaceTokens() has an NPath complexity of 360</diag>
+<diag id="735" sev="1" tool="PMD" rule="PrematureDeclaration">Avoid declaring a variable if it is unreferenced before a possible exit point.</diag>
+<diag id="736" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
+<diag id="737" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
+<diag id="738" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'extractResource' has a Cyclomatic Complexity of 21.</diag>
+<diag id="739" sev="0" tool="PMD" rule="NPathComplexity">The method extractResource() has an NPath complexity of 3121</diag>
+<diag id="742" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="743" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="744" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="745" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="746" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="747" sev="2" tool="PMD" rule="EmptyCatchBlock">Avoid empty catch blocks</diag>
+</class>
+<class name="RegexpReplaceInputStream" lineCount="297" high="0" significant="0" moderate="1" low="2" info="2" quality="96">
+<testCoverage lineCoveragePct="83" branchCoveragePct="66" lineCount="65" coveredLineCount="54" branchCount="16" coveredBranchCount="15"/>
+<diag id="760" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="761" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="762" sev="2" tool="PMD" rule="EmptyCatchBlock">Avoid empty catch blocks</diag>
+<diag id="763" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">Deeply nested if..then statements are hard to read</diag>
+<diag id="764" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">Deeply nested if..then statements are hard to read</diag>
+</class>
+<class name="StartElementListener" lineCount="29" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+</class>
+<class name="StringUtil" lineCount="69" high="0" significant="0" moderate="0" low="1" info="0" quality="97">
+<testCoverage lineCoveragePct="85" branchCoveragePct="100" lineCount="14" coveredLineCount="12" branchCount="5" coveredBranchCount="5"/>
+<diag id="765" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">Avoid using Literals in Conditional Statements</diag>
+</class>
+<class name="StringUtil_Test" lineCount="61" high="0" significant="0" moderate="0" low="3" info="0" quality="90">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="25" coveredLineCount="25" branchCount="0" coveredBranchCount="0"/>
+<diag id="766" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="767" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="768" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+</class>
+<class name="Tool" lineCount="123" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="60" branchCoveragePct="0" lineCount="23" coveredLineCount="14" branchCount="3" coveredBranchCount="0"/>
+</class>
+<package name="com.github.sanity4j.util.math" classes="3" lineCount="431" high="0" significant="2" moderate="1" low="12" info="4" quality="83">
+<testCoverage lineCoveragePct="75" branchCoveragePct="94" lineCount="120" coveredLineCount="91" branchCount="19" coveredBranchCount="18"/>
+<class name="InfixExpression" lineCount="211" high="0" significant="1" moderate="0" low="6" info="2" quality="84">
+<testCoverage lineCoveragePct="77" branchCoveragePct="72" lineCount="61" coveredLineCount="47" branchCount="12" coveredBranchCount="11"/>
+<diag id="271" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="770" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'InfixExpression' has a Cyclomatic Complexity of 5 (Highest = 24).</diag>
+<diag id="772" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="773" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
+<diag id="774" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'parseInfixToPostfix' has a Cyclomatic Complexity of 24.</diag>
+<diag id="775" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="776" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="777" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="778" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+</class>
+<class name="PostfixExpression" lineCount="188" high="0" significant="1" moderate="1" low="6" info="2" quality="80">
+<testCoverage lineCoveragePct="74" branchCoveragePct="78" lineCount="59" coveredLineCount="44" branchCount="7" coveredBranchCount="7"/>
+<diag id="779" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'PostfixExpression' has a Cyclomatic Complexity of 4 (Highest = 13).</diag>
+<diag id="781" sev="1" tool="PMD" rule="UseVarargs">Consider using varargs for methods or constructors which take an array the last parameter.</diag>
+<diag id="782" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'evaluatePostfix' has a Cyclomatic Complexity of 13.</diag>
+<diag id="783" sev="2" tool="PMD" rule="OneDeclarationPerLine">Use one line for each declaration, it enhances code readability.</diag>
+<diag id="784" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">Avoid using Literals in Conditional Statements</diag>
+<diag id="785" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="786" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="787" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="788" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">Avoid using Literals in Conditional Statements</diag>
+<diag id="789" sev="1" tool="PMD" rule="UseVarargs">Consider using varargs for methods or constructors which take an array the last parameter.</diag>
+</class>
+<class name="SyntaxException" lineCount="32" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+</class>
+</package>
+</package>
+<package name="com.github.sanity4j.ant.taskdef" classes="1" lineCount="368" high="0" significant="0" moderate="0" low="1" info="0" quality="99">
+<class name="RunQA" lineCount="368" high="0" significant="0" moderate="0" low="1" info="0" quality="99">
+<diag id="1" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+</class>
+</package>
+<package name="com.github.sanity4j.model.summary" classes="4" lineCount="736" high="0" significant="1" moderate="0" low="4" info="3" quality="96">
+<testCoverage lineCoveragePct="92" branchCoveragePct="100" lineCount="251" coveredLineCount="233" branchCount="9" coveredBranchCount="9"/>
+<class name="PackageSummary" lineCount="203" high="0" significant="0" moderate="0" low="1" info="2" quality="99">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="31" coveredLineCount="31" branchCount="0" coveredBranchCount="0"/>
+<diag id="153" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="295" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.model.summary.PackageSummary.getRunDate() may expose internal representation by returning PackageSummary.runDate</diag>
+<diag id="296" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP2">com.github.sanity4j.model.summary.PackageSummary.setRunDate(Date) may expose internal representation by storing an externally mutable object into PackageSummary.runDate</diag>
+</class>
+<class name="PackageSummary_Test" lineCount="107" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="51" coveredLineCount="51" branchCount="0" coveredBranchCount="0"/>
+<diag id="448" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+</class>
+<class name="SummaryCsvMarshaller" lineCount="244" high="0" significant="1" moderate="0" low="0" info="1" quality="91">
+<testCoverage lineCoveragePct="80" branchCoveragePct="77" lineCount="90" coveredLineCount="72" branchCount="8" coveredBranchCount="8"/>
+<diag id="297" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.model.summary.SummaryCsvMarshaller.read(File): new java.io.InputStreamReader(InputStream)</diag>
+<diag id="450" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+</class>
+<class name="SummaryCsvMarshaller_Test" lineCount="182" high="0" significant="0" moderate="0" low="2" info="0" quality="97">
+<testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="79" coveredLineCount="79" branchCount="1" coveredBranchCount="1"/>
+<diag id="451" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="452" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+</class>
+</package>
+<package name="com.github.sanity4j.workflow" classes="12" lineCount="2080" high="0" significant="3" moderate="2" low="20" info="10" quality="94">
+<testCoverage lineCoveragePct="7" branchCoveragePct="2" lineCount="247" coveredLineCount="18" branchCount="41" coveredBranchCount="1"/>
+<class name="AbstractFileCollector" lineCount="203" high="0" significant="0" moderate="0" low="3" info="5" quality="97">
+<diag id="276" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="277" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'destDir' hides a field.</diag>
+<diag id="278" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'destDir' hides a field.</diag>
+<diag id="315" sev="0" tool="Findbugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.workflow.AbstractFileCollector.copyFiles(List, File) due to return value of called method</diag>
+<diag id="793" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="794" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="795" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="796" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
 </class>
 <class name="ClassFileCollector" lineCount="105" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="20" coveredLineCount="0" branchCount="2" coveredBranchCount="0"/>
 </class>
 <class name="FileCopier" lineCount="55" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="100" lineCount="10" coveredLineCount="0" branchCount="0" coveredBranchCount="0"/>
 </class>
-<class name="JavaVersionCheck" lineCount="66" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="14" coveredLineCount="0" branchCount="1" coveredBranchCount="0"/>
-<diag id="351" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.JavaVersionCheck.run(): java.io.ByteArrayOutputStream.toString()</diag>
+<class name="JavaVersionCheck" lineCount="66" high="0" significant="1" moderate="0" low="1" info="0" quality="66">
+<diag id="316" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.JavaVersionCheck.run(): java.io.ByteArrayOutputStream.toString()</diag>
+<diag id="800" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">Avoid using Literals in Conditional Statements</diag>
 </class>
 <class name="LibraryFileCollector" lineCount="98" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="19" coveredLineCount="0" branchCount="2" coveredBranchCount="0"/>
 </class>
-<class name="QAConfig" lineCount="1015" high="0" significant="0" moderate="5" low="15" info="3" quality="94">
-<testCoverage lineCoveragePct="7" branchCoveragePct="1" lineCount="247" coveredLineCount="18" branchCount="44" coveredBranchCount="1"/>
-<diag id="317" sev="1" tool="Checkstyle" rule="JavadocStyleCheck">First sentence should end with a period.</diag>
-<diag id="318" sev="2" tool="Checkstyle" rule="JavadocMethodCheck">Unused @param tag for 'javaRuntime'.</diag>
-<diag id="319" sev="2" tool="Checkstyle" rule="JavadocMethodCheck">Expected @param tag for 'javaArgs'.</diag>
-<diag id="320" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'toolConfig' hides a field.</diag>
-<diag id="321" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'toolConfig' hides a field.</diag>
-<diag id="322" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'toolConfig' hides a field.</diag>
-<diag id="694" sev="0" tool="PMD" rule="ExcessivePublicCount">This class has a bunch of public methods and attributes</diag>
-<diag id="695" sev="2" tool="PMD" rule="UnusedImports">Avoid unused imports such as 'net.sf.sanity4j.util.FileUtil'</diag>
-<diag id="696" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'QAConfig' has a Cyclomatic Complexity of 2 (Highest = 11).</diag>
-<diag id="697" sev="0" tool="PMD" rule="TooManyFields">Too many fields</diag>
-<diag id="703" sev="1" tool="PMD" rule="CollapsibleIfStatements">These nested if statements could be combined</diag>
-<diag id="704" sev="1" tool="PMD" rule="CollapsibleIfStatements">These nested if statements could be combined</diag>
-<diag id="705" sev="1" tool="PMD" rule="CollapsibleIfStatements">These nested if statements could be combined</diag>
-<diag id="706" sev="2" tool="PMD" rule="AssignmentInOperand">Avoid assignments in operands</diag>
-<diag id="707" sev="2" tool="PMD" rule="AppendCharacterWithChar">Avoid appending characters as strings in StringBuffer.append.</diag>
-<diag id="708" sev="1" tool="PMD" rule="BooleanGetMethodName">A getX() method which returns a boolean should be named isX()</diag>
-<diag id="709" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'getToolVersion' has a Cyclomatic Complexity of 11.</diag>
-<diag id="710" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
-<diag id="711" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="712" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
-<diag id="713" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
-<diag id="714" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
-<diag id="715" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
+<class name="QAConfig" lineCount="1013" high="0" significant="2" moderate="2" low="13" info="3" quality="92">
+<testCoverage lineCoveragePct="7" branchCoveragePct="1" lineCount="247" coveredLineCount="18" branchCount="41" coveredBranchCount="1"/>
+<diag id="279" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'toolConfig' hides a field.</diag>
+<diag id="280" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'toolConfig' hides a field.</diag>
+<diag id="281" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'toolConfig' hides a field.</diag>
+<diag id="317" sev="3" tool="Findbugs" rule="DMI_HARDCODED_ABSOLUTE_FILENAME">Hard coded reference to an absolute pathname in new com.github.sanity4j.workflow.QAConfig()</diag>
+<diag id="318" sev="3" tool="Findbugs" rule="DMI_HARDCODED_ABSOLUTE_FILENAME">Hard coded reference to an absolute pathname in com.github.sanity4j.workflow.QAConfig.setExternalPropertiesPath(String, String)</diag>
+<diag id="801" sev="2" tool="PMD" rule="GodClass">Possible God class (WMC=106, ATFD=39, TCC=0.023182957393483708)</diag>
+<diag id="802" sev="0" tool="PMD" rule="ExcessivePublicCount">This class has a bunch of public methods and attributes</diag>
+<diag id="803" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'QAConfig' has a Cyclomatic Complexity of 2 (Highest = 11).</diag>
+<diag id="804" sev="0" tool="PMD" rule="TooManyFields">Too many fields</diag>
+<diag id="810" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">Avoid using Literals in Conditional Statements</diag>
+<diag id="811" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">Avoid using Literals in Conditional Statements</diag>
+<diag id="812" sev="2" tool="PMD" rule="AssignmentInOperand">Avoid assignments in operands</diag>
+<diag id="813" sev="1" tool="PMD" rule="BooleanGetMethodName">A getX() method which returns a boolean should be named isX()</diag>
+<diag id="814" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'getToolVersion' has a Cyclomatic Complexity of 11.</diag>
+<diag id="815" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
+<diag id="816" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="817" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
+<diag id="818" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
+<diag id="819" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
+<diag id="820" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
 </class>
-<class name="QAProcessor" lineCount="226" high="0" significant="0" moderate="0" low="2" info="0" quality="98">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="67" coveredLineCount="0" branchCount="5" coveredBranchCount="0"/>
-<diag id="323" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'stats' hides a field.</diag>
-<diag id="324" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for QAException.</diag>
+<class name="QAProcessor" lineCount="226" high="0" significant="0" moderate="0" low="1" info="2" quality="99">
+<diag id="282" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'stats' hides a field.</diag>
+<diag id="822" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="823" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
 </class>
-<class name="ReportProducer" lineCount="71" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="100" lineCount="17" coveredLineCount="0" branchCount="0" coveredBranchCount="0"/>
+<class name="ReportProducer" lineCount="71" high="0" significant="0" moderate="0" low="1" info="0" quality="97">
+<diag id="826" sev="1" tool="PMD" rule="PrematureDeclaration">Avoid declaring a variable if it is unreferenced before a possible exit point.</diag>
 </class>
 <class name="SourceFileCollector" lineCount="63" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="100" lineCount="7" coveredLineCount="0" branchCount="0" coveredBranchCount="0"/>
 </class>
 <class name="SummariseRun" lineCount="84" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="21" coveredLineCount="0" branchCount="2" coveredBranchCount="0"/>
 </class>
 <class name="WorkUnit" lineCount="16" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 </class>
 <class name="WorkUnitGroup" lineCount="80" high="0" significant="0" moderate="0" low="1" info="0" quality="97">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="13" coveredLineCount="0" branchCount="1" coveredBranchCount="0"/>
-<diag id="724" sev="1" tool="PMD" rule="UnusedFormalParameter">Avoid unused constructor parameters such as 'allowConcurrent'.</diag>
+<diag id="830" sev="1" tool="PMD" rule="UnusedFormalParameter">Avoid unused constructor parameters such as 'allowConcurrent'.</diag>
 </class>
-<package name="net.sf.sanity4j.workflow.tool" classes="21" lineCount="2213" high="0" significant="0" moderate="1" low="11" info="32" quality="98">
-<testCoverage lineCoveragePct="30" branchCoveragePct="31" lineCount="631" coveredLineCount="194" branchCount="75" coveredBranchCount="29"/>
-<class name="AbstractToolRunner" lineCount="234" high="0" significant="0" moderate="0" low="1" info="1" quality="99">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="67" coveredLineCount="0" branchCount="8" coveredBranchCount="0"/>
-<diag id="325" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="727" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
+<package name="com.github.sanity4j.workflow.tool" classes="25" lineCount="2683" high="0" significant="14" moderate="3" low="19" info="12" quality="87">
+<testCoverage lineCoveragePct="73" branchCoveragePct="91" lineCount="272" coveredLineCount="200" branchCount="34" coveredBranchCount="31"/>
+<class name="AbstractToolRunner" lineCount="234" high="0" significant="0" moderate="0" low="4" info="0" quality="96">
+<diag id="283" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="833" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
+<diag id="834" sev="1" tool="PMD" rule="PrematureDeclaration">Avoid declaring a variable if it is unreferenced before a possible exit point.</diag>
+<diag id="835" sev="1" tool="PMD" rule="PrematureDeclaration">Avoid declaring a variable if it is unreferenced before a possible exit point.</diag>
 </class>
-<class name="CheckStyleResultReader" lineCount="135" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<class name="CheckStyleResultReader" lineCount="136" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 <testCoverage lineCoveragePct="80" branchCoveragePct="66" lineCount="41" coveredLineCount="33" branchCount="6" coveredBranchCount="5"/>
 </class>
-<class name="CheckStyleRunner" lineCount="88" high="0" significant="0" moderate="0" low="0" info="4" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="24" coveredLineCount="0" branchCount="3" coveredBranchCount="0"/>
-<diag id="352" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CheckStyleRunner.runTool(String): new String(byte[])</diag>
-<diag id="353" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CheckStyleRunner.runTool(String): new String(byte[])</diag>
-<diag id="354" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CheckStyleRunner.runTool(String): new String(byte[])</diag>
-<diag id="355" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CheckStyleRunner.runTool(String): new String(byte[])</diag>
+<class name="CheckStyleRunner" lineCount="88" high="0" significant="1" moderate="0" low="0" info="0" quality="77">
+<diag id="319" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.CheckStyleRunner.runTool(String): new String(byte[])</diag>
 </class>
 <class name="CoberturaMergeReader" lineCount="60" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="100" lineCount="8" coveredLineCount="0" branchCount="0" coveredBranchCount="0"/>
 </class>
-<class name="CoberturaMergeRunner" lineCount="91" high="0" significant="0" moderate="0" low="1" info="4" quality="97">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="23" coveredLineCount="0" branchCount="3" coveredBranchCount="0"/>
-<diag id="356" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaMergeRunner.runTool(String): new String(byte[])</diag>
-<diag id="357" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaMergeRunner.runTool(String): new String(byte[])</diag>
-<diag id="358" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaMergeRunner.runTool(String): new String(byte[])</diag>
-<diag id="359" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaMergeRunner.runTool(String): new String(byte[])</diag>
-<diag id="767" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\workflow\tool\CoberturaReportRunner.java:
+<class name="CoberturaMergeRunner" lineCount="91" high="0" significant="1" moderate="0" low="1" info="0" quality="75">
+<diag id="320" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.CoberturaMergeRunner.runTool(String): new String(byte[])</diag>
+<diag id="900" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/workflow/tool/CoberturaReportRunner.java:
         ByteArrayOutputStream stdout = null;
         ByteArrayOutputStream stderr = null;
 
@@ -137,13 +370,9 @@
                 String err = new String(stderr.toByteArray());
                 throw new QAException(&quot;Cobertura Merge Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</diag>
 </class>
-<class name="CoberturaReportRunner" lineCount="96" high="0" significant="0" moderate="0" low="2" info="4" quality="95">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="24" coveredLineCount="0" branchCount="3" coveredBranchCount="0"/>
-<diag id="360" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaReportRunner.runTool(String): new String(byte[])</diag>
-<diag id="361" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaReportRunner.runTool(String): new String(byte[])</diag>
-<diag id="362" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaReportRunner.runTool(String): new String(byte[])</diag>
-<diag id="363" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.CoberturaReportRunner.runTool(String): new String(byte[])</diag>
-<diag id="765" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\workflow\tool\FindBugsRunner.java:
+<class name="CoberturaReportRunner" lineCount="96" high="0" significant="1" moderate="0" low="2" info="0" quality="75">
+<diag id="321" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.CoberturaReportRunner.runTool(String): new String(byte[])</diag>
+<diag id="898" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/workflow/tool/FindBugsRunner.java:
         FileUtil.createDir(getConfig().getToolResultFile(Tool.COBERTURA).getParent());
 
         // Run the process
@@ -176,7 +405,7 @@
                 String out = new String(stdout.toByteArray());
                 String err = new String(stderr.toByteArray());
                 throw new QAException(&quot;Cobertura Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</diag>
-<diag id="768" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\workflow\tool\CoberturaMergeRunner.java:
+<diag id="901" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/workflow/tool/CoberturaMergeRunner.java:
         ByteArrayOutputStream stdout = null;
         ByteArrayOutputStream stderr = null;
 
@@ -208,25 +437,21 @@
                 String err = new String(stderr.toByteArray());
                 throw new QAException(&quot;Cobertura Merge Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</diag>
 </class>
-<class name="CoberturaResultReader" lineCount="151" high="0" significant="0" moderate="0" low="1" info="1" quality="98">
+<class name="CoberturaResultReader" lineCount="152" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
 <testCoverage lineCoveragePct="82" branchCoveragePct="81" lineCount="50" coveredLineCount="41" branchCount="8" coveredBranchCount="8"/>
-<diag id="326" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'100.0' is a magic number.</diag>
-<diag id="735" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="843" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
 </class>
-<class name="FindBugsResultReader" lineCount="150" high="0" significant="0" moderate="0" low="2" info="1" quality="97">
-<testCoverage lineCoveragePct="90" branchCoveragePct="68" lineCount="50" coveredLineCount="45" branchCount="10" coveredBranchCount="10"/>
-<diag id="736" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'FindBugsResultReader' has a Cyclomatic Complexity of 5 (Highest = 21).</diag>
-<diag id="740" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'run' has a Cyclomatic Complexity of 21.</diag>
-<diag id="741" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">Deeply nested if..then statements are hard to read</diag>
+<class name="FindBugsResultReader" lineCount="151" high="0" significant="0" moderate="0" low="3" info="1" quality="96">
+<testCoverage lineCoveragePct="88" branchCoveragePct="68" lineCount="54" coveredLineCount="48" branchCount="12" coveredBranchCount="12"/>
+<diag id="844" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'FindBugsResultReader' has a Cyclomatic Complexity of 5 (Highest = 21).</diag>
+<diag id="848" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'run' has a Cyclomatic Complexity of 21.</diag>
+<diag id="849" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">Deeply nested if..then statements are hard to read</diag>
+<diag id="850" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
 </class>
-<class name="FindBugsRunner" lineCount="222" high="0" significant="0" moderate="0" low="2" info="4" quality="98">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="67" coveredLineCount="0" branchCount="9" coveredBranchCount="0"/>
-<diag id="364" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.FindBugsRunner.runTool(String): new String(byte[])</diag>
-<diag id="365" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.FindBugsRunner.runTool(String): new String(byte[])</diag>
-<diag id="366" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.FindBugsRunner.runTool(String): new String(byte[])</diag>
-<diag id="367" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.FindBugsRunner.runTool(String): new String(byte[])</diag>
-<diag id="743" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 88, but has at least 266 characters appended.</diag>
-<diag id="766" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\workflow\tool\CoberturaReportRunner.java:
+<class name="FindBugsRunner" lineCount="222" high="0" significant="1" moderate="0" low="2" info="0" quality="89">
+<diag id="322" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.FindBugsRunner.runTool(String): new String(byte[])</diag>
+<diag id="852" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 88, but has at least 266 characters appended.</diag>
+<diag id="899" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/workflow/tool/CoberturaReportRunner.java:
         FileUtil.createDir(getConfig().getToolResultFile(Tool.COBERTURA).getParent());
 
         // Run the process
@@ -260,127 +485,108 @@
                 String err = new String(stderr.toByteArray());
                 throw new QAException(&quot;Cobertura Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</diag>
 </class>
-<class name="Pmd4Runner" lineCount="87" high="0" significant="0" moderate="0" low="0" info="2" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="23" coveredLineCount="0" branchCount="2" coveredBranchCount="0"/>
-<diag id="368" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.Pmd4Runner.runTool(String): new String(byte[])</diag>
-<diag id="369" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.Pmd4Runner.runTool(String): new String(byte[])</diag>
+<class name="JaCoCoMergeReader" lineCount="65" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 </class>
-<class name="Pmd5Runner" lineCount="79" high="0" significant="0" moderate="0" low="0" info="2" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="20" coveredLineCount="0" branchCount="2" coveredBranchCount="0"/>
-<diag id="370" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.Pmd5Runner.runTool(String): new String(byte[])</diag>
-<diag id="371" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.Pmd5Runner.runTool(String): new String(byte[])</diag>
+<class name="JaCoCoMergeRunner" lineCount="50" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 </class>
-<class name="PmdCpd4ResultReader" lineCount="138" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="86" branchCoveragePct="75" lineCount="45" coveredLineCount="39" branchCount="2" coveredBranchCount="2"/>
+<class name="JaCoCoResultReader" lineCount="299" high="0" significant="1" moderate="2" low="3" info="8" quality="87">
+<diag id="323" sev="2" tool="Findbugs" rule="URF_UNREAD_FIELD">Unread field: com.github.sanity4j.workflow.tool.JaCoCoResultReader.jacocoResultFile</diag>
+<diag id="854" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'JaCoCoResultReader' has a Cyclomatic Complexity of 3 (Highest = 12).</diag>
+<diag id="857" sev="2" tool="PMD" rule="UnusedPrivateField">Avoid unused private fields such as 'jacocoResultFile'.</diag>
+<diag id="859" sev="1" tool="PMD" rule="SingularField">Perhaps 'jacocoResultFile' could be replaced by a local variable.</diag>
+<diag id="860" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'processClass' has a Cyclomatic Complexity of 12.</diag>
+<diag id="861" sev="0" tool="PMD" rule="NPathComplexity">The method processClass() has an NPath complexity of 204</diag>
+<diag id="862" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="863" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="864" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">Deeply nested if..then statements are hard to read</diag>
+<diag id="865" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="866" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="867" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="868" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="869" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
 </class>
-<class name="PmdCpd4Runner" lineCount="84" high="0" significant="0" moderate="0" low="0" info="2" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="21" coveredLineCount="0" branchCount="2" coveredBranchCount="0"/>
-<diag id="372" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.PmdCpd4Runner.runTool(String): new String(byte[])</diag>
-<diag id="373" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.PmdCpd4Runner.runTool(String): new String(byte[])</diag>
+<class name="JaCoCoRunner" lineCount="44" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 </class>
-<class name="PmdCpd5ResultReader" lineCount="28" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="6" coveredLineCount="0" branchCount="1" coveredBranchCount="0"/>
+<class name="Pmd4Runner" lineCount="87" high="0" significant="1" moderate="0" low="0" info="0" quality="77">
+<diag id="324" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.Pmd4Runner.runTool(String): new String(byte[])</diag>
 </class>
-<class name="PmdCpd5Runner" lineCount="111" high="0" significant="0" moderate="0" low="1" info="2" quality="98">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="28" coveredLineCount="0" branchCount="2" coveredBranchCount="0"/>
-<diag id="327" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'4' is a magic number.</diag>
-<diag id="374" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.PmdCpd5Runner.runTool(String): new String(byte[])</diag>
-<diag id="375" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.PmdCpd5Runner.runTool(String): new String(byte[])</diag>
+<class name="Pmd5Runner" lineCount="79" high="0" significant="1" moderate="0" low="0" info="0" quality="74">
+<diag id="325" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.Pmd5Runner.runTool(String): new String(byte[])</diag>
+</class>
+<class name="PmdCpd4ResultReader" lineCount="139" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="87" branchCoveragePct="75" lineCount="47" coveredLineCount="41" branchCount="2" coveredBranchCount="2"/>
+</class>
+<class name="PmdCpd4Runner" lineCount="84" high="0" significant="1" moderate="0" low="0" info="0" quality="76">
+<diag id="326" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.PmdCpd4Runner.runTool(String): new String(byte[])</diag>
+</class>
+<class name="PmdCpd5ResultReader" lineCount="35" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+</class>
+<class name="PmdCpd5Runner" lineCount="111" high="0" significant="1" moderate="0" low="0" info="0" quality="81">
+<diag id="327" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.PmdCpd5Runner.runTool(String): new String(byte[])</diag>
 </class>
 <class name="PmdCpdResultReader" lineCount="23" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="3" coveredLineCount="3" branchCount="0" coveredBranchCount="0"/>
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="3" coveredLineCount="3" branchCount="0" coveredBranchCount="0"/>
 </class>
 <class name="PmdCpdRunner" lineCount="23" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="100" lineCount="3" coveredLineCount="0" branchCount="0" coveredBranchCount="0"/>
 </class>
-<class name="PmdResultReader" lineCount="207" high="0" significant="0" moderate="1" low="1" info="3" quality="96">
-<testCoverage lineCoveragePct="43" branchCoveragePct="50" lineCount="76" coveredLineCount="33" branchCount="6" coveredBranchCount="4"/>
-<diag id="328" sev="1" tool="Checkstyle" rule="EmptyBlockCheck">Must have at least one statement.</diag>
-<diag id="376" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.PmdResultReader.fileToString(File): new java.io.PrintStream(OutputStream)</diag>
-<diag id="377" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.PmdResultReader.fileToString(File): new String(byte[])</diag>
-<diag id="378" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.workflow.tool.PmdResultReader.fileToString(File): new String(byte[])</diag>
-<diag id="750" sev="2" tool="PMD" rule="EmptyCatchBlock">Avoid empty catch blocks</diag>
+<class name="PmdResultReader" lineCount="208" high="0" significant="3" moderate="1" low="2" info="0" quality="66">
+<testCoverage lineCoveragePct="44" branchCoveragePct="37" lineCount="77" coveredLineCount="34" branchCount="6" coveredBranchCount="4"/>
+<diag id="328" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.PmdResultReader.fileToString(File): new java.io.PrintStream(OutputStream)</diag>
+<diag id="329" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.PmdResultReader.fileToString(File): new String(byte[])</diag>
+<diag id="876" sev="2" tool="PMD" rule="EmptyCatchBlock">Avoid empty catch blocks</diag>
+<diag id="877" sev="1" tool="PMD" rule="PrematureDeclaration">Avoid declaring a variable if it is unreferenced before a possible exit point.</diag>
+<diag id="878" sev="1" tool="PMD" rule="PrematureDeclaration">Avoid declaring a variable if it is unreferenced before a possible exit point.</diag>
+<diag id="879" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
 </class>
 <class name="PmdRunner" lineCount="23" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="100" lineCount="3" coveredLineCount="0" branchCount="0" coveredBranchCount="0"/>
 </class>
 <class name="ResultReader" lineCount="38" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 </class>
-<class name="ToolRunnerGroup" lineCount="145" high="0" significant="0" moderate="0" low="0" info="2" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="49" coveredLineCount="0" branchCount="8" coveredBranchCount="0"/>
-<diag id="753" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="754" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<class name="ToolRunnerGroup" lineCount="145" high="0" significant="2" moderate="0" low="2" info="2" quality="69">
+<diag id="880" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'ToolRunnerGroup' has a Cyclomatic Complexity of 6 (Highest = 10).</diag>
+<diag id="883" sev="1" tool="PMD" rule="CyclomaticComplexity">The constructor 'ToolRunnerGroup' has a Cyclomatic Complexity of 10.</diag>
+<diag id="884" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="885" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="886" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="887" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
 </class>
 </package>
 </package>
-<package name="net.sf.sanity4j.model.coverage" classes="8" lineCount="842" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
-<testCoverage lineCoveragePct="95" branchCoveragePct="90" lineCount="85" coveredLineCount="81" branchCount="15" coveredBranchCount="14"/>
-<class name="AbstractCoverage" lineCount="49" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
-<testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="7" coveredLineCount="7" branchCount="0" coveredBranchCount="0"/>
-<diag id="33" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-</class>
-<class name="ClassCoverage" lineCount="148" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="83" branchCoveragePct="80" lineCount="24" coveredLineCount="20" branchCount="5" coveredBranchCount="4"/>
-</class>
-<class name="ClassCoverage_Test" lineCount="108" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="Coverage" lineCount="123" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="100" branchCoveragePct="91" lineCount="29" coveredLineCount="29" branchCount="6" coveredBranchCount="6"/>
-</class>
-<class name="CoverageItf" lineCount="41" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="Coverage_Test" lineCount="126" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="PackageCoverage" lineCount="125" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="25" coveredLineCount="25" branchCount="4" coveredBranchCount="4"/>
-</class>
-<class name="PackageCoverage_Test" lineCount="122" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-</package>
-<package name="net.sf.sanity4j.model.summary" classes="4" lineCount="731" high="0" significant="0" moderate="0" low="0" info="5" quality="100">
-<testCoverage lineCoveragePct="85" branchCoveragePct="77" lineCount="121" coveredLineCount="103" branchCount="8" coveredBranchCount="8"/>
-<class name="PackageSummary" lineCount="203" high="0" significant="0" moderate="0" low="0" info="3" quality="100">
-<testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="31" coveredLineCount="31" branchCount="0" coveredBranchCount="0"/>
-<diag id="174" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="335" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">net.sf.sanity4j.model.summary.PackageSummary.getRunDate() may expose internal representation by returning PackageSummary.runDate</diag>
-<diag id="336" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP2">net.sf.sanity4j.model.summary.PackageSummary.setRunDate(Date) may expose internal representation by storing an externally mutable object into PackageSummary.runDate</diag>
-</class>
-<class name="PackageSummary_Test" lineCount="105" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="SummaryCsvMarshaller" lineCount="244" high="0" significant="0" moderate="0" low="0" info="2" quality="100">
-<testCoverage lineCoveragePct="80" branchCoveragePct="77" lineCount="90" coveredLineCount="72" branchCount="8" coveredBranchCount="8"/>
-<diag id="337" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.model.summary.SummaryCsvMarshaller.read(File): new java.io.InputStreamReader(InputStream)</diag>
-<diag id="476" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-</class>
-<class name="SummaryCsvMarshaller_Test" lineCount="179" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-</package>
-<package name="net.sf.sanity4j.model.diagnostic" classes="7" lineCount="2267" high="0" significant="0" moderate="1" low="17" info="2" quality="98">
-<testCoverage lineCoveragePct="94" branchCoveragePct="88" lineCount="280" coveredLineCount="264" branchCount="58" coveredBranchCount="52"/>
-<class name="Diagnostic" lineCount="479" high="0" significant="0" moderate="1" low="0" info="1" quality="98">
-<testCoverage lineCoveragePct="85" branchCoveragePct="91" lineCount="102" coveredLineCount="87" branchCount="14" coveredBranchCount="8"/>
-<diag id="88" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="460" sev="2" tool="PMD" rule="AvoidSynchronizedAtMethodLevel">Use block level rather than method level synchronization</diag>
+<package name="com.github.sanity4j.model.diagnostic" classes="7" lineCount="2277" high="0" significant="2" moderate="2" low="23" info="1" quality="95">
+<testCoverage lineCoveragePct="97" branchCoveragePct="91" lineCount="877" coveredLineCount="855" branchCount="72" coveredBranchCount="66"/>
+<class name="Diagnostic" lineCount="479" high="0" significant="0" moderate="1" low="2" info="0" quality="98">
+<testCoverage lineCoveragePct="85" branchCoveragePct="57" lineCount="102" coveredLineCount="87" branchCount="14" coveredBranchCount="8"/>
+<diag id="68" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="429" sev="2" tool="PMD" rule="AvoidSynchronizedAtMethodLevel">Use block level rather than method level synchronization</diag>
+<diag id="430" sev="1" tool="PMD" rule="PrematureDeclaration">Avoid declaring a variable if it is unreferenced before a possible exit point.</diag>
 </class>
 <class name="DiagnosticCategory" lineCount="216" high="0" significant="0" moderate="0" low="1" info="1" quality="99">
 <testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="51" coveredLineCount="51" branchCount="11" coveredBranchCount="11"/>
-<diag id="89" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'name' hides a field.</diag>
-<diag id="465" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="96" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'name' hides a field.</diag>
+<diag id="431" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
 </class>
-<class name="DiagnosticCategory_Test" lineCount="162" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<class name="DiagnosticCategory_Test" lineCount="165" high="0" significant="0" moderate="0" low="2" info="0" quality="97">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="93" coveredLineCount="93" branchCount="0" coveredBranchCount="0"/>
+<diag id="432" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="433" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
 </class>
-<class name="DiagnosticFactory" lineCount="103" high="0" significant="0" moderate="0" low="2" info="0" quality="96">
-<testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="13" coveredLineCount="13" branchCount="0" coveredBranchCount="0"/>
-<diag id="99" sev="1" tool="Checkstyle" rule="ConstantNameCheck">Name 'properties' must match pattern '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$|^log$'.</diag>
-<diag id="100" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'properties' hides a field.</diag>
+<class name="DiagnosticFactory" lineCount="103" high="0" significant="1" moderate="0" low="2" info="0" quality="76">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="13" coveredLineCount="13" branchCount="0" coveredBranchCount="0"/>
+<diag id="106" sev="1" tool="Checkstyle" rule="ConstantNameCheck">Name 'properties' must match pattern '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$|^log$'.</diag>
+<diag id="107" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'properties' hides a field.</diag>
+<diag id="294" sev="3" tool="Findbugs" rule="DMI_HARDCODED_ABSOLUTE_FILENAME">Hard coded reference to an absolute pathname in com.github.sanity4j.model.diagnostic.DiagnosticFactory.&lt;static initializer for DiagnosticFactory&gt;()</diag>
 </class>
-<class name="DiagnosticSet" lineCount="449" high="0" significant="0" moderate="0" low="1" info="0" quality="99">
-<testCoverage lineCoveragePct="99" branchCoveragePct="82" lineCount="114" coveredLineCount="113" branchCount="33" coveredBranchCount="33"/>
-<diag id="101" sev="1" tool="Checkstyle" rule="EmptyBlockCheck">Must have at least one statement.</diag>
+<class name="DiagnosticSet" lineCount="451" high="0" significant="1" moderate="1" low="0" info="0" quality="94">
+<testCoverage lineCoveragePct="99" branchCoveragePct="82" lineCount="113" coveredLineCount="112" branchCount="33" coveredBranchCount="33"/>
+<diag id="434" sev="2" tool="PMD" rule="GodClass">Possible God class (WMC=54, ATFD=27, TCC=0.005847953216374269)</diag>
+<diag id="441" sev="3" tool="PMD" rule="CloneMethodReturnTypeMustMatchClassName">The return type of the clone() method must be the class name when implements Cloneable</diag>
 </class>
-<class name="DiagnosticSet_Test" lineCount="682" high="0" significant="0" moderate="0" low="13" info="0" quality="96">
-<diag id="474" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;.ClassName&quot; appears 4 times in this file; the first occurrence is on line 141</diag>
-<diag id="769" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<class name="DiagnosticSet_Test" lineCount="685" high="0" significant="0" moderate="0" low="15" info="0" quality="95">
+<testCoverage lineCoveragePct="98" branchCoveragePct="100" lineCount="422" coveredLineCount="416" branchCount="12" coveredBranchCount="12"/>
+<diag id="444" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="445" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="446" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;.ClassName&quot; appears 4 times in this file; the first occurrence is on line 144</diag>
+<diag id="902" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
     public void testGetDiagnosticsByPackageName()
     {
         String topPackage = &quot;package&quot;;
@@ -411,7 +617,7 @@
         Diagnostic class2Diag2 = new Diagnostic();
         class2Diag2.setClassName(className2);
         diagnosticSet.add(class2Diag2);</diag>
-<diag id="770" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="903" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
     public void testGetDiagnosticsByPackageName()
     {
         String topPackage = &quot;package&quot;;
@@ -442,7 +648,7 @@
         Diagnostic class2Diag2 = new Diagnostic();
         class2Diag2.setClassName(className2);
         diagnosticSet.add(class2Diag2);</diag>
-<diag id="773" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="906" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
     public void testGetDiagnosticsBySeverity()
     {
         int severity1 = Diagnostic.SEVERITY_MODERATE; 
@@ -470,7 +676,7 @@
         Diagnostic severity2Diag2 = new Diagnostic();
         severity2Diag2.setSeverity(severity2);
         diagnosticSet.add(severity2Diag2);</diag>
-<diag id="774" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="907" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
     public void testGetDiagnosticsBySeverity()
     {
         int severity1 = Diagnostic.SEVERITY_MODERATE; 
@@ -498,7 +704,7 @@
         Diagnostic severity2Diag2 = new Diagnostic();
         severity2Diag2.setSeverity(severity2);
         diagnosticSet.add(severity2Diag2);</diag>
-<diag id="775" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="908" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
         DiagnosticSet diagnosticSet = new DiagnosticSet();
 
         // Add three diagnostics for class 1, and two for class 2 
@@ -523,7 +729,7 @@
         diagnosticSet.add(class2Diag2);
         
         Map&lt;String, List&lt;Diagnostic&gt;&gt; diagsByName = diagnosticSet.getDiagnosticsByClassName();</diag>
-<diag id="776" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="909" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
         DiagnosticSet diagnosticSet = new DiagnosticSet();
 
         // Add three diagnostics for class 1, and two for class 2 
@@ -548,7 +754,7 @@
         diagnosticSet.add(class2Diag2);
         
         Map&lt;String, List&lt;Diagnostic&gt;&gt; diagsByName = diagnosticSet.getDiagnosticsByClassName();</diag>
-<diag id="777" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="910" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
     public void testGetDiagnosticsByFileName()
     {
         String fileName1 = &quot;package/subpackage1/FileName.java&quot;; 
@@ -576,7 +782,7 @@
         Diagnostic file2Diag2 = new Diagnostic();
         file2Diag2.setFileName(fileName2);
         diagnosticSet.add(file2Diag2);</diag>
-<diag id="778" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="911" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
     public void testGetDiagnosticsByFileName()
     {
         String fileName1 = &quot;package/subpackage1/FileName.java&quot;; 
@@ -604,7 +810,7 @@
         Diagnostic file2Diag2 = new Diagnostic();
         file2Diag2.setFileName(fileName2);
         diagnosticSet.add(file2Diag2);</diag>
-<diag id="779" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="912" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
         DiagnosticSet diagnosticSet = new DiagnosticSet();
 
         // Add three diagnostics for class 1, and two for class 2 
@@ -627,7 +833,7 @@
         Diagnostic class2Diag2 = new Diagnostic();
         class2Diag2.setClassName(className2);
         diagnosticSet.add(class2Diag2);</diag>
-<diag id="780" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="913" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
         DiagnosticSet diagnosticSet = new DiagnosticSet();
 
         // Add three diagnostics for class 1, and two for class 2 
@@ -650,7 +856,7 @@
         Diagnostic class2Diag2 = new Diagnostic();
         class2Diag2.setClassName(className2);
         diagnosticSet.add(class2Diag2);</diag>
-<diag id="781" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="914" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
         DiagnosticSet diagnosticSet = new DiagnosticSet();
 
         // Add three diagnostics for tool 1, and two for tool 2 
@@ -673,7 +879,7 @@
         Diagnostic tool2Diag2 = new Diagnostic();
         tool2Diag2.setSource(tool2);
         diagnosticSet.add(tool2Diag2);</diag>
-<diag id="782" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\model\diagnostic\DiagnosticSet_Test.java:
+<diag id="915" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/model/diagnostic/DiagnosticSet_Test.java:
         DiagnosticSet diagnosticSet = new DiagnosticSet();
 
         // Add three diagnostics for tool 1, and two for tool 2 
@@ -697,261 +903,124 @@
         tool2Diag2.setSource(tool2);
         diagnosticSet.add(tool2Diag2);</diag>
 </class>
-<class name="Diagnostic_Test" lineCount="176" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<class name="Diagnostic_Test" lineCount="178" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="83" coveredLineCount="83" branchCount="2" coveredBranchCount="2"/>
+<diag id="447" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
 </class>
 </package>
-<package name="net.sf.sanity4j.ant.taskdef" classes="1" lineCount="366" high="0" significant="0" moderate="0" low="1" info="1" quality="99">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="86" coveredLineCount="0" branchCount="9" coveredBranchCount="0"/>
-<class name="RunQA" lineCount="366" high="0" significant="0" moderate="0" low="1" info="1" quality="99">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="86" coveredLineCount="0" branchCount="9" coveredBranchCount="0"/>
-<diag id="1" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="2" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Redundant throws: 'BuildException' is unchecked exception.</diag>
-</class>
-</package>
-<package name="net.sf.sanity4j.util" classes="21" lineCount="3558" high="0" significant="3" moderate="8" low="14" info="14" quality="96">
-<testCoverage lineCoveragePct="49" branchCoveragePct="36" lineCount="738" coveredLineCount="364" branchCount="142" coveredBranchCount="76"/>
-<class name="ExternalProcessRunner" lineCount="145" high="0" significant="1" moderate="0" low="0" info="1" quality="86">
-<testCoverage lineCoveragePct="60" branchCoveragePct="50" lineCount="41" coveredLineCount="25" branchCount="8" coveredBranchCount="6"/>
-<diag id="254" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="345" sev="3" tool="Findbugs" rule="REC_CATCH_EXCEPTION">Exception is caught when Exception is not thrown in net.sf.sanity4j.util.ExternalProcessRunner.runProcess(String, OutputStream, OutputStream)</diag>
-</class>
-<class name="ExternalProcessRunner_Test" lineCount="50" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="ExtractStats" lineCount="494" high="0" significant="0" moderate="0" low="1" info="3" quality="99">
-<testCoverage lineCoveragePct="82" branchCoveragePct="56" lineCount="152" coveredLineCount="125" branchCount="31" coveredBranchCount="24"/>
-<diag id="346" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">net.sf.sanity4j.util.ExtractStats.getRunSummary() may expose internal representation by returning ExtractStats.currentRunSummary</diag>
-<diag id="620" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'currentRunSummary' may expose an internal array.</diag>
-<diag id="621" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="622" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-</class>
-<class name="ExtractStats_Test" lineCount="332" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="FileUtil" lineCount="249" high="0" significant="0" moderate="1" low="0" info="0" quality="97">
-<testCoverage lineCoveragePct="32" branchCoveragePct="37" lineCount="70" coveredLineCount="23" branchCount="19" coveredBranchCount="10"/>
-<diag id="624" sev="2" tool="PMD" rule="InefficientEmptyStringCheck">String.trim().length()==0 is an inefficient way to validate an empty String.</diag>
-</class>
-<class name="FileUtil_Test" lineCount="87" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="JaxbMarshaller" lineCount="174" high="0" significant="1" moderate="0" low="2" info="1" quality="86">
-<testCoverage lineCoveragePct="78" branchCoveragePct="75" lineCount="48" coveredLineCount="37" branchCount="6" coveredBranchCount="6"/>
-<diag id="288" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for QAException.</diag>
-<diag id="289" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for QAException.</diag>
-<diag id="347" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.util.JaxbMarshaller$1.resolveEntity(String, String): String.getBytes()</diag>
-<diag id="627" sev="3" tool="PMD" rule="CompareObjectsWithEquals">Use equals() to compare object references.</diag>
-</class>
-<class name="JaxbMarshaller_Test" lineCount="121" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="PipeInputThread" lineCount="81" high="0" significant="0" moderate="2" low="2" info="0" quality="82">
-<testCoverage lineCoveragePct="77" branchCoveragePct="100" lineCount="18" coveredLineCount="14" branchCount="1" coveredBranchCount="1"/>
-<diag id="306" sev="1" tool="Checkstyle" rule="EmptyBlockCheck">Must have at least one statement.</diag>
-<diag id="307" sev="1" tool="Checkstyle" rule="EmptyBlockCheck">Must have at least one statement.</diag>
-<diag id="633" sev="2" tool="PMD" rule="EmptyCatchBlock">Avoid empty catch blocks</diag>
-<diag id="634" sev="2" tool="PMD" rule="EmptyCatchBlock">Avoid empty catch blocks</diag>
-</class>
-<class name="PipeInputThread_Test" lineCount="60" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="QAException" lineCount="42" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="33" branchCoveragePct="100" lineCount="6" coveredLineCount="2" branchCount="0" coveredBranchCount="0"/>
-</class>
-<class name="QaLogger" lineCount="104" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
-<testCoverage lineCoveragePct="20" branchCoveragePct="100" lineCount="15" coveredLineCount="3" branchCount="0" coveredBranchCount="0"/>
-<diag id="635" sev="1" tool="PMD" rule="AbstractNaming">Abstract classes should be named AbstractXXX</diag>
-</class>
-<class name="QaLoggerAntImpl" lineCount="99" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="100" lineCount="20" coveredLineCount="0" branchCount="0" coveredBranchCount="0"/>
-</class>
-<class name="QaLoggerMavenImpl" lineCount="97" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="100" lineCount="17" coveredLineCount="0" branchCount="0" coveredBranchCount="0"/>
-</class>
-<class name="QaLoggerSystemOutImpl" lineCount="99" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="47" branchCoveragePct="100" lineCount="21" coveredLineCount="10" branchCount="0" coveredBranchCount="0"/>
-</class>
-<class name="QaUtil" lineCount="756" high="0" significant="1" moderate="4" low="7" info="7" quality="92">
-<testCoverage lineCoveragePct="20" branchCoveragePct="7" lineCount="231" coveredLineCount="47" branchCount="53" coveredBranchCount="9"/>
-<diag id="310" sev="1" tool="Checkstyle" rule="EmptyBlockCheck">Must have at least one statement.</diag>
-<diag id="348" sev="2" tool="Findbugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of inStream, which is known to be non-null in net.sf.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
-<diag id="349" sev="2" tool="Findbugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of inStream, which is known to be non-null in net.sf.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
-<diag id="350" sev="3" tool="Findbugs" rule="REC_CATCH_EXCEPTION">Exception is caught when Exception is not thrown in net.sf.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
-<diag id="638" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'QaUtil' has a Cyclomatic Complexity of 5 (Highest = 21).</diag>
-<diag id="639" sev="2" tool="PMD" rule="AssignmentInOperand">Avoid assignments in operands</diag>
-<diag id="640" sev="1" tool="PMD" rule="SimplifyStartsWith">This call to String.startsWith can be rewritten using String.charAt(0)</diag>
-<diag id="641" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'getPackageForSourceFile' has a Cyclomatic Complexity of 20.</diag>
-<diag id="642" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'replaceTokens' has a Cyclomatic Complexity of 13.</diag>
-<diag id="643" sev="0" tool="PMD" rule="NPathComplexity">The method replaceTokens() has an NPath complexity of 360</diag>
-<diag id="644" sev="1" tool="PMD" rule="ConfusingTernary">Avoid if (x != y) ..; else ..;</diag>
-<diag id="645" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
-<diag id="646" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'extractResource' has a Cyclomatic Complexity of 21.</diag>
-<diag id="647" sev="0" tool="PMD" rule="NPathComplexity">The method extractResource() has an NPath complexity of 3121</diag>
-<diag id="650" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="651" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="652" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="653" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="654" sev="2" tool="PMD" rule="EmptyCatchBlock">Avoid empty catch blocks</diag>
-</class>
-<class name="RegexpReplaceInputStream" lineCount="297" high="0" significant="0" moderate="1" low="1" info="2" quality="97">
-<testCoverage lineCoveragePct="83" branchCoveragePct="66" lineCount="65" coveredLineCount="54" branchCount="16" coveredBranchCount="15"/>
-<diag id="311" sev="1" tool="Checkstyle" rule="EmptyBlockCheck">Must have at least one statement.</diag>
-<diag id="668" sev="2" tool="PMD" rule="EmptyCatchBlock">Avoid empty catch blocks</diag>
-<diag id="669" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">Deeply nested if..then statements are hard to read</diag>
-<diag id="670" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">Deeply nested if..then statements are hard to read</diag>
-</class>
-<class name="StartElementListener" lineCount="29" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="StringUtil" lineCount="69" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="85" branchCoveragePct="100" lineCount="14" coveredLineCount="12" branchCount="5" coveredBranchCount="5"/>
-</class>
-<class name="StringUtil_Test" lineCount="59" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-</class>
-<class name="Tool" lineCount="114" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="60" branchCoveragePct="0" lineCount="20" coveredLineCount="12" branchCount="3" coveredBranchCount="0"/>
-</class>
-<package name="net.sf.sanity4j.util.math" classes="3" lineCount="431" high="0" significant="0" moderate="0" low="13" info="5" quality="93">
-<testCoverage lineCoveragePct="73" branchCoveragePct="100" lineCount="124" coveredLineCount="91" branchCount="19" coveredBranchCount="18"/>
-<class name="InfixExpression" lineCount="211" high="0" significant="0" moderate="0" low="7" info="3" quality="93">
-<testCoverage lineCoveragePct="77" branchCoveragePct="90" lineCount="61" coveredLineCount="47" branchCount="12" coveredBranchCount="11"/>
-<diag id="296" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="297" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for SyntaxException.</diag>
-<diag id="298" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for SyntaxException.</diag>
-<diag id="299" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for SyntaxException.</diag>
-<diag id="300" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for SyntaxException.</diag>
-<diag id="301" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for SyntaxException.</diag>
-<diag id="673" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'InfixExpression' has a Cyclomatic Complexity of 5 (Highest = 24).</diag>
-<diag id="675" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
-<diag id="676" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'parseInfixToPostfix' has a Cyclomatic Complexity of 24.</diag>
-<diag id="677" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-</class>
-<class name="PostfixExpression" lineCount="188" high="0" significant="0" moderate="0" low="6" info="2" quality="93">
-<testCoverage lineCoveragePct="74" branchCoveragePct="125" lineCount="59" coveredLineCount="44" branchCount="7" coveredBranchCount="7"/>
-<diag id="302" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for SyntaxException.</diag>
-<diag id="303" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for SyntaxException.</diag>
-<diag id="304" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for SyntaxException.</diag>
-<diag id="305" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for SyntaxException.</diag>
-<diag id="678" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'PostfixExpression' has a Cyclomatic Complexity of 4 (Highest = 13).</diag>
-<diag id="680" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'evaluatePostfix' has a Cyclomatic Complexity of 13.</diag>
-<diag id="681" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="682" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-</class>
-<class name="SyntaxException" lineCount="32" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="100" lineCount="4" coveredLineCount="0" branchCount="0" coveredBranchCount="0"/>
-</class>
-</package>
-</package>
-<package name="net.sf.sanity4j.ui" classes="5" lineCount="1244" high="0" significant="1" moderate="0" low="5" info="7" quality="97">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="430" coveredLineCount="0" branchCount="41" coveredBranchCount="0"/>
-<class name="FieldLabel" lineCount="25" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="2" coveredLineCount="0" branchCount="1" coveredBranchCount="0"/>
-<diag id="253" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<package name="com.github.sanity4j.ui" classes="5" lineCount="1251" high="0" significant="2" moderate="0" low="24" info="63" quality="92">
+<class name="FieldLabel" lineCount="25" high="0" significant="0" moderate="0" low="2" info="0" quality="84">
+<diag id="232" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="559" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
 </class>
 <class name="FileInput" lineCount="109" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="24" coveredLineCount="0" branchCount="3" coveredBranchCount="0"/>
 </class>
-<class name="QaApp" lineCount="475" high="0" significant="1" moderate="0" low="2" info="2" quality="94">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="187" coveredLineCount="0" branchCount="15" coveredBranchCount="0"/>
-<diag id="570" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'QaApp' has a Cyclomatic Complexity of 5 (Highest = 15).</diag>
-<diag id="571" sev="0" tool="PMD" rule="TooManyMethods">This class has too many methods, consider refactoring it.</diag>
-<diag id="585" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'validateInput' has a Cyclomatic Complexity of 15.</diag>
-<diag id="586" sev="0" tool="PMD" rule="NPathComplexity">The method validateInput() has an NPath complexity of 2187</diag>
-<diag id="588" sev="3" tool="PMD" rule="AvoidCatchingThrowable">A catch statement should never catch throwable since it includes errors.</diag>
+<class name="QaApp" lineCount="475" high="0" significant="2" moderate="0" low="2" info="9" quality="90">
+<diag id="562" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'QaApp' has a Cyclomatic Complexity of 5 (Highest = 15).</diag>
+<diag id="563" sev="0" tool="PMD" rule="TooManyMethods">This class has too many methods, consider refactoring it.</diag>
+<diag id="577" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="578" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="579" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'validateInput' has a Cyclomatic Complexity of 15.</diag>
+<diag id="580" sev="0" tool="PMD" rule="NPathComplexity">The method validateInput() has an NPath complexity of 2187</diag>
+<diag id="582" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="583" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="584" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="585" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="586" sev="3" tool="PMD" rule="AvoidCatchingGenericException">Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block</diag>
+<diag id="587" sev="3" tool="PMD" rule="AvoidCatchingThrowable">A catch statement should never catch throwable since it includes errors.</diag>
+<diag id="588" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
 </class>
-<class name="QaConfigFrame" lineCount="549" high="0" significant="0" moderate="0" low="3" info="4" quality="98">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="197" coveredLineCount="0" branchCount="22" coveredBranchCount="0"/>
+<class name="QaConfigFrame" lineCount="556" high="0" significant="0" moderate="0" low="20" info="54" quality="92">
 <diag id="589" sev="0" tool="PMD" rule="ExcessiveImports">A high number of imports can indicate a high degree of coupling within an object.</diag>
 <diag id="590" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'QaConfigFrame' has a Cyclomatic Complexity of 5 (Highest = 12).</diag>
 <diag id="591" sev="0" tool="PMD" rule="TooManyMethods">This class has too many methods, consider refactoring it.</diag>
-<diag id="593" sev="1" tool="PMD" rule="ShortVariable">Avoid variables with short names like o</diag>
-<diag id="608" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
-<diag id="609" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'layoutInterface' has a Cyclomatic Complexity of 12.</diag>
-<diag id="610" sev="0" tool="PMD" rule="NPathComplexity">The method layoutInterface() has an NPath complexity of 1352</diag>
+<diag id="593" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">Overridable method 'reset' called during object construction</diag>
+<diag id="594" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">Avoid using Literals in Conditional Statements</diag>
+<diag id="595" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="596" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="597" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="598" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="599" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="600" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="602" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="604" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="606" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="608" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="610" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="612" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="614" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="616" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="618" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="620" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="622" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="624" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="626" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.</diag>
+<diag id="628" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
+<diag id="629" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'layoutInterface' has a Cyclomatic Complexity of 12.</diag>
+<diag id="630" sev="0" tool="PMD" rule="NPathComplexity">The method layoutInterface() has an NPath complexity of 1352</diag>
+<diag id="631" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="632" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="633" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="634" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="635" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="636" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="637" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="638" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="639" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="640" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="641" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="642" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="643" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="644" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="645" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="646" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="647" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="648" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="649" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="650" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="651" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="652" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="653" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="654" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="655" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="656" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="657" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="658" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="659" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="660" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="661" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="662" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="663" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="664" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="665" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="666" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="667" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="668" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="669" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="670" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="671" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="672" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="673" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="674" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="675" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="676" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="677" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
 </class>
 <class name="QaLoggerJTextAreaImpl" lineCount="86" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="100" lineCount="20" coveredLineCount="0" branchCount="0" coveredBranchCount="0"/>
 </class>
 </package>
-<package name="net.sf.sanity4j.maven.plugin" classes="2" lineCount="1566" high="0" significant="0" moderate="0" low="36" info="28" quality="95">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="333" coveredLineCount="0" branchCount="66" coveredBranchCount="0"/>
-<class name="Coordinate" lineCount="298" high="0" significant="0" moderate="0" low="7" info="1" quality="95">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="90" coveredLineCount="0" branchCount="7" coveredBranchCount="0"/>
-<diag id="3" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="4" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'3' is a magic number.</diag>
-<diag id="5" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'4' is a magic number.</diag>
-<diag id="6" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'5' is a magic number.</diag>
-<diag id="7" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'6' is a magic number.</diag>
-<diag id="8" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'3' is a magic number.</diag>
-<diag id="9" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'4' is a magic number.</diag>
-<diag id="10" sev="1" tool="Checkstyle" rule="MagicNumberCheck">'5' is a magic number.</diag>
-</class>
-<class name="RunQAMojo" lineCount="1268" high="0" significant="0" moderate="0" low="29" info="27" quality="95">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="243" coveredLineCount="0" branchCount="59" coveredBranchCount="0"/>
-<diag id="11" sev="1" tool="Checkstyle" rule="MethodLengthCheck">Method length is 278 lines (max allowed is 150).</diag>
-<diag id="12" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for MavenReportException.</diag>
-<diag id="13" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for DependencyGraphBuilderException.</diag>
-<diag id="14" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Redundant throws: 'MojoExecutionException' listed more then one time.</diag>
-<diag id="15" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for MojoExecutionException.</diag>
-<diag id="16" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Redundant throws: 'InvalidVersionSpecificationException' listed more then one time.</diag>
-<diag id="17" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for InvalidVersionSpecificationException.</diag>
-<diag id="18" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Redundant throws: 'ProjectBuildingException' listed more then one time.</diag>
-<diag id="19" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for ProjectBuildingException.</diag>
-<diag id="20" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for InvalidVersionSpecificationException.</diag>
-<diag id="21" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for DependencyGraphBuilderException.</diag>
-<diag id="22" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Redundant throws: 'MojoExecutionException' listed more then one time.</diag>
-<diag id="23" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for MojoExecutionException.</diag>
-<diag id="24" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Redundant throws: 'InvalidVersionSpecificationException' listed more then one time.</diag>
-<diag id="25" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for InvalidVersionSpecificationException.</diag>
-<diag id="26" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Redundant throws: 'ProjectBuildingException' listed more then one time.</diag>
-<diag id="27" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for ProjectBuildingException.</diag>
-<diag id="28" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'project' hides a field.</diag>
-<diag id="29" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'project' hides a field.</diag>
-<diag id="30" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for DependencyGraphBuilderException.</diag>
-<diag id="31" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Redundant throws: 'MojoExecutionException' listed more then one time.</diag>
-<diag id="32" sev="1" tool="Checkstyle" rule="RedundantThrowsCheck">Unable to get class information for MojoExecutionException.</diag>
-<diag id="329" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.maven.plugin.RunQAMojo.writeTextFile(File, String): new java.io.FileWriter(File)</diag>
-<diag id="330" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">net.sf.sanity4j.maven.plugin.RunQAMojo.getClasses() may expose internal representation by returning RunQAMojo.classes</diag>
-<diag id="331" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">net.sf.sanity4j.maven.plugin.RunQAMojo.getLibraries() may expose internal representation by returning RunQAMojo.libraries</diag>
-<diag id="332" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">net.sf.sanity4j.maven.plugin.RunQAMojo.getSources() may expose internal representation by returning RunQAMojo.sources</diag>
-<diag id="333" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">net.sf.sanity4j.maven.plugin.RunQAMojo.getTestClasses() may expose internal representation by returning RunQAMojo.testClasses</diag>
-<diag id="334" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">net.sf.sanity4j.maven.plugin.RunQAMojo.getTestSources() may expose internal representation by returning RunQAMojo.testSources</diag>
-<diag id="382" sev="0" tool="PMD" rule="ExcessiveImports">A high number of imports can indicate a high degree of coupling within an object.</diag>
-<diag id="383" sev="0" tool="PMD" rule="ExcessiveClassLength">Avoid really long classes.</diag>
-<diag id="384" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'RunQAMojo' has a Cyclomatic Complexity of 2 (Highest = 46).</diag>
-<diag id="385" sev="0" tool="PMD" rule="TooManyFields">Too many fields</diag>
-<diag id="386" sev="0" tool="PMD" rule="TooManyMethods">This class has too many methods, consider refactoring it.</diag>
-<diag id="421" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
-<diag id="422" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'executeReport' has a Cyclomatic Complexity of 46.</diag>
-<diag id="423" sev="0" tool="PMD" rule="NcssMethodCount">The method executeReport() has an NCSS line count of 142</diag>
-<diag id="424" sev="0" tool="PMD" rule="NPathComplexity">The method executeReport() has an NPath complexity of 22819104</diag>
-<diag id="425" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="426" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="427" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="428" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="429" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="430" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="431" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="432" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="433" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="434" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="435" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="436" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="437" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="438" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="441" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'sources' may expose an internal array.</diag>
-<diag id="442" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'testSources' may expose an internal array.</diag>
-<diag id="443" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'classes' may expose an internal array.</diag>
-<diag id="444" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'testClasses' may expose an internal array.</diag>
-<diag id="445" sev="1" tool="PMD" rule="MethodReturnsInternalArray">Returning 'libraries' may expose an internal array.</diag>
-</class>
-</package>
-<package name="net.sf.sanity4j.report" classes="12" lineCount="2964" high="0" significant="0" moderate="3" low="54" info="31" quality="95">
-<testCoverage lineCoveragePct="10" branchCoveragePct="8" lineCount="834" coveredLineCount="86" branchCount="140" coveredBranchCount="12"/>
-<class name="CategoryWriter" lineCount="194" high="0" significant="0" moderate="0" low="5" info="3" quality="94">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="58" coveredLineCount="0" branchCount="12" coveredBranchCount="0"/>
-<diag id="231" sev="0" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="479" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 224 characters appended.</diag>
-<diag id="480" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="481" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="482" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot;&gt;\n&quot; appears 4 times in this file; the first occurrence is on line 92</diag>
-<diag id="483" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="484" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="771" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\PackageWriter.java:
+<package name="com.github.sanity4j.report" classes="12" lineCount="2954" high="0" significant="2" moderate="3" low="65" info="32" quality="93">
+<testCoverage lineCoveragePct="90" branchCoveragePct="100" lineCount="214" coveredLineCount="193" branchCount="12" coveredBranchCount="12"/>
+<class name="CategoryWriter" lineCount="194" high="0" significant="0" moderate="0" low="7" info="2" quality="92">
+<diag id="210" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="455" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="456" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 224 characters appended.</diag>
+<diag id="457" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="458" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="459" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot;&gt;\n&quot; appears 4 times in this file; the first occurrence is on line 92</diag>
+<diag id="460" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="461" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="904" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/PackageWriter.java:
         for (Diagnostic diagnostic : category.getDiagnostics())
         {
             String key = diagnostic.getRuleName();
@@ -981,10 +1050,11 @@
             List&lt;Diagnostic&gt; diagnosticsForRule = diagnosticsByRuleName.get(ruleName);
             Diagnostic firstDiag = diagnosticsForRule.get(0);</diag>
 </class>
-<class name="ChartFactory" lineCount="157" high="0" significant="0" moderate="0" low="1" info="1" quality="98">
+<class name="ChartFactory" lineCount="157" high="0" significant="0" moderate="0" low="2" info="1" quality="97">
 <testCoverage lineCoveragePct="93" branchCoveragePct="66" lineCount="43" coveredLineCount="40" branchCount="5" coveredBranchCount="5"/>
-<diag id="485" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="755" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\CrossProjectChartCreator.java:
+<diag id="462" sev="1" tool="PMD" rule="UseVarargs">Consider using varargs for methods or constructors which take an array the last parameter.</diag>
+<diag id="463" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="888" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/CrossProjectChartCreator.java:
         JFreeChart chart = org.jfree.chart.ChartFactory.createTimeSeriesChart(
           title,	  // title
           &quot;Date&quot;,     // x-axis label
@@ -1042,18 +1112,20 @@
      */
     public static BufferedImage createImage(final PackageSummary[] summaries, final String packageName)</diag>
 </class>
-<class name="ChartFactory_Test" lineCount="128" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<class name="ChartFactory_Test" lineCount="130" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<testCoverage lineCoveragePct="96" branchCoveragePct="0" lineCount="55" coveredLineCount="53" branchCount="0" coveredBranchCount="0"/>
+<diag id="464" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
 </class>
-<class name="CrossProjectChartCreator" lineCount="203" high="0" significant="0" moderate="0" low="1" info="7" quality="99">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="61" coveredLineCount="0" branchCount="7" coveredBranchCount="0"/>
-<diag id="488" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="489" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="490" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="491" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="492" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="493" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="494" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="756" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\ChartFactory.java:
+<class name="CrossProjectChartCreator" lineCount="203" high="0" significant="0" moderate="0" low="2" info="7" quality="98">
+<diag id="467" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="468" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="469" sev="1" tool="PMD" rule="UseVarargs">Consider using varargs for methods or constructors which take an array the last parameter.</diag>
+<diag id="470" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="471" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="472" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="473" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="474" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="889" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/ChartFactory.java:
         JFreeChart chart = org.jfree.chart.ChartFactory.createTimeSeriesChart(
           title,	  // title
           &quot;Date&quot;,     // x-axis label
@@ -1112,15 +1184,14 @@
     public static BufferedImage createImage(final PackageSummary[] summaries, final String packageName)</diag>
 </class>
 <class name="ExportWriter" lineCount="279" high="0" significant="0" moderate="0" low="9" info="2" quality="93">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="94" coveredLineCount="0" branchCount="16" coveredBranchCount="0"/>
-<diag id="495" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'ExportWriter' has a Cyclomatic Complexity of 6 (Highest = 14).</diag>
-<diag id="499" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 163 characters appended.</diag>
-<diag id="500" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 3 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="501" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
-<diag id="502" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'writePackage' has a Cyclomatic Complexity of 14.</diag>
-<diag id="503" sev="0" tool="PMD" rule="NPathComplexity">The method writePackage() has an NPath complexity of 2880</diag>
-<diag id="504" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; lineCount=\&quot;&quot; appears 4 times in this file; the first occurrence is on line 130</diag>
-<diag id="757" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\PackageWriter.java:
+<diag id="475" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'ExportWriter' has a Cyclomatic Complexity of 6 (Highest = 14).</diag>
+<diag id="479" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 163 characters appended.</diag>
+<diag id="480" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 3 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="481" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
+<diag id="482" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'writePackage' has a Cyclomatic Complexity of 14.</diag>
+<diag id="483" sev="0" tool="PMD" rule="NPathComplexity">The method writePackage() has an NPath complexity of 2880</diag>
+<diag id="484" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; lineCount=\&quot;&quot; appears 4 times in this file; the first occurrence is on line 130</diag>
+<diag id="890" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/PackageWriter.java:
 	private void writePackage(final String packageName, final StringBuffer xml)
 	{
         boolean allPackages = &quot;&quot;.equals(packageName);
@@ -1162,7 +1233,7 @@
             coveredBranchCount = coverage.getCoveredBranchCount();
             numExecutableLines = coverage.getLineCount();
         }</diag>
-<diag id="761" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\ExportWriter.java:
+<diag id="894" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/ExportWriter.java:
         xml.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))
             .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))
             .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))
@@ -1182,7 +1253,7 @@
                 .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)
                 .append(&quot;\&quot;/&gt;\n&quot;);
         }</diag>
-<diag id="762" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\ExportWriter.java:
+<diag id="895" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/ExportWriter.java:
         xml.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))
             .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))
             .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))
@@ -1202,7 +1273,7 @@
                 .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)
                 .append(&quot;\&quot;/&gt;\n&quot;);
         }</diag>
-<diag id="763" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\PackageWriter.java:
+<diag id="896" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/PackageWriter.java:
         for (String sourcePath : packageSources)
         {
             DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);
@@ -1231,62 +1302,64 @@
             // Quality
             int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</diag>
 </class>
-<class name="ExtractStaticContent" lineCount="253" high="0" significant="0" moderate="2" low="0" info="5" quality="96">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="82" coveredLineCount="0" branchCount="16" coveredBranchCount="0"/>
-<diag id="338" sev="2" tool="Findbugs" rule="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED">net.sf.sanity4j.report.ExtractStaticContent.extractContent(QAConfig, File, String) creates a java.net.URLClassLoader classloader, which should be performed within a doPrivileged block</diag>
-<diag id="340" sev="0" tool="Findbugs" rule="OS_OPEN_STREAM">net.sf.sanity4j.report.ExtractStaticContent.copyResource(ClassLoader, String, File, String) may fail to close stream</diag>
-<diag id="341" sev="2" tool="Findbugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of resourceEnum, which is known to be non-null in net.sf.sanity4j.report.ExtractStaticContent.extractContent(QAConfig, File, String)</diag>
-<diag id="506" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="507" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="508" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="510" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<class name="ExtractStaticContent" lineCount="239" high="0" significant="0" moderate="1" low="0" info="5" quality="97">
+<diag id="298" sev="2" tool="Findbugs" rule="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED">com.github.sanity4j.report.ExtractStaticContent.extractContent(QAConfig, File, String) creates a java.net.URLClassLoader classloader, which should be performed within a doPrivileged block</diag>
+<diag id="300" sev="0" tool="Findbugs" rule="OS_OPEN_STREAM">com.github.sanity4j.report.ExtractStaticContent.copyResource(ClassLoader, String, File, String) may fail to close stream</diag>
+<diag id="486" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="487" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="488" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="490" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
 </class>
-<class name="JavaSourceWriter" lineCount="308" high="0" significant="0" moderate="0" low="5" info="4" quality="96">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="85" coveredLineCount="0" branchCount="19" coveredBranchCount="0"/>
-<diag id="342" sev="0" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in net.sf.sanity4j.report.JavaSourceWriter.writeSourceLines(File, DiagnosticSet, List, ClassCoverage, StringBuffer): new java.io.InputStreamReader(InputStream)</diag>
-<diag id="343" sev="0" tool="Findbugs" rule="OS_OPEN_STREAM">net.sf.sanity4j.report.JavaSourceWriter.writeSourceLines(File, DiagnosticSet, List, ClassCoverage, StringBuffer) may fail to close stream</diag>
-<diag id="511" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'JavaSourceWriter' has a Cyclomatic Complexity of 5 (Highest = 17).</diag>
-<diag id="515" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="516" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="517" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="518" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
-<diag id="519" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'writeSourceLines' has a Cyclomatic Complexity of 17.</diag>
-<diag id="520" sev="0" tool="PMD" rule="NPathComplexity">The method writeSourceLines() has an NPath complexity of 2882</diag>
+<class name="JavaSourceWriter" lineCount="308" high="0" significant="1" moderate="0" low="5" info="3" quality="90">
+<diag id="301" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.report.JavaSourceWriter.writeSourceLines(File, DiagnosticSet, List, ClassCoverage, StringBuffer): new java.io.InputStreamReader(InputStream)</diag>
+<diag id="302" sev="0" tool="Findbugs" rule="OS_OPEN_STREAM">com.github.sanity4j.report.JavaSourceWriter.writeSourceLines(File, DiagnosticSet, List, ClassCoverage, StringBuffer) may fail to close stream</diag>
+<diag id="491" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'JavaSourceWriter' has a Cyclomatic Complexity of 5 (Highest = 17).</diag>
+<diag id="495" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="496" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="497" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="498" sev="0" tool="PMD" rule="ExcessiveMethodLength">Avoid really long methods.</diag>
+<diag id="499" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'writeSourceLines' has a Cyclomatic Complexity of 17.</diag>
+<diag id="500" sev="0" tool="PMD" rule="NPathComplexity">The method writeSourceLines() has an NPath complexity of 2882</diag>
 </class>
-<class name="PackageWriter" lineCount="666" high="0" significant="0" moderate="0" low="32" info="4" quality="90">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="214" coveredLineCount="0" branchCount="39" coveredBranchCount="0"/>
-<diag id="521" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'PackageWriter' has a Cyclomatic Complexity of 5 (Highest = 10).</diag>
-<diag id="522" sev="0" tool="PMD" rule="TooManyMethods">This class has too many methods, consider refactoring it.</diag>
-<diag id="526" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;../&quot; appears 4 times in this file; the first occurrence is on line 144</diag>
-<diag id="527" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 292 characters appended.</diag>
-<diag id="528" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="529" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="530" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot;&gt;\n&quot; appears 6 times in this file; the first occurrence is on line 153</diag>
-<diag id="531" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; high=\&quot;&quot; appears 5 times in this file; the first occurrence is on line 192</diag>
-<diag id="532" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; significant=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 193</diag>
-<diag id="533" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; moderate=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 194</diag>
-<diag id="534" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; low=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 195</diag>
-<diag id="535" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; info=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 196</diag>
-<diag id="536" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot;/&gt;\n&quot; appears 6 times in this file; the first occurrence is on line 197</diag>
-<diag id="537" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'generatePackageByRule' has a Cyclomatic Complexity of 10.</diag>
-<diag id="538" sev="0" tool="PMD" rule="NPathComplexity">The method generatePackageByRule() has an NPath complexity of 2500</diag>
-<diag id="539" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 309 characters appended.</diag>
+<class name="PackageWriter" lineCount="666" high="0" significant="0" moderate="1" low="37" info="4" quality="88">
+<diag id="501" sev="2" tool="PMD" rule="GodClass">Possible God class (WMC=53, ATFD=122, TCC=0.03636363636363636)</diag>
+<diag id="502" sev="1" tool="PMD" rule="CyclomaticComplexity">The class 'PackageWriter' has a Cyclomatic Complexity of 5 (Highest = 10).</diag>
+<diag id="503" sev="0" tool="PMD" rule="TooManyMethods">This class has too many methods, consider refactoring it.</diag>
+<diag id="507" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;../&quot; appears 4 times in this file; the first occurrence is on line 144</diag>
+<diag id="508" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="509" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 292 characters appended.</diag>
+<diag id="510" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="511" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="512" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot;&gt;\n&quot; appears 6 times in this file; the first occurrence is on line 153</diag>
+<diag id="513" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; high=\&quot;&quot; appears 5 times in this file; the first occurrence is on line 192</diag>
+<diag id="514" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; significant=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 193</diag>
+<diag id="515" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; moderate=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 194</diag>
+<diag id="516" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; low=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 195</diag>
+<diag id="517" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot; info=\&quot;&quot; appears 6 times in this file; the first occurrence is on line 196</diag>
+<diag id="518" sev="1" tool="PMD" rule="AvoidDuplicateLiterals">The String literal &quot;\&quot;/&gt;\n&quot; appears 6 times in this file; the first occurrence is on line 197</diag>
+<diag id="519" sev="1" tool="PMD" rule="CyclomaticComplexity">The method 'generatePackageByRule' has a Cyclomatic Complexity of 10.</diag>
+<diag id="520" sev="0" tool="PMD" rule="NPathComplexity">The method generatePackageByRule() has an NPath complexity of 2500</diag>
+<diag id="521" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="522" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="523" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 309 characters appended.</diag>
+<diag id="524" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="525" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="526" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="527" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="528" sev="1" tool="PMD" rule="UselessParentheses">Useless parentheses.</diag>
+<diag id="529" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 365 characters appended.</diag>
+<diag id="530" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="531" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="532" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="533" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="534" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="535" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="536" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">Avoid using Literals in Conditional Statements</diag>
+<diag id="537" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="538" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
+<diag id="539" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
 <diag id="540" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="541" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="542" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="543" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="544" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 365 characters appended.</diag>
-<diag id="545" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="546" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="547" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="548" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="549" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="550" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="551" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="552" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="553" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="554" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.</diag>
-<diag id="758" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\ExportWriter.java:
+<diag id="891" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/ExportWriter.java:
 	private void writePackage(final String packageName, final StringBuffer xml)
 	{
         boolean allPackages = &quot;&quot;.equals(packageName);
@@ -1328,7 +1401,7 @@
             coveredBranchCount = coverage.getCoveredBranchCount();
             numExecutableLines = coverage.getLineCount();
         }</diag>
-<diag id="759" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\PackageWriter.java:
+<diag id="892" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/PackageWriter.java:
         html.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))
             .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))
             .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))
@@ -1355,7 +1428,7 @@
                 .append(&quot;\&quot;/&gt;\n&quot;);
             
             html.append(&quot;&lt;/package&gt;\n&quot;);</diag>
-<diag id="760" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\PackageWriter.java:
+<diag id="893" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/PackageWriter.java:
         html.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))
             .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))
             .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))
@@ -1382,7 +1455,7 @@
                 .append(&quot;\&quot;/&gt;\n&quot;);
             
             html.append(&quot;&lt;/package&gt;\n&quot;);</diag>
-<diag id="764" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\ExportWriter.java:
+<diag id="897" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/ExportWriter.java:
         for (String sourcePath : packageSources)
         {
             DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);
@@ -1410,7 +1483,7 @@
             
             // Quality
             int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</diag>
-<diag id="772" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of net\sf\sanity4j\report\CategoryWriter.java:
+<diag id="905" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/CategoryWriter.java:
         for (Diagnostic diagnostic : category.getDiagnostics())
         {
             String key = diagnostic.getRuleName();
@@ -1440,23 +1513,60 @@
             List&lt;Diagnostic&gt; diagnosticsForRule = diagnosticsByRuleName.get(ruleName);
             Diagnostic firstDiag = diagnosticsForRule.get(0);</diag>
 </class>
-<class name="ReportUtil" lineCount="208" high="0" significant="0" moderate="1" low="0" info="1" quality="97">
-<testCoverage lineCoveragePct="77" branchCoveragePct="135" lineCount="59" coveredLineCount="46" branchCount="7" coveredBranchCount="7"/>
-<diag id="555" sev="2" tool="PMD" rule="AssignmentInOperand">Avoid assignments in operands</diag>
-<diag id="556" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<class name="ReportUtil" lineCount="208" high="0" significant="1" moderate="1" low="0" info="1" quality="87">
+<testCoverage lineCoveragePct="77" branchCoveragePct="100" lineCount="59" coveredLineCount="46" branchCount="7" coveredBranchCount="7"/>
+<diag id="303" sev="3" tool="Findbugs" rule="DMI_HARDCODED_ABSOLUTE_FILENAME">Hard coded reference to an absolute pathname in com.github.sanity4j.report.ReportUtil.&lt;static initializer for ReportUtil&gt;()</diag>
+<diag id="541" sev="2" tool="PMD" rule="AssignmentInOperand">Avoid assignments in operands</diag>
+<diag id="542" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
 </class>
-<class name="ReportUtil_Test" lineCount="103" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<class name="ReportUtil_Test" lineCount="105" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<testCoverage lineCoveragePct="94" branchCoveragePct="0" lineCount="57" coveredLineCount="54" branchCount="0" coveredBranchCount="0"/>
+<diag id="543" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
 </class>
 <class name="ReportWriter" lineCount="219" high="0" significant="0" moderate="0" low="1" info="2" quality="99">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="71" coveredLineCount="0" branchCount="10" coveredBranchCount="0"/>
-<diag id="563" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">Deeply nested if..then statements are hard to read</diag>
-<diag id="564" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
-<diag id="565" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 250 characters appended.</diag>
+<diag id="550" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">Deeply nested if..then statements are hard to read</diag>
+<diag id="551" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="552" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">StringBuffer constructor is initialized with size 16, but has at least 250 characters appended.</diag>
 </class>
-<class name="RuleCatalogueWriter" lineCount="246" high="0" significant="0" moderate="0" low="0" info="2" quality="100">
-<testCoverage lineCoveragePct="0" branchCoveragePct="0" lineCount="67" coveredLineCount="0" branchCount="9" coveredBranchCount="0"/>
-<diag id="344" sev="0" tool="Findbugs" rule="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE">net.sf.sanity4j.report.RuleCatalogueWriter.getDiagnosticProperties() may fail to clean up java.io.InputStream on checked exception</diag>
-<diag id="567" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<class name="RuleCatalogueWriter" lineCount="246" high="0" significant="0" moderate="0" low="0" info="5" quality="100">
+<diag id="554" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">Avoid instantiating new objects inside loops</diag>
+<diag id="555" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="556" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="557" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+<diag id="558" sev="0" tool="PMD" rule="AccessorMethodGeneration">Avoid autogenerated methods to access private fields and methods of inner / outer classes</diag>
+</class>
+</package>
+<package name="com.github.sanity4j.model.coverage" classes="8" lineCount="879" high="0" significant="0" moderate="0" low="7" info="0" quality="98">
+<testCoverage lineCoveragePct="97" branchCoveragePct="93" lineCount="266" coveredLineCount="260" branchCount="15" coveredBranchCount="14"/>
+<class name="AbstractCoverage" lineCount="49" high="0" significant="0" moderate="0" low="1" info="0" quality="95">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="7" coveredLineCount="7" branchCount="0" coveredBranchCount="0"/>
+<diag id="13" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+</class>
+<class name="ClassCoverage" lineCount="148" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="83" branchCoveragePct="80" lineCount="24" coveredLineCount="20" branchCount="5" coveredBranchCount="4"/>
+</class>
+<class name="ClassCoverage_Test" lineCount="110" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="51" coveredLineCount="51" branchCount="0" coveredBranchCount="0"/>
+<diag id="416" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+</class>
+<class name="Coverage" lineCount="137" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="97" branchCoveragePct="91" lineCount="34" coveredLineCount="33" branchCount="6" coveredBranchCount="6"/>
+</class>
+<class name="CoverageItf" lineCount="41" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+</class>
+<class name="Coverage_Test" lineCount="130" high="0" significant="0" moderate="0" low="3" info="0" quality="95">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="61" coveredLineCount="61" branchCount="0" coveredBranchCount="0"/>
+<diag id="419" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="420" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="421" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+</class>
+<class name="PackageCoverage" lineCount="139" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="96" branchCoveragePct="100" lineCount="30" coveredLineCount="29" branchCount="4" coveredBranchCount="4"/>
+</class>
+<class name="PackageCoverage_Test" lineCount="125" high="0" significant="0" moderate="0" low="2" info="0" quality="96">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="59" coveredLineCount="59" branchCount="0" coveredBranchCount="0"/>
+<diag id="424" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
+<diag id="425" sev="1" tool="PMD" rule="ImportFromSamePackage">No need to import a type that lives in the same package</diag>
 </class>
 </package>
 </package>
