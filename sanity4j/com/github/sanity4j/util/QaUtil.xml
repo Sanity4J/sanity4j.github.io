@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.QaUtil" pathToRoot="../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:50 AEST 2017">
+<classDetails className="com.github.sanity4j.util.QaUtil" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
 <summary high="0" significant="3" moderate="5" low="11" info="7" lineCoverage="20" branchCoverage="7" quality="85"/>
 <source>
 <line sev="2"><diag id="723"/>package com.github.sanity4j.util;</line>

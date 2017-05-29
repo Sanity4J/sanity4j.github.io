@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-by-rule.xsl"?>
-<packageByRule packageName="com.github.sanity4j.maven.plugin" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<packageByRule packageName="com.github.sanity4j.maven.plugin" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
 <rule name="AvoidCatchingGenericException" tool="PMD" severity="3">
 <class name="com.github.sanity4j.maven.plugin.RunQAMojo">
 <diag id="398"/>

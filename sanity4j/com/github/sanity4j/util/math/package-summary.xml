@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.util.math" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<packageSummary packageName="com.github.sanity4j.util.math" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
 <issueSummary high="0" significant="2" moderate="1" low="12" info="4">
 <category name="All categories" high="0" significant="0" moderate="0" low="0" info="0">
 <category name="Complexity" high="0" significant="0" moderate="0" low="4" info="0">

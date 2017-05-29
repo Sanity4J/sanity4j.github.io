@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="xslt/rule-catalogue.xsl"?>
-<rules qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<rules qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
 <rule name="DM_EXIT" tool="Findbugs" severity="4"/>
 <rule name="AM_CREATES_EMPTY_JAR_FILE_ENTRY" tool="Findbugs" severity="3"/>
 <rule name="AM_CREATES_EMPTY_ZIP_FILE_ENTRY" tool="Findbugs" severity="3"/>

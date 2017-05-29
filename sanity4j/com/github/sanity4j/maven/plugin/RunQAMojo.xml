@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.maven.plugin.RunQAMojo" pathToRoot="../../../../../" qaVersion="1.8.0" runDate="Tue May 23 15:28:49 AEST 2017">
+<classDetails className="com.github.sanity4j.maven.plugin.RunQAMojo" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
 <summary high="0" significant="6" moderate="1" low="10" info="27" quality="88"/>
 <source>
 <line sev="2"><diag id="341"/><diag id="342"/>package com.github.sanity4j.maven.plugin;</line>
