@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.ExtractStats" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="1" low="5" info="5" lineCoverage="82" branchCoverage="56" quality="96"/>
+<classDetails className="com.github.sanity4j.util.ExtractStats" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="1" low="5" info="5" lineCoverage="88" branchCoverage="65" quality="96"/>
 <source>
-<line sev="2"><diag id="682"/>package com.github.sanity4j.util;</line>
+<line sev="2"><diag id="569"/>package com.github.sanity4j.util;</line>
 <line sev="2"/>
 <line sev="2">import java.io.File;</line>
 <line sev="2">import java.io.FileInputStream;</line>
@@ -110,7 +110,7 @@
 <line sev="2">    {</line>
 <line sev="2" covered="yes">        if (file.isDirectory())</line>
 <line sev="2">        {</line>
-<line sev="2" covered="yes"><diag id="307"/>            File[] children = file.listFiles();</line>
+<line sev="2" covered="yes"><diag id="312"/>            File[] children = file.listFiles();</line>
 <line sev="2"/>
 <line sev="2" covered="yes">            for (int i = 0; i &lt; children.length; i++)</line>
 <line sev="2">            {</line>
@@ -170,28 +170,28 @@
 <line sev="2"/>
 <line sev="2" covered="partial">        if (file.length() &gt; 0)</line>
 <line sev="2">        {</line>
-<line sev="2" covered="no">            byte[] buf = new byte[BUF_SIZE];</line>
-<line sev="2" covered="no">            FileInputStream fis = null;</line>
+<line sev="2" covered="yes">            byte[] buf = new byte[BUF_SIZE];</line>
+<line sev="2" covered="yes">            FileInputStream fis = null;</line>
 <line sev="2"/>
 <line sev="2">            try</line>
 <line sev="2">            {</line>
-<line sev="2" covered="no">                fis = new FileInputStream(file);</line>
+<line sev="2" covered="yes">                fis = new FileInputStream(file);</line>
 <line sev="2"/>
-<line sev="2" covered="no">                for (int len = fis.read(buf); len != -1; len = fis.read(buf))</line>
+<line sev="2" covered="yes">                for (int len = fis.read(buf); len != -1; len = fis.read(buf))</line>
 <line sev="2">                {</line>
-<line sev="2" covered="no">                    for (int i = 0; i &lt; len; i++)</line>
+<line sev="2" covered="yes">                    for (int i = 0; i &lt; len; i++)</line>
 <line sev="2">                    {</line>
-<line sev="2" covered="no"><diag id="688"/>                        if (buf[i] == '\n')</line>
+<line sev="2" covered="yes"><diag id="575"/>                        if (buf[i] == '\n')</line>
 <line sev="2">                        {</line>
-<line sev="2" covered="no">                            count++;</line>
+<line sev="2" covered="yes">                            count++;</line>
 <line sev="2">                        }</line>
 <line sev="2">                    }</line>
 <line sev="2">                }</line>
 <line sev="2">            }</line>
 <line sev="2">            finally</line>
 <line sev="2">            {</line>
-<line sev="2" covered="no">                QaUtil.safeClose(fis);</line>
-<line sev="2" covered="no">            }</line>
+<line sev="2" covered="yes">                QaUtil.safeClose(fis);</line>
+<line sev="2" covered="yes">            }</line>
 <line sev="2">        }</line>
 <line sev="2"/>
 <line sev="2" covered="yes">        return count;</line>
@@ -404,7 +404,7 @@
 <line sev="2" covered="yes">	        summariseCurrentRun();</line>
 <line sev="2">	    }	</line>
 <line sev="2"/>
-<line sev="2" covered="yes"><diag id="306"/><diag id="689"/>	    return currentRunSummary;</line>
+<line sev="2" covered="yes"><diag id="311"/><diag id="576"/>	    return currentRunSummary;</line>
 <line sev="2">	}</line>
 <line sev="2"/>
 <line sev="2">	/**</line>
@@ -433,7 +433,7 @@
 <line sev="2">        // For each package</line>
 <line sev="2" covered="yes">    	for (String packageName : packageNames)</line>
 <line sev="2">    	{</line>
-<line sev="2" covered="yes"><diag id="690"/>    	    PackageSummary entry = new PackageSummary();</line>
+<line sev="2" covered="yes"><diag id="577"/>    	    PackageSummary entry = new PackageSummary();</line>
 <line sev="2" covered="yes">            entry.setPackageName(packageName);</line>
 <line sev="2" covered="yes">    	    entry.setRunDate(currentDate);</line>
 <line sev="2"/>
@@ -447,14 +447,14 @@
 <line sev="2"/>
 <line sev="2">            // Diagnostics &amp; line-counts for this package and sub-packages</line>
 <line sev="2" covered="yes">            DiagnosticSet diagsForPackage = diagnostics.getDiagnosticsForPackage(packageName);</line>
-<line sev="2" covered="yes"><diag id="691"/>            int lineCountForPackage = (lineCountByPackage.get(packageName)).intValue();</line>
+<line sev="2" covered="yes"><diag id="578"/>            int lineCountForPackage = (lineCountByPackage.get(packageName)).intValue();</line>
 <line sev="2" covered="yes">            String packageNamePlusDot = packageName + '.';</line>
 <line sev="2"/>
 <line sev="2" covered="yes">            for (String otherPackageName : lineCountByPackage.keySet())</line>
 <line sev="2">            {</line>
 <line sev="2" covered="yes">                if (otherPackageName.startsWith(packageNamePlusDot))</line>
 <line sev="2">                {</line>
-<line sev="2" covered="yes"><diag id="308"/><diag id="692"/>                    Integer lineCount = (lineCountByPackage.get(otherPackageName));</line>
+<line sev="2" covered="yes"><diag id="313"/><diag id="579"/>                    Integer lineCount = (lineCountByPackage.get(otherPackageName));</line>
 <line sev="2" covered="yes">                    lineCountForPackage += lineCount.intValue();</line>
 <line sev="2">                }</line>
 <line sev="2" covered="yes">            }</line>
@@ -479,7 +479,7 @@
 <line sev="2">	 * Adds the given package summaries to the summary by package map.</line>
 <line sev="2">	 * @param summaries the summaries to add</line>
 <line sev="2">	 */</line>
-<line sev="2"><diag id="693"/>	private void addSummariesToSummaryMap(final PackageSummary[] summaries)</line>
+<line sev="2"><diag id="580"/>	private void addSummariesToSummaryMap(final PackageSummary[] summaries)</line>
 <line sev="2">	{</line>
 <line sev="2" covered="yes">	    for (int i = 0; i &lt; summaries.length; i++)</line>
 <line sev="2">	    {</line>
@@ -488,7 +488,7 @@
 <line sev="2"/>
 <line sev="2" covered="partial">	        if (summariesForPackage == null)</line>
 <line sev="2">	        {</line>
-<line sev="2" covered="yes"><diag id="694"/>	            summariesForPackage = new ArrayList&lt;PackageSummary&gt;();</line>
+<line sev="2" covered="yes"><diag id="581"/>	            summariesForPackage = new ArrayList&lt;PackageSummary&gt;();</line>
 <line sev="2" covered="yes">	            summaryByPackage.put(summary.getPackageName(), summariesForPackage);	            </line>
 <line sev="2">	        }</line>
 <line sev="2"/>
@@ -498,31 +498,31 @@
 <line sev="2">}</line>
 </source>
 <diags first="false">
-<diag id="682" sev="2" tool="PMD" rule="GodClass">
+<diag id="569" sev="2" tool="PMD" rule="GodClass">
 Possible God class (WMC=52, ATFD=52, TCC=0.026143790849673203)
 </diag>
-<diag id="307" sev="0" tool="Findbugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.util.ExtractStats.extractLineCounts(File) due to return value of called method</diag>
-<diag id="688" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
+<diag id="312" sev="0" tool="SpotBugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.util.ExtractStats.extractLineCounts(File) due to return value of called method</diag>
+<diag id="575" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
 Avoid using Literals in Conditional Statements
 </diag>
-<diag id="306" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.util.ExtractStats.getRunSummary() may expose internal representation by returning ExtractStats.currentRunSummary</diag>
-<diag id="689" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+<diag id="311" sev="0" tool="SpotBugs" rule="EI_EXPOSE_REP">com.github.sanity4j.util.ExtractStats.getRunSummary() may expose internal representation by returning ExtractStats.currentRunSummary</diag>
+<diag id="576" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
 Returning 'currentRunSummary' may expose an internal array.
 </diag>
-<diag id="690" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="577" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="691" sev="1" tool="PMD" rule="UselessParentheses">
+<diag id="578" sev="1" tool="PMD" rule="UselessParentheses">
 Useless parentheses.
 </diag>
-<diag id="308" sev="0" tool="Findbugs" rule="WMI_WRONG_MAP_ITERATOR">com.github.sanity4j.util.ExtractStats.summariseCurrentRun() makes inefficient use of keySet iterator instead of entrySet iterator</diag>
-<diag id="692" sev="1" tool="PMD" rule="UselessParentheses">
+<diag id="313" sev="0" tool="SpotBugs" rule="WMI_WRONG_MAP_ITERATOR">com.github.sanity4j.util.ExtractStats.summariseCurrentRun() makes inefficient use of keySet iterator instead of entrySet iterator</diag>
+<diag id="579" sev="1" tool="PMD" rule="UselessParentheses">
 Useless parentheses.
 </diag>
-<diag id="693" sev="1" tool="PMD" rule="UseVarargs">
+<diag id="580" sev="1" tool="PMD" rule="UseVarargs">
 Consider using varargs for methods or constructors which take an array the last parameter.
 </diag>
-<diag id="694" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="581" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
 </diags>

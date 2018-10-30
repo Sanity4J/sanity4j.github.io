@@ -62,7 +62,7 @@ public final class InfixExpression
      */
     private static boolean charIn(final char operator, final String operators)
     {
-<span class="fc bfc" id="L65" title="All 2 branches covered.">        return (operators.indexOf(operator) != -1);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        return operators.indexOf(operator) != -1;</span>
     }
 
     /**
@@ -88,7 +88,7 @@ public final class InfixExpression
      */
     public static String[] parseInfixToPostfix(final String inval) throws SyntaxException
     {
-<span class="fc" id="L91">        StringBuffer opString = new StringBuffer();</span>
+<span class="fc" id="L91">        StringBuilder opString = new StringBuilder();</span>
 <span class="fc" id="L92">        char ltr = ' ';</span>
 <span class="fc" id="L93">        List&lt;String&gt; postfixOp = new ArrayList&lt;String&gt;();</span>
 <span class="fc" id="L94">        boolean unary = true; // determines whether operand is unary - used for -ve</span>
@@ -112,7 +112,7 @@ public final class InfixExpression
 <span class="fc" id="L112">                        break;</span>
                         
                     case ')':
-<span class="pc bpc" id="L115" title="1 of 4 branches missed.">                        while ((opString.length() &gt; 0) &amp;&amp; (opString.charAt(opString.length() - 1) != '('))</span>
+<span class="pc bpc" id="L115" title="1 of 4 branches missed.">                        while (opString.length() &gt; 0 &amp;&amp; opString.charAt(opString.length() - 1) != '(')</span>
                         {
 <span class="fc" id="L117">                            postfixOp.add(opString.substring(opString.length() - 1));</span>
 <span class="fc" id="L118">                            opString.setLength(opString.length() - 1);</span>
@@ -163,7 +163,7 @@ public final class InfixExpression
 
                     default: // is number/text
                         
-<span class="fc" id="L166">                        StringBuffer numString = new StringBuffer();</span>
+<span class="fc" id="L166">                        StringBuilder numString = new StringBuilder();</span>
 <span class="fc" id="L167">                        numString.append(ltr);</span>
 
 <span class="pc bpc" id="L169" title="1 of 2 branches missed.">                        while (i + 1 &lt; inval.length())</span>

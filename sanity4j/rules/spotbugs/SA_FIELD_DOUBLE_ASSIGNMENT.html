@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head><title>SA_FIELD_DOUBLE_ASSIGNMENT</title></head>
+<body>
+<h3>SA: Double assignment of field (SA_FIELD_DOUBLE_ASSIGNMENT)</h3>
+<p> This method contains a double assignment of a field; e.g.
+</p>
+<pre>
+  int x,y;
+  public void foo() {
+    x = x = 17;
+  }
+</pre>
+<p>Assigning to a field twice is useless, and may indicate a logic error or typo.</p>
+</body>
+</html>

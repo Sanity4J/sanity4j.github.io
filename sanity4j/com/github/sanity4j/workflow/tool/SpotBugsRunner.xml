@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
+<classDetails className="com.github.sanity4j.workflow.tool.SpotBugsRunner" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="1" moderate="0" low="1" info="0" quality="90"/>
+<source>
+<line>package com.github.sanity4j.workflow.tool;</line>
+<line/>
+<line>import java.io.ByteArrayOutputStream;</line>
+<line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.util.ArrayList;</line>
+<line>import java.util.Arrays;</line>
+<line>import java.util.Iterator;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Map;</line>
+<line/>
+<line>import com.github.sanity4j.util.ExternalProcessRunner;</line>
+<line>import com.github.sanity4j.util.FileUtil;</line>
+<line>import com.github.sanity4j.util.QAException;</line>
+<line>import com.github.sanity4j.util.QaLogger;</line>
+<line>import com.github.sanity4j.util.QaUtil;</line>
+<line>import com.github.sanity4j.util.StringUtil;</line>
+<line>import com.github.sanity4j.util.Tool;</line>
+<line>import com.github.sanity4j.workflow.QAConfig;</line>
+<line/>
+<line>/**</line>
+<line> * SpotBugsRunner - a work unit that runs SpotBugs.</line>
+<line> *</line>
+<line> * @author Yiannis Paschalidis</line>
+<line> * @since Sanity4J 1.0</line>
+<line> */</line>
+<line>public class SpotBugsRunner extends AbstractToolRunner</line>
+<line>{</line>
+<line>    /** The generated SpotBugs project file. */</line>
+<line>    private File projectFile = null;</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates a SpotBugsRunner.</line>
+<line>     */</line>
+<line>    public SpotBugsRunner()</line>
+<line>    {</line>
+<line>        super(Tool.SPOTBUGS);</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Runs SpotBugs.</line>
+<line>     * @param commandLine the SpotBugs command line.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>   public void runTool(final String commandLine)</line>
+<line>    {</line>
+<line>        QAConfig config = getConfig();</line>
+<line/>
+<line>        File resultFile = config.getToolResultFile(Tool.SPOTBUGS);</line>
+<line>        FileUtil.createDir(resultFile.getParentFile().getPath());</line>
+<line/>
+<line>        ByteArrayOutputStream stdout = null; </line>
+<line>        ByteArrayOutputStream stderr = null; </line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line>            stdout = new ByteArrayOutputStream();</line>
+<line>            stderr = new ByteArrayOutputStream();</line>
+<line/>
+<line>            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</line>
+<line/>
+<line>            String stdoutString = new String(stdout.toByteArray());</line>
+<line/>
+<line>            if (!StringUtil.empty(stdoutString))</line>
+<line>            {</line>
+<line>                QaLogger.getInstance().info(stdoutString);</line>
+<line>            }</line>
+<line/>
+<line>            String stderrString = new String(stderr.toByteArray());</line>
+<line/>
+<line>            if (!StringUtil.empty(stderrString))</line>
+<line>            {</line>
+<line>                QaLogger.getInstance().error(stderrString);</line>
+<line>            }</line>
+<line/>
+<line>            if (result != 0)</line>
+<line>            {</line>
+<line>                String out = new String(stdout.toByteArray());</line>
+<line sev="3"><diag id="323"/>                String err = new String(stderr.toByteArray());</line>
+<line>                throw new QAException(&quot;SpotBugs Command [&quot; + commandLine + &quot;] failed : [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</line>
+<line>            }</line>
+<line>        }</line>
+<line>        finally</line>
+<line>        {</line>
+<line>            QaUtil.safeClose(stdout);</line>
+<line>            QaUtil.safeClose(stderr);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Creates the SpotBugs project file, which controls the SpotBugs run.</line>
+<line>     */</line>
+<line>    private void createSpotBugsProjectFile()</line>
+<line>    {</line>
+<line>        QAConfig config = getConfig();</line>
+<line>        List&lt;String&gt; sourcePaths = Arrays.asList(new String[]{config.getCombinedSourceDir().getPath()});</line>
+<line/>
+<line>        List&lt;String&gt; classPaths = new ArrayList&lt;String&gt;();</line>
+<line>        classPaths.add(config.getCombinedClassDir().getPath());</line>
+<line>        FileUtil.findJars(config.getCombinedClassDir(), classPaths);</line>
+<line/>
+<line>        List&lt;String&gt; libraryPaths = new ArrayList&lt;String&gt;();</line>
+<line>        libraryPaths.add(config.getCombinedLibraryDir().getPath());</line>
+<line>        FileUtil.findJars(config.getCombinedLibraryDir(), libraryPaths);</line>
+<line/>
+<line>        String xml = generateSpotBugsProjectXml(sourcePaths, classPaths, libraryPaths);</line>
+<line/>
+<line>        try</line>
+<line>        {</line>
+<line>            projectFile = File.createTempFile(&quot;spotbugsproject&quot;, &quot;.fbp&quot;);</line>
+<line>            FileUtil.writeToFile(xml, projectFile);</line>
+<line>            projectFile.deleteOnExit();</line>
+<line>        }</line>
+<line>        catch (IOException e)</line>
+<line>        {</line>
+<line>            throw new QAException(&quot;Failed to create SpotBugs project file&quot;, e);</line>
+<line>        }</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Overridden to add SpotBugs specific parameters to the map.</line>
+<line>     * @return a map of parameters to use for replacing configuration tokens.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>   protected Map&lt;String, String&gt; getParameterMap()</line>
+<line>    {</line>
+<line>        Map&lt;String, String&gt; map = super.getParameterMap();</line>
+<line/>
+<line>        if (projectFile == null)</line>
+<line>        {</line>
+<line>            createSpotBugsProjectFile();</line>
+<line>        }</line>
+<line/>
+<line>        map.put(&quot;spotBugsProjectFile&quot;, projectFile.getPath());</line>
+<line/>
+<line>        return map;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Overriden to remove the GUI jar from the class path, as we want to run the text UI.</line>
+<line>     * @return a list of paths to all the jars needed to run SpotBugs.</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>   protected List&lt;String&gt; getToolJars()</line>
+<line>    {</line>
+<line>        List&lt;String&gt; spotbugsJars = super.getToolJars();</line>
+<line/>
+<line>        for (Iterator&lt;String&gt; i = spotbugsJars.iterator(); i.hasNext();)</line>
+<line>        {</line>
+<line>            if (i.next().endsWith(&quot;spotbugsGUI.jar&quot;))</line>
+<line>            {</line>
+<line>                i.remove();</line>
+<line>            }</line>
+<line>        }</line>
+<line/>
+<line>        return spotbugsJars;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * @return the description of this WorkUnit</line>
+<line>     */</line>
+<line>    @Override</line>
+<line>   public String getDescription()</line>
+<line>    {</line>
+<line>        return &quot;Running SpotBugs&quot;;</line>
+<line>    }</line>
+<line/>
+<line>    /**</line>
+<line>     * Build the spotbugs project file, as there doesn't seem to be a nicer way to run it.</line>
+<line>     * The final XML will look like the following:</line>
+<line>     * &lt;pre&gt;</line>
+<line>     *   &amp;lt;Project filename=&quot;unnamed project&quot; projectName=&quot;unnamed project&quot;&amp;gt;</line>
+<line>     *      &amp;lt;Jar&amp;gt;...path/project.jar&amp;lt;/Jar&amp;gt;</line>
+<line>     *      ...</line>
+<line>     *      &amp;lt;AuxClasspathEntry&amp;gt;...path/library.jar&amp;lt;/AuxClasspathEntry&amp;gt;</line>
+<line>     *      ...</line>
+<line>     *      &amp;lt;SrcDir&amp;gt;...path/src/java&amp;lt;/SrcDir&amp;gt;</line>
+<line>     *      ...</line>
+<line>     *      &amp;lt;SuppressionFilter&amp;gt;</line>
+<line>     *         &amp;lt;LastVersion value=&quot;-1&quot; relOp=&quot;NEQ&quot;/&amp;gt;</line>
+<line>     *      &amp;lt;/SuppressionFilter&amp;gt;</line>
+<line>     *   &amp;lt;/Project&amp;gt;</line>
+<line>     * &lt;/pre&gt;</line>
+<line>     *</line>
+<line>     * @param sourcePaths the source paths</line>
+<line>     * @param classPaths the class paths</line>
+<line>     * @param libraryPaths the library paths</line>
+<line>     *</line>
+<line>     * @return the SpotBugs project xml for the given data</line>
+<line>     */</line>
+<line>    private String generateSpotBugsProjectXml(final List&lt;String&gt; sourcePaths,</line>
+<line>                                              final List&lt;String&gt; classPaths, final List&lt;String&gt; libraryPaths)</line>
+<line>    {</line>
+<line sev="1"><diag id="740"/>        StringBuilder buf = new StringBuilder(&quot;&lt;Project filename=\&quot;unnamed project\&quot; projectName=\&quot;unnamed project\&quot;&gt;\n&quot;);</line>
+<line/>
+<line>        for (int i = 0; i &lt; classPaths.size(); i++)</line>
+<line>        {</line>
+<line>            buf.append(&quot;   &lt;Jar&gt;&quot;);</line>
+<line>            buf.append(classPaths.get(i));</line>
+<line>            buf.append(&quot;&lt;/Jar&gt;\n&quot;);</line>
+<line>        }</line>
+<line/>
+<line>        for (int i = 0; i &lt; libraryPaths.size(); i++)</line>
+<line>        {</line>
+<line>            buf.append(&quot;   &lt;AuxClasspathEntry&gt;&quot;);</line>
+<line>            buf.append(libraryPaths.get(i));</line>
+<line>            buf.append(&quot;&lt;/AuxClasspathEntry&gt;\n&quot;);</line>
+<line>        }</line>
+<line/>
+<line>        for (int i = 0; i &lt; sourcePaths.size(); i++)</line>
+<line>        {</line>
+<line>            buf.append(&quot;   &lt;SrcDir&gt;&quot;);</line>
+<line>            buf.append(sourcePaths.get(i));</line>
+<line>            buf.append(&quot;&lt;/SrcDir&gt;\n&quot;);</line>
+<line>        }</line>
+<line/>
+<line>        buf.append(</line>
+<line>              &quot;   &lt;SuppressionFilter&gt;\n&quot;</line>
+<line>            + &quot;       &lt;LastVersion value=\&quot;-1\&quot; relOp=\&quot;NEQ\&quot;/&gt;\n&quot;</line>
+<line>            + &quot;    &lt;/SuppressionFilter&gt;\n&quot;</line>
+<line>            + &quot;&lt;/Project&gt;\n&quot;</line>
+<line>        );</line>
+<line/>
+<line>        return buf.toString();</line>
+<line>    }</line>
+<line>}</line>
+</source>
+<diags first="false">
+<diag id="323" sev="3" tool="SpotBugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.SpotBugsRunner.runTool(String): new String(byte[])</diag>
+<diag id="740" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">
+StringBuffer constructor is initialized with size 88, but has at least 266 characters appended.
+</diag>
+</diags>
+</classDetails>

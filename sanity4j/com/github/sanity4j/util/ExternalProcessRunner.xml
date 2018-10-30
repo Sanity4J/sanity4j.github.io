@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.ExternalProcessRunner" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="2" moderate="0" low="1" info="0" lineCoverage="65" branchCoverage="41" quality="71"/>
+<classDetails className="com.github.sanity4j.util.ExternalProcessRunner" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="2" moderate="0" low="1" info="0" lineCoverage="62" branchCoverage="50" quality="71"/>
 <source>
-<line sev="1"><diag id="233"/>package com.github.sanity4j.util; </line>
+<line sev="1"><diag id="231"/>package com.github.sanity4j.util; </line>
 <line/>
 <line>import java.io.OutputStream;</line>
 <line/>
@@ -42,7 +42,7 @@
 <line>    public static int runProcess(final String[] cmdLine, </line>
 <line>        final OutputStream out, final OutputStream err)</line>
 <line>    {    </line>
-<line covered="yes">        StringBuffer cmdLineStr = new StringBuffer();                   </line>
+<line covered="yes">        StringBuilder cmdLineStr = new StringBuilder();                   </line>
 <line/>
 <line covered="yes">        for (int i = 0; i &lt; cmdLine.length; i++)</line>
 <line>        {</line>
@@ -88,27 +88,27 @@
 <line>            // http://stackoverflow.com/questions/5946471/splitting-at-space-if-not-between-quotes</line>
 <line covered="yes">            String[] cmdArray = cmdLine.split(&quot;[ ]+(?=([^\&quot;]*\&quot;[^\&quot;]*\&quot;)*[^\&quot;]*$)&quot;);</line>
 <line/>
-<line covered="yes">            StringBuffer cmdBuf = new StringBuffer();</line>
+<line covered="yes">            StringBuilder cmdBuf = new StringBuilder();</line>
 <line covered="yes">            for (int index = 0; index &lt; cmdArray.length; index++)</line>
 <line>            {</line>
 <line covered="partial">                if (SystemUtils.IS_OS_UNIX)</line>
 <line>                {</line>
 <line>                    // remove quotes.</line>
-<line covered="yes">                    String cmdItem = cmdArray[index].replace(&quot;\&quot;&quot;, &quot;&quot;);</line>
-<line covered="yes">                    cmdArray[index] = cmdItem; </line>
+<line covered="no">                    String cmdItem = cmdArray[index].replace(&quot;\&quot;&quot;, &quot;&quot;);</line>
+<line covered="no">                    cmdArray[index] = cmdItem; </line>
 <line/>
-<line covered="partial">                    if (cmdArray[index].contains(&quot; &quot;))</line>
+<line covered="no">                    if (cmdArray[index].contains(&quot; &quot;))</line>
 <line>                    {</line>
 <line>                        // escape any spaces.</line>
 <line covered="no">                        cmdItem = cmdArray[index].replace(&quot; &quot;, &quot;\\ &quot;);</line>
 <line covered="no">                        cmdArray[index] = cmdItem;</line>
 <line>                    }</line>
-<line covered="yes">                }</line>
+<line covered="no">                }</line>
 <line>                else</line>
 <line>                {</line>
-<line covered="no">                    if (!cmdArray[index].startsWith(&quot;\&quot;&quot;)</line>
-<line covered="no">                        &amp;&amp; !cmdArray[index].endsWith(&quot;\&quot;&quot;)</line>
-<line covered="no">                        &amp;&amp; cmdArray[index].contains(&quot; &quot;))</line>
+<line covered="partial">                    if (!cmdArray[index].startsWith(&quot;\&quot;&quot;)</line>
+<line covered="partial">                        &amp;&amp; !cmdArray[index].endsWith(&quot;\&quot;&quot;)</line>
+<line covered="partial">                        &amp;&amp; cmdArray[index].contains(&quot; &quot;))</line>
 <line>                    {</line>
 <line>                        // add quotes if none already, and only if the param contains a space.</line>
 <line covered="no">                        String cmdItem = '&quot;' + cmdArray[index] + '&quot;';</line>
@@ -141,7 +141,7 @@
 <line/>
 <line covered="yes">            return result;</line>
 <line>        }</line>
-<line sev="3" covered="yes"><diag id="305"/><diag id="679"/>        catch (Exception ex)</line>
+<line sev="3" covered="yes"><diag id="310"/><diag id="568"/>        catch (Exception ex)</line>
 <line>        {</line>
 <line covered="yes">            throw new QAException(&quot;Failed to run external process&quot;, ex);</line>
 <line>        }</line>
@@ -149,9 +149,9 @@
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="233" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="305" sev="3" tool="Findbugs" rule="REC_CATCH_EXCEPTION">Exception is caught when Exception is not thrown in com.github.sanity4j.util.ExternalProcessRunner.runProcess(String, OutputStream, OutputStream)</diag>
-<diag id="679" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+<diag id="231" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="310" sev="3" tool="SpotBugs" rule="REC_CATCH_EXCEPTION">Exception is caught when Exception is not thrown in com.github.sanity4j.util.ExternalProcessRunner.runProcess(String, OutputStream, OutputStream)</diag>
+<diag id="568" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </diag>
 </diags>

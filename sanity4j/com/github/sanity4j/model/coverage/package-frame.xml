@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-frame.xsl"?>
-<packageClasses packageName="com.github.sanity4j.model.coverage" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<packageClasses packageName="com.github.sanity4j.model.coverage" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <class name="com.github.sanity4j.model.coverage.AbstractCoverage" high="0" significant="0" moderate="0" low="1" info="0"/>
 <class name="com.github.sanity4j.model.coverage.ClassCoverage" high="0" significant="0" moderate="0" low="0" info="0"/>
-<class name="com.github.sanity4j.model.coverage.ClassCoverage_Test" high="0" significant="0" moderate="0" low="1" info="0"/>
+<class name="com.github.sanity4j.model.coverage.ClassCoverage_Test" high="0" significant="0" moderate="0" low="0" info="0"/>
 <class name="com.github.sanity4j.model.coverage.Coverage" high="0" significant="0" moderate="0" low="0" info="0"/>
 <class name="com.github.sanity4j.model.coverage.CoverageItf" high="0" significant="0" moderate="0" low="0" info="0"/>
-<class name="com.github.sanity4j.model.coverage.Coverage_Test" high="0" significant="0" moderate="0" low="3" info="0"/>
+<class name="com.github.sanity4j.model.coverage.Coverage_Test" high="0" significant="0" moderate="0" low="0" info="0"/>
 <class name="com.github.sanity4j.model.coverage.PackageCoverage" high="0" significant="0" moderate="0" low="0" info="0"/>
-<class name="com.github.sanity4j.model.coverage.PackageCoverage_Test" high="0" significant="0" moderate="0" low="2" info="0"/>
+<class name="com.github.sanity4j.model.coverage.PackageCoverage_Test" high="0" significant="0" moderate="0" low="0" info="0"/>
 </packageClasses>

@@ -21,7 +21,7 @@ import com.github.sanity4j.workflow.tool.ToolRunnerGroup;
 <span class="nc" id="L21">public class QAProcessor implements Runnable</span>
 {
     /** The current Sanity4J version number. This is the version number which is logged, embedded in reports, etc. */
-    public static final String QA_VERSION = &quot;1.8.1&quot;;
+    public static final String QA_VERSION = &quot;1.8.2&quot;;
 
     /** The default Java runtime to use when running external tasks. */
     public static final String DEFAULT_JAVA_RUNTIME = &quot;java&quot;;
@@ -51,18 +51,19 @@ import com.github.sanity4j.workflow.tool.ToolRunnerGroup;
     /**
      * Executes the QA process.
      */
-    public void run()
+    @Override
+   public void run()
     {
         try
         {
-<span class="nc" id="L58">            validateConfig();</span>
-<span class="nc" id="L59">            doExecute();</span>
+<span class="nc" id="L59">            validateConfig();</span>
+<span class="nc" id="L60">            doExecute();</span>
         }
         finally
         {
-<span class="nc" id="L63">            cleanUp();</span>
-<span class="nc" id="L64">        }</span>
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L64">            cleanUp();</span>
+<span class="nc" id="L65">        }</span>
+<span class="nc" id="L66">    }</span>
 
     /**
      * Runs the given work.
@@ -70,13 +71,13 @@ import com.github.sanity4j.workflow.tool.ToolRunnerGroup;
      */
     protected void runWork(final List&lt;WorkUnit&gt; workUnits)
     {
-<span class="nc bnc" id="L73" title="All 2 branches missed.">        for (int i = 0; i &lt; workUnits.size(); i++)</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        for (int i = 0; i &lt; workUnits.size(); i++)</span>
         {
-<span class="nc" id="L75">            WorkUnit work = workUnits.get(i);</span>
-<span class="nc" id="L76">            QaLogger.getInstance().debug(work.getDescription());</span>
-<span class="nc" id="L77">            work.run();</span>
+<span class="nc" id="L76">            WorkUnit work = workUnits.get(i);</span>
+<span class="nc" id="L77">            QaLogger.getInstance().debug(work.getDescription());</span>
+<span class="nc" id="L78">            work.run();</span>
         }
-<span class="nc" id="L79">    }</span>
+<span class="nc" id="L80">    }</span>
 
     /**
      * &lt;p&gt;Validates the QA run configuration.
@@ -89,30 +90,30 @@ import com.github.sanity4j.workflow.tool.ToolRunnerGroup;
      */
     private void validateConfig()
     {
-<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (config.getSourceDirs().isEmpty())</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (config.getSourceDirs().isEmpty())</span>
         {
-<span class="nc" id="L94">            throw new QAException(&quot;No source files specified&quot;);</span>
+<span class="nc" id="L95">            throw new QAException(&quot;No source files specified&quot;);</span>
         }
 
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (config.getClassDirs().isEmpty())</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        if (config.getClassDirs().isEmpty())</span>
         {
-<span class="nc" id="L99">            throw new QAException(&quot;No class files specified&quot;);</span>
+<span class="nc" id="L100">            throw new QAException(&quot;No class files specified&quot;);</span>
         }
 
-<span class="nc" id="L102">        FileUtil.createDir(config.getTempDir().getPath());</span>
-<span class="nc" id="L103">        config.getTempDir().deleteOnExit();</span>
+<span class="nc" id="L103">        FileUtil.createDir(config.getTempDir().getPath());</span>
+<span class="nc" id="L104">        config.getTempDir().deleteOnExit();</span>
 
         try
         {
-<span class="nc" id="L107">            String combinedSourcePath = config.getCombinedSourceDir().getPath();</span>
-<span class="nc" id="L108">            FileUtil.createDir(combinedSourcePath);</span>
-<span class="nc" id="L109">            stats = new ExtractStats(combinedSourcePath);</span>
+<span class="nc" id="L108">            String combinedSourcePath = config.getCombinedSourceDir().getPath();</span>
+<span class="nc" id="L109">            FileUtil.createDir(combinedSourcePath);</span>
+<span class="nc" id="L110">            stats = new ExtractStats(combinedSourcePath);</span>
         }
-<span class="nc" id="L111">        catch (IOException e)</span>
+<span class="nc" id="L112">        catch (IOException e)</span>
         {
-<span class="nc" id="L113">            throw new QAException(&quot;Unable to determine canonical source path&quot;, e);</span>
-<span class="nc" id="L114">        }</span>
-<span class="nc" id="L115">    }</span>
+<span class="nc" id="L114">            throw new QAException(&quot;Unable to determine canonical source path&quot;, e);</span>
+<span class="nc" id="L115">        }</span>
+<span class="nc" id="L116">    }</span>
 
     /**
      * Cleans up after the task has executed.
@@ -120,21 +121,21 @@ import com.github.sanity4j.workflow.tool.ToolRunnerGroup;
      */
     private void cleanUp()
     {
-<span class="nc" id="L123">        File tempDir = config.getTempDir();</span>
+<span class="nc" id="L124">        File tempDir = config.getTempDir();</span>
 
-<span class="nc bnc" id="L125" title="All 4 branches missed.">        if (tempDir != null &amp;&amp; tempDir.exists())</span>
+<span class="nc bnc" id="L126" title="All 4 branches missed.">        if (tempDir != null &amp;&amp; tempDir.exists())</span>
         {
             try
             {
-<span class="nc" id="L129">                FileUtil.delete(new File(tempDir.getPath()));</span>
-<span class="nc" id="L130">                tempDir = null;</span>
+<span class="nc" id="L130">                FileUtil.delete(new File(tempDir.getPath()));</span>
+<span class="nc" id="L131">                tempDir = null;</span>
             }
-<span class="nc" id="L132">            catch (IOException e)</span>
+<span class="nc" id="L133">            catch (IOException e)</span>
             {
-<span class="nc" id="L134">                QaLogger.getInstance().warn(&quot;Failed to delete temp dir&quot;, e);</span>
-<span class="nc" id="L135">            }</span>
+<span class="nc" id="L135">                QaLogger.getInstance().warn(&quot;Failed to delete temp dir&quot;, e);</span>
+<span class="nc" id="L136">            }</span>
         }
-<span class="nc" id="L137">    }</span>
+<span class="nc" id="L138">    }</span>
 
     /**
      * Creates the work unit which runs the tools against the combined
@@ -145,22 +146,22 @@ import com.github.sanity4j.workflow.tool.ToolRunnerGroup;
      */
     private WorkUnit getToolsWork(final ExtractStats stats)
     {
-<span class="nc" id="L148">        WorkUnitGroup tools = new WorkUnitGroup(true, &quot;Performing analysis&quot;)</span>
-<span class="nc" id="L149">        {</span>
+<span class="nc" id="L149">        WorkUnitGroup tools = new WorkUnitGroup(true, &quot;Performing analysis&quot;)</span>
+<span class="nc" id="L150">        {</span>
             @Override
             public void run()
             {
-<span class="nc" id="L153">                long start = System.currentTimeMillis();</span>
+<span class="nc" id="L154">                long start = System.currentTimeMillis();</span>
 
-<span class="nc" id="L155">                super.run();</span>
+<span class="nc" id="L156">                super.run();</span>
 
-<span class="nc" id="L157">                long elapsed = System.currentTimeMillis() - start;</span>
-<span class="nc" id="L158">                QaLogger.getInstance().info(&quot;Combined analysis completed in &quot; + (elapsed / MILLIS) + &quot;s.&quot;);</span>
-<span class="nc" id="L159">            }</span>
+<span class="nc" id="L158">                long elapsed = System.currentTimeMillis() - start;</span>
+<span class="nc" id="L159">                QaLogger.getInstance().info(&quot;Combined analysis completed in &quot; + (elapsed / MILLIS) + &quot;s.&quot;);</span>
+<span class="nc" id="L160">            }</span>
         };
 
-<span class="nc" id="L162">        tools.add(new ToolRunnerGroup(config, stats));</span>
-<span class="nc" id="L163">        return tools;</span>
+<span class="nc" id="L163">        tools.add(new ToolRunnerGroup(config, stats));</span>
+<span class="nc" id="L164">        return tools;</span>
     }
 
     /**
@@ -169,30 +170,29 @@ import com.github.sanity4j.workflow.tool.ToolRunnerGroup;
      */
     private void doExecute() throws QAException
     {
-<span class="nc" id="L172">        QaLogger.getInstance().info(&quot;Sanity4J version &quot; + QA_VERSION);</span>
-<span class="nc" id="L173">        long start = System.currentTimeMillis();</span>
+<span class="nc" id="L173">        QaLogger.getInstance().info(&quot;Sanity4J version &quot; + QA_VERSION);</span>
+<span class="nc" id="L174">        long start = System.currentTimeMillis();</span>
 
-<span class="nc" id="L175">        WorkUnitGroup work = new WorkUnitGroup(&quot;Performing analysis&quot;);</span>
-
-        // Check configuration
-<span class="nc" id="L178">        work.add(new JavaVersionCheck(config));</span>
+<span class="nc" id="L176">        WorkUnitGroup work = new WorkUnitGroup(&quot;Performing analysis&quot;);</span>
 
         // Collect the various files necessary for analysis
-<span class="nc" id="L181">        work.add(new SourceFileCollector(config));</span>
-<span class="nc" id="L182">        work.add(new ClassFileCollector(config));</span>
-<span class="nc" id="L183">        work.add(new LibraryFileCollector(config));</span>
+<span class="nc" id="L179">        work.add(new SourceFileCollector(config));</span>
+<span class="nc" id="L180">        work.add(new ClassFileCollector(config));</span>
+<span class="nc" id="L181">        work.add(new LibraryFileCollector(config));</span>
 
         // Run the various tools
-<span class="nc" id="L186">        work.add(getToolsWork(stats));</span>
+<span class="nc" id="L184">        work.add(getToolsWork(stats));</span>
 
         // Determine line counts (for quality metric).
-<span class="nc" id="L189">        work.add(new WorkUnit()</span>
-<span class="nc" id="L190">        {</span>
+<span class="nc" id="L187">        work.add(new WorkUnit()</span>
+<span class="nc" id="L188">        {</span>
+            @Override
             public String getDescription()
             {
-<span class="nc" id="L193">                return &quot;Reading line counts&quot;;</span>
+<span class="nc" id="L192">                return &quot;Reading line counts&quot;;</span>
             }
 
+            @Override
             public void run()
             {
                 try

@@ -59,7 +59,7 @@ public class PackageWriter
     /** The tools to include in the tool summary. */
 <span class="nc" id="L60">    private static final int[] TOOLS = </span>
     {
-        Diagnostic.SOURCE_FINDBUGS,
+        Diagnostic.SOURCE_SPOTBUGS,
         Diagnostic.SOURCE_PMD,
         Diagnostic.SOURCE_PMD_CPD,
         Diagnostic.SOURCE_CHECKSTYLE,
@@ -143,7 +143,7 @@ public class PackageWriter
                           ? &quot;&quot; 
 <span class="nc" id="L144">                          : (packageName.replaceAll(&quot;[^\\.]&quot;, &quot;&quot;).replaceAll(&quot;\\.&quot;, &quot;../&quot;) + &quot;../&quot;);</span>
         
-<span class="nc" id="L146">        StringBuffer html = new StringBuffer();</span>
+<span class="nc" id="L146">        StringBuilder html = new StringBuilder();</span>
 
         // Write top-level package summary info        
 <span class="nc" id="L149">        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</span>
@@ -168,38 +168,39 @@ public class PackageWriter
 <span class="nc" id="L168">            Collections.sort(packageSources, </span>
                 new Comparator&lt;String&gt;()
 <span class="nc" id="L170">                {</span>
-                    public int compare(final String obj1, final String obj2)
+                    @Override
+                  public int compare(final String obj1, final String obj2)
                     {
-<span class="nc" id="L173">                        String name1 = obj1.substring(obj1.lastIndexOf(File.separatorChar) + 1);</span>
-<span class="nc" id="L174">                        String name2 = obj2.substring(obj2.lastIndexOf(File.separatorChar) + 1);</span>
+<span class="nc" id="L174">                        String name1 = obj1.substring(obj1.lastIndexOf(File.separatorChar) + 1);</span>
+<span class="nc" id="L175">                        String name2 = obj2.substring(obj2.lastIndexOf(File.separatorChar) + 1);</span>
         
-<span class="nc" id="L176">                        return name1.compareTo(name2);</span>
+<span class="nc" id="L177">                        return name1.compareTo(name2);</span>
                     }
                 }
             );
         }
         else
         {
-<span class="nc" id="L183">            packageSources = sourcesByPackage.get(packageName);</span>
+<span class="nc" id="L184">            packageSources = sourcesByPackage.get(packageName);</span>
         }
         
-<span class="nc bnc" id="L186" title="All 2 branches missed.">        for (String sourcePath : packageSources)</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        for (String sourcePath : packageSources)</span>
         {
-<span class="nc" id="L188">            String className = ReportUtil.getRelativeSourcePath(stats.getSourceDirectory(), sourcePath).replaceAll(&quot;.xml\\z&quot;, &quot;&quot;).replaceAll(&quot;[\\\\/]&quot;, &quot;.&quot;);</span>
-<span class="nc" id="L189">            DiagnosticSet diagsForFile = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</span>
+<span class="nc" id="L189">            String className = ReportUtil.getRelativeSourcePath(stats.getSourceDirectory(), sourcePath).replaceAll(&quot;.xml\\z&quot;, &quot;&quot;).replaceAll(&quot;[\\\\/]&quot;, &quot;.&quot;);</span>
+<span class="nc" id="L190">            DiagnosticSet diagsForFile = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</span>
             
-<span class="nc" id="L191">            html.append(&quot;&lt;class name=\&quot;&quot;).append(className)</span>
-<span class="nc" id="L192">                .append(&quot;\&quot; high=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
-<span class="nc" id="L193">                .append(&quot;\&quot; significant=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
-<span class="nc" id="L194">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
-<span class="nc" id="L195">                .append(&quot;\&quot; low=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
-<span class="nc" id="L196">                .append(&quot;\&quot; info=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_INFO))</span>
-<span class="nc" id="L197">                .append(&quot;\&quot;/&gt;\n&quot;);</span>
-<span class="nc" id="L198">        }</span>
+<span class="nc" id="L192">            html.append(&quot;&lt;class name=\&quot;&quot;).append(className)</span>
+<span class="nc" id="L193">                .append(&quot;\&quot; high=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
+<span class="nc" id="L194">                .append(&quot;\&quot; significant=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
+<span class="nc" id="L195">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
+<span class="nc" id="L196">                .append(&quot;\&quot; low=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
+<span class="nc" id="L197">                .append(&quot;\&quot; info=\&quot;&quot;).append(diagsForFile.getCountForSeverity(Diagnostic.SEVERITY_INFO))</span>
+<span class="nc" id="L198">                .append(&quot;\&quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L199">        }</span>
         
-<span class="nc" id="L200">        html.append(&quot;&lt;/packageClasses&gt;\n&quot;);</span>
+<span class="nc" id="L201">        html.append(&quot;&lt;/packageClasses&gt;\n&quot;);</span>
         
-<span class="nc" id="L202">        return html.toString();</span>
+<span class="nc" id="L203">        return html.toString();</span>
     }
     
     /**
@@ -212,83 +213,83 @@ public class PackageWriter
     private String generatePackageByRule(final String packageName) 
     {
         // For the package name com.bar.foo, we need &quot;../../../&quot;
-<span class="nc bnc" id="L215" title="All 2 branches missed.">        String pathToRoot = StringUtil.empty(packageName) </span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">        String pathToRoot = StringUtil.empty(packageName) </span>
                           ? &quot;&quot; 
-<span class="nc" id="L217">                          : (packageName.replaceAll(&quot;[^\\.]&quot;, &quot;&quot;).replaceAll(&quot;\\.&quot;, &quot;../&quot;) + &quot;../&quot;);</span>
+<span class="nc" id="L218">                          : (packageName.replaceAll(&quot;[^\\.]&quot;, &quot;&quot;).replaceAll(&quot;\\.&quot;, &quot;../&quot;) + &quot;../&quot;);</span>
         
-<span class="nc bnc" id="L219" title="All 2 branches missed.">        DiagnosticSet diags = (StringUtil.empty(packageName))</span>
-<span class="nc" id="L220">                              ? stats.getDiagnostics()</span>
-<span class="nc" id="L221">                              : stats.getDiagnostics().getDiagnosticsForPackage(packageName);</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">        DiagnosticSet diags = (StringUtil.empty(packageName))</span>
+<span class="nc" id="L221">                              ? stats.getDiagnostics()</span>
+<span class="nc" id="L222">                              : stats.getDiagnostics().getDiagnosticsForPackage(packageName);</span>
         
-<span class="nc" id="L223">        StringBuffer html = new StringBuffer();</span>
+<span class="nc" id="L224">        StringBuilder html = new StringBuilder();</span>
 
         // Write top-level package summary info        
-<span class="nc" id="L226">        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</span>
-<span class="nc" id="L227">            .append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/package-by-rule.xsl\&quot;?&gt;\n&quot;)        </span>
-<span class="nc bnc" id="L228" title="All 2 branches missed.">            .append(&quot;&lt;packageByRule packageName=\&quot;&quot;).append(StringUtil.empty(packageName) ? &quot;&quot; : packageName).append(&quot;\&quot; pathToRoot=\&quot;&quot;)</span>
-<span class="nc" id="L229">            .append(pathToRoot).append(&quot;\&quot; qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</span>
-<span class="nc" id="L230">            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</span>
+<span class="nc" id="L227">        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</span>
+<span class="nc" id="L228">            .append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/package-by-rule.xsl\&quot;?&gt;\n&quot;)        </span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">            .append(&quot;&lt;packageByRule packageName=\&quot;&quot;).append(StringUtil.empty(packageName) ? &quot;&quot; : packageName).append(&quot;\&quot; pathToRoot=\&quot;&quot;)</span>
+<span class="nc" id="L230">            .append(pathToRoot).append(&quot;\&quot; qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</span>
+<span class="nc" id="L231">            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</span>
 
         // Hash the diagnostics by rule name, to condense the report
-<span class="nc" id="L233">        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByRuleName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</span>
+<span class="nc" id="L234">        Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByRuleName = new HashMap&lt;String, List&lt;Diagnostic&gt;&gt;();</span>
         
-<span class="nc bnc" id="L235" title="All 2 branches missed.">        for (Diagnostic diagnostic : diags)</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">        for (Diagnostic diagnostic : diags)</span>
         {
-<span class="nc" id="L237">            String key = diagnostic.getRuleName();</span>
+<span class="nc" id="L238">            String key = diagnostic.getRuleName();</span>
             
-<span class="nc bnc" id="L239" title="All 2 branches missed.">            if (key == null)</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">            if (key == null)</span>
             {
-<span class="nc" id="L241">                key = &quot;(none)&quot;;</span>
+<span class="nc" id="L242">                key = &quot;(none)&quot;;</span>
             }
             
-<span class="nc" id="L244">            List&lt;Diagnostic&gt; list = diagnosticsByRuleName.get(key);</span>
+<span class="nc" id="L245">            List&lt;Diagnostic&gt; list = diagnosticsByRuleName.get(key);</span>
             
-<span class="nc bnc" id="L246" title="All 2 branches missed.">            if (list == null)</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">            if (list == null)</span>
             {
-<span class="nc" id="L248">                list = new ArrayList&lt;Diagnostic&gt;();</span>
-<span class="nc" id="L249">                diagnosticsByRuleName.put(key, list);</span>
+<span class="nc" id="L249">                list = new ArrayList&lt;Diagnostic&gt;();</span>
+<span class="nc" id="L250">                diagnosticsByRuleName.put(key, list);</span>
             }
             
-<span class="nc" id="L252">            list.add(diagnostic);</span>
-<span class="nc" id="L253">        }</span>
+<span class="nc" id="L253">            list.add(diagnostic);</span>
+<span class="nc" id="L254">        }</span>
         
-<span class="nc" id="L255">        List&lt;String&gt; ruleNames = new ArrayList&lt;String&gt;(diagnosticsByRuleName.keySet());</span>
-<span class="nc" id="L256">        Collections.sort(ruleNames);</span>
+<span class="nc" id="L256">        List&lt;String&gt; ruleNames = new ArrayList&lt;String&gt;(diagnosticsByRuleName.keySet());</span>
+<span class="nc" id="L257">        Collections.sort(ruleNames);</span>
 
         // Output diagnostics (if any)
-<span class="nc bnc" id="L259" title="All 2 branches missed.">        for (String ruleName : ruleNames)</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">        for (String ruleName : ruleNames)</span>
         {
-<span class="nc" id="L261">            List&lt;Diagnostic&gt; diagnosticsForRule = diagnosticsByRuleName.get(ruleName);</span>
-<span class="nc" id="L262">            Diagnostic firstDiag = diagnosticsForRule.get(0);</span>
+<span class="nc" id="L262">            List&lt;Diagnostic&gt; diagnosticsForRule = diagnosticsByRuleName.get(ruleName);</span>
+<span class="nc" id="L263">            Diagnostic firstDiag = diagnosticsForRule.get(0);</span>
             
-<span class="nc" id="L264">            html.append(&quot;&lt;rule name=\&quot;&quot;).append(ruleName)</span>
-<span class="nc" id="L265">                .append(&quot;\&quot; tool=\&quot;&quot;).append(Diagnostic.getSourceDescription(firstDiag.getSource()))</span>
-<span class="nc" id="L266">                .append(&quot;\&quot; severity=\&quot;&quot;).append(firstDiag.getSeverity())</span>
-<span class="nc" id="L267">                .append(&quot;\&quot;&gt;\n&quot;);</span>
+<span class="nc" id="L265">            html.append(&quot;&lt;rule name=\&quot;&quot;).append(ruleName)</span>
+<span class="nc" id="L266">                .append(&quot;\&quot; tool=\&quot;&quot;).append(Diagnostic.getSourceDescription(firstDiag.getSource()))</span>
+<span class="nc" id="L267">                .append(&quot;\&quot; severity=\&quot;&quot;).append(firstDiag.getSeverity())</span>
+<span class="nc" id="L268">                .append(&quot;\&quot;&gt;\n&quot;);</span>
             
-<span class="nc" id="L269">            Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByClassName = ReportUtil.mapDiagnosticsByClassName(diagnosticsForRule); </span>
-<span class="nc" id="L270">            List&lt;String&gt; classNames = new ArrayList&lt;String&gt;(diagnosticsByClassName.keySet());</span>
-<span class="nc" id="L271">            Collections.sort(classNames);</span>
+<span class="nc" id="L270">            Map&lt;String, List&lt;Diagnostic&gt;&gt; diagnosticsByClassName = ReportUtil.mapDiagnosticsByClassName(diagnosticsForRule); </span>
+<span class="nc" id="L271">            List&lt;String&gt; classNames = new ArrayList&lt;String&gt;(diagnosticsByClassName.keySet());</span>
+<span class="nc" id="L272">            Collections.sort(classNames);</span>
             
-<span class="nc bnc" id="L273" title="All 2 branches missed.">            for (String className : classNames)</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">            for (String className : classNames)</span>
             {
-<span class="nc" id="L275">                html.append(&quot;&lt;class name=\&quot;&quot;).append(className).append(&quot;\&quot;&gt;\n&quot;);</span>
+<span class="nc" id="L276">                html.append(&quot;&lt;class name=\&quot;&quot;).append(className).append(&quot;\&quot;&gt;\n&quot;);</span>
                 
-<span class="nc bnc" id="L277" title="All 2 branches missed.">                for (Diagnostic diag : diagnosticsByClassName.get(className))</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">                for (Diagnostic diag : diagnosticsByClassName.get(className))</span>
                 {
-<span class="nc" id="L279">                    html.append(&quot;&lt;diag id=\&quot;&quot;).append(diag.getId()).append(&quot;\&quot;/&gt;\n&quot;);</span>
-<span class="nc" id="L280">                }</span>
+<span class="nc" id="L280">                    html.append(&quot;&lt;diag id=\&quot;&quot;).append(diag.getId()).append(&quot;\&quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L281">                }</span>
                 
-<span class="nc" id="L282">                html.append(&quot;&lt;/class&gt;\n&quot;);</span>
-<span class="nc" id="L283">            }</span>
+<span class="nc" id="L283">                html.append(&quot;&lt;/class&gt;\n&quot;);</span>
+<span class="nc" id="L284">            }</span>
             
-<span class="nc" id="L285">            html.append(&quot;&lt;/rule&gt;\n&quot;);</span>
-<span class="nc" id="L286">        }        </span>
+<span class="nc" id="L286">            html.append(&quot;&lt;/rule&gt;\n&quot;);</span>
+<span class="nc" id="L287">        }        </span>
         
         
-<span class="nc" id="L289">        html.append(&quot;&lt;/packageByRule&gt;\n&quot;);</span>
+<span class="nc" id="L290">        html.append(&quot;&lt;/packageByRule&gt;\n&quot;);</span>
         
-<span class="nc" id="L291">        return html.toString();</span>
+<span class="nc" id="L292">        return html.toString();</span>
     }
     
     /**
@@ -301,58 +302,58 @@ public class PackageWriter
     private String generateSummaryPageForPackage(final String packageName, 
                                                  final String relativeFileName)
     {
-<span class="nc" id="L304">        String pathToRoot = ReportUtil.getHtmlPathToRoot(relativeFileName);</span>
+<span class="nc" id="L305">        String pathToRoot = ReportUtil.getHtmlPathToRoot(relativeFileName);</span>
         
-<span class="nc bnc" id="L306" title="All 2 branches missed.">        DiagnosticSet diags = (StringUtil.empty(packageName))</span>
-<span class="nc" id="L307">                              ? stats.getDiagnostics()</span>
-<span class="nc" id="L308">                              : stats.getDiagnostics().getDiagnosticsForPackage(packageName);</span>
+<span class="nc bnc" id="L307" title="All 2 branches missed.">        DiagnosticSet diags = (StringUtil.empty(packageName))</span>
+<span class="nc" id="L308">                              ? stats.getDiagnostics()</span>
+<span class="nc" id="L309">                              : stats.getDiagnostics().getDiagnosticsForPackage(packageName);</span>
 
-<span class="nc" id="L310">        StringBuffer html = new StringBuffer();</span>
+<span class="nc" id="L311">        StringBuilder html = new StringBuilder();</span>
                               
         // Write top-level package summary info        
-<span class="nc" id="L313">        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</span>
-<span class="nc" id="L314">            .append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/package-summary.xsl\&quot;?&gt;\n&quot;)        </span>
-<span class="nc bnc" id="L315" title="All 2 branches missed.">            .append(&quot;&lt;packageSummary packageName=\&quot;&quot;).append(StringUtil.empty(packageName) ? &quot;&quot; : packageName).append(&quot;\&quot; pathToRoot=\&quot;&quot;)</span>
-<span class="nc" id="L316">            .append(pathToRoot).append(&quot;\&quot; qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</span>
-<span class="nc" id="L317">            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</span>
+<span class="nc" id="L314">        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</span>
+<span class="nc" id="L315">            .append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/package-summary.xsl\&quot;?&gt;\n&quot;)        </span>
+<span class="nc bnc" id="L316" title="All 2 branches missed.">            .append(&quot;&lt;packageSummary packageName=\&quot;&quot;).append(StringUtil.empty(packageName) ? &quot;&quot; : packageName).append(&quot;\&quot; pathToRoot=\&quot;&quot;)</span>
+<span class="nc" id="L317">            .append(pathToRoot).append(&quot;\&quot; qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</span>
+<span class="nc" id="L318">            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</span>
         
-<span class="nc" id="L319">        html.append(&quot;&lt;issueSummary high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
-<span class="nc" id="L320">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
-<span class="nc" id="L321">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
-<span class="nc" id="L322">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
-<span class="nc" id="L323">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO)).append(&quot;\&quot;&gt;\n&quot;);</span>
+<span class="nc" id="L320">        html.append(&quot;&lt;issueSummary high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
+<span class="nc" id="L321">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
+<span class="nc" id="L322">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
+<span class="nc" id="L323">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
+<span class="nc" id="L324">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO)).append(&quot;\&quot;&gt;\n&quot;);</span>
         
         // Output category information
-<span class="nc" id="L326">        DiagnosticCategory categories = new DiagnosticCategory();</span>
+<span class="nc" id="L327">        DiagnosticCategory categories = new DiagnosticCategory();</span>
         
-<span class="nc bnc" id="L328" title="All 2 branches missed.">        for (Diagnostic diag : diags)</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        for (Diagnostic diag : diags)</span>
         {
-<span class="nc" id="L330">            categories.addDiagnostic(diag);</span>
-<span class="nc" id="L331">        }</span>
+<span class="nc" id="L331">            categories.addDiagnostic(diag);</span>
+<span class="nc" id="L332">        }</span>
         
-<span class="nc" id="L333">        outputCategory(categories, html);</span>
+<span class="nc" id="L334">        outputCategory(categories, html);</span>
 
         // Output tool summary information
-<span class="nc bnc" id="L336" title="All 2 branches missed.">        for (int i = 0; i &lt; TOOLS.length; i++)</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">        for (int i = 0; i &lt; TOOLS.length; i++)</span>
         {
-<span class="nc" id="L338">            outputTool(TOOLS[i], diags, html);</span>
+<span class="nc" id="L339">            outputTool(TOOLS[i], diags, html);</span>
         }
         
-<span class="nc" id="L341">        html.append(&quot;&lt;/issueSummary&gt;\n&quot;);</span>
+<span class="nc" id="L342">        html.append(&quot;&lt;/issueSummary&gt;\n&quot;);</span>
         
         // Quality summary
-<span class="nc" id="L344">        html.append(&quot;&lt;qualitySummary&gt;\n&quot;);</span>
-<span class="nc" id="L345">        outputQualitySummary(packageName, html);</span>
-<span class="nc" id="L346">        html.append(&quot;&lt;/qualitySummary&gt;\n&quot;);</span>
+<span class="nc" id="L345">        html.append(&quot;&lt;qualitySummary&gt;\n&quot;);</span>
+<span class="nc" id="L346">        outputQualitySummary(packageName, html);</span>
+<span class="nc" id="L347">        html.append(&quot;&lt;/qualitySummary&gt;\n&quot;);</span>
         
         // Summary image
-<span class="nc" id="L349">        html.append(&quot;&lt;graphs&gt;\n&quot;);</span>
-<span class="nc" id="L350">        appendSummaryImage(packageName, html);</span>
-<span class="nc" id="L351">        html.append(&quot;&lt;/graphs&gt;\n&quot;);</span>
+<span class="nc" id="L350">        html.append(&quot;&lt;graphs&gt;\n&quot;);</span>
+<span class="nc" id="L351">        appendSummaryImage(packageName, html);</span>
+<span class="nc" id="L352">        html.append(&quot;&lt;/graphs&gt;\n&quot;);</span>
         
-<span class="nc" id="L353">        html.append(&quot;&lt;/packageSummary&gt;\n&quot;);</span>
+<span class="nc" id="L354">        html.append(&quot;&lt;/packageSummary&gt;\n&quot;);</span>
         
-<span class="nc" id="L355">        return html.toString();</span>
+<span class="nc" id="L356">        return html.toString();</span>
     }
     
     /**
@@ -360,144 +361,144 @@ public class PackageWriter
      * 
      * @param tool the tool to output the information for.
      * @param diags the full list of diagnostics for the package being written.
-     * @param html the StringBuffer to append XML output to.
+     * @param html the StringBuilder to append XML output to.
      */
-    private void outputTool(final int tool, final DiagnosticSet diags, final StringBuffer html)
+    private void outputTool(final int tool, final DiagnosticSet diags, final StringBuilder html)
     {
-<span class="nc" id="L367">        DiagnosticSet toolDiags = diags.getDiagnosticsForTool(tool);</span>
+<span class="nc" id="L368">        DiagnosticSet toolDiags = diags.getDiagnosticsForTool(tool);</span>
         
-<span class="nc bnc" id="L369" title="All 2 branches missed.">        if (!toolDiags.isEmpty())</span>
+<span class="nc bnc" id="L370" title="All 2 branches missed.">        if (!toolDiags.isEmpty())</span>
         {
-<span class="nc" id="L371">            String toolName = Diagnostic.getSourceDescription(tool);</span>
+<span class="nc" id="L372">            String toolName = Diagnostic.getSourceDescription(tool);</span>
             
-<span class="nc" id="L373">            html.append(&quot;&lt;tool name=\&quot;&quot;).append(toolName)</span>
-<span class="nc" id="L374">                .append(&quot;\&quot; high=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
-<span class="nc" id="L375">                .append(&quot;\&quot; significant=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
-<span class="nc" id="L376">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
-<span class="nc" id="L377">                .append(&quot;\&quot; low=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
-<span class="nc" id="L378">                .append(&quot;\&quot; info=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_INFO)).append(&quot;\&quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L374">            html.append(&quot;&lt;tool name=\&quot;&quot;).append(toolName)</span>
+<span class="nc" id="L375">                .append(&quot;\&quot; high=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
+<span class="nc" id="L376">                .append(&quot;\&quot; significant=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
+<span class="nc" id="L377">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
+<span class="nc" id="L378">                .append(&quot;\&quot; low=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
+<span class="nc" id="L379">                .append(&quot;\&quot; info=\&quot;&quot;).append(toolDiags.getCountForSeverity(Diagnostic.SEVERITY_INFO)).append(&quot;\&quot;/&gt;\n&quot;);</span>
         }
-<span class="nc" id="L380">    }</span>
+<span class="nc" id="L381">    }</span>
     
     /**
      * Outputs category information, recursing for sub-categories.
      * 
      * @param category the DiagnosticCategory to output.
-     * @param html the StringBuffer to append XML output to.
+     * @param html the StringBuilder to append XML output to.
      */
-    private void outputCategory(final DiagnosticCategory category, final StringBuffer html)
+    private void outputCategory(final DiagnosticCategory category, final StringBuilder html)
     {
-<span class="nc" id="L390">        DiagnosticSet diags = new DiagnosticSet();</span>
+<span class="nc" id="L391">        DiagnosticSet diags = new DiagnosticSet();</span>
         
-<span class="nc bnc" id="L392" title="All 2 branches missed.">        for (Diagnostic diag : category.getDiagnostics())</span>
+<span class="nc bnc" id="L393" title="All 2 branches missed.">        for (Diagnostic diag : category.getDiagnostics())</span>
         {
-<span class="nc" id="L394">            diags.add(diag);</span>
-<span class="nc" id="L395">        }</span>
+<span class="nc" id="L395">            diags.add(diag);</span>
+<span class="nc" id="L396">        }</span>
         
         // Output category
-<span class="nc" id="L398">        html.append(&quot;&lt;category name=\&quot;&quot;).append(category.getName());          </span>
+<span class="nc" id="L399">        html.append(&quot;&lt;category name=\&quot;&quot;).append(category.getName());          </span>
         
-<span class="nc" id="L400">        html.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
-<span class="nc" id="L401">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
-<span class="nc" id="L402">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
-<span class="nc" id="L403">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
-<span class="nc" id="L404">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO)).append('&quot;');</span>
+<span class="nc" id="L401">        html.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
+<span class="nc" id="L402">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
+<span class="nc" id="L403">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
+<span class="nc" id="L404">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
+<span class="nc" id="L405">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO)).append('&quot;');</span>
  
-<span class="nc bnc" id="L406" title="All 2 branches missed.">        if (category.getSubCategories().isEmpty())</span>
+<span class="nc bnc" id="L407" title="All 2 branches missed.">        if (category.getSubCategories().isEmpty())</span>
         {
-<span class="nc" id="L408">            html.append(&quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L409">            html.append(&quot;/&gt;\n&quot;);</span>
         }
         else
         {
-<span class="nc" id="L412">            html.append(&quot;&gt;\n&quot;);</span>
+<span class="nc" id="L413">            html.append(&quot;&gt;\n&quot;);</span>
             
-<span class="nc bnc" id="L414" title="All 2 branches missed.">            for (Iterator&lt;DiagnosticCategory&gt; i = category.subCategoriesIterator(); i.hasNext();)</span>
+<span class="nc bnc" id="L415" title="All 2 branches missed.">            for (Iterator&lt;DiagnosticCategory&gt; i = category.subCategoriesIterator(); i.hasNext();)</span>
             {
-<span class="nc" id="L416">                DiagnosticCategory subCategory = i.next();</span>
-<span class="nc" id="L417">                outputCategory(subCategory, html);</span>
-<span class="nc" id="L418">            }</span>
+<span class="nc" id="L417">                DiagnosticCategory subCategory = i.next();</span>
+<span class="nc" id="L418">                outputCategory(subCategory, html);</span>
+<span class="nc" id="L419">            }</span>
             
-<span class="nc" id="L420">            html.append(&quot;&lt;/category&gt;\n&quot;);</span>
+<span class="nc" id="L421">            html.append(&quot;&lt;/category&gt;\n&quot;);</span>
         }        
-<span class="nc" id="L422">    }</span>
+<span class="nc" id="L423">    }</span>
     
     /**
      * If there is sufficient data available, 
-     * append a summary image to the given HTML StringBuffer.
+     * append a summary image to the given HTML StringBuilder.
      * 
      * @param packageName the package name
      * @param html the string buffer to append the image tag to
      */
-    private void appendSummaryImage(final String packageName, final StringBuffer html)
+    private void appendSummaryImage(final String packageName, final StringBuilder html)
     {
-<span class="nc bnc" id="L433" title="All 2 branches missed.">        String nonNullPackageName = StringUtil.empty(packageName) ? &quot;&quot; : packageName;</span>
-<span class="nc" id="L434">        PackageSummary[] summaries = stats.getPackageSummary(nonNullPackageName);</span>
+<span class="nc bnc" id="L434" title="All 2 branches missed.">        String nonNullPackageName = StringUtil.empty(packageName) ? &quot;&quot; : packageName;</span>
+<span class="nc" id="L435">        PackageSummary[] summaries = stats.getPackageSummary(nonNullPackageName);</span>
         
         // Only generate the image if there's more than one run
-<span class="nc bnc" id="L437" title="All 2 branches missed.">        if (summaries.length &gt; 1)</span>
+<span class="nc bnc" id="L438" title="All 2 branches missed.">        if (summaries.length &gt; 1)</span>
         {
-<span class="nc" id="L439">            BufferedImage image = ChartFactory.createImage(summaries, nonNullPackageName);</span>
+<span class="nc" id="L440">            BufferedImage image = ChartFactory.createImage(summaries, nonNullPackageName);</span>
             
             try
             {
-<span class="nc" id="L443">                String path = nonNullPackageName.replace('.', File.separatorChar) + File.separatorChar;             </span>
-<span class="nc" id="L444">                String fileName = &quot;summary&quot; + IMAGE_FORMAT_FILE_SUFFIX;             </span>
-<span class="nc" id="L445">                ImageIO.write(image, IMAGE_FORMAT, new File(reportDir, path + fileName));</span>
+<span class="nc" id="L444">                String path = nonNullPackageName.replace('.', File.separatorChar) + File.separatorChar;             </span>
+<span class="nc" id="L445">                String fileName = &quot;summary&quot; + IMAGE_FORMAT_FILE_SUFFIX;             </span>
+<span class="nc" id="L446">                ImageIO.write(image, IMAGE_FORMAT, new File(reportDir, path + fileName));</span>
 
-<span class="nc" id="L447">                html.append(&quot;&lt;graph path=\&quot;&quot;).append(fileName)</span>
-<span class="nc" id="L448">                    .append(&quot;\&quot; alt=\&quot;History for &quot;).append(nonNullPackageName) </span>
-<span class="nc" id="L449">                    .append(&quot;\&quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L448">                html.append(&quot;&lt;graph path=\&quot;&quot;).append(fileName)</span>
+<span class="nc" id="L449">                    .append(&quot;\&quot; alt=\&quot;History for &quot;).append(nonNullPackageName) </span>
+<span class="nc" id="L450">                    .append(&quot;\&quot;/&gt;\n&quot;);</span>
             }
-<span class="nc" id="L451">            catch (IOException e)</span>
+<span class="nc" id="L452">            catch (IOException e)</span>
             {
-<span class="nc" id="L453">                QaLogger.getInstance().error(&quot;Error writing summary image&quot;, e);</span>
-<span class="nc" id="L454">            }</span>
+<span class="nc" id="L454">                QaLogger.getInstance().error(&quot;Error writing summary image&quot;, e);</span>
+<span class="nc" id="L455">            }</span>
         }       
-<span class="nc" id="L456">    }</span>
+<span class="nc" id="L457">    }</span>
     
     /**
      * Generates the quality summary table HTML.
      * 
      * @param packageName the package name to create the tables for
-     * @param html the StringBuffer to append XML output to.
+     * @param html the StringBuilder to append XML output to.
      */
-    private void outputQualitySummary(final String packageName, final StringBuffer html)
+    private void outputQualitySummary(final String packageName, final StringBuilder html)
     {
         // Display package and subpackages first
-<span class="nc" id="L467">        Set&lt;String&gt; packageNames = new TreeSet&lt;String&gt;(sourcesByPackage.keySet());</span>
+<span class="nc" id="L468">        Set&lt;String&gt; packageNames = new TreeSet&lt;String&gt;(sourcesByPackage.keySet());</span>
         
         // Output summary for all classes
-<span class="nc bnc" id="L470" title="All 2 branches missed.">        if (StringUtil.empty(packageName))</span>
+<span class="nc bnc" id="L471" title="All 2 branches missed.">        if (StringUtil.empty(packageName))</span>
         {
-<span class="nc" id="L472">            appendPackageQualityStatsRow(&quot;&quot;, &quot;&quot;, html);</span>
+<span class="nc" id="L473">            appendPackageQualityStatsRow(&quot;&quot;, &quot;&quot;, html);</span>
         }
         
-<span class="nc" id="L475">        String packageNamePlusDot = packageName + '.';</span>
+<span class="nc" id="L476">        String packageNamePlusDot = packageName + '.';</span>
         
-<span class="nc bnc" id="L477" title="All 2 branches missed.">        for (String otherPackageName : packageNames)</span>
+<span class="nc bnc" id="L478" title="All 2 branches missed.">        for (String otherPackageName : packageNames)</span>
         {
-<span class="nc bnc" id="L479" title="All 4 branches missed.">            if (StringUtil.empty(packageName) || otherPackageName.equals(packageName) </span>
-<span class="nc bnc" id="L480" title="All 2 branches missed.">                || otherPackageName.startsWith(packageNamePlusDot))</span>
+<span class="nc bnc" id="L480" title="All 4 branches missed.">            if (StringUtil.empty(packageName) || otherPackageName.equals(packageName) </span>
+<span class="nc bnc" id="L481" title="All 2 branches missed.">                || otherPackageName.startsWith(packageNamePlusDot))</span>
             {
-<span class="nc bnc" id="L482" title="All 2 branches missed.">                appendPackageQualityStatsRow(StringUtil.empty(packageName) ? &quot;&quot; : packageName, otherPackageName, html);</span>
+<span class="nc bnc" id="L483" title="All 2 branches missed.">                appendPackageQualityStatsRow(StringUtil.empty(packageName) ? &quot;&quot; : packageName, otherPackageName, html);</span>
             }
-<span class="nc" id="L484">        }</span>
+<span class="nc" id="L485">        }</span>
         
         // Display classes in package
-<span class="nc" id="L487">        List&lt;String&gt; packageSources = sourcesByPackage.get(packageName);</span>
+<span class="nc" id="L488">        List&lt;String&gt; packageSources = sourcesByPackage.get(packageName);</span>
         
-<span class="nc bnc" id="L489" title="All 2 branches missed.">        if (packageSources == null)</span>
+<span class="nc bnc" id="L490" title="All 2 branches missed.">        if (packageSources == null)</span>
         {
-<span class="nc" id="L491">            appendClassQualityStatsRow(null, html);</span>
+<span class="nc" id="L492">            appendClassQualityStatsRow(null, html);</span>
         }
         else
         {
-<span class="nc bnc" id="L495" title="All 2 branches missed.">            for (String sourcePath : packageSources)</span>
+<span class="nc bnc" id="L496" title="All 2 branches missed.">            for (String sourcePath : packageSources)</span>
             {
-<span class="nc" id="L497">                appendClassQualityStatsRow(sourcePath, html);</span>
-<span class="nc" id="L498">            }       </span>
+<span class="nc" id="L498">                appendClassQualityStatsRow(sourcePath, html);</span>
+<span class="nc" id="L499">            }       </span>
         }
-<span class="nc" id="L500">    }</span>
+<span class="nc" id="L501">    }</span>
     
     /**
      * Appends a package quality statistics row to the given string buffer.
@@ -508,93 +509,93 @@ public class PackageWriter
      */
     private void appendPackageQualityStatsRow(final String currentPackageName, 
                                               final String packageName, 
-                                              final StringBuffer html)
+                                              final StringBuilder html)
     {
-<span class="nc" id="L513">        boolean allPackages = &quot;&quot;.equals(packageName);</span>
+<span class="nc" id="L514">        boolean allPackages = &quot;&quot;.equals(packageName);</span>
 
-<span class="nc" id="L515">        DiagnosticSet diags = null;</span>
-<span class="nc" id="L516">        CoverageItf coverage = null;</span>
-<span class="nc" id="L517">        int numLines = 0;</span>
-<span class="nc" id="L518">        int numExecutableLines = 0;</span>
-<span class="nc" id="L519">        int coveredLines = 0;</span>
-<span class="nc" id="L520">        int coveredLinePct = 0;</span>
-<span class="nc" id="L521">        int coveredBranchPct = 0;</span>
-<span class="nc" id="L522">        int branchCount = 0;</span>
-<span class="nc" id="L523">        int coveredBranchCount = 0;</span>
-<span class="nc" id="L524">        int classCount = 0;</span>
+<span class="nc" id="L516">        DiagnosticSet diags = null;</span>
+<span class="nc" id="L517">        CoverageItf coverage = null;</span>
+<span class="nc" id="L518">        int numLines = 0;</span>
+<span class="nc" id="L519">        int numExecutableLines = 0;</span>
+<span class="nc" id="L520">        int coveredLines = 0;</span>
+<span class="nc" id="L521">        int coveredLinePct = 0;</span>
+<span class="nc" id="L522">        int coveredBranchPct = 0;</span>
+<span class="nc" id="L523">        int branchCount = 0;</span>
+<span class="nc" id="L524">        int coveredBranchCount = 0;</span>
+<span class="nc" id="L525">        int classCount = 0;</span>
 
-<span class="nc bnc" id="L526" title="All 2 branches missed.">        if (allPackages)</span>
+<span class="nc bnc" id="L527" title="All 2 branches missed.">        if (allPackages)</span>
         {
-<span class="nc" id="L528">            coverage = stats.getCoverage();</span>
-<span class="nc" id="L529">            diags = stats.getDiagnostics();</span>
-<span class="nc" id="L530">            numLines = stats.getLineCount();</span>
-<span class="nc" id="L531">            classCount = stats.getClassCount();</span>
+<span class="nc" id="L529">            coverage = stats.getCoverage();</span>
+<span class="nc" id="L530">            diags = stats.getDiagnostics();</span>
+<span class="nc" id="L531">            numLines = stats.getLineCount();</span>
+<span class="nc" id="L532">            classCount = stats.getClassCount();</span>
         }
         else
         {
-<span class="nc" id="L535">            coverage = stats.getCoverage().getPackageCoverage(packageName);</span>
-<span class="nc" id="L536">            diags = stats.getDiagnostics().getDiagnosticsForPackage(packageName, false);</span>
+<span class="nc" id="L536">            coverage = stats.getCoverage().getPackageCoverage(packageName);</span>
+<span class="nc" id="L537">            diags = stats.getDiagnostics().getDiagnosticsForPackage(packageName, false);</span>
 
-<span class="nc" id="L538">            numLines = stats.getPackageLineCount(packageName);</span>
-<span class="nc" id="L539">            classCount = stats.getPackageClassCount(packageName);</span>
+<span class="nc" id="L539">            numLines = stats.getPackageLineCount(packageName);</span>
+<span class="nc" id="L540">            classCount = stats.getPackageClassCount(packageName);</span>
         }
 
-<span class="nc bnc" id="L542" title="All 2 branches missed.">        if (coverage != null)</span>
+<span class="nc bnc" id="L543" title="All 2 branches missed.">        if (coverage != null)</span>
         {
-<span class="nc" id="L544">            coveredLines = (int) Math.round(numLines * coverage.getLineCoverage());</span>
-<span class="nc" id="L545">            coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);</span>
-<span class="nc" id="L546">            coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);</span>
-<span class="nc" id="L547">            coveredLines = coverage.getCoveredLineCount();</span>
-<span class="nc" id="L548">            branchCount = coverage.getBranchCount();</span>
-<span class="nc" id="L549">            coveredBranchCount = coverage.getCoveredBranchCount();</span>
-<span class="nc" id="L550">            numExecutableLines = coverage.getLineCount();</span>
+<span class="nc" id="L545">            coveredLines = (int) Math.round(numLines * coverage.getLineCoverage());</span>
+<span class="nc" id="L546">            coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);</span>
+<span class="nc" id="L547">            coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);</span>
+<span class="nc" id="L548">            coveredLines = coverage.getCoveredLineCount();</span>
+<span class="nc" id="L549">            branchCount = coverage.getBranchCount();</span>
+<span class="nc" id="L550">            coveredBranchCount = coverage.getCoveredBranchCount();</span>
+<span class="nc" id="L551">            numExecutableLines = coverage.getLineCount();</span>
         }
 
-<span class="nc" id="L553">        html.append(&quot;&lt;package name=\&quot;&quot;).append(packageName);</span>
+<span class="nc" id="L554">        html.append(&quot;&lt;package name=\&quot;&quot;).append(packageName);</span>
         
-<span class="nc bnc" id="L555" title="All 4 branches missed.">        if (!allPackages &amp;&amp; !packageName.equals(currentPackageName))</span>
+<span class="nc bnc" id="L556" title="All 4 branches missed.">        if (!allPackages &amp;&amp; !packageName.equals(currentPackageName))</span>
         {
             // Link to the other package
-<span class="nc bnc" id="L558" title="All 2 branches missed.">            int dotLength = currentPackageName.length() &gt; 0 ? 1 : 0;</span>
-<span class="nc" id="L559">            String relativePath = packageName.substring(currentPackageName.length() + dotLength).replace('.', '/');</span>
+<span class="nc bnc" id="L559" title="All 2 branches missed.">            int dotLength = currentPackageName.length() &gt; 0 ? 1 : 0;</span>
+<span class="nc" id="L560">            String relativePath = packageName.substring(currentPackageName.length() + dotLength).replace('.', '/');</span>
 
-<span class="nc" id="L561">            html.append(&quot;\&quot; path=\&quot;&quot;).append(relativePath);</span>
+<span class="nc" id="L562">            html.append(&quot;\&quot; path=\&quot;&quot;).append(relativePath);</span>
         }
 
-<span class="nc" id="L564">        html.append(&quot;\&quot; classes=\&quot;&quot;).append(classCount)</span>
-<span class="nc" id="L565">            .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numLines);</span>
+<span class="nc" id="L565">        html.append(&quot;\&quot; classes=\&quot;&quot;).append(classCount)</span>
+<span class="nc" id="L566">            .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numLines);</span>
         
         // Quality
-<span class="nc" id="L568">        int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</span>
+<span class="nc" id="L569">        int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</span>
         
-<span class="nc" id="L570">        html.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
-<span class="nc" id="L571">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
-<span class="nc" id="L572">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
-<span class="nc" id="L573">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
-<span class="nc" id="L574">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))</span>
-<span class="nc" id="L575">            .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)</span>
-<span class="nc" id="L576">            .append('&quot;');</span>
+<span class="nc" id="L571">        html.append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
+<span class="nc" id="L572">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
+<span class="nc" id="L573">            .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
+<span class="nc" id="L574">            .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
+<span class="nc" id="L575">            .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))</span>
+<span class="nc" id="L576">            .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)</span>
+<span class="nc" id="L577">            .append('&quot;');</span>
         
         // Test coverage
-<span class="nc bnc" id="L579" title="All 2 branches missed.">        if (numExecutableLines == 0)</span>
+<span class="nc bnc" id="L580" title="All 2 branches missed.">        if (numExecutableLines == 0)</span>
         {
-<span class="nc" id="L581">            html.append(&quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L582">            html.append(&quot;/&gt;\n&quot;);</span>
         }
         else
         {
-<span class="nc" id="L585">            html.append(&quot;&gt;\n&quot;);</span>
+<span class="nc" id="L586">            html.append(&quot;&gt;\n&quot;);</span>
             
-<span class="nc" id="L587">            html.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)</span>
-<span class="nc" id="L588">                .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)</span>
-<span class="nc" id="L589">                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)</span>
-<span class="nc" id="L590">                .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)</span>
-<span class="nc" id="L591">                .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)</span>
-<span class="nc" id="L592">                .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)</span>
-<span class="nc" id="L593">                .append(&quot;\&quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L588">            html.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)</span>
+<span class="nc" id="L589">                .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)</span>
+<span class="nc" id="L590">                .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)</span>
+<span class="nc" id="L591">                .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)</span>
+<span class="nc" id="L592">                .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)</span>
+<span class="nc" id="L593">                .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)</span>
+<span class="nc" id="L594">                .append(&quot;\&quot;/&gt;\n&quot;);</span>
             
-<span class="nc" id="L595">            html.append(&quot;&lt;/package&gt;\n&quot;);</span>
+<span class="nc" id="L596">            html.append(&quot;&lt;/package&gt;\n&quot;);</span>
         }
-<span class="nc" id="L597">    }</span>
+<span class="nc" id="L598">    }</span>
     
     /**
      * Appends a class quality statistics row to the given string buffer.
@@ -602,65 +603,65 @@ public class PackageWriter
      * @param sourcePath the source file to write the stats for
      * @param html the string buffer to append to
      */
-    private void appendClassQualityStatsRow(final String sourcePath, final StringBuffer html)
+    private void appendClassQualityStatsRow(final String sourcePath, final StringBuilder html)
     {
-<span class="nc bnc" id="L607" title="All 2 branches missed.">        if (sourcePath != null)</span>
+<span class="nc bnc" id="L608" title="All 2 branches missed.">        if (sourcePath != null)</span>
         {       
-<span class="nc" id="L609">            DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</span>
-<span class="nc" id="L610">            String className = stats.getClassNameForSourcePath(sourcePath);     </span>
-<span class="nc" id="L611">            CoverageItf coverage = stats.getCoverage().getClassCoverage(className);</span>
+<span class="nc" id="L610">            DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</span>
+<span class="nc" id="L611">            String className = stats.getClassNameForSourcePath(sourcePath);     </span>
+<span class="nc" id="L612">            CoverageItf coverage = stats.getCoverage().getClassCoverage(className);</span>
             
-<span class="nc" id="L613">            int numLines = stats.getClassLineCount(className);</span>
-<span class="nc" id="L614">            int numExecutableLines = 0;</span>
-<span class="nc" id="L615">            int coveredLines = 0;</span>
-<span class="nc" id="L616">            int coveredLinePct = 0;</span>
-<span class="nc" id="L617">            int coveredBranchPct = 0;</span>
-<span class="nc" id="L618">            int branchCount = 0;</span>
-<span class="nc" id="L619">            int coveredBranchCount = 0;</span>
+<span class="nc" id="L614">            int numLines = stats.getClassLineCount(className);</span>
+<span class="nc" id="L615">            int numExecutableLines = 0;</span>
+<span class="nc" id="L616">            int coveredLines = 0;</span>
+<span class="nc" id="L617">            int coveredLinePct = 0;</span>
+<span class="nc" id="L618">            int coveredBranchPct = 0;</span>
+<span class="nc" id="L619">            int branchCount = 0;</span>
+<span class="nc" id="L620">            int coveredBranchCount = 0;</span>
             
-<span class="nc bnc" id="L621" title="All 2 branches missed.">            if (coverage != null)</span>
+<span class="nc bnc" id="L622" title="All 2 branches missed.">            if (coverage != null)</span>
             {
-<span class="nc" id="L623">                numExecutableLines = coverage.getLineCount();</span>
-<span class="nc" id="L624">                coveredLines = coverage.getCoveredLineCount();</span>
-<span class="nc" id="L625">                branchCount = coverage.getBranchCount();</span>
-<span class="nc" id="L626">                coveredBranchCount = coverage.getCoveredBranchCount();</span>
-<span class="nc" id="L627">                coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);</span>
-<span class="nc" id="L628">                coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);</span>
+<span class="nc" id="L624">                numExecutableLines = coverage.getLineCount();</span>
+<span class="nc" id="L625">                coveredLines = coverage.getCoveredLineCount();</span>
+<span class="nc" id="L626">                branchCount = coverage.getBranchCount();</span>
+<span class="nc" id="L627">                coveredBranchCount = coverage.getCoveredBranchCount();</span>
+<span class="nc" id="L628">                coveredLinePct = (int) (coverage.getLineCoverage() * HUNDRED);</span>
+<span class="nc" id="L629">                coveredBranchPct = (int) (coverage.getBranchCoverage() * HUNDRED);</span>
             }
             
             
             // Quality
-<span class="nc" id="L633">            int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</span>
+<span class="nc" id="L634">            int qualityPct = (int) (ONE_HUNDRED * ReportUtil.evaluateMetric(&quot;quality&quot;, diags, numLines));</span>
             
-<span class="nc" id="L635">            html.append(&quot;&lt;class name=\&quot;&quot;).append(className.substring(className.lastIndexOf('.') + 1))</span>
-<span class="nc" id="L636">                .append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
-<span class="nc" id="L637">                .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
-<span class="nc" id="L638">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
-<span class="nc" id="L639">                .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
-<span class="nc" id="L640">                .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))</span>
-<span class="nc" id="L641">                .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)</span>
-<span class="nc" id="L642">                .append('&quot;');</span>
+<span class="nc" id="L636">            html.append(&quot;&lt;class name=\&quot;&quot;).append(className.substring(className.lastIndexOf('.') + 1))</span>
+<span class="nc" id="L637">                .append(&quot;\&quot; high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</span>
+<span class="nc" id="L638">                .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</span>
+<span class="nc" id="L639">                .append(&quot;\&quot; moderate=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_MODERATE))</span>
+<span class="nc" id="L640">                .append(&quot;\&quot; low=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_LOW))</span>
+<span class="nc" id="L641">                .append(&quot;\&quot; info=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_INFO))</span>
+<span class="nc" id="L642">                .append(&quot;\&quot; quality=\&quot;&quot;).append(qualityPct)</span>
+<span class="nc" id="L643">                .append('&quot;');</span>
             
             // Test coverage
-<span class="nc bnc" id="L645" title="All 2 branches missed.">            if (numExecutableLines == 0)</span>
+<span class="nc bnc" id="L646" title="All 2 branches missed.">            if (numExecutableLines == 0)</span>
             {
-<span class="nc" id="L647">                html.append(&quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L648">                html.append(&quot;/&gt;\n&quot;);</span>
             }
             else
             {
-<span class="nc" id="L651">                html.append(&quot;&gt;\n&quot;);</span>
+<span class="nc" id="L652">                html.append(&quot;&gt;\n&quot;);</span>
                 
-<span class="nc" id="L653">                html.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)</span>
-<span class="nc" id="L654">                    .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)</span>
-<span class="nc" id="L655">                    .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)</span>
-<span class="nc" id="L656">                    .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)</span>
-<span class="nc" id="L657">                    .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)</span>
-<span class="nc" id="L658">                    .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)</span>
-<span class="nc" id="L659">                    .append(&quot;\&quot;/&gt;\n&quot;);</span>
+<span class="nc" id="L654">                html.append(&quot;&lt;testCoverage lineCoveragePct=\&quot;&quot;).append(coveredLinePct)</span>
+<span class="nc" id="L655">                    .append(&quot;\&quot; branchCoveragePct=\&quot;&quot;).append(coveredBranchPct)</span>
+<span class="nc" id="L656">                    .append(&quot;\&quot; lineCount=\&quot;&quot;).append(numExecutableLines)</span>
+<span class="nc" id="L657">                    .append(&quot;\&quot; coveredLineCount=\&quot;&quot;).append(coveredLines)</span>
+<span class="nc" id="L658">                    .append(&quot;\&quot; branchCount=\&quot;&quot;).append(branchCount)</span>
+<span class="nc" id="L659">                    .append(&quot;\&quot; coveredBranchCount=\&quot;&quot;).append(coveredBranchCount)</span>
+<span class="nc" id="L660">                    .append(&quot;\&quot;/&gt;\n&quot;);</span>
                 
-<span class="nc" id="L661">                html.append(&quot;&lt;/class&gt;\n&quot;);</span>
+<span class="nc" id="L662">                html.append(&quot;&lt;/class&gt;\n&quot;);</span>
             }
         }   
-<span class="nc" id="L664">    }</span>
+<span class="nc" id="L665">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

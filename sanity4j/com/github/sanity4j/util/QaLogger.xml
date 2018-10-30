@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.QaLogger" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.util.QaLogger" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="0" low="1" info="0" lineCoverage="20" branchCoverage="0" quality="98"/>
 <source>
 <line>package com.github.sanity4j.util; </line>
@@ -16,7 +16,7 @@
 <line> * @author Yiannis Paschalidis </line>
 <line> * @since Sanity4J 1.0</line>
 <line> */</line>
-<line sev="1" covered="yes"><diag id="720"/>public abstract class QaLogger</line>
+<line sev="1" covered="yes"><diag id="599"/>public abstract class QaLogger</line>
 <line sev="1">{</line>
 <line sev="1">    /** The logger instance to use. Defaults to a logger which logs to &lt;code&gt;System.out&lt;/code&gt;. */</line>
 <line sev="1" covered="yes">    private static QaLogger instance = new QaLoggerSystemOutImpl();    </line>
@@ -96,7 +96,7 @@
 <line sev="1" covered="no">        throwable.printStackTrace(new PrintWriter(writer));        </line>
 <line sev="1" covered="no">        String stackTrace = writer.toString();</line>
 <line sev="1"/>
-<line sev="1" covered="no">        StringBuffer msgBuffer = new StringBuffer();        </line>
+<line sev="1" covered="no">        StringBuilder msgBuffer = new StringBuilder();        </line>
 <line sev="1" covered="no">        msgBuffer.append(message);</line>
 <line sev="1" covered="no">        msgBuffer.append('\n');</line>
 <line sev="1" covered="no">        msgBuffer.append(throwable.getMessage());</line>
@@ -108,7 +108,7 @@
 <line sev="1">}</line>
 </source>
 <diags first="false">
-<diag id="720" sev="1" tool="PMD" rule="AbstractNaming">
+<diag id="599" sev="1" tool="PMD" rule="AbstractNaming">
 Abstract classes should be named AbstractXXX
 </diag>
 </diags>

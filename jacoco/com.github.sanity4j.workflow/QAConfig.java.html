@@ -280,40 +280,40 @@ import com.github.sanity4j.util.Tool;
      */
     public void setCoverageDataFile(final String coverageDataFile)
     {
-<span class="nc" id="L283">        addCoverageDataFile(coverageDataFile);</span>
-<span class="nc" id="L284">    }</span>
+<span class="fc" id="L283">        addCoverageDataFile(coverageDataFile);</span>
+<span class="fc" id="L284">    }</span>
 
     /**
      * @param coverageDataFile The coverage data file to add to the list.
      */
     public void addCoverageDataFile(final String coverageDataFile)
     {
-<span class="nc bnc" id="L291" title="All 4 branches missed.">        if (coverageDataFile != null &amp;&amp; coverageDataFile.length() &gt; 0)</span>
+<span class="pc bpc" id="L291" title="2 of 4 branches missed.">        if (coverageDataFile != null &amp;&amp; coverageDataFile.length() &gt; 0)</span>
         {
-<span class="nc" id="L293">            File file = new File(coverageDataFile);</span>
+<span class="fc" id="L293">            File file = new File(coverageDataFile);</span>
 
-<span class="nc bnc" id="L295" title="All 4 branches missed.">            if (file.exists() &amp;&amp; file.isFile())</span>
+<span class="pc bpc" id="L295" title="2 of 4 branches missed.">            if (file.exists() &amp;&amp; file.isFile())</span>
             {
-<span class="nc bnc" id="L297" title="All 2 branches missed.">                if (coverageDataFiles.contains(coverageDataFile))</span>
+<span class="pc bpc" id="L297" title="1 of 2 branches missed.">                if (coverageDataFiles.contains(coverageDataFile))</span>
                 {
 <span class="nc" id="L299">                    QaLogger.getInstance().debug(&quot;Coverage data file is already in the list: &quot; + coverageDataFile);</span>
                 }
                 else
                 {
-<span class="nc" id="L303">                    coverageDataFiles.add(coverageDataFile);</span>
-<span class="nc" id="L304">                    QaLogger.getInstance().debug(&quot;Added coverage data file to list: &quot; + coverageDataFile);</span>
+<span class="fc" id="L303">                    coverageDataFiles.add(coverageDataFile);</span>
+<span class="fc" id="L304">                    QaLogger.getInstance().debug(&quot;Added coverage data file to list: &quot; + coverageDataFile);</span>
                 }
             }
             else
             {
 <span class="nc" id="L309">                QaLogger.getInstance().warn(&quot;Unable to locate coverage data file: &quot; + coverageDataFile);</span>
             }
-<span class="nc" id="L311">        }</span>
+<span class="fc" id="L311">        }</span>
         else
         {
 <span class="nc" id="L314">            QaLogger.getInstance().debug(&quot;Invalid coverage data file name: &quot; + coverageDataFile);</span>
         }
-<span class="nc" id="L316">    }</span>
+<span class="fc" id="L316">    }</span>
 
     /**
      * @return Returns the coverage data file.
@@ -371,7 +371,7 @@ import com.github.sanity4j.util.Tool;
      */
     public List&lt;String&gt; getCoverageMergeDataFileList()
     {
-<span class="nc" id="L374">    	return coverageDataFiles;</span>
+<span class="fc" id="L374">    	return coverageDataFiles;</span>
     }
 
     /**
@@ -468,7 +468,7 @@ import com.github.sanity4j.util.Tool;
      */
     public File getCombinedClassDir()
     {
-<span class="nc" id="L471">        return new File(getTempDir(), &quot;classes&quot;);</span>
+<span class="fc" id="L471">        return new File(getTempDir(), &quot;classes&quot;);</span>
     }
 
     /**
@@ -840,7 +840,7 @@ import com.github.sanity4j.util.Tool;
      */
     private String getToolParam(final String tool, final String version, final String key)
     {
-<span class="nc" id="L843">        StringBuffer configBuf = new StringBuffer();</span>
+<span class="nc" id="L843">        StringBuilder configBuf = new StringBuilder();</span>
         
 <span class="nc" id="L845">        configBuf.append(QA_TOOL_PREFIX).append(tool).append('.');</span>
         

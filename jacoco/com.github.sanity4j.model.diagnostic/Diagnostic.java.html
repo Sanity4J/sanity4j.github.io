@@ -30,8 +30,8 @@ public class Diagnostic
     /** A Diagnostic sourced from an undefined tool. Should not occur. */
     public static final int SOURCE_OTHER = 0;
 
-    /** A Diagnostic sourced from FindBugs. */
-    public static final int SOURCE_FINDBUGS = 1;
+    /** A Diagnostic sourced from SpotBugs. */
+    public static final int SOURCE_SPOTBUGS = 1;
 
     /** A Diagnostic sourced from PMD. */
     public static final int SOURCE_PMD = 2;
@@ -370,8 +370,8 @@ public class Diagnostic
             case SOURCE_OTHER:
 <span class="fc" id="L371">                return &quot;Other&quot;;</span>
 
-            case SOURCE_FINDBUGS:
-<span class="fc" id="L374">                return &quot;Findbugs&quot;;</span>
+            case SOURCE_SPOTBUGS:
+<span class="fc" id="L374">                return &quot;SpotBugs&quot;;</span>
 
             case SOURCE_PMD:
 <span class="fc" id="L377">                return &quot;PMD&quot;;</span>

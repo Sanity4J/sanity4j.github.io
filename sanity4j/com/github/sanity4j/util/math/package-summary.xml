@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.util.math" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<issueSummary high="0" significant="2" moderate="1" low="12" info="4">
+<packageSummary packageName="com.github.sanity4j.util.math" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<issueSummary high="0" significant="2" moderate="1" low="9" info="4">
 <category name="All categories" high="0" significant="0" moderate="0" low="0" info="0">
 <category name="Complexity" high="0" significant="0" moderate="0" low="4" info="0">
 <category name="Code size" high="0" significant="0" moderate="0" low="0" info="1"/>
 </category>
-<category name="Code style" high="0" significant="0" moderate="1" low="7" info="3"/>
+<category name="Code style" high="0" significant="0" moderate="1" low="4" info="3"/>
 <category name="Performance" high="0" significant="0" moderate="0" low="0" info="3"/>
 <category name="Correctness" high="0" significant="2" moderate="0" low="0" info="0"/>
 </category>
-<tool name="PMD" high="0" significant="2" moderate="1" low="11" info="4"/>
+<tool name="PMD" high="0" significant="2" moderate="1" low="8" info="4"/>
 <tool name="Checkstyle" high="0" significant="0" moderate="0" low="1" info="0"/>
 </issueSummary>
 <qualitySummary>
-<package name="com.github.sanity4j.util.math" classes="3" lineCount="431" high="0" significant="2" moderate="1" low="12" info="4" quality="83">
+<package name="com.github.sanity4j.util.math" classes="3" lineCount="431" high="0" significant="2" moderate="1" low="9" info="4" quality="85">
 <testCoverage lineCoveragePct="75" branchCoveragePct="94" lineCount="120" coveredLineCount="91" branchCount="19" coveredBranchCount="18"/>
 </package>
-<class name="InfixExpression" high="0" significant="1" moderate="0" low="6" info="2" quality="84">
+<class name="InfixExpression" high="0" significant="1" moderate="0" low="3" info="2" quality="87">
 <testCoverage lineCoveragePct="77" branchCoveragePct="72" lineCount="61" coveredLineCount="47" branchCount="12" coveredBranchCount="11"/>
 </class>
 <class name="PostfixExpression" high="0" significant="1" moderate="1" low="6" info="2" quality="80">

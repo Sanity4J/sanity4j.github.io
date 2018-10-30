@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.report.JavaSourceWriter" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.report.JavaSourceWriter" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="1" moderate="0" low="5" info="3" quality="90"/>
 <source>
 <line>package com.github.sanity4j.report;</line>
@@ -32,7 +32,7 @@
 <line> * @author Yiannis Paschalidis</line>
 <line> * @since Sanity4J 1.0</line>
 <line> */</line>
-<line sev="1"><diag id="491"/>public class JavaSourceWriter</line>
+<line sev="1"><diag id="471"/>public class JavaSourceWriter</line>
 <line sev="1">{   </line>
 <line sev="1">    /** The diagnostics that we are writing. */</line>
 <line sev="1">    private final ExtractStats stats;</line>
@@ -78,7 +78,7 @@
 <line sev="1">        File destFile = new File(reportDir, relativeDestPath);</line>
 <line sev="1"/>
 <line sev="1">        // Buffer and diagnostics for this source file</line>
-<line sev="1">        StringBuffer html = new StringBuffer((int) sourceFile.length());</line>
+<line sev="1">        StringBuilder html = new StringBuilder((int) sourceFile.length());</line>
 <line sev="1">        DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</line>
 <line sev="1">        List&lt;Diagnostic&gt; orderedDiags = sortDiags(diags);</line>
 <line sev="1"/>
@@ -89,11 +89,11 @@
 <line sev="1">        int lineCount = stats.getClassLineCount(className);</line>
 <line sev="1"/>
 <line sev="1">        // Write Header        </line>
-<line sev="1"><diag id="495"/>        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;);</line>
-<line sev="1"><diag id="496"/>        html.append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/source-code.xsl\&quot;?&gt;\n&quot;);        </line>
+<line sev="1"><diag id="475"/>        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;);</line>
+<line sev="1"><diag id="476"/>        html.append(&quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot;).append(pathToRoot).append(&quot;xslt/source-code.xsl\&quot;?&gt;\n&quot;);        </line>
 <line sev="1">        html.append(&quot;&lt;classDetails className=\&quot;&quot;).append(className).append(&quot;\&quot; pathToRoot=\&quot;&quot;)</line>
 <line sev="1">            .append(pathToRoot).append(&quot;\&quot; qaVersion=\&quot;&quot;).append(QAProcessor.QA_VERSION)</line>
-<line sev="1"><diag id="497"/>            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</line>
+<line sev="1"><diag id="477"/>            .append(&quot;\&quot; runDate=\&quot;&quot;).append(new Date()).append(&quot;\&quot;&gt;\n&quot;);</line>
 <line sev="1"/>
 <line sev="1">        html.append(&quot;&lt;summary high=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_HIGH))</line>
 <line sev="1">            .append(&quot;\&quot; significant=\&quot;&quot;).append(diags.getCountForSeverity(Diagnostic.SEVERITY_SIGNIFICANT))</line>
@@ -130,13 +130,13 @@
 <line sev="1">     * </line>
 <line sev="1">     * @throws IOException if there is an error reading from the source file</line>
 <line sev="1">     */</line>
-<line sev="1"><diag id="498"/><diag id="499"/><diag id="500"/>    private void writeSourceLines(final File sourceFile, final DiagnosticSet diags, final List&lt;Diagnostic&gt; orderedDiags, final ClassCoverage coverage, final StringBuffer html) throws IOException</line>
+<line sev="1"><diag id="478"/><diag id="479"/><diag id="480"/>    private void writeSourceLines(final File sourceFile, final DiagnosticSet diags, final List&lt;Diagnostic&gt; orderedDiags, final ClassCoverage coverage, final StringBuilder html) throws IOException</line>
 <line sev="1">    {</line>
 <line sev="1">        FileInputStream fis = new FileInputStream(sourceFile);</line>
 <line sev="1"/>
 <line sev="1">        try</line>
 <line sev="1">        {</line>
-<line sev="3"><diag id="301"/><diag id="302"/>            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));</line>
+<line sev="3"><diag id="306"/><diag id="307"/>            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));</line>
 <line sev="1">            int lineNum = 1;</line>
 <line sev="1">            int orderedDiagPos = 0;</line>
 <line sev="1"/>
@@ -241,7 +241,7 @@
 <line sev="1">     */</line>
 <line sev="1">    private void writeErrorsSummary(final List&lt;Diagnostic&gt; orderedDiags, </line>
 <line sev="1">                                    final boolean diagsFirst,</line>
-<line sev="1">                                    final StringBuffer html)</line>
+<line sev="1">                                    final StringBuilder html)</line>
 <line sev="1">    {</line>
 <line sev="1">        if (orderedDiags != null &amp;&amp; !orderedDiags.isEmpty())</line>
 <line sev="1">        {</line>
@@ -299,6 +299,7 @@
 <line sev="1">         *         first argument is less than, equal to, or greater than the</line>
 <line sev="1">         *         second. </line>
 <line sev="1">         */</line>
+<line sev="1">        @Override</line>
 <line sev="1">        public int compare(final Diagnostic diag1, final Diagnostic diag2)</line>
 <line sev="1">        {</line>
 <line sev="1">            if (diag1 == null)</line>
@@ -312,28 +313,28 @@
 <line sev="1">}</line>
 </source>
 <diags first="false">
-<diag id="491" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="471" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The class 'JavaSourceWriter' has a Cyclomatic Complexity of 5 (Highest = 17).
 </diag>
-<diag id="495" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+<diag id="475" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
 StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
 </diag>
-<diag id="496" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+<diag id="476" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
 StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
 </diag>
-<diag id="497" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
+<diag id="477" sev="1" tool="PMD" rule="ConsecutiveLiteralAppends">
 StringBuffer (or StringBuilder).append is called 2 consecutive times with literal Strings. Use a single append with a single combined String.
 </diag>
-<diag id="498" sev="0" tool="PMD" rule="ExcessiveMethodLength">
+<diag id="478" sev="0" tool="PMD" rule="ExcessiveMethodLength">
 Avoid really long methods.
 </diag>
-<diag id="499" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="479" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The method 'writeSourceLines' has a Cyclomatic Complexity of 17.
 </diag>
-<diag id="500" sev="0" tool="PMD" rule="NPathComplexity">
+<diag id="480" sev="0" tool="PMD" rule="NPathComplexity">
 The method writeSourceLines() has an NPath complexity of 2882
 </diag>
-<diag id="301" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.report.JavaSourceWriter.writeSourceLines(File, DiagnosticSet, List, ClassCoverage, StringBuffer): new java.io.InputStreamReader(InputStream)</diag>
-<diag id="302" sev="0" tool="Findbugs" rule="OS_OPEN_STREAM">com.github.sanity4j.report.JavaSourceWriter.writeSourceLines(File, DiagnosticSet, List, ClassCoverage, StringBuffer) may fail to close stream</diag>
+<diag id="306" sev="3" tool="SpotBugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.report.JavaSourceWriter.writeSourceLines(File, DiagnosticSet, List, ClassCoverage, StringBuilder): new java.io.InputStreamReader(InputStream)</diag>
+<diag id="307" sev="0" tool="SpotBugs" rule="OS_OPEN_STREAM">com.github.sanity4j.report.JavaSourceWriter.writeSourceLines(File, DiagnosticSet, List, ClassCoverage, StringBuilder) may fail to close stream</diag>
 </diags>
 </classDetails>

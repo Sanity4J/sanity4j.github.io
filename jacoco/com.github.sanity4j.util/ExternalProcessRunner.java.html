@@ -37,7 +37,7 @@ public final class ExternalProcessRunner
     public static int runProcess(final String[] cmdLine, 
         final OutputStream out, final OutputStream err)
     {    
-<span class="fc" id="L40">        StringBuffer cmdLineStr = new StringBuffer();                   </span>
+<span class="fc" id="L40">        StringBuilder cmdLineStr = new StringBuilder();                   </span>
         
 <span class="fc bfc" id="L42" title="All 2 branches covered.">        for (int i = 0; i &lt; cmdLine.length; i++)</span>
         {
@@ -83,27 +83,27 @@ public final class ExternalProcessRunner
             // http://stackoverflow.com/questions/5946471/splitting-at-space-if-not-between-quotes
 <span class="fc" id="L84">            String[] cmdArray = cmdLine.split(&quot;[ ]+(?=([^\&quot;]*\&quot;[^\&quot;]*\&quot;)*[^\&quot;]*$)&quot;);</span>
 
-<span class="fc" id="L86">            StringBuffer cmdBuf = new StringBuffer();</span>
+<span class="fc" id="L86">            StringBuilder cmdBuf = new StringBuilder();</span>
 <span class="fc bfc" id="L87" title="All 2 branches covered.">            for (int index = 0; index &lt; cmdArray.length; index++)</span>
             {
 <span class="pc bpc" id="L89" title="1 of 2 branches missed.">                if (SystemUtils.IS_OS_UNIX)</span>
                 {
                     // remove quotes.
-<span class="fc" id="L92">                    String cmdItem = cmdArray[index].replace(&quot;\&quot;&quot;, &quot;&quot;);</span>
-<span class="fc" id="L93">                    cmdArray[index] = cmdItem; </span>
+<span class="nc" id="L92">                    String cmdItem = cmdArray[index].replace(&quot;\&quot;&quot;, &quot;&quot;);</span>
+<span class="nc" id="L93">                    cmdArray[index] = cmdItem; </span>
                     
-<span class="pc bpc" id="L95" title="1 of 2 branches missed.">                    if (cmdArray[index].contains(&quot; &quot;))</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                    if (cmdArray[index].contains(&quot; &quot;))</span>
                     {
                         // escape any spaces.
 <span class="nc" id="L98">                        cmdItem = cmdArray[index].replace(&quot; &quot;, &quot;\\ &quot;);</span>
 <span class="nc" id="L99">                        cmdArray[index] = cmdItem;</span>
                     }
-<span class="fc" id="L101">                }</span>
+<span class="nc" id="L101">                }</span>
                 else
                 {
-<span class="nc bnc" id="L104" title="All 2 branches missed.">                    if (!cmdArray[index].startsWith(&quot;\&quot;&quot;)</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">                        &amp;&amp; !cmdArray[index].endsWith(&quot;\&quot;&quot;)</span>
-<span class="nc bnc" id="L106" title="All 2 branches missed.">                        &amp;&amp; cmdArray[index].contains(&quot; &quot;))</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">                    if (!cmdArray[index].startsWith(&quot;\&quot;&quot;)</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">                        &amp;&amp; !cmdArray[index].endsWith(&quot;\&quot;&quot;)</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">                        &amp;&amp; cmdArray[index].contains(&quot; &quot;))</span>
                     {
                         // add quotes if none already, and only if the param contains a space.
 <span class="nc" id="L109">                        String cmdItem = '&quot;' + cmdArray[index] + '&quot;';</span>

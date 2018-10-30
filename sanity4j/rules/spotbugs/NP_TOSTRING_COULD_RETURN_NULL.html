@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head><title>NP_TOSTRING_COULD_RETURN_NULL</title></head>
+<body>
+<h3>NP: toString method may return null (NP_TOSTRING_COULD_RETURN_NULL)</h3>
+<p>
+This toString method seems to return null in some circumstances. A liberal reading of the
+spec could be interpreted as allowing this, but it is probably a bad idea and could cause
+other code to break. Return the empty string or some other appropriate string rather than null.
+</p>
+</body>
+</html>

@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-by-rule.xsl"?>
-<packageByRule packageName="com.github.sanity4j.model.coverage" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<rule name="ImportFromSamePackage" tool="PMD" severity="1">
-<class name="com.github.sanity4j.model.coverage.ClassCoverage_Test">
-<diag id="416"/>
-</class>
-<class name="com.github.sanity4j.model.coverage.Coverage_Test">
-<diag id="419"/>
-<diag id="420"/>
-<diag id="421"/>
-</class>
-<class name="com.github.sanity4j.model.coverage.PackageCoverage_Test">
-<diag id="424"/>
-<diag id="425"/>
-</class>
-</rule>
+<packageByRule packageName="com.github.sanity4j.model.coverage" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <rule name="JavadocPackageCheck" tool="Checkstyle" severity="1">
 <class name="com.github.sanity4j.model.coverage.AbstractCoverage">
 <diag id="13"/>

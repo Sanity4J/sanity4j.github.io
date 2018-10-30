@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.model.coverage.ClassCoverage" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="83" branchCoverage="80" quality="100"/>
+<classDetails className="com.github.sanity4j.model.coverage.ClassCoverage" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="91" branchCoverage="80" quality="100"/>
 <source>
 <line>package com.github.sanity4j.model.coverage; </line>
 <line/>
@@ -115,8 +115,8 @@
 <line>     */</line>
 <line>    public void addBranchCoverage(final int lineNumber, final double percentage)</line>
 <line>    {</line>
-<line covered="no">        branchCoverageByLine.put(lineNumber, percentage);</line>
-<line covered="no">    }</line>
+<line covered="yes">        branchCoverageByLine.put(lineNumber, percentage);</line>
+<line covered="yes">    }</line>
 <line/>
 <line>    /**</line>
 <line>     * @return the number of executable lines in this class</line>

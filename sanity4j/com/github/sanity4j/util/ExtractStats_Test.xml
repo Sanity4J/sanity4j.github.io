@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.ExtractStats_Test" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="0" low="4" info="0" lineCoverage="98" branchCoverage="69" quality="97"/>
+<classDetails className="com.github.sanity4j.util.ExtractStats_Test" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="1" low="4" info="3" lineCoverage="88" branchCoverage="53" quality="96"/>
 <source>
 <line>package com.github.sanity4j.util;</line>
 <line/>
-<line>import java.io.ByteArrayOutputStream;</line>
 <line>import java.io.File;</line>
 <line>import java.io.FileOutputStream;</line>
 <line>import java.io.IOException;</line>
-<line>import java.io.InputStream;</line>
+<line>import java.util.Stack;</line>
+<line>import java.util.zip.ZipEntry;</line>
+<line>import java.util.zip.ZipInputStream;</line>
+<line/>
+<line>import org.junit.Assert;</line>
+<line>import org.junit.Before;</line>
+<line>import org.junit.BeforeClass;</line>
+<line>import org.junit.Test;</line>
 <line/>
 <line>import com.github.sanity4j.model.coverage.ClassCoverage;</line>
 <line>import com.github.sanity4j.model.coverage.Coverage;</line>
@@ -17,18 +23,12 @@
 <line>import com.github.sanity4j.model.diagnostic.Diagnostic;</line>
 <line>import com.github.sanity4j.model.diagnostic.DiagnosticSet;</line>
 <line>import com.github.sanity4j.model.summary.PackageSummary;</line>
-<line sev="1"><diag id="695"/>import com.github.sanity4j.util.ExtractStats;</line>
-<line sev="1"><diag id="696"/>import com.github.sanity4j.util.FileUtil;</line>
-<line sev="1"><diag id="697"/>import com.github.sanity4j.util.QaUtil;</line>
-<line sev="1"><diag id="698"/>import com.github.sanity4j.util.Tool;</line>
 <line>import com.github.sanity4j.workflow.QAConfig;</line>
 <line>import com.github.sanity4j.workflow.tool.CheckStyleResultReader;</line>
-<line>import com.github.sanity4j.workflow.tool.CoberturaResultReader;</line>
-<line>import com.github.sanity4j.workflow.tool.FindBugsResultReader;</line>
-<line>import com.github.sanity4j.workflow.tool.PmdCpdResultReader;</line>
+<line>import com.github.sanity4j.workflow.tool.JaCoCoResultReader;</line>
+<line>import com.github.sanity4j.workflow.tool.PmdCpd5ResultReader;</line>
 <line>import com.github.sanity4j.workflow.tool.PmdResultReader;</line>
-<line/>
-<line>import junit.framework.TestCase;</line>
+<line>import com.github.sanity4j.workflow.tool.SpotBugsResultReader;</line>
 <line/>
 <line>/**</line>
 <line> * ExtractStats_Test - unit test for {@link ExtractStats}.</line>
@@ -36,11 +36,8 @@
 <line> * @author Yiannis Paschalidis</line>
 <line> * @since Sanity4J 1.0</line>
 <line> */</line>
-<line covered="yes">public class ExtractStats_Test extends TestCase</line>
+<line covered="yes">public class ExtractStats_Test</line>
 <line>{</line>
-<line>    /** A temporary directory used to hold test data. */</line>
-<line>    private QAConfig config;</line>
-<line/>
 <line>    /** Incorrect classname message. */</line>
 <line>    private static final String INCORRECT_CLASSNAME_MSG = &quot;Incorrect class name&quot;;</line>
 <line/>
@@ -53,150 +50,168 @@
 <line>    /** No stats extracted message. */</line>
 <line>    private static final String NO_STATS_EXTRACTED_MSG = &quot;No stats extracted&quot;;</line>
 <line/>
+<line>    /** A temporary directory used to hold test data. */</line>
+<line>    private QAConfig config;</line>
+<line/>
+<line>    /** The temporary directory containing the result files. */</line>
+<line>    private static File tempDir;</line>
+<line/>
+<line>    /**</line>
+<line>     * Extracts the test project into a temporary directory.</line>
+<line>     * This avoid the classes/sources being analysed during a build.</line>
+<line>     */</line>
+<line>    @BeforeClass</line>
+<line>    public static void extractFiles() throws IOException</line>
+<line>    {</line>
+<line covered="yes">        tempDir = File.createTempFile(&quot;ExtractStats_Test&quot;, &quot;&quot;);</line>
+<line covered="yes">        tempDir.delete();</line>
+<line covered="yes">        tempDir.mkdirs();</line>
+<line covered="yes">        tempDir.deleteOnExit();</line>
+<line/>
+<line covered="yes">        byte[] buf = new byte[1024];</line>
+<line/>
+<line covered="yes">        try (ZipInputStream zis = new ZipInputStream(ExtractStats.class.getResourceAsStream(&quot;/test-project.zip&quot;)))</line>
+<line>        {</line>
+<line sev="1" covered="yes"><diag id="235"/><diag id="236"/>            for (ZipEntry ze = zis.getNextEntry() ; ze != null ; ze = zis.getNextEntry())</line>
+<line>            {</line>
+<line covered="yes">                String fileName = ze.getName();</line>
+<line sev="0" covered="yes"><diag id="583"/>                File newFile = new File(tempDir, fileName);</line>
+<line/>
+<line>                // We create the dirs individually rather than using mkDirs() so that they are deleted on exit </line>
+<line sev="0" covered="yes"><diag id="584"/>                Stack&lt;File&gt; dirsToCreate = new Stack&lt;File&gt;();</line>
+<line/>
+<line sev="1" covered="partial"><diag id="237"/><diag id="238"/>                for (File parentDir = newFile.getParentFile() ; !parentDir.exists() ; parentDir = parentDir.getParentFile())</line>
+<line>                {</line>
+<line covered="no">                    dirsToCreate.push(parentDir);</line>
+<line>                }</line>
+<line/>
+<line covered="partial">                while (!dirsToCreate.isEmpty())</line>
+<line>                {</line>
+<line covered="no">                    File dir = dirsToCreate.pop();</line>
+<line/>
+<line covered="no">                    if (!dir.mkdir())</line>
+<line>                    {</line>
+<line covered="no">                        throw new IOException(&quot;Failed to create dir: &quot; + dir);</line>
+<line>                    }</line>
+<line/>
+<line covered="no">                    dir.deleteOnExit();</line>
+<line covered="no">                }</line>
+<line/>
+<line covered="yes">                newFile.deleteOnExit();</line>
+<line/>
+<line covered="yes">                if (ze.isDirectory())</line>
+<line>                {</line>
+<line covered="partial">                    if (!newFile.exists() &amp;&amp; !newFile.mkdir())</line>
+<line>                    {</line>
+<line covered="no">                        throw new IOException(&quot;Failed to create dir: &quot; + newFile);</line>
+<line>                    }</line>
+<line>                }</line>
+<line>                else</line>
+<line>                {</line>
+<line sev="0" covered="yes"><diag id="585"/>                    try (FileOutputStream fos = new FileOutputStream(newFile))</line>
+<line>                    {</line>
+<line>                        int len;</line>
+<line/>
+<line sev="2" covered="yes"><diag id="586"/>                        while ((len = zis.read(buf)) &gt; 0)</line>
+<line>                        {</line>
+<line covered="yes">                            fos.write(buf, 0, len);</line>
+<line>                        }</line>
+<line covered="partial">                    }</line>
+<line>                }</line>
+<line/>
+<line covered="yes">                zis.closeEntry();</line>
+<line>            }</line>
+<line covered="partial">        }</line>
+<line covered="yes">    }</line>
+<line/>
 <line>    /**</line>
 <line>     * Since ExtractStats uses canonical paths, the test files</line>
 <line>     * do actually need to exist on the file system. This sets</line>
 <line>     * up the files.</line>
 <line>     */</line>
+<line>    @Before</line>
 <line>    public void setUp() throws IOException</line>
 <line>    {</line>
 <line covered="yes">        config = new QAConfig();</line>
-<line/>
-<line>        // Get a path to a temp dir</line>
-<line covered="yes">        File tempDir = File.createTempFile(&quot;ExtractStats_Test&quot;, &quot;&quot;);</line>
-<line covered="yes">        tempDir.delete();</line>
-<line/>
 <line covered="yes">        config.setTempDir(tempDir);</line>
-<line/>
-<line covered="yes">        File sourceDir = config.getCombinedSourceDir();</line>
-<line/>
-<line>        // Package dirs &amp; files</line>
-<line covered="yes">        File subpackage1Dir = new File(sourceDir, &quot;package/subpackage1&quot;);</line>
-<line covered="yes">        File subpackage2Dir = new File(sourceDir, &quot;package/subpackage2&quot;);</line>
-<line covered="yes">        File file1 = new File(sourceDir, &quot;package/ClassOne.java&quot;);</line>
-<line covered="yes">        File file2 = new File(sourceDir, &quot;package/subpackage1/ClassTwo.java&quot;);</line>
-<line covered="yes">        File file3 = new File(sourceDir, &quot;package/subpackage2/ClassThree.java&quot;);</line>
-<line covered="yes">        File file4 = new File(sourceDir, &quot;package/subpackage2/ClassFour.java&quot;);</line>
-<line/>
-<line covered="partial">        if (!tempDir.mkdirs()</line>
-<line covered="partial">            || !subpackage1Dir.mkdirs() || !subpackage2Dir.mkdirs()</line>
-<line covered="partial">            || !file1.createNewFile() || !file2.createNewFile()</line>
-<line covered="partial">            || !file3.createNewFile() || !file4.createNewFile())</line>
-<line>        {</line>
-<line covered="no">            throw new IOException(&quot;Failed to create temp files&quot;);</line>
-<line>        }</line>
+<line covered="yes">        config.setCoverageDataFile(new File(tempDir, &quot;jacoco.exec&quot;).getPath());</line>
 <line covered="yes">    }</line>
 <line/>
-<line>    /**</line>
-<line>     * Deletes the temporary dir.</line>
-<line>     */</line>
-<line>    public void tearDown() throws IOException</line>
-<line>    {</line>
-<line covered="yes">        File tempDir = config.getTempDir();</line>
-<line/>
-<line covered="partial">        if (tempDir != null &amp;&amp; tempDir.isDirectory())</line>
-<line>        {</line>
-<line covered="yes">            FileUtil.delete(tempDir);</line>
-<line>        }</line>
-<line covered="yes">    }</line>
-<line/>
+<line>    @Test</line>
 <line>    public void testExtractCheckStyleStats() throws Exception</line>
 <line>    {</line>
 <line covered="yes">        ExtractStats stats = new ExtractStats(config.getCombinedSourceDir().getCanonicalPath());</line>
-<line covered="yes">        createResultFile(&quot;/resources/tool-xml/checkStyle.xml&quot;, config.getToolResultFile(Tool.CHECKSTYLE));</line>
 <line covered="yes">        CheckStyleResultReader reader = new CheckStyleResultReader();</line>
 <line covered="yes">        reader.setResultFile(config.getToolResultFile(Tool.CHECKSTYLE));</line>
 <line covered="yes">        reader.setStats(stats);</line>
 <line covered="yes">        reader.run();</line>
-<line covered="yes">        assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
+<line covered="yes">        Assert.assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
 <line covered="yes">        checkDiagnostics(stats);</line>
 <line covered="yes">    }</line>
 <line/>
-<line>    public void testExtractCoberturaCoverage() throws Exception</line>
+<line>    @Test</line>
+<line>    public void testExtractJaCoCoCoverage() throws Exception</line>
 <line>    {</line>
 <line covered="yes">        ExtractStats stats = new ExtractStats(config.getCombinedSourceDir().getCanonicalPath());</line>
-<line covered="yes">        createResultFile(&quot;/resources/tool-xml/cobertura.xml&quot;, config.getToolResultFile(Tool.COBERTURA));</line>
-<line covered="yes">        CoberturaResultReader reader = new CoberturaResultReader();</line>
-<line covered="yes">        reader.setResultFile(config.getToolResultFile(Tool.COBERTURA));</line>
+<line/>
+<line covered="yes">        JaCoCoResultReader reader = new JaCoCoResultReader();</line>
+<line covered="yes">        JaCoCoResultReader.setConfig(config);</line>
+<line covered="yes">        reader.setResultFile(config.getToolResultFile(Tool.JACOCO));</line>
 <line covered="yes">        reader.setStats(stats);</line>
 <line covered="yes">        reader.run();</line>
 <line/>
 <line covered="yes">        Coverage coverage = stats.getCoverage();</line>
-<line covered="yes">        assertNotNull(&quot;No coverage extracted&quot;, coverage);</line>
+<line covered="yes">        Assert.assertNotNull(&quot;No coverage extracted&quot;, coverage);</line>
 <line/>
-<line covered="yes">        PackageCoverage packageCoverage = coverage.getPackageCoverage(&quot;package&quot;);</line>
-<line covered="yes">        assertEquals(&quot;Incorrect package line coverage extracted&quot;, 0.5, packageCoverage.getLineCoverage(), 0.0);</line>
-<line covered="yes">        assertEquals(&quot;Incorrect package branch coverage extracted&quot;, 0.5, packageCoverage.getBranchCoverage(), 0.0);</line>
+<line covered="yes">        PackageCoverage packageCoverage = coverage.getPackageCoverage(&quot;packagg&quot;);</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect package line coverage extracted&quot;, 0.57, packageCoverage.getLineCoverage(), 0.05);</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect package branch coverage extracted&quot;, 0.5, packageCoverage.getBranchCoverage(), 0.0);</line>
 <line/>
-<line covered="yes">        ClassCoverage classCoverage = packageCoverage.getClassCoverage(&quot;package.ClassOne&quot;);</line>
-<line covered="yes">        assertEquals(&quot;Incorrect class line coverage extracted&quot;, 1.0, classCoverage.getCoveredLineCount(), 0.0);</line>
-<line covered="yes">        assertEquals(&quot;Incorrect classs branch coverage extracted&quot;, 0.0, classCoverage.getBranchCount(), 0.0);</line>
-<line covered="yes">        assertEquals(&quot;Incorrect class line count extracted&quot;, 1, classCoverage.getLineCount());</line>
-<line covered="yes">        assertEquals(&quot;Incorrect class branch count extracted&quot;, 0, classCoverage.getBranchCount());</line>
+<line covered="yes">        ClassCoverage classCoverage = packageCoverage.getClassCoverage(&quot;packagg.ClassOne&quot;);</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect class line coverage extracted&quot;, 4, classCoverage.getCoveredLineCount(), 0.0);</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect class branch coverage extracted&quot;, 0.25, classCoverage.getBranchCoverage(), 0.0);</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect class line count extracted&quot;, 7, classCoverage.getLineCount());</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect class branch count extracted&quot;, 2, classCoverage.getBranchCount());</line>
 <line covered="yes">    }</line>
 <line/>
-<line>    public void testExtractFindbugsStats() throws Exception</line>
+<line>    @Test</line>
+<line>    public void testExtractSpotBugsStats() throws Exception</line>
 <line>    {</line>
 <line covered="yes">        ExtractStats stats = new ExtractStats(config.getCombinedSourceDir().getCanonicalPath());</line>
-<line covered="yes">        createResultFile(&quot;/resources/tool-xml/findBugs.xml&quot;, config.getToolResultFile(Tool.FINDBUGS));</line>
-<line covered="yes">        FindBugsResultReader reader = new FindBugsResultReader();</line>
-<line covered="yes">        reader.setResultFile(config.getToolResultFile(Tool.FINDBUGS));</line>
+<line covered="yes">        SpotBugsResultReader reader = new SpotBugsResultReader();</line>
+<line covered="yes">        reader.setResultFile(config.getToolResultFile(Tool.SPOTBUGS));</line>
 <line covered="yes">        reader.setStats(stats);</line>
 <line covered="yes">        reader.run();</line>
 <line/>
-<line covered="yes">        assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
+<line covered="yes">        Assert.assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
 <line covered="yes">        checkDiagnostics(stats);</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testExtractPmdCpdStats() throws Exception</line>
 <line>    {</line>
 <line covered="yes">        ExtractStats stats = new ExtractStats(config.getCombinedSourceDir().getCanonicalPath());</line>
-<line covered="yes">        createResultFile(&quot;/resources/tool-xml/pmdCpd.xml&quot;, config.getToolResultFile(Tool.PMD_CPD));</line>
-<line covered="yes">        PmdCpdResultReader reader = new PmdCpdResultReader();</line>
+<line covered="yes">        PmdCpd5ResultReader reader = new PmdCpd5ResultReader();</line>
 <line covered="yes">        reader.setResultFile(config.getToolResultFile(Tool.PMD_CPD));</line>
 <line covered="yes">        reader.setStats(stats);</line>
 <line covered="yes">        reader.run();</line>
 <line/>
-<line covered="yes">        assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
+<line covered="yes">        Assert.assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
 <line covered="yes">        checkDiagnostics(stats);</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testExtractPmdStats() throws Exception</line>
 <line>    {</line>
 <line covered="yes">        ExtractStats stats = new ExtractStats(config.getCombinedSourceDir().getCanonicalPath());</line>
-<line covered="yes">        createResultFile(&quot;/resources/tool-xml/pmd.xml&quot;, config.getToolResultFile(Tool.PMD));</line>
 <line covered="yes">        PmdResultReader reader = new PmdResultReader();</line>
 <line covered="yes">        reader.setResultFile(config.getToolResultFile(Tool.PMD));</line>
 <line covered="yes">        reader.setStats(stats);</line>
 <line covered="yes">        reader.run();</line>
 <line/>
-<line covered="yes">        assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
+<line covered="yes">        Assert.assertFalse(NO_STATS_EXTRACTED_MSG, stats.getDiagnostics().isEmpty());</line>
 <line covered="yes">        checkDiagnostics(stats);</line>
 <line covered="yes">    }</line>
-<line/>
-<line>    private File createResultFile(final String resourcePath, final File dest) throws IOException</line>
-<line>    {</line>
-<line covered="yes">        File sourceDir = config.getCombinedSourceDir();</line>
-<line covered="yes">        dest.deleteOnExit();</line>
-<line/>
-<line covered="yes">        InputStream ris = getClass().getResourceAsStream(resourcePath);</line>
-<line covered="yes">        String xml = new String(getBytes(ris), &quot;UTF-8&quot;);</line>
-<line covered="yes">        QaUtil.safeClose(ris);</line>
-<line/>
-<line covered="yes">        xml = replace(xml, &quot;src\\package\\&quot;, sourceDir.getCanonicalPath() + &quot;\\package\\&quot;);</line>
-<line covered="yes">        xml = replace(xml, &quot;src/package/&quot;, sourceDir.getCanonicalPath() + &quot;/package/&quot;);</line>
-<line/>
-<line>        // Fix for Bug 3523174 Sanity4J will only build on Windows</line>
-<line covered="yes">        xml = xml.replace('\\', '/');</line>
-<line/>
-<line covered="yes">        FileOutputStream fos = new FileOutputStream(dest);</line>
-<line covered="yes">        fos.write(xml.getBytes(&quot;UTF-8&quot;));</line>
-<line/>
-<line covered="yes">        ris.close();</line>
-<line covered="yes">        fos.close();</line>
-<line/>
-<line covered="yes">        return dest;</line>
-<line>    }</line>
 <line/>
 <line>    /** Checks the diagnostics. */</line>
 <line>    private void checkDiagnostics(final ExtractStats stats) throws IOException</line>
@@ -204,27 +219,27 @@
 <line covered="yes">        stats.extractLineCounts();</line>
 <line/>
 <line>        // Check summary stats</line>
-<line covered="yes">        assertEquals(&quot;Incorrect number of classes&quot;, 4, stats.getClassCount());</line>
-<line covered="yes">        assertEquals(&quot;Incorrect number of classes for package 'package'&quot;,</line>
-<line covered="yes">                     1, stats.getPackageClassCount(&quot;package&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect number of classes for package 'package.subpackage1'&quot;,</line>
-<line covered="yes">                     1, stats.getPackageClassCount(&quot;package.subpackage1&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect number of classes for package 'package.subpackage2'&quot;,</line>
-<line covered="yes">                     2, stats.getPackageClassCount(&quot;package.subpackage2&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect number of classes&quot;, 4, stats.getClassCount());</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect number of classes for package 'packagg'&quot;,</line>
+<line covered="yes">                     1, stats.getPackageClassCount(&quot;packagg&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect number of classes for package 'packagg.subpackage1'&quot;,</line>
+<line covered="yes">                     1, stats.getPackageClassCount(&quot;packagg.subpackage1&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect number of classes for package 'packagg.subpackage2'&quot;,</line>
+<line covered="yes">                     2, stats.getPackageClassCount(&quot;packagg.subpackage2&quot;));</line>
 <line/>
 <line covered="yes">        PackageSummary[] summary = stats.getRunSummary();</line>
-<line covered="yes">        assertEquals(&quot;Incorrect number of package summaries&quot;, 4, summary.length); // 3, +1 for root package</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect number of package summaries&quot;, 4, summary.length); // 3, +1 for root package</line>
 <line/>
 <line>        // Check diagnostic set</line>
 <line covered="yes">        DiagnosticSet diags = stats.getDiagnostics();</line>
-<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics&quot;, 6, diags.size());</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect number of diagnostics&quot;, 6, diags.size());</line>
 <line/>
-<line covered="yes">        assertEquals(&quot;Incorrect diags for package 'package'&quot;,</line>
-<line covered="yes">                     1, diags.getDiagnosticsForPackage(&quot;package&quot;, false).size());</line>
-<line covered="yes">        assertEquals(&quot;Incorrect diags for package 'package.subpackage1'&quot;,</line>
-<line covered="yes">                     2, diags.getDiagnosticsForPackage(&quot;package.subpackage1&quot;, false).size());</line>
-<line covered="yes">        assertEquals(&quot;Incorrect diags for package 'package.subpackage2'&quot;,</line>
-<line covered="yes">                     3, diags.getDiagnosticsForPackage(&quot;package.subpackage2&quot;, false).size());</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect diags for package 'packagg'&quot;,</line>
+<line covered="yes">                     1, diags.getDiagnosticsForPackage(&quot;packagg&quot;, false).size());</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect diags for package 'packagg.subpackage1'&quot;,</line>
+<line covered="yes">                     2, diags.getDiagnosticsForPackage(&quot;packagg.subpackage1&quot;, false).size());</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect diags for package 'packagg.subpackage2'&quot;,</line>
+<line covered="yes">                     3, diags.getDiagnosticsForPackage(&quot;packagg.subpackage2&quot;, false).size());</line>
 <line/>
 <line>        // Check the individual diagnostics</line>
 <line covered="yes">        for (Diagnostic diag : diags)</line>
@@ -235,48 +250,48 @@
 <line>            {</line>
 <line>                case 11:</line>
 <line>                {</line>
-<line covered="yes">                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
-<line covered="yes">                                 &quot;package.ClassOne&quot;, diag.getClassName());</line>
+<line covered="yes">                   Assert.assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line covered="yes">                                 &quot;packagg.ClassOne&quot;, diag.getClassName());</line>
 <line/>
 <line covered="yes">                    break;</line>
 <line>                }</line>
 <line>                case 22:</line>
 <line>                {</line>
-<line covered="yes">                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
-<line covered="yes">                                 &quot;package.subpackage1.ClassTwo&quot;, diag.getClassName());</line>
+<line covered="yes">                   Assert.assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line covered="yes">                                 &quot;packagg.subpackage1.ClassTwo&quot;, diag.getClassName());</line>
 <line covered="yes">                    break;</line>
 <line>                }</line>
 <line>                case 33:</line>
 <line>                {</line>
-<line covered="yes">                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
-<line covered="yes">                                 &quot;package.subpackage1.ClassTwo&quot;, diag.getClassName());</line>
+<line covered="yes">                   Assert.assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line covered="yes">                                 &quot;packagg.subpackage1.ClassTwo&quot;, diag.getClassName());</line>
 <line/>
 <line covered="yes">                    break;</line>
 <line>                }</line>
 <line>                case 44:</line>
 <line>                {</line>
-<line covered="yes">                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
-<line covered="yes">                                 &quot;package.subpackage2.ClassThree&quot;, diag.getClassName());</line>
+<line covered="yes">                   Assert.assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line covered="yes">                                 &quot;packagg.subpackage2.ClassThree&quot;, diag.getClassName());</line>
 <line/>
 <line covered="yes">                    break;</line>
 <line>                }</line>
 <line>                case 55:</line>
 <line>                {</line>
-<line covered="yes">                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
-<line covered="yes">                                 &quot;package.subpackage2.ClassThree&quot;, diag.getClassName());</line>
+<line covered="yes">                   Assert.assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line covered="yes">                                 &quot;packagg.subpackage2.ClassThree&quot;, diag.getClassName());</line>
 <line/>
 <line covered="yes">                    break;</line>
 <line>                }</line>
 <line>                case 66:</line>
 <line>                {</line>
-<line covered="yes">                    assertEquals(INCORRECT_CLASSNAME_MSG,</line>
-<line covered="yes">                                 &quot;package.subpackage2.ClassFour&quot;, diag.getClassName());</line>
+<line covered="yes">                   Assert.assertEquals(INCORRECT_CLASSNAME_MSG,</line>
+<line covered="yes">                                 &quot;packagg.subpackage2.ClassFour&quot;, diag.getClassName());</line>
 <line/>
 <line covered="yes">                    break;</line>
 <line>                }</line>
 <line>                default:</line>
 <line>                {</line>
-<line covered="no">                    fail(&quot;Extracted incorrect start line: &quot; + diag.getStartLine());</line>
+<line covered="no">                   Assert.fail(&quot;Extracted incorrect start line: &quot; + diag.getStartLine());</line>
 <line>                }</line>
 <line>            }</line>
 <line/>
@@ -284,9 +299,9 @@
 <line/>
 <line covered="yes">            if (diag.getSource() != Diagnostic.SOURCE_PMD_CPD)</line>
 <line>            {</line>
-<line covered="yes">                assertEquals(INCORRECT_RULENAME_MSG, &quot;rule&quot; + testNum, diag.getRuleName());</line>
+<line covered="yes">                Assert.assertEquals(INCORRECT_RULENAME_MSG, &quot;rule&quot; + testNum, diag.getRuleName());</line>
 <line/>
-<line covered="yes">                assertEquals(INCORRECT_MESSAGE_TEXT,</line>
+<line covered="yes">                Assert.assertEquals(INCORRECT_MESSAGE_TEXT,</line>
 <line covered="yes">                             &quot;message text&quot; + testNum, diag.getMessage().trim());</line>
 <line>            }</line>
 <line covered="yes">        }</line>
@@ -299,59 +314,36 @@
 <line>     */</line>
 <line>    public static String replace(final String data, final String search, final String replace)</line>
 <line>    {</line>
-<line covered="yes">        StringBuffer buf = new StringBuffer(data.length());</line>
-<line covered="yes">        int lastPos = 0;</line>
+<line covered="no">        StringBuilder buf = new StringBuilder(data.length());</line>
+<line covered="no">        int lastPos = 0;</line>
 <line/>
-<line covered="yes">        for (int pos = data.indexOf(search, 0); pos != -1; pos = data.indexOf(search, lastPos))</line>
+<line covered="no">        for (int pos = data.indexOf(search, 0); pos != -1; pos = data.indexOf(search, lastPos))</line>
 <line>        {</line>
-<line covered="yes">            buf.append(data.substring(lastPos, pos)).append(replace);</line>
-<line covered="yes">            lastPos = pos + search.length();</line>
+<line covered="no">            buf.append(data.substring(lastPos, pos)).append(replace);</line>
+<line covered="no">            lastPos = pos + search.length();</line>
 <line>        }</line>
 <line/>
-<line covered="yes">        buf.append(data.substring(lastPos));</line>
-<line covered="yes">        return buf.toString();</line>
-<line>    }</line>
-<line/>
-<line>    /**</line>
-<line>     * Returns a byte array containing all the information contained in the</line>
-<line>     * given input stream.</line>
-<line>     *</line>
-<line>     * @param stream the stream to read from.</line>
-<line>     * @return the stream contents as a byte array.</line>
-<line>     * @throws IOException if there is an error reading from the stream.</line>
-<line>     */</line>
-<line>    private byte[] getBytes(final InputStream stream) throws IOException</line>
-<line>    {</line>
-<line covered="yes">        ByteArrayOutputStream result = new ByteArrayOutputStream();</line>
-<line/>
-<line covered="yes">        final byte[] buf = new byte[4096];</line>
-<line covered="yes">        int bytesRead = stream.read(buf);</line>
-<line/>
-<line covered="yes">        while (bytesRead != -1)</line>
-<line>        {</line>
-<line covered="yes">            result.write(buf, 0, bytesRead);</line>
-<line covered="yes">            bytesRead = stream.read(buf);</line>
-<line>        }</line>
-<line/>
-<line covered="yes">        result.flush();</line>
-<line covered="yes">        result.close();</line>
-<line/>
-<line covered="yes">        return result.toByteArray();</line>
+<line covered="no">        buf.append(data.substring(lastPos));</line>
+<line covered="no">        return buf.toString();</line>
 <line>    }</line>
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="695" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
+<diag id="235" sev="1" tool="Checkstyle" rule="NoWhitespaceBeforeCheck">';' is preceded with whitespace.</diag>
+<diag id="236" sev="1" tool="Checkstyle" rule="NoWhitespaceBeforeCheck">';' is preceded with whitespace.</diag>
+<diag id="583" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
 </diag>
-<diag id="696" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
+<diag id="584" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
 </diag>
-<diag id="697" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
+<diag id="237" sev="1" tool="Checkstyle" rule="NoWhitespaceBeforeCheck">';' is preceded with whitespace.</diag>
+<diag id="238" sev="1" tool="Checkstyle" rule="NoWhitespaceBeforeCheck">';' is preceded with whitespace.</diag>
+<diag id="585" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
 </diag>
-<diag id="698" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
+<diag id="586" sev="2" tool="PMD" rule="AssignmentInOperand">
+Avoid assignments in operands
 </diag>
 </diags>
 </classDetails>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.workflow.tool.AbstractToolRunner" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.workflow.tool.AbstractToolRunner" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="0" low="4" info="0" quality="96"/>
 <source>
-<line sev="1"><diag id="283"/>package com.github.sanity4j.workflow.tool;</line>
+<line sev="1"><diag id="290"/>package com.github.sanity4j.workflow.tool;</line>
 <line/>
 <line>import java.io.File;</line>
 <line>import java.io.FileOutputStream;</line>
@@ -79,7 +79,7 @@
 <line>    {</line>
 <line>        List&lt;String&gt; toolJars = new ArrayList&lt;String&gt;();</line>
 <line/>
-<line sev="1"><diag id="833"/>        if (config.getProductsDir() != null)</line>
+<line sev="1"><diag id="702"/>        if (config.getProductsDir() != null)</line>
 <line sev="1">        {</line>
 <line sev="1">            FileUtil.findJars(new File(getToolHome()), toolJars);</line>
 <line sev="1">        }</line>
@@ -133,11 +133,11 @@
 <line>        Map&lt;String, String&gt; paramMap = config.asParameterMap();</line>
 <line/>
 <line>        String outputFile = getToolResultFile();</line>
-<line sev="1"><diag id="834"/>        String toolHome = getToolHome();</line>
+<line sev="1"><diag id="703"/>        String toolHome = getToolHome();</line>
 <line/>
 <line>        // Retrieve the configuration parameters for this tool.</line>
 <line>        String toolConfigParam = config.getToolConfigParam(tool.getId(), toolVersion);</line>
-<line sev="1"><diag id="835"/>        String toolAuxClasspath = config.getToolConfigClasspath(tool.getId(), toolVersion);</line>
+<line sev="1"><diag id="704"/>        String toolAuxClasspath = config.getToolConfigClasspath(tool.getId(), toolVersion);</line>
 <line/>
 <line>        // Retrieve the configuration parameter values for this tool.</line>
 <line>        String toolConfig = null;</line>
@@ -147,7 +147,7 @@
 <line>            toolConfig = paramMap.get(toolConfigParam);</line>
 <line>        }</line>
 <line/>
-<line>        if (FileUtil.hasValue(toolConfig))</line>
+<line>        if (!StringUtil.empty(toolConfig))</line>
 <line>        {</line>
 <line>            InputStream stream = this.getClass().getResourceAsStream(&quot;/&quot; + toolConfig);</line>
 <line/>
@@ -176,7 +176,7 @@
 <line>        }</line>
 <line/>
 <line>        // Add the class path for this tool to the javaArgs.</line>
-<line>        StringBuffer javaArgsBuf = new StringBuffer();</line>
+<line>        StringBuilder javaArgsBuf = new StringBuilder();</line>
 <line>        javaArgsBuf.append(paramMap.get(&quot;javaArgs&quot;));</line>
 <line>        List&lt;String&gt; toolJars = getToolJars();</line>
 <line>        String classPath = StringUtil.concatList(toolJars, File.pathSeparator);</line>
@@ -207,6 +207,7 @@
 <line>     * The entry point for the work unit. This implementation looks up the command line necessary to run the tool, then</line>
 <line>     * calls {@link #runTool(String)}.</line>
 <line>     */</line>
+<line>    @Override</line>
 <line>    public void run()</line>
 <line>    {</line>
 <line>        Map&lt;String, String&gt; params = getParameterMap();</line>
@@ -238,14 +239,14 @@
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="283" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="833" sev="1" tool="PMD" rule="ConfusingTernary">
+<diag id="290" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="702" sev="1" tool="PMD" rule="ConfusingTernary">
 Avoid if (x != y) ..; else ..;
 </diag>
-<diag id="834" sev="1" tool="PMD" rule="PrematureDeclaration">
+<diag id="703" sev="1" tool="PMD" rule="PrematureDeclaration">
 Avoid declaring a variable if it is unreferenced before a possible exit point.
 </diag>
-<diag id="835" sev="1" tool="PMD" rule="PrematureDeclaration">
+<diag id="704" sev="1" tool="PMD" rule="PrematureDeclaration">
 Avoid declaring a variable if it is unreferenced before a possible exit point.
 </diag>
 </diags>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.workflow.tool.JaCoCoRunner" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.workflow.tool.JaCoCoRunner" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
 <source>
 <line>package com.github.sanity4j.workflow.tool;</line>
@@ -10,8 +10,10 @@
 <line>/**</line>
 <line> * JaCoCoRunner - work unit which produces a JaCoCo report.</line>
 <line> * </line>
-<line> * Note: JaCoCo CLI is coming in a pending pull request - https://github.com/jacoco/jacoco/pull/525 . For now, we use the API directly</line>
-<line>* </line>
+<line> * This needs to be re-written to use the new JaCoCo CLI ( https://github.com/jacoco/jacoco/pull/525 ).</line>
+<line> * Full documentation is available at https://www.jacoco.org/jacoco/trunk/doc/cli.html</line>
+<line> * For now, we use the API directly</line>
+<line> * </line>
 <line> * @author Yiannis Paschalidis</line>
 <line> * @since Sanity4J 1.8</line>
 <line> */</line>

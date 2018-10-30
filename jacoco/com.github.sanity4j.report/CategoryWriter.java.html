@@ -57,7 +57,7 @@ public class CategoryWriter
         
 <span class="nc bnc" id="L58" title="All 2 branches missed.">        if (packageName != null)</span>
         {
-<span class="nc" id="L60">        	StringBuffer buf = new StringBuffer();</span>
+<span class="nc" id="L60">        	StringBuilder buf = new StringBuilder();</span>
 <span class="nc" id="L61">        	buf.append(packageName.replace('.', File.separatorChar))</span>
 <span class="nc" id="L62">        		.append(File.separatorChar)</span>
 <span class="nc" id="L63">        		.append(fileName);</span>
@@ -82,7 +82,7 @@ public class CategoryWriter
                           ? &quot;&quot; 
 <span class="nc" id="L83">                          : (packageName.replaceAll(&quot;[^\\.]&quot;, &quot;&quot;).replaceAll(&quot;\\.&quot;, &quot;../&quot;) + &quot;../&quot;);</span>
         
-<span class="nc" id="L85">        StringBuffer xml = new StringBuffer();</span>
+<span class="nc" id="L85">        StringBuilder xml = new StringBuilder();</span>
 
         // Write top-level package summary info        
 <span class="nc" id="L88">        xml.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;)</span>
@@ -121,7 +121,7 @@ public class CategoryWriter
      * @param xml the string buffer to append the XML output to
      */
     private void generateCategoryDetails(final DiagnosticCategory category, 
-                                          final StringBuffer xml)
+                                          final StringBuilder xml)
     {
 <span class="nc" id="L126">        xml.append(&quot;&lt;category name=\&quot;&quot;).append(category.getName()).append(&quot;\&quot;&gt;\n&quot;);</span>
                 

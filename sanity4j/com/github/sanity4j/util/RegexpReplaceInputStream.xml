@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.RegexpReplaceInputStream" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="1" low="2" info="2" lineCoverage="83" branchCoverage="66" quality="96"/>
+<classDetails className="com.github.sanity4j.util.RegexpReplaceInputStream" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="2" lineCoverage="84" branchCoverage="66" quality="100"/>
 <source>
 <line>package com.github.sanity4j.util;</line>
 <line/>
 <line>import java.io.IOException;</line>
 <line>import java.io.InputStream;</line>
-<line>import java.io.UnsupportedEncodingException;</line>
+<line>import java.nio.charset.StandardCharsets;</line>
 <line>import java.util.regex.Matcher;</line>
 <line>import java.util.regex.Pattern;</line>
 <line/>
@@ -164,27 +164,20 @@
 <line>     */</line>
 <line>    private void updateMatchOffset()</line>
 <line>    {</line>
-<line>        try</line>
+<line covered="partial">        if (lookaheadRemaining &gt; 0 &amp;&amp; matchOffset == -1)</line>
 <line>        {</line>
-<line sev="1" covered="partial"><diag id="760"/><diag id="761"/>            if ((lookaheadRemaining &gt; 0) &amp;&amp; (matchOffset == -1))</line>
+<line covered="yes">            String buffer = new String(lookahead, lookaheadOffset, lookaheadRemaining - lookaheadOffset, StandardCharsets.UTF_8);</line>
+<line/>
+<line covered="yes">            Matcher matcher = pattern.matcher(buffer);</line>
+<line/>
+<line covered="partial">            if (matcher.find() &amp;&amp; matcher.start() &lt; lookaheadLength)</line>
 <line>            {</line>
-<line covered="yes">                String buffer = new String(lookahead, lookaheadOffset, lookaheadRemaining - lookaheadOffset, &quot;UTF-8&quot;);</line>
+<line covered="yes">                matchOffset = lookaheadOffset + matcher.start();</line>
+<line covered="yes">                matchFinishOffset = lookaheadOffset + matcher.end();</line>
 <line/>
-<line covered="yes">                Matcher matcher = pattern.matcher(buffer);</line>
-<line/>
-<line covered="partial">                if (matcher.find() &amp;&amp; matcher.start() &lt; lookaheadLength)</line>
-<line>                {</line>
-<line covered="yes">                    matchOffset = lookaheadOffset + matcher.start();</line>
-<line covered="yes">                    matchFinishOffset = lookaheadOffset + matcher.end();</line>
-<line/>
-<line covered="yes">                    replace = buffer.substring(matcher.start(), matcher.end()).replaceFirst(pattern.pattern(), replaceRegexp);</line>
-<line>                }</line>
+<line covered="yes">                replace = buffer.substring(matcher.start(), matcher.end()).replaceFirst(pattern.pattern(), replaceRegexp);</line>
 <line>            }</line>
 <line>        }</line>
-<line sev="2" covered="no"><diag id="762"/>        catch (UnsupportedEncodingException uue)</line>
-<line sev="2">        {</line>
-<line sev="2">            // Should never happen, java has to support UTF-8.</line>
-<line sev="2" covered="yes">        }</line>
 <line covered="yes">    }</line>
 <line/>
 <line>    /**</line>
@@ -205,12 +198,12 @@
 <line/>
 <line covered="partial">            if (matchOffset != -1)</line>
 <line>            {</line>
-<line sev="0" covered="partial"><diag id="763"/>                if (matchOffset - lookaheadLength &gt;= 0)</line>
+<line sev="0" covered="partial"><diag id="641"/>                if (matchOffset - lookaheadLength &gt;= 0)</line>
 <line sev="0">                {</line>
 <line sev="0" covered="no">                    matchOffset -= lookaheadLength;</line>
 <line sev="0">                }</line>
 <line/>
-<line sev="0" covered="partial"><diag id="764"/>                if (matchFinishOffset - lookaheadLength &gt;= 0)</line>
+<line sev="0" covered="partial"><diag id="642"/>                if (matchFinishOffset - lookaheadLength &gt;= 0)</line>
 <line sev="0">                {</line>
 <line sev="0" covered="no">                    matchFinishOffset -= lookaheadLength;</line>
 <line sev="0">                }</line>
@@ -278,6 +271,7 @@
 <line>     * @return The character read from the underlying stream, or -1 if we have reached the end of the stream.</line>
 <line>     * @throws IOException if there is an error reading from the backing stream.</line>
 <line>     */</line>
+<line>    @Override</line>
 <line>    public int read() throws IOException</line>
 <line>    {</line>
 <line covered="yes">        if (lookaheadOffset &gt;= lookaheadLength)</line>
@@ -301,19 +295,10 @@
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="760" sev="1" tool="PMD" rule="UselessParentheses">
-Useless parentheses.
-</diag>
-<diag id="761" sev="1" tool="PMD" rule="UselessParentheses">
-Useless parentheses.
-</diag>
-<diag id="762" sev="2" tool="PMD" rule="EmptyCatchBlock">
-Avoid empty catch blocks
-</diag>
-<diag id="763" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">
+<diag id="641" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">
 Deeply nested if..then statements are hard to read
 </diag>
-<diag id="764" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">
+<diag id="642" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">
 Deeply nested if..then statements are hard to read
 </diag>
 </diags>

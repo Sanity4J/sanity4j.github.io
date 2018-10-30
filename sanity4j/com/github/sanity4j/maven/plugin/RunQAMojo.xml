@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.maven.plugin.RunQAMojo" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.maven.plugin.RunQAMojo" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="6" moderate="1" low="10" info="27" quality="88"/>
 <source>
-<line sev="2"><diag id="341"/><diag id="342"/>package com.github.sanity4j.maven.plugin;</line>
+<line sev="2"><diag id="335"/><diag id="336"/>package com.github.sanity4j.maven.plugin;</line>
 <line sev="2"/>
 <line sev="2">import java.io.BufferedWriter;</line>
 <line sev="2">import java.io.File;</line>
@@ -75,8 +75,8 @@
 <line sev="2"> * @since Sanity4J 1.0</line>
 <line sev="2"> */</line>
 <line sev="2">@Mojo(name = &quot;sanity4j&quot;, requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST, requiresDependencyCollection = ResolutionScope.TEST)</line>
-<line sev="2"><diag id="343"/><diag id="344"/><diag id="345"/>public class RunQAMojo extends AbstractMavenReport</line>
-<line sev="2"><diag id="346"/>{</line>
+<line sev="2"><diag id="337"/><diag id="338"/><diag id="339"/>public class RunQAMojo extends AbstractMavenReport</line>
+<line sev="2"><diag id="340"/>{</line>
 <line sev="2">    /** Mojo and goal to download historical coverage stats. */</line>
 <line sev="2">    private static final String DOWNLOAD_SINGLE_MOJO = &quot;org.codehaus.mojo:wagon-maven-plugin:1.0-beta-5:download-single&quot;;</line>
 <line sev="2"/>
@@ -223,16 +223,16 @@
 <line sev="2">    private String checkStyleConfigClasspath;</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
-<line sev="2">     * The configuration passed to the FindBugs ${sanity4j.tool.findbugs.command} as ${sanity4j.tool.findbugs.config}.</line>
+<line sev="2">     * The configuration passed to the SpotBugs ${sanity4j.tool.spotbugs.command} as ${sanity4j.tool.spotbugs.config}.</line>
 <line sev="2">     */</line>
 <line sev="2">    @Parameter    </line>
-<line sev="2">    private String findBugsConfig;</line>
+<line sev="2">    private String spotBugsConfig;</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
-<line sev="2">     * The class path used by the configuration passed to the FindBugs ${sanity4j.tool.findbugs.command} as ${sanity4j.tool.findbugs.config}.</line>
+<line sev="2">     * The class path used by the configuration passed to the SpotBugs ${sanity4j.tool.spotbugs.command} as ${sanity4j.tool.spotbugs.config}.</line>
 <line sev="2">     */</line>
 <line sev="2">    @Parameter    </line>
-<line sev="2">    private String findBugsConfigClasspath;</line>
+<line sev="2">    private String spotBugsConfigClasspath;</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
 <line sev="2">     * The configuration passed to the PMD ${sanity4j.tool.pmd.command} as ${sanity4j.tool.pmd.config}.</line>
@@ -309,7 +309,7 @@
 <line sev="2">     * @throws MavenReportException Thrown if a problem occurs generating the report.</line>
 <line sev="2">     */</line>
 <line sev="2"><diag id="10"/>    @Override</line>
-<line sev="2"><diag id="381"/><diag id="382"/><diag id="383"/><diag id="384"/>    public void executeReport(final Locale locale) throws MavenReportException</line>
+<line sev="2"><diag id="375"/><diag id="376"/><diag id="377"/><diag id="378"/>    public void executeReport(final Locale locale) throws MavenReportException</line>
 <line sev="2">    {</line>
 <line sev="2">        if (isAggregate() &amp;&amp; !getProject().isExecutionRoot())</line>
 <line sev="2">        {</line>
@@ -338,14 +338,14 @@
 <line sev="2">                if (getSources() == null)</line>
 <line sev="2">                {</line>
 <line sev="2">                    qaConfig.addSourcePath(</line>
-<line sev="2"><diag id="385"/>                        new File(reactorProject.getBasedir(), &quot;src/main&quot;).getPath());</line>
+<line sev="2"><diag id="379"/>                        new File(reactorProject.getBasedir(), &quot;src/main&quot;).getPath());</line>
 <line sev="2">                }</line>
 <line sev="2">                else</line>
 <line sev="2">                {</line>
 <line sev="2">                    for (String source : getSources())</line>
 <line sev="2">                    {</line>
 <line sev="2">                        qaConfig.addSourcePath(</line>
-<line sev="2"><diag id="386"/>                            new File(reactorProject.getBasedir(), source).getPath());</line>
+<line sev="2"><diag id="380"/>                            new File(reactorProject.getBasedir(), source).getPath());</line>
 <line sev="2">                    }</line>
 <line sev="2">                }</line>
 <line sev="2">            }</line>
@@ -360,7 +360,7 @@
 <line sev="2">            for (String source : getSources())</line>
 <line sev="2">            {</line>
 <line sev="2">                qaConfig.addSourcePath(</line>
-<line sev="2"><diag id="387"/>                     new File(getProject().getBasedir(), source).getPath());</line>
+<line sev="2"><diag id="381"/>                     new File(getProject().getBasedir(), source).getPath());</line>
 <line sev="2">            }</line>
 <line sev="2">        }</line>
 <line sev="2"/>
@@ -371,14 +371,14 @@
 <line sev="2">                if (getTestSources() == null)</line>
 <line sev="2">                {</line>
 <line sev="2">                    qaConfig.addSourcePath(</line>
-<line sev="2"><diag id="388"/>                        new File(reactorProject.getBasedir(), &quot;src/test&quot;).getPath());</line>
+<line sev="2"><diag id="382"/>                        new File(reactorProject.getBasedir(), &quot;src/test&quot;).getPath());</line>
 <line sev="2">                }</line>
 <line sev="2">                else</line>
 <line sev="2">                {</line>
 <line sev="2">                    for (String testSource : getTestSources())</line>
 <line sev="2">                    {</line>
 <line sev="2">                        qaConfig.addSourcePath(</line>
-<line sev="2"><diag id="389"/>                            new File(reactorProject.getBasedir(), testSource).getPath());</line>
+<line sev="2"><diag id="383"/>                            new File(reactorProject.getBasedir(), testSource).getPath());</line>
 <line sev="2">                    }</line>
 <line sev="2">                }</line>
 <line sev="2">            }</line>
@@ -393,7 +393,7 @@
 <line sev="2">            for (String testSource : getTestSources())</line>
 <line sev="2">            {</line>
 <line sev="2">                qaConfig.addSourcePath(</line>
-<line sev="2"><diag id="390"/>                    new File(getProject().getBasedir(), testSource).getPath());</line>
+<line sev="2"><diag id="384"/>                    new File(getProject().getBasedir(), testSource).getPath());</line>
 <line sev="2">            }</line>
 <line sev="2">        }</line>
 <line sev="2"/>
@@ -401,7 +401,7 @@
 <line sev="2"/>
 <line sev="2">        for (String srcDir : qaConfig.getSourceDirs())</line>
 <line sev="2">        {</line>
-<line sev="2"><diag id="391"/>            if (checkForSource(new File(srcDir)))</line>
+<line sev="2"><diag id="385"/>            if (checkForSource(new File(srcDir)))</line>
 <line sev="2">            {</line>
 <line sev="2">                sourceFileDetected = true;</line>
 <line sev="2">                break;</line>
@@ -420,14 +420,14 @@
 <line sev="2">                if (getClasses() == null)</line>
 <line sev="2">                {</line>
 <line sev="2">                qaConfig.addClassPath(</line>
-<line sev="2"><diag id="392"/>                        new File(reactorProject.getBasedir(), &quot;target/classes&quot;).getPath());</line>
+<line sev="2"><diag id="386"/>                        new File(reactorProject.getBasedir(), &quot;target/classes&quot;).getPath());</line>
 <line sev="2">                }</line>
 <line sev="2">                else</line>
 <line sev="2">                {</line>
 <line sev="2">                    for (String clazz : getClasses())</line>
 <line sev="2">                    {</line>
 <line sev="2">                        qaConfig.addClassPath(</line>
-<line sev="2"><diag id="393"/>                            new File(reactorProject.getBasedir(), clazz).getPath());</line>
+<line sev="2"><diag id="387"/>                            new File(reactorProject.getBasedir(), clazz).getPath());</line>
 <line sev="2">                    }</line>
 <line sev="2">                }</line>
 <line sev="2">            }</line>
@@ -442,7 +442,7 @@
 <line sev="2">            for (String clazz : getClasses())</line>
 <line sev="2">            {</line>
 <line sev="2">                qaConfig.addClassPath(</line>
-<line sev="2"><diag id="394"/>                    new File(getProject().getBasedir(), clazz).getPath());</line>
+<line sev="2"><diag id="388"/>                    new File(getProject().getBasedir(), clazz).getPath());</line>
 <line sev="2">            }</line>
 <line sev="2">        }</line>
 <line sev="2"/>
@@ -453,14 +453,14 @@
 <line sev="2">                if (getTestClasses() == null)</line>
 <line sev="2">                {</line>
 <line sev="2">                    qaConfig.addClassPath(</line>
-<line sev="2"><diag id="395"/>                        new File(reactorProject.getBasedir(), &quot;target/test-classes&quot;).getPath());</line>
+<line sev="2"><diag id="389"/>                        new File(reactorProject.getBasedir(), &quot;target/test-classes&quot;).getPath());</line>
 <line sev="2">                }</line>
 <line sev="2">                else</line>
 <line sev="2">                {</line>
 <line sev="2">                    for (String testClazz : getTestClasses())</line>
 <line sev="2">                    {</line>
 <line sev="2">                        qaConfig.addClassPath(</line>
-<line sev="2"><diag id="396"/>                            new File(reactorProject.getBasedir(), testClazz).getPath());</line>
+<line sev="2"><diag id="390"/>                            new File(reactorProject.getBasedir(), testClazz).getPath());</line>
 <line sev="2">                    }</line>
 <line sev="2">                }</line>
 <line sev="2">            }</line>
@@ -475,7 +475,7 @@
 <line sev="2">            for (String testClazz : getTestClasses())</line>
 <line sev="2">            {</line>
 <line sev="2">                qaConfig.addClassPath(</line>
-<line sev="2"><diag id="397"/>                    new File(getProject().getBasedir(), testClazz).getPath());</line>
+<line sev="2"><diag id="391"/>                    new File(getProject().getBasedir(), testClazz).getPath());</line>
 <line sev="2">            }</line>
 <line sev="2">        }</line>
 <line sev="2"/>
@@ -492,7 +492,7 @@
 <line sev="2">                        qaConfig.addLibraryPath(artifact.getFile().getPath());</line>
 <line sev="2">                    }</line>
 <line sev="2">                }</line>
-<line sev="3"><diag id="398"/>                catch (Exception e)</line>
+<line sev="3"><diag id="392"/>                catch (Exception e)</line>
 <line sev="2">                {</line>
 <line sev="2">                    // QA task will not be as accurate, log a warning</line>
 <line sev="2">                    getLog().warn(&quot;Unable to resolve library dependencies, analysis may not be as accurate.&quot;, e);</line>
@@ -516,7 +516,7 @@
 <line sev="2">                    qaConfig.addLibraryPath(artifact.getFile().getPath());</line>
 <line sev="2">                }</line>
 <line sev="2">            }</line>
-<line sev="3"><diag id="399"/>            catch (Exception e)</line>
+<line sev="3"><diag id="393"/>            catch (Exception e)</line>
 <line sev="2">            {</line>
 <line sev="2">                // QA task will not be as accurate, log a warning</line>
 <line sev="2">                getLog().warn(&quot;Unable to resolve library dependencies, analysis may not be as accurate.&quot;, e);</line>
@@ -535,7 +535,7 @@
 <line sev="2">            for (MavenProject reactorProject : getReactorProjects())</line>
 <line sev="2">            {</line>
 <line sev="2">                qaConfig.addCoverageDataFile(</line>
-<line sev="2"><diag id="400"/>                    new File(reactorProject.getBasedir(), getCoverageDataFile()).getPath());</line>
+<line sev="2"><diag id="394"/>                    new File(reactorProject.getBasedir(), getCoverageDataFile()).getPath());</line>
 <line sev="2">            }</line>
 <line sev="2">        }</line>
 <line sev="2">        else</line>
@@ -567,11 +567,11 @@
 <line sev="2">            qaConfig.setToolConfig(Tool.CHECKSTYLE.getId(), version, getCheckStyleConfig(), getCheckStyleConfigClasspath());</line>
 <line sev="2">        }</line>
 <line sev="2"/>
-<line sev="2">        if (getFindBugsConfig() != null)</line>
+<line sev="2">        if (getSpotBugsConfig() != null)</line>
 <line sev="2">        {</line>
-<line sev="2">            String version = qaConfig.getToolVersion(Tool.FINDBUGS.getId());</line>
-<line sev="2">            qaConfig.setToolConfig(Tool.FINDBUGS.getId(), null, getFindBugsConfig(), getFindBugsConfigClasspath());</line>
-<line sev="2">            qaConfig.setToolConfig(Tool.FINDBUGS.getId(), version, getFindBugsConfig(), getFindBugsConfigClasspath());</line>
+<line sev="2">            String version = qaConfig.getToolVersion(Tool.SPOTBUGS.getId());</line>
+<line sev="2">            qaConfig.setToolConfig(Tool.SPOTBUGS.getId(), null, getSpotBugsConfig(), getSpotBugsConfigClasspath());</line>
+<line sev="2">            qaConfig.setToolConfig(Tool.SPOTBUGS.getId(), version, getSpotBugsConfig(), getSpotBugsConfigClasspath());</line>
 <line sev="2">        }</line>
 <line sev="2"/>
 <line sev="2">        if (getPmdConfig() != null)</line>
@@ -604,7 +604,7 @@
 <line sev="2">                jars.add(artifactItem.getFile().getPath());</line>
 <line sev="2">            }</line>
 <line sev="2">        } </line>
-<line sev="3"><diag id="402"/>        catch (Exception ex) </line>
+<line sev="3"><diag id="396"/>        catch (Exception ex) </line>
 <line sev="2">        {</line>
 <line sev="2">            throw new QAException(ex.getClass().getName() + &quot;: &quot;, ex);</line>
 <line sev="2">        }</line>
@@ -783,7 +783,7 @@
 <line sev="2">            return artifacts.toArray(new Artifact[1])[0].getFile();</line>
 <line sev="2"/>
 <line sev="2">        } </line>
-<line sev="3"><diag id="403"/>        catch (Exception ex) </line>
+<line sev="3"><diag id="397"/>        catch (Exception ex) </line>
 <line sev="2">        {</line>
 <line sev="2">            throw new QAException(ex.getClass().getName() + &quot;: &quot;, ex);</line>
 <line sev="2">        }</line>
@@ -855,7 +855,7 @@
 <line sev="2">                }</line>
 <line sev="2">            }</line>
 <line sev="2">        }</line>
-<line sev="3"><diag id="404"/>        catch (Exception e)</line>
+<line sev="3"><diag id="398"/>        catch (Exception e)</line>
 <line sev="2">        {</line>
 <line sev="2">            getLog().error(&quot;Unable to retrieve extisting report statistics. Continuing 'sanity4j' checks.&quot;, e);</line>
 <line sev="2">        }</line>
@@ -878,7 +878,7 @@
 <line sev="2"/>
 <line sev="2">        if (srcFile.isDirectory())</line>
 <line sev="2">        {</line>
-<line sev="2"><diag id="293"/>            File[] srcFiles = srcFile.listFiles();</line>
+<line sev="2"><diag id="299"/>            File[] srcFiles = srcFile.listFiles();</line>
 <line sev="2">            for (File files : srcFiles)</line>
 <line sev="2">            {</line>
 <line sev="2">                if (checkForSource(files))</line>
@@ -908,7 +908,7 @@
 <line sev="2">    {</line>
 <line sev="2">        try</line>
 <line sev="2">        {</line>
-<line sev="3"><diag id="287"/>            BufferedWriter writer = new BufferedWriter(new FileWriter(file));</line>
+<line sev="3"><diag id="293"/>            BufferedWriter writer = new BufferedWriter(new FileWriter(file));</line>
 <line sev="2">            writer.write(text);</line>
 <line sev="2">            writer.close();</line>
 <line sev="2">        }</line>
@@ -1087,7 +1087,7 @@
 <line sev="2">     */</line>
 <line sev="2">    public String[] getSources() </line>
 <line sev="2">    {</line>
-<line sev="2"><diag id="290"/><diag id="406"/>        return sources;</line>
+<line sev="2"><diag id="296"/><diag id="400"/>        return sources;</line>
 <line sev="2">    }</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
@@ -1095,7 +1095,7 @@
 <line sev="2">     */</line>
 <line sev="2">    public String[] getTestSources() </line>
 <line sev="2">    {</line>
-<line sev="2"><diag id="292"/><diag id="407"/>        return testSources;</line>
+<line sev="2"><diag id="298"/><diag id="401"/>        return testSources;</line>
 <line sev="2">    }</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
@@ -1103,7 +1103,7 @@
 <line sev="2">     */</line>
 <line sev="2">    public String[] getClasses() </line>
 <line sev="2">    {</line>
-<line sev="2"><diag id="288"/><diag id="408"/>        return classes;</line>
+<line sev="2"><diag id="294"/><diag id="402"/>        return classes;</line>
 <line sev="2">    }</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
@@ -1111,7 +1111,7 @@
 <line sev="2">     */</line>
 <line sev="2">    public String[] getTestClasses() </line>
 <line sev="2">    {</line>
-<line sev="2"><diag id="291"/><diag id="409"/>        return testClasses;</line>
+<line sev="2"><diag id="297"/><diag id="403"/>        return testClasses;</line>
 <line sev="2">    }</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
@@ -1119,7 +1119,7 @@
 <line sev="2">     */</line>
 <line sev="2">    public String[] getLibraries() </line>
 <line sev="2">    {</line>
-<line sev="2"><diag id="289"/><diag id="410"/>        return libraries;</line>
+<line sev="2"><diag id="295"/><diag id="404"/>        return libraries;</line>
 <line sev="2">    }</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
@@ -1187,19 +1187,19 @@
 <line sev="2">    }</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
-<line sev="2">     * @return The Fins Bugs Config.</line>
+<line sev="2">     * @return The SpotBugs Config.</line>
 <line sev="2">     */</line>
-<line sev="2">    public String getFindBugsConfig() </line>
+<line sev="2">    public String getSpotBugsConfig() </line>
 <line sev="2">    {</line>
-<line sev="2">        return findBugsConfig;</line>
+<line sev="2">        return spotBugsConfig;</line>
 <line sev="2">    }</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
-<line sev="2">     * @return The Find Bugs Config Classpath. </line>
+<line sev="2">     * @return The SpotBugs Config Classpath. </line>
 <line sev="2">     */</line>
-<line sev="2">    public String getFindBugsConfigClasspath() </line>
+<line sev="2">    public String getSpotBugsConfigClasspath() </line>
 <line sev="2">    {</line>
-<line sev="2">        return findBugsConfigClasspath;</line>
+<line sev="2">        return spotBugsConfigClasspath;</line>
 <line sev="2">    }</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
@@ -1276,36 +1276,54 @@
 <line sev="2">}</line>
 </source>
 <diags first="false">
-<diag id="341" sev="0" tool="PMD" rule="ExcessiveImports">
+<diag id="335" sev="0" tool="PMD" rule="ExcessiveImports">
 A high number of imports can indicate a high degree of coupling within an object.
 </diag>
-<diag id="342" sev="2" tool="PMD" rule="GodClass">
+<diag id="336" sev="2" tool="PMD" rule="GodClass">
 Possible God class (WMC=118, ATFD=45, TCC=0.0016326530612244899)
 </diag>
-<diag id="343" sev="0" tool="PMD" rule="ExcessiveClassLength">
+<diag id="337" sev="0" tool="PMD" rule="ExcessiveClassLength">
 Avoid really long classes.
 </diag>
-<diag id="344" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="338" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The class 'RunQAMojo' has a Cyclomatic Complexity of 2 (Highest = 46).
 </diag>
-<diag id="345" sev="0" tool="PMD" rule="TooManyFields">
+<diag id="339" sev="0" tool="PMD" rule="TooManyFields">
 Too many fields
 </diag>
-<diag id="346" sev="0" tool="PMD" rule="TooManyMethods">
+<diag id="340" sev="0" tool="PMD" rule="TooManyMethods">
 This class has too many methods, consider refactoring it.
 </diag>
 <diag id="10" sev="1" tool="Checkstyle" rule="MethodLengthCheck">Method length is 278 lines (max allowed is 150).</diag>
-<diag id="381" sev="0" tool="PMD" rule="ExcessiveMethodLength">
+<diag id="375" sev="0" tool="PMD" rule="ExcessiveMethodLength">
 Avoid really long methods.
 </diag>
-<diag id="382" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="376" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The method 'executeReport' has a Cyclomatic Complexity of 46.
 </diag>
-<diag id="383" sev="0" tool="PMD" rule="NcssMethodCount">
+<diag id="377" sev="0" tool="PMD" rule="NcssMethodCount">
 The method executeReport() has an NCSS line count of 142
 </diag>
-<diag id="384" sev="0" tool="PMD" rule="NPathComplexity">
+<diag id="378" sev="0" tool="PMD" rule="NPathComplexity">
 The method executeReport() has an NPath complexity of 22819104
+</diag>
+<diag id="379" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="380" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="381" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="382" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="383" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="384" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
 </diag>
 <diag id="385" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
@@ -1328,64 +1346,46 @@ Avoid instantiating new objects inside loops
 <diag id="391" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="392" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
-Avoid instantiating new objects inside loops
+<diag id="392" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </diag>
-<diag id="393" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
-Avoid instantiating new objects inside loops
+<diag id="393" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </diag>
 <diag id="394" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="395" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
-Avoid instantiating new objects inside loops
-</diag>
-<diag id="396" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
-Avoid instantiating new objects inside loops
-</diag>
-<diag id="397" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
-Avoid instantiating new objects inside loops
-</diag>
-<diag id="398" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
-Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
-</diag>
-<diag id="399" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
-Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
-</diag>
-<diag id="400" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
-Avoid instantiating new objects inside loops
-</diag>
-<diag id="402" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+<diag id="396" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </diag>
 <diag id="11" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'project' hides a field.</diag>
 <diag id="12" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'project' hides a field.</diag>
-<diag id="403" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+<diag id="397" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </diag>
-<diag id="404" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+<diag id="398" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </diag>
-<diag id="293" sev="0" tool="Findbugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.maven.plugin.RunQAMojo.checkForSource(File) due to return value of called method</diag>
-<diag id="287" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.maven.plugin.RunQAMojo.writeTextFile(File, String): new java.io.FileWriter(File)</diag>
-<diag id="290" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getSources() may expose internal representation by returning RunQAMojo.sources</diag>
-<diag id="406" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+<diag id="299" sev="0" tool="SpotBugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.maven.plugin.RunQAMojo.checkForSource(File) due to return value of called method</diag>
+<diag id="293" sev="3" tool="SpotBugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.maven.plugin.RunQAMojo.writeTextFile(File, String): new java.io.FileWriter(File)</diag>
+<diag id="296" sev="0" tool="SpotBugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getSources() may expose internal representation by returning RunQAMojo.sources</diag>
+<diag id="400" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
 Returning 'sources' may expose an internal array.
 </diag>
-<diag id="292" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getTestSources() may expose internal representation by returning RunQAMojo.testSources</diag>
-<diag id="407" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+<diag id="298" sev="0" tool="SpotBugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getTestSources() may expose internal representation by returning RunQAMojo.testSources</diag>
+<diag id="401" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
 Returning 'testSources' may expose an internal array.
 </diag>
-<diag id="288" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getClasses() may expose internal representation by returning RunQAMojo.classes</diag>
-<diag id="408" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+<diag id="294" sev="0" tool="SpotBugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getClasses() may expose internal representation by returning RunQAMojo.classes</diag>
+<diag id="402" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
 Returning 'classes' may expose an internal array.
 </diag>
-<diag id="291" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getTestClasses() may expose internal representation by returning RunQAMojo.testClasses</diag>
-<diag id="409" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+<diag id="297" sev="0" tool="SpotBugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getTestClasses() may expose internal representation by returning RunQAMojo.testClasses</diag>
+<diag id="403" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
 Returning 'testClasses' may expose an internal array.
 </diag>
-<diag id="289" sev="0" tool="Findbugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getLibraries() may expose internal representation by returning RunQAMojo.libraries</diag>
-<diag id="410" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
+<diag id="295" sev="0" tool="SpotBugs" rule="EI_EXPOSE_REP">com.github.sanity4j.maven.plugin.RunQAMojo.getLibraries() may expose internal representation by returning RunQAMojo.libraries</diag>
+<diag id="404" sev="1" tool="PMD" rule="MethodReturnsInternalArray">
 Returning 'libraries' may expose an internal array.
 </diag>
 </diags>

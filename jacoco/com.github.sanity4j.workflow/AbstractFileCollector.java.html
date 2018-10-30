@@ -66,19 +66,20 @@ public abstract class AbstractFileCollector implements WorkUnit
     /**
      * Performs the file copying.
      */
+    @Override
     public void run()
     {
-<span class="nc" id="L71">        QaLogger.getInstance().info(&quot;Creating combined &quot; + getItemType() + &quot; directory.&quot;);        </span>
-<span class="nc" id="L72">        FileUtil.createDir(destDir.getPath());</span>
+<span class="nc" id="L72">        QaLogger.getInstance().info(&quot;Creating combined &quot; + getItemType() + &quot; directory.&quot;);        </span>
+<span class="nc" id="L73">        FileUtil.createDir(destDir.getPath());</span>
         
-<span class="nc" id="L74">        int count = copyFiles(sourceDirs, destDir);        </span>
-<span class="nc" id="L75">        QaLogger.getInstance().info(&quot;Copied &quot; + count + &quot; files.&quot;);</span>
+<span class="nc" id="L75">        int count = copyFiles(sourceDirs, destDir);        </span>
+<span class="nc" id="L76">        QaLogger.getInstance().info(&quot;Copied &quot; + count + &quot; files.&quot;);</span>
         
-<span class="nc bnc" id="L77" title="All 4 branches missed.">        if (count == 0 &amp;&amp; isMandatory())</span>
+<span class="nc bnc" id="L78" title="All 4 branches missed.">        if (count == 0 &amp;&amp; isMandatory())</span>
         {
-<span class="nc" id="L79">            throw new QAException(&quot;\&quot;&quot; + getItemDescription() + &quot;\&quot; are required, but none were found.&quot;);</span>
+<span class="nc" id="L80">            throw new QAException(&quot;\&quot;&quot; + getItemDescription() + &quot;\&quot; are required, but none were found.&quot;);</span>
         }        
-<span class="nc" id="L81">    }</span>
+<span class="nc" id="L82">    }</span>
     
     /** @return the type of item being copied, e.g. &quot;source&quot;, &quot;class&quot;. */
     protected abstract String getItemType();
@@ -100,41 +101,41 @@ public abstract class AbstractFileCollector implements WorkUnit
      */
     private int copyFiles(final List&lt;File&gt; filePaths, final File destDir)
     {
-<span class="nc" id="L103">        int count = 0;</span>
+<span class="nc" id="L104">        int count = 0;</span>
 
         // We want to copy files from arbitrary subdirectories,
         // while maintaining the package structure
-<span class="nc bnc" id="L107" title="All 2 branches missed.">        for (Iterator&lt;File&gt; i = filePaths.iterator(); i.hasNext();)</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        for (Iterator&lt;File&gt; i = filePaths.iterator(); i.hasNext();)</span>
         {
-<span class="nc" id="L109">            File source = i.next();</span>
+<span class="nc" id="L110">            File source = i.next();</span>
 
             // If it's a directory, recurse...
-<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (source.isDirectory())</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (source.isDirectory())</span>
             {
-<span class="nc" id="L114">                String[] containedNames = source.list();</span>
-<span class="nc" id="L115">                File[] containedFiles = new File[containedNames.length];</span>
+<span class="nc" id="L115">                String[] containedNames = source.list();</span>
+<span class="nc" id="L116">                File[] containedFiles = new File[containedNames.length];</span>
                 
-<span class="nc bnc" id="L117" title="All 2 branches missed.">                for (int j = 0; j &lt; containedFiles.length; j++)</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">                for (int j = 0; j &lt; containedFiles.length; j++)</span>
                 {
-<span class="nc" id="L119">                    containedFiles[j] = new File(source, containedNames[j]);</span>
+<span class="nc" id="L120">                    containedFiles[j] = new File(source, containedNames[j]);</span>
                 }
                 
-<span class="nc" id="L122">                count += copyFiles(Arrays.asList(containedFiles), destDir);</span>
-<span class="nc" id="L123">            }           </span>
+<span class="nc" id="L123">                count += copyFiles(Arrays.asList(containedFiles), destDir);</span>
+<span class="nc" id="L124">            }           </span>
             else
             {
                 // Check whether it is a file which we should be copying
-<span class="nc" id="L127">                String fileExt = source.getName().substring(source.getName().lastIndexOf('.') + 1);</span>
+<span class="nc" id="L128">                String fileExt = source.getName().substring(source.getName().lastIndexOf('.') + 1);</span>
                 
-<span class="nc bnc" id="L129" title="All 2 branches missed.">                if (includedFileExtensions.contains(fileExt.toLowerCase()))</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">                if (includedFileExtensions.contains(fileExt.toLowerCase()))</span>
                 {
-<span class="nc" id="L131">                    copyFile(source, destDir);</span>
-<span class="nc" id="L132">                    count++;</span>
+<span class="nc" id="L132">                    copyFile(source, destDir);</span>
+<span class="nc" id="L133">                    count++;</span>
                 }
             }
-<span class="nc" id="L135">        }</span>
+<span class="nc" id="L136">        }</span>
         
-<span class="nc" id="L137">        return count;       </span>
+<span class="nc" id="L138">        return count;       </span>
     }
     
     /**
@@ -146,58 +147,58 @@ public abstract class AbstractFileCollector implements WorkUnit
     {
         try
         {
-<span class="nc" id="L149">            String packageName = QaUtil.getPackageForFile(file);</span>
+<span class="nc" id="L150">            String packageName = QaUtil.getPackageForFile(file);</span>
             
-<span class="nc bnc" id="L151" title="All 2 branches missed.">            if (packageName == null)</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">            if (packageName == null)</span>
             {
                 // Unable to determine package, use relative path from root.
-<span class="nc" id="L154">                StringBuffer relativePath = new StringBuffer(file.getName());</span>
-<span class="nc" id="L155">                File parent = null;</span>
+<span class="nc" id="L155">                StringBuilder relativePath = new StringBuilder(file.getName());</span>
+<span class="nc" id="L156">                File parent = null;</span>
                 
-<span class="nc bnc" id="L157" title="All 2 branches missed.">                for (parent = file.getParentFile(); parent != null; parent = parent.getParentFile())</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">                for (parent = file.getParentFile(); parent != null; parent = parent.getParentFile())</span>
                 {
-<span class="nc bnc" id="L159" title="All 2 branches missed.">                    if (sourceDirs.contains(parent))</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">                    if (sourceDirs.contains(parent))</span>
                     {
                         // We've hit one of the top-level dirs, so copy using the relative path from this dir
-<span class="nc" id="L162">                        File dest = new File(destDir, relativePath.toString());</span>
-<span class="nc" id="L163">                        FileUtil.copy(file, dest);</span>
-<span class="nc" id="L164">                        break;</span>
+<span class="nc" id="L163">                        File dest = new File(destDir, relativePath.toString());</span>
+<span class="nc" id="L164">                        FileUtil.copy(file, dest);</span>
+<span class="nc" id="L165">                        break;</span>
                     }
                     else
                     {
                         // Prepend the parent directory name to the relative path
-<span class="nc" id="L169">                        relativePath.insert(0, File.separatorChar);</span>
-<span class="nc" id="L170">                        relativePath.insert(0, parent.getName());</span>
+<span class="nc" id="L170">                        relativePath.insert(0, File.separatorChar);</span>
+<span class="nc" id="L171">                        relativePath.insert(0, parent.getName());</span>
                     }
                 }
                 
                 // If we couldn't find a relative path, then just copy the file.
-<span class="nc bnc" id="L175" title="All 2 branches missed.">                if (parent == null)</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">                if (parent == null)</span>
                 {
-<span class="nc" id="L177">                    File dest = new File(destDir, file.getName());</span>
-<span class="nc" id="L178">                    FileUtil.copy(file, dest);</span>
+<span class="nc" id="L178">                    File dest = new File(destDir, file.getName());</span>
+<span class="nc" id="L179">                    FileUtil.copy(file, dest);</span>
                 }
-<span class="nc" id="L180">            }</span>
+<span class="nc" id="L181">            }</span>
             else
             {                    
-<span class="nc" id="L183">                String destPath = packageName.replace('.', File.separatorChar) + File.separatorChar + file.getName();</span>
-<span class="nc" id="L184">                File destFile = new File(destDir, destPath);</span>
+<span class="nc" id="L184">                String destPath = packageName.replace('.', File.separatorChar) + File.separatorChar + file.getName();</span>
+<span class="nc" id="L185">                File destFile = new File(destDir, destPath);</span>
                 
-<span class="nc bnc" id="L186" title="All 2 branches missed.">                if (destFile.exists())</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">                if (destFile.exists())</span>
                 {
-<span class="nc" id="L188">                    String msg = &quot;Duplicate file, analysis may be innaccurate: &quot; + destPath;</span>
-<span class="nc" id="L189">                    QaLogger.getInstance().warn(msg); </span>
-<span class="nc" id="L190">                }</span>
+<span class="nc" id="L189">                    String msg = &quot;Duplicate file, analysis may be innaccurate: &quot; + destPath;</span>
+<span class="nc" id="L190">                    QaLogger.getInstance().warn(msg); </span>
+<span class="nc" id="L191">                }</span>
                 else
                 {
-<span class="nc" id="L193">                    FileUtil.copy(file, destFile);</span>
+<span class="nc" id="L194">                    FileUtil.copy(file, destFile);</span>
                 }
             }
         }
-<span class="nc" id="L197">        catch (IOException e)</span>
+<span class="nc" id="L198">        catch (IOException e)</span>
         {
-<span class="nc" id="L199">            throw new QAException(&quot;Failed to copy file&quot;, e);</span>
-<span class="nc" id="L200">        }           </span>
-<span class="nc" id="L201">    }</span>
+<span class="nc" id="L200">            throw new QAException(&quot;Failed to copy file&quot;, e);</span>
+<span class="nc" id="L201">        }           </span>
+<span class="nc" id="L202">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

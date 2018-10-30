@@ -218,16 +218,16 @@ public class RunQAMojo extends AbstractMavenReport
     private String checkStyleConfigClasspath;
 
     /**
-     * The configuration passed to the FindBugs ${sanity4j.tool.findbugs.command} as ${sanity4j.tool.findbugs.config}.
+     * The configuration passed to the SpotBugs ${sanity4j.tool.spotbugs.command} as ${sanity4j.tool.spotbugs.config}.
      */
     @Parameter    
-    private String findBugsConfig;
+    private String spotBugsConfig;
 
     /**
-     * The class path used by the configuration passed to the FindBugs ${sanity4j.tool.findbugs.command} as ${sanity4j.tool.findbugs.config}.
+     * The class path used by the configuration passed to the SpotBugs ${sanity4j.tool.spotbugs.command} as ${sanity4j.tool.spotbugs.config}.
      */
     @Parameter    
-    private String findBugsConfigClasspath;
+    private String spotBugsConfigClasspath;
 
     /**
      * The configuration passed to the PMD ${sanity4j.tool.pmd.command} as ${sanity4j.tool.pmd.config}.
@@ -562,11 +562,11 @@ public class RunQAMojo extends AbstractMavenReport
 <span class="nc" id="L562">            qaConfig.setToolConfig(Tool.CHECKSTYLE.getId(), version, getCheckStyleConfig(), getCheckStyleConfigClasspath());</span>
         }
 
-<span class="nc bnc" id="L565" title="All 2 branches missed.">        if (getFindBugsConfig() != null)</span>
+<span class="nc bnc" id="L565" title="All 2 branches missed.">        if (getSpotBugsConfig() != null)</span>
         {
-<span class="nc" id="L567">            String version = qaConfig.getToolVersion(Tool.FINDBUGS.getId());</span>
-<span class="nc" id="L568">            qaConfig.setToolConfig(Tool.FINDBUGS.getId(), null, getFindBugsConfig(), getFindBugsConfigClasspath());</span>
-<span class="nc" id="L569">            qaConfig.setToolConfig(Tool.FINDBUGS.getId(), version, getFindBugsConfig(), getFindBugsConfigClasspath());</span>
+<span class="nc" id="L567">            String version = qaConfig.getToolVersion(Tool.SPOTBUGS.getId());</span>
+<span class="nc" id="L568">            qaConfig.setToolConfig(Tool.SPOTBUGS.getId(), null, getSpotBugsConfig(), getSpotBugsConfigClasspath());</span>
+<span class="nc" id="L569">            qaConfig.setToolConfig(Tool.SPOTBUGS.getId(), version, getSpotBugsConfig(), getSpotBugsConfigClasspath());</span>
         }
 
 <span class="nc bnc" id="L572" title="All 2 branches missed.">        if (getPmdConfig() != null)</span>
@@ -1182,19 +1182,19 @@ public class RunQAMojo extends AbstractMavenReport
     }
 
     /**
-     * @return The Fins Bugs Config.
+     * @return The SpotBugs Config.
      */
-    public String getFindBugsConfig() 
+    public String getSpotBugsConfig() 
     {
-<span class="nc" id="L1189">        return findBugsConfig;</span>
+<span class="nc" id="L1189">        return spotBugsConfig;</span>
     }
 
     /**
-     * @return The Find Bugs Config Classpath. 
+     * @return The SpotBugs Config Classpath. 
      */
-    public String getFindBugsConfigClasspath() 
+    public String getSpotBugsConfigClasspath() 
     {
-<span class="nc" id="L1197">        return findBugsConfigClasspath;</span>
+<span class="nc" id="L1197">        return spotBugsConfigClasspath;</span>
     }
 
     /**

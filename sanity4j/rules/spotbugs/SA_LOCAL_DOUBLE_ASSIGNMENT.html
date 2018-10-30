@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head><title>SA_LOCAL_DOUBLE_ASSIGNMENT</title></head>
+<body>
+<h3>SA: Double assignment of local variable  (SA_LOCAL_DOUBLE_ASSIGNMENT)</h3>
+<p> This method contains a double assignment of a local variable; e.g.
+</p>
+<pre>
+  public void foo() {
+    int x,y;
+    x = x = 17;
+  }
+</pre>
+<p>Assigning the same value to a variable twice is useless, and may indicate a logic error or typo.</p>
+</body>
+</html>

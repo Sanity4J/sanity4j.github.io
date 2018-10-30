@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.model.summary.SummaryCsvMarshaller" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="1" moderate="0" low="0" info="1" lineCoverage="80" branchCoverage="77" quality="91"/>
+<classDetails className="com.github.sanity4j.model.summary.SummaryCsvMarshaller" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="1" lineCoverage="82" branchCoverage="85" quality="100"/>
 <source>
 <line>package com.github.sanity4j.model.summary; </line>
 <line/>
@@ -11,8 +11,7 @@
 <line>import java.io.FileOutputStream;</line>
 <line>import java.io.IOException;</line>
 <line>import java.io.InputStreamReader;</line>
-<line>import java.io.OutputStream;</line>
-<line>import java.io.Reader;</line>
+<line>import java.nio.charset.StandardCharsets;</line>
 <line>import java.text.DateFormat;</line>
 <line>import java.text.ParseException;</line>
 <line>import java.text.SimpleDateFormat;</line>
@@ -20,6 +19,7 @@
 <line>import java.util.List;</line>
 <line/>
 <line>import com.github.sanity4j.util.QaLogger;</line>
+<line>import com.github.sanity4j.util.QaUtil;</line>
 <line/>
 <line>/** </line>
 <line> * SummaryCsvMarshaller - reads/writes summary entries to a CSV file.</line>
@@ -58,10 +58,6 @@
 <line>    /** The number of characters on a line. */</line>
 <line>    private static final int CHARS_PER_LINE = 80;</line>
 <line/>
-<line/>
-<line>    /** The character encoding when writing the file. */</line>
-<line>    private static final String ENCODING = &quot;UTF-8&quot;;</line>
-<line/>
 <line>    /** The date format used to encode dates. */</line>
 <line covered="yes">    private final DateFormat dateFormat = new SimpleDateFormat(&quot;yyyy/MM/dd-HH:mm&quot;);</line>
 <line/>
@@ -79,7 +75,7 @@
 <line>        try</line>
 <line>        {</line>
 <line covered="yes">            FileInputStream fis = new FileInputStream(file);</line>
-<line sev="3" covered="yes"><diag id="297"/>            reader = new BufferedReader(new InputStreamReader(fis));</line>
+<line covered="yes">            reader = new BufferedReader(new InputStreamReader(fis, StandardCharsets.UTF_8));</line>
 <line/>
 <line>            // Skip the header</line>
 <line covered="yes">            String line = reader.readLine();</line>
@@ -94,7 +90,7 @@
 <line>                {</line>
 <line>                    try</line>
 <line>                    {</line>
-<line sev="0" covered="yes"><diag id="450"/>                        PackageSummary entry = new PackageSummary();</line>
+<line sev="0" covered="yes"><diag id="433"/>                        PackageSummary entry = new PackageSummary();</line>
 <line covered="yes">                        entry.setRunDate(dateFormat.parse(cols[DATE_COLUMN_INDEX]));</line>
 <line covered="yes">                        entry.setPackageName(cols[PACKAGE_NAME_COLUMN_INDEX]);</line>
 <line covered="yes">                        entry.setLineCoverage(Double.parseDouble(cols[LINE_COVERAGE_COLUMN_INDEX]));</line>
@@ -129,12 +125,12 @@
 <line>                }</line>
 <line>            }</line>
 <line/>
-<line covered="yes">            safeClose(reader);            </line>
+<line covered="yes">            QaUtil.safeClose(reader);            </line>
 <line>        }</line>
 <line covered="no">        catch (IOException e)</line>
 <line>        {</line>
 <line covered="no">            QaLogger.getInstance().error(&quot;Error reading summary data&quot;, e);</line>
-<line covered="no">            safeClose(reader);</line>
+<line covered="no">            QaUtil.safeClose(reader);</line>
 <line covered="yes">        }</line>
 <line/>
 <line covered="yes">        return entries.toArray(new PackageSummary[entries.size()]);</line>
@@ -157,7 +153,7 @@
 <line covered="partial">        boolean newFile = !file.exists() || file.length() == 0;</line>
 <line/>
 <line covered="yes">        FileOutputStream fos = null;</line>
-<line covered="yes">        StringBuffer line = new StringBuffer();</line>
+<line covered="yes">        StringBuilder line = new StringBuilder();</line>
 <line/>
 <line>        // Write header if new file</line>
 <line>        try</line>
@@ -166,7 +162,7 @@
 <line/>
 <line covered="yes">            if (newFile)</line>
 <line>            {</line>
-<line covered="yes">                fos.write(&quot;Run date,Package name,Line coverage,Branch coverage,Info diags,Low diags,Moderate diags,Significant diags,High diags,Line count&quot;.getBytes(ENCODING));</line>
+<line covered="yes">                fos.write(&quot;Run date,Package name,Line coverage,Branch coverage,Info diags,Low diags,Moderate diags,Significant diags,High diags,Line count&quot;.getBytes(StandardCharsets.UTF_8));</line>
 <line>            }</line>
 <line/>
 <line covered="yes">            for (int i = 0; i &lt; entries.length; i++)</line>
@@ -193,63 +189,22 @@
 <line covered="yes">                line.append(',');</line>
 <line covered="yes">                line.append(entries[i].getLineCount());</line>
 <line/>
-<line covered="yes">                fos.write(line.toString().getBytes(ENCODING));</line>
+<line covered="yes">                fos.write(line.toString().getBytes(StandardCharsets.UTF_8));</line>
 <line covered="yes">                fos.flush();</line>
 <line>            }</line>
 <line/>
-<line covered="yes">            safeClose(fos);</line>
+<line covered="yes">            QaUtil.safeClose(fos);</line>
 <line>        }</line>
 <line covered="no">        catch (IOException e)</line>
 <line>        {</line>
 <line covered="no">            QaLogger.getInstance().error(&quot;Error writing summary data&quot;, e);</line>
-<line covered="no">            safeClose(fos);</line>
+<line covered="no">            QaUtil.safeClose(fos);</line>
 <line covered="yes">        }</line>
-<line covered="yes">    }</line>
-<line/>
-<line>    /**</line>
-<line>     * Closes a reader, logging any exceptions.</line>
-<line>     * @param reader the reader to close.</line>
-<line>     */</line>
-<line>    private void safeClose(final Reader reader)</line>
-<line>    {</line>
-<line covered="partial">        if (reader != null)</line>
-<line>        {</line>
-<line>            try</line>
-<line>            {</line>
-<line covered="yes">                reader.close();</line>
-<line>            }</line>
-<line covered="no">            catch (IOException e)</line>
-<line>            {</line>
-<line>                // Don't really care</line>
-<line covered="no">                QaLogger.getInstance().debug(&quot;Error closing stream&quot;, e);</line>
-<line covered="yes">            }</line>
-<line>        }</line>
-<line covered="yes">    }</line>
-<line/>
-<line>    /**</line>
-<line>     * Closes an OutputStream, logging any exceptions.</line>
-<line>     * @param stream the OutputStream to close.</line>
-<line>     */</line>
-<line>    private void safeClose(final OutputStream stream)</line>
-<line>    {</line>
-<line covered="partial">        if (stream != null)</line>
-<line>        {</line>
-<line>            try</line>
-<line>            {</line>
-<line covered="yes">                stream.close();</line>
-<line>            }</line>
-<line covered="no">            catch (IOException e)</line>
-<line>            {</line>
-<line>                // Don't really care</line>
-<line covered="no">                QaLogger.getInstance().debug(&quot;Error closing stream&quot;, e);</line>
-<line covered="yes">            }</line>
-<line>        }</line>
 <line covered="yes">    }</line>
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="297" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.model.summary.SummaryCsvMarshaller.read(File): new java.io.InputStreamReader(InputStream)</diag>
-<diag id="450" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="433" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
 </diags>

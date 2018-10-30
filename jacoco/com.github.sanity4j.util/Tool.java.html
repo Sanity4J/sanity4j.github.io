@@ -5,40 +5,38 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This is a class rather than an enumeration
- * as we need additional attributes.
+ * An enumeration of available tools.
  *
  * @author Yiannis Paschalidis
  * @since Sanity4J 1.0
  */
-public final class Tool
+<span class="pc" id="L13">public enum Tool</span>
 {
     /** &lt;a href=&quot;http://checkstyle.sourceforge.net/&quot;&gt;Checkstyle&lt;/a&gt; static source code analyser. */
-<span class="fc" id="L17">    public static final Tool CHECKSTYLE = new Tool(&quot;checkstyle&quot;, &quot;Checkstyle&quot;);</span>
-    /** &lt;a href=&quot;http://cobertura.sourceforge.net/&quot;&gt;Cobertura&lt;/a&gt; datafile merge tool. */
-<span class="fc" id="L19">    public static final Tool COBERTURA_MERGE = new Tool(&quot;cobertura-merge&quot;, &quot;Cobertura Merge&quot;);</span>
-    /** &lt;a href=&quot;http://cobertura.sourceforge.net/&quot;&gt;Cobertura&lt;/a&gt; unit test coverage analysis. */
-<span class="fc" id="L21">    public static final Tool COBERTURA = new Tool(&quot;cobertura&quot;, &quot;Cobertura&quot;);</span>
-    /** &lt;a href=&quot;http://findbugs.sourceforge.net/&quot;&gt;FindBugs&lt;/a&gt; static byte-code analyser. */
-<span class="fc" id="L23">    public static final Tool FINDBUGS = new Tool(&quot;findbugs&quot;, &quot;FindBugs&quot;);</span>
-    /** &lt;a href=&quot;http://www.jacoco.org/jacoco/index.html&quot;&gt;JaCoco&lt;/a&gt; datafile merge tool. */
-<span class="fc" id="L25">    public static final Tool JACOCO_MERGE = new Tool(&quot;jacoco-merge&quot;, &quot;JaCoCo merge&quot;);</span>
-    /** &lt;a href=&quot;http://www.jacoco.org/jacoco/index.html&quot;&gt;JaCoco&lt;/a&gt; unit test coverage analysis. */
-<span class="fc" id="L27">    public static final Tool JACOCO = new Tool(&quot;jacoco&quot;, &quot;JaCoCo&quot;);</span>
-    /** &lt;a href=&quot;http://pmd.sourceforge.net/&quot;&gt;PMD&lt;/a&gt; static source code analyser. */
-<span class="fc" id="L29">    public static final Tool PMD = new Tool(&quot;pmd&quot;, &quot;PMD&quot;);</span>
-    /** &lt;a href=&quot;http://pmd.sourceforge.net/&quot;&gt;PMD CPD&lt;/a&gt; copy &amp;amp; pasted source code detector. */
-<span class="fc" id="L31">    public static final Tool PMD_CPD = new Tool(&quot;pmd-cpd&quot;, &quot;PMD CPD&quot;);</span>
+<span class="fc" id="L16">    CHECKSTYLE(&quot;checkstyle&quot;, &quot;Checkstyle&quot;),</span>
 
-    //public static final Tool JUNIT = new Tool(&quot;junit&quot;, &quot;JUnit&quot;);
+    /** &lt;a href=&quot;https://spotbugs.github.io/&quot;&gt;SpotBugs&lt;/a&gt; static byte-code analyser. */
+<span class="fc" id="L19">    SPOTBUGS(&quot;spotbugs&quot;, &quot;SpotBugs&quot;),</span>
+    
+    /** &lt;a href=&quot;http://www.jacoco.org/jacoco/index.html&quot;&gt;JaCoco&lt;/a&gt; datafile merge tool. */
+<span class="fc" id="L22">    JACOCO_MERGE(&quot;jacoco-merge&quot;, &quot;JaCoCo merge&quot;),</span>
+    
+    /** &lt;a href=&quot;http://www.jacoco.org/jacoco/index.html&quot;&gt;JaCoco&lt;/a&gt; unit test coverage analysis. */
+<span class="fc" id="L25">    JACOCO(&quot;jacoco&quot;, &quot;JaCoCo&quot;),</span>
+    
+    /** &lt;a href=&quot;http://pmd.sourceforge.net/&quot;&gt;PMD&lt;/a&gt; static source code analyser. */
+<span class="fc" id="L28">    PMD(&quot;pmd&quot;, &quot;PMD&quot;),</span>
+    
+    /** &lt;a href=&quot;http://pmd.sourceforge.net/&quot;&gt;PMD CPD&lt;/a&gt; copy &amp;amp; pasted source code detector. */
+<span class="fc" id="L31">    PMD_CPD(&quot;pmd-cpd&quot;, &quot;PMD CPD&quot;);</span>
+
+    //JUNIT(&quot;junit&quot;, &quot;JUnit&quot;);
 
     /** A Read-only list of all the tools which are supported by Sanity4J. */
 <span class="fc" id="L36">    public static final List&lt;Tool&gt; TOOLS = Collections.unmodifiableList(Arrays.asList(new Tool[]</span>
     {
        CHECKSTYLE,
-       COBERTURA_MERGE,
-       COBERTURA,
-       FINDBUGS,
+       SPOTBUGS,
        JACOCO,
        JACOCO_MERGE,
        //JUNIT,
@@ -58,28 +56,28 @@ public final class Tool
      * @param name the tool name
      */
     private Tool(final String toolId, final String name)
-<span class="fc" id="L61">    {</span>
-<span class="fc" id="L62">       this.toolId = toolId;</span>
-<span class="fc" id="L63">       this.name = name;</span>
-<span class="fc" id="L64">    }</span>
+<span class="fc" id="L59">    {</span>
+<span class="fc" id="L60">       this.toolId = toolId;</span>
+<span class="fc" id="L61">       this.name = name;</span>
+<span class="fc" id="L62">    }</span>
 
     /** @return the id */
     public String getId()
     {
-<span class="fc" id="L69">        return toolId;</span>
+<span class="fc" id="L67">        return toolId;</span>
     }
 
     /** @return the name */
     public String getName()
     {
-<span class="nc" id="L75">        return name;</span>
+<span class="nc" id="L73">        return name;</span>
     }
 
     /** @return the id */
     @Override
-   public String toString()
+    public String toString()
     {
-<span class="nc" id="L82">        return toolId;</span>
+<span class="nc" id="L80">        return toolId;</span>
     }
 
     /**
@@ -89,35 +87,15 @@ public final class Tool
      */
     public static Tool get(final String toolId)
     {
-<span class="nc bnc" id="L92" title="All 2 branches missed.">        for (Tool tool : TOOLS)</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        for (Tool tool : TOOLS)</span>
         {
-<span class="nc bnc" id="L94" title="All 2 branches missed.">            if (tool.getId().equals(toolId))</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">            if (tool.getId().equals(toolId))</span>
             {
-<span class="nc" id="L96">                return tool;</span>
+<span class="nc" id="L94">                return tool;</span>
             }
-<span class="nc" id="L98">        }</span>
+<span class="nc" id="L96">        }</span>
 
-<span class="nc" id="L100">        return null;</span>
-    }
-
-    /**
-     * Indicates if the given object is equal to this tool.
-     * Two tools are considered equal if their IDs match.
-     * 
-     * @param obj the object to test for equality.
-     * @return true if the object is equal to this tool.
-     */
-    @Override
-   public boolean equals(final Object obj)
-    {
-<span class="nc bnc" id="L113" title="All 4 branches missed.">        return obj instanceof Tool &amp;&amp; ((Tool) obj).toolId.equals(toolId);</span>
-    }
-
-    /** {@inheritDoc} */
-    @Override
-   public int hashCode()
-    {
-<span class="nc" id="L120">        return toolId.hashCode();</span>
+<span class="nc" id="L98">        return null;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

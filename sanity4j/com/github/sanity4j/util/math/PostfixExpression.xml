@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.math.PostfixExpression" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.util.math.PostfixExpression" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="1" moderate="1" low="6" info="2" lineCoverage="74" branchCoverage="78" quality="80"/>
 <source>
 <line>package com.github.sanity4j.util.math;</line>
@@ -13,7 +13,7 @@
 <line> * @version 1.0 02/01/2008</line>
 <line> * @author Yiannis Paschalidis</line>
 <line> */</line>
-<line sev="1"><diag id="779"/>public class PostfixExpression</line>
+<line sev="1"><diag id="650"/>public class PostfixExpression</line>
 <line sev="1">{</line>
 <line sev="1">    /** The string array containing operators &amp;amp; operands as strings, in postfix evaluation order. */</line>
 <line sev="1">    private final String[] terms;</line>
@@ -26,14 +26,14 @@
 <line sev="1">     * </line>
 <line sev="1">     * @throws SyntaxException Thrown if a problem occurs.</line>
 <line sev="1">     */</line>
-<line sev="1"><diag id="781"/><diag id="782"/>    public static double evaluatePostfix(final String[] terms) throws SyntaxException</line>
+<line sev="1"><diag id="652"/><diag id="653"/>    public static double evaluatePostfix(final String[] terms) throws SyntaxException</line>
 <line sev="1">    {</line>
 <line sev="1">        // an instance of the Stack class is an overkill, we can just get away using an array</line>
 <line sev="1" covered="yes">        double[] stack = new double[terms.length]; // worst-case</line>
 <line sev="1" covered="yes">        int stackIndex = 0;</line>
 <line sev="1"/>
 <line sev="1" covered="yes">        double result = 0.0;</line>
-<line sev="2"><diag id="783"/>        double operand1, operand2;</line>
+<line sev="2"><diag id="654"/>        double operand1, operand2;</line>
 <line sev="1"/>
 <line sev="1">        try</line>
 <line sev="1">        {</line>
@@ -41,7 +41,7 @@
 <line sev="1">            {</line>
 <line sev="1" covered="yes">                String temp = terms[i];</line>
 <line sev="1"/>
-<line sev="1" covered="yes"><diag id="784"/>                if (temp.length() == 1)</line>
+<line sev="1" covered="yes"><diag id="655"/>                if (temp.length() == 1)</line>
 <line sev="1">                {</line>
 <line sev="1" covered="partial">                    switch (temp.charAt(0))</line>
 <line sev="1">                    {</line>
@@ -80,13 +80,13 @@
 <line sev="1" covered="no">                            break;</line>
 <line sev="1"/>
 <line sev="1">                        default: // is 1 digit number</line>
-<line sev="1" covered="yes"><diag id="785"/>                            stack[stackIndex++] = new Double(temp).doubleValue();</line>
+<line sev="1" covered="yes"><diag id="656"/>                            stack[stackIndex++] = new Double(temp).doubleValue();</line>
 <line sev="1">                    }</line>
 <line sev="1">                }</line>
 <line sev="1">                else</line>
 <line sev="1">                {</line>
 <line sev="1">                    // is multiple-digit number</line>
-<line sev="1" covered="yes"><diag id="786"/>                    stack[stackIndex++] = new Double(temp).doubleValue();</line>
+<line sev="1" covered="yes"><diag id="657"/>                    stack[stackIndex++] = new Double(temp).doubleValue();</line>
 <line sev="1">                }</line>
 <line sev="1">            }</line>
 <line sev="1"/>
@@ -101,7 +101,7 @@
 <line sev="1">        {</line>
 <line sev="1" covered="no">            throw new SyntaxException(&quot;Number format exception / Illegal operator&quot;, ex);</line>
 <line sev="1">        }</line>
-<line sev="3" covered="no"><diag id="787"/>        catch (Exception ex)</line>
+<line sev="3" covered="no"><diag id="658"/>        catch (Exception ex)</line>
 <line sev="1">        {</line>
 <line sev="1" covered="no">            throw new SyntaxException(&quot;Unknown error during evaluation: &quot; + ex.getMessage(), ex);</line>
 <line sev="1" covered="yes">        }</line>
@@ -132,7 +132,7 @@
 <line sev="1"/>
 <line sev="1" covered="yes">        for (int i = 0; i &lt; terms.length; i++)</line>
 <line sev="1">        {</line>
-<line sev="1" covered="yes"><diag id="788"/>            if (terms[i].charAt(0) == '#')</line>
+<line sev="1" covered="yes"><diag id="659"/>            if (terms[i].charAt(0) == '#')</line>
 <line sev="1">            {</line>
 <line sev="1" covered="yes">                String key = terms[i].substring(1);</line>
 <line sev="1" covered="yes">                Object value = values.get(key);</line>
@@ -159,7 +159,7 @@
 <line sev="1">     * </line>
 <line sev="1">     * @param terms - a String array containing operators &amp;amp; operands as strings, in postfix evaluation order</line>
 <line sev="1">     */</line>
-<line sev="1"><diag id="789"/>    public PostfixExpression(final String[] terms)</line>
+<line sev="1"><diag id="660"/>    public PostfixExpression(final String[] terms)</line>
 <line sev="1" covered="yes">    {</line>
 <line sev="1" covered="yes">        this.terms = new String[terms.length];</line>
 <line sev="1" covered="yes">        System.arraycopy(terms, 0, this.terms, 0, terms.length);</line>
@@ -192,34 +192,34 @@
 <line sev="1">}</line>
 </source>
 <diags first="false">
-<diag id="779" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="650" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The class 'PostfixExpression' has a Cyclomatic Complexity of 4 (Highest = 13).
 </diag>
-<diag id="781" sev="1" tool="PMD" rule="UseVarargs">
+<diag id="652" sev="1" tool="PMD" rule="UseVarargs">
 Consider using varargs for methods or constructors which take an array the last parameter.
 </diag>
-<diag id="782" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="653" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The method 'evaluatePostfix' has a Cyclomatic Complexity of 13.
 </diag>
-<diag id="783" sev="2" tool="PMD" rule="OneDeclarationPerLine">
+<diag id="654" sev="2" tool="PMD" rule="OneDeclarationPerLine">
 Use one line for each declaration, it enhances code readability.
 </diag>
-<diag id="784" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
+<diag id="655" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
 Avoid using Literals in Conditional Statements
 </diag>
-<diag id="785" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="656" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="786" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="657" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="787" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+<diag id="658" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </diag>
-<diag id="788" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
+<diag id="659" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
 Avoid using Literals in Conditional Statements
 </diag>
-<diag id="789" sev="1" tool="PMD" rule="UseVarargs">
+<diag id="660" sev="1" tool="PMD" rule="UseVarargs">
 Consider using varargs for methods or constructors which take an array the last parameter.
 </diag>
 </diags>

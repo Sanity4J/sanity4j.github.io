@@ -40,7 +40,7 @@ public final class ReportUtil
      */
     public static String getHtmlPathToRoot(final String relativeFileName)
     {
-<span class="fc" id="L43">        StringBuffer pathToRoot = new StringBuffer();</span>
+<span class="fc" id="L43">        StringBuilder pathToRoot = new StringBuilder();</span>
         
         // For the path com/bar/foo/Foobar.html, we need &quot;../../../&quot;
 <span class="fc" id="L46">        int depth = new StringTokenizer(relativeFileName, &quot;/\\&quot;).countTokens();</span>
@@ -67,7 +67,7 @@ public final class ReportUtil
         }
         
 <span class="fc" id="L69">        final int len = text.length();</span>
-<span class="fc" id="L70">        StringBuffer out = new StringBuffer(len);</span>
+<span class="fc" id="L70">        StringBuilder out = new StringBuilder(len);</span>
         
 <span class="fc bfc" id="L72" title="All 2 branches covered.">        for (int i = 0; i &lt; len; i++)</span>
         {

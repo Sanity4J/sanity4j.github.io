@@ -1,60 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.workflow.tool" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<issueSummary high="0" significant="14" moderate="3" low="19" info="12">
-<category name="All categories" high="0" significant="0" moderate="0" low="2" info="0">
-<category name="Correctness" high="0" significant="14" moderate="1" low="0" info="0"/>
-<category name="Code style" high="0" significant="0" moderate="2" low="5" info="11"/>
-<category name="Performance" high="0" significant="0" moderate="0" low="1" info="9"/>
-<category name="Complexity" high="0" significant="0" moderate="0" low="6" info="3"/>
-<category name="Exception handling" high="0" significant="0" moderate="1" low="0" info="0"/>
+<packageSummary packageName="com.github.sanity4j.workflow.tool" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<issueSummary high="0" significant="5" moderate="2" low="11" info="11">
+<category name="All categories" high="0" significant="0" moderate="0" low="3" info="0">
+<category name="Code style" high="0" significant="0" moderate="2" low="2" info="10"/>
+<category name="Correctness" high="0" significant="5" moderate="0" low="0" info="0"/>
+<category name="Complexity" high="0" significant="0" moderate="0" low="4" info="3"/>
+<category name="Performance" high="0" significant="0" moderate="0" low="1" info="8"/>
 </category>
-<tool name="Findbugs" high="0" significant="10" moderate="1" low="0" info="0"/>
-<tool name="PMD" high="0" significant="4" moderate="2" low="14" info="12"/>
-<tool name="PMD-CPD" high="0" significant="0" moderate="0" low="4" info="0"/>
+<tool name="SpotBugs" high="0" significant="1" moderate="1" low="0" info="0"/>
+<tool name="PMD" high="0" significant="4" moderate="1" low="10" info="11"/>
 <tool name="Checkstyle" high="0" significant="0" moderate="0" low="1" info="0"/>
 </issueSummary>
 <qualitySummary>
-<package name="com.github.sanity4j.workflow.tool" classes="25" lineCount="2683" high="0" significant="14" moderate="3" low="19" info="12" quality="87">
-<testCoverage lineCoveragePct="73" branchCoveragePct="91" lineCount="272" coveredLineCount="200" branchCount="34" coveredBranchCount="31"/>
+<package name="com.github.sanity4j.workflow.tool" classes="15" lineCount="2005" high="0" significant="5" moderate="2" low="11" info="11" quality="93">
+<testCoverage lineCoveragePct="81" branchCoveragePct="97" lineCount="315" coveredLineCount="258" branchCount="39" coveredBranchCount="38"/>
 </package>
 <class name="AbstractToolRunner" high="0" significant="0" moderate="0" low="4" info="0" quality="96"/>
 <class name="CheckStyleResultReader" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 <testCoverage lineCoveragePct="80" branchCoveragePct="66" lineCount="41" coveredLineCount="33" branchCount="6" coveredBranchCount="5"/>
 </class>
-<class name="CheckStyleRunner" high="0" significant="1" moderate="0" low="0" info="0" quality="77"/>
-<class name="CoberturaMergeReader" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
-<class name="CoberturaMergeRunner" high="0" significant="1" moderate="0" low="1" info="0" quality="75"/>
-<class name="CoberturaReportRunner" high="0" significant="1" moderate="0" low="2" info="0" quality="75"/>
-<class name="CoberturaResultReader" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
-<testCoverage lineCoveragePct="82" branchCoveragePct="81" lineCount="50" coveredLineCount="41" branchCount="8" coveredBranchCount="8"/>
-</class>
-<class name="FindBugsResultReader" high="0" significant="0" moderate="0" low="3" info="1" quality="96">
-<testCoverage lineCoveragePct="88" branchCoveragePct="68" lineCount="54" coveredLineCount="48" branchCount="12" coveredBranchCount="12"/>
-</class>
-<class name="FindBugsRunner" high="0" significant="1" moderate="0" low="2" info="0" quality="89"/>
+<class name="CheckStyleRunner" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
 <class name="JaCoCoMergeReader" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
 <class name="JaCoCoMergeRunner" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
-<class name="JaCoCoResultReader" high="0" significant="1" moderate="2" low="3" info="8" quality="87"/>
+<class name="JaCoCoResultReader" high="0" significant="1" moderate="2" low="3" info="8" quality="87">
+<testCoverage lineCoveragePct="93" branchCoveragePct="86" lineCount="112" coveredLineCount="105" branchCount="14" coveredBranchCount="14"/>
+</class>
 <class name="JaCoCoRunner" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
-<class name="Pmd4Runner" high="0" significant="1" moderate="0" low="0" info="0" quality="77"/>
-<class name="Pmd5Runner" high="0" significant="1" moderate="0" low="0" info="0" quality="74"/>
-<class name="PmdCpd4ResultReader" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="87" branchCoveragePct="75" lineCount="47" coveredLineCount="41" branchCount="2" coveredBranchCount="2"/>
+<class name="Pmd5Runner" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<class name="PmdCpd5ResultReader" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="86" branchCoveragePct="58" lineCount="50" coveredLineCount="43" branchCount="4" coveredBranchCount="4"/>
 </class>
-<class name="PmdCpd4Runner" high="0" significant="1" moderate="0" low="0" info="0" quality="76"/>
-<class name="PmdCpd5ResultReader" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
-<class name="PmdCpd5Runner" high="0" significant="1" moderate="0" low="0" info="0" quality="81"/>
-<class name="PmdCpdResultReader" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="3" coveredLineCount="3" branchCount="0" coveredBranchCount="0"/>
+<class name="PmdCpd5Runner" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<class name="PmdResultReader" high="0" significant="1" moderate="0" low="0" info="0" quality="88">
+<testCoverage lineCoveragePct="54" branchCoveragePct="75" lineCount="62" coveredLineCount="34" branchCount="4" coveredBranchCount="4"/>
 </class>
-<class name="PmdCpdRunner" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
-<class name="PmdResultReader" high="0" significant="3" moderate="1" low="2" info="0" quality="66">
-<testCoverage lineCoveragePct="44" branchCoveragePct="37" lineCount="77" coveredLineCount="34" branchCount="6" coveredBranchCount="4"/>
-</class>
-<class name="PmdRunner" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
 <class name="ResultReader" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
-<class name="ToolRunnerGroup" high="0" significant="2" moderate="0" low="2" info="2" quality="69"/>
+<class name="SpotBugsResultReader" high="0" significant="0" moderate="0" low="3" info="1" quality="95">
+<testCoverage lineCoveragePct="86" branchCoveragePct="62" lineCount="50" coveredLineCount="43" branchCount="11" coveredBranchCount="11"/>
+</class>
+<class name="SpotBugsRunner" high="0" significant="1" moderate="0" low="1" info="0" quality="90"/>
+<class name="ToolRunnerGroup" high="0" significant="2" moderate="0" low="0" info="2" quality="72"/>
 </qualitySummary>
 <graphs>
 </graphs>

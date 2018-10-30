@@ -1,250 +1,242 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/package-by-rule.xsl"?>
-<packageByRule packageName="com.github.sanity4j.report" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<packageByRule packageName="com.github.sanity4j.report" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <rule name="AccessorMethodGeneration" tool="PMD" severity="0">
 <class name="com.github.sanity4j.report.RuleCatalogueWriter">
-<diag id="555"/>
-<diag id="556"/>
-<diag id="557"/>
-<diag id="558"/>
+<diag id="534"/>
+<diag id="535"/>
+<diag id="536"/>
+<diag id="537"/>
 </class>
 </rule>
 <rule name="AssignmentInOperand" tool="PMD" severity="2">
 <class name="com.github.sanity4j.report.ReportUtil">
-<diag id="541"/>
+<diag id="521"/>
 </class>
 </rule>
 <rule name="AvoidDeeplyNestedIfStmts" tool="PMD" severity="0">
 <class name="com.github.sanity4j.report.ReportWriter">
-<diag id="550"/>
+<diag id="529"/>
 </class>
 </rule>
 <rule name="AvoidDuplicateLiterals" tool="PMD" severity="1">
 <class name="com.github.sanity4j.report.CategoryWriter">
-<diag id="459"/>
+<diag id="440"/>
 </class>
 <class name="com.github.sanity4j.report.ExportWriter">
-<diag id="484"/>
+<diag id="464"/>
 </class>
 <class name="com.github.sanity4j.report.PackageWriter">
-<diag id="507"/>
-<diag id="512"/>
-<diag id="513"/>
-<diag id="514"/>
-<diag id="515"/>
-<diag id="516"/>
-<diag id="517"/>
-<diag id="518"/>
+<diag id="487"/>
+<diag id="492"/>
+<diag id="493"/>
+<diag id="494"/>
+<diag id="495"/>
+<diag id="496"/>
+<diag id="497"/>
+<diag id="498"/>
 </class>
 </rule>
 <rule name="AvoidInstantiatingObjectsInLoops" tool="PMD" severity="0">
 <class name="com.github.sanity4j.report.CategoryWriter">
-<diag id="460"/>
-<diag id="461"/>
+<diag id="441"/>
+<diag id="442"/>
 </class>
 <class name="com.github.sanity4j.report.ChartFactory">
-<diag id="463"/>
+<diag id="444"/>
 </class>
 <class name="com.github.sanity4j.report.CrossProjectChartCreator">
+<diag id="447"/>
+<diag id="448"/>
+<diag id="450"/>
+<diag id="451"/>
+<diag id="452"/>
+<diag id="453"/>
+<diag id="454"/>
+</class>
+<class name="com.github.sanity4j.report.ExtractStaticContent">
+<diag id="466"/>
 <diag id="467"/>
 <diag id="468"/>
 <diag id="470"/>
-<diag id="471"/>
-<diag id="472"/>
-<diag id="473"/>
-<diag id="474"/>
-</class>
-<class name="com.github.sanity4j.report.ExtractStaticContent">
-<diag id="486"/>
-<diag id="487"/>
-<diag id="488"/>
-<diag id="490"/>
 </class>
 <class name="com.github.sanity4j.report.PackageWriter">
-<diag id="526"/>
-<diag id="527"/>
+<diag id="506"/>
+<diag id="507"/>
 </class>
 <class name="com.github.sanity4j.report.ReportUtil">
-<diag id="542"/>
+<diag id="522"/>
 </class>
 <class name="com.github.sanity4j.report.ReportWriter">
-<diag id="551"/>
+<diag id="530"/>
 </class>
 <class name="com.github.sanity4j.report.RuleCatalogueWriter">
-<diag id="554"/>
+<diag id="533"/>
 </class>
 </rule>
 <rule name="AvoidLiteralsInIfCondition" tool="PMD" severity="1">
 <class name="com.github.sanity4j.report.PackageWriter">
-<diag id="536"/>
+<diag id="516"/>
 </class>
 </rule>
 <rule name="ConsecutiveLiteralAppends" tool="PMD" severity="1">
 <class name="com.github.sanity4j.report.CategoryWriter">
-<diag id="457"/>
-<diag id="458"/>
+<diag id="438"/>
+<diag id="439"/>
 </class>
 <class name="com.github.sanity4j.report.ExportWriter">
-<diag id="480"/>
+<diag id="460"/>
 </class>
 <class name="com.github.sanity4j.report.JavaSourceWriter">
-<diag id="495"/>
-<diag id="496"/>
-<diag id="497"/>
+<diag id="475"/>
+<diag id="476"/>
+<diag id="477"/>
 </class>
 <class name="com.github.sanity4j.report.PackageWriter">
+<diag id="490"/>
+<diag id="491"/>
+<diag id="504"/>
+<diag id="505"/>
 <diag id="510"/>
 <diag id="511"/>
-<diag id="524"/>
-<diag id="525"/>
-<diag id="530"/>
-<diag id="531"/>
-<diag id="532"/>
-<diag id="533"/>
-<diag id="534"/>
-<diag id="535"/>
-<diag id="537"/>
-<diag id="538"/>
-<diag id="539"/>
-<diag id="540"/>
+<diag id="512"/>
+<diag id="513"/>
+<diag id="514"/>
+<diag id="515"/>
+<diag id="517"/>
+<diag id="518"/>
+<diag id="519"/>
+<diag id="520"/>
 </class>
 </rule>
 <rule name="CyclomaticComplexity" tool="PMD" severity="1">
 <class name="com.github.sanity4j.report.ExportWriter">
-<diag id="475"/>
-<diag id="482"/>
+<diag id="455"/>
+<diag id="462"/>
 </class>
 <class name="com.github.sanity4j.report.JavaSourceWriter">
-<diag id="491"/>
-<diag id="499"/>
+<diag id="471"/>
+<diag id="479"/>
 </class>
 <class name="com.github.sanity4j.report.PackageWriter">
-<diag id="502"/>
-<diag id="519"/>
+<diag id="482"/>
+<diag id="499"/>
 </class>
 </rule>
-<rule name="DMI_HARDCODED_ABSOLUTE_FILENAME" tool="Findbugs" severity="3">
+<rule name="DMI_HARDCODED_ABSOLUTE_FILENAME" tool="SpotBugs" severity="3">
 <class name="com.github.sanity4j.report.ReportUtil">
-<diag id="303"/>
+<diag id="308"/>
 </class>
 </rule>
-<rule name="DM_DEFAULT_ENCODING" tool="Findbugs" severity="3">
+<rule name="DM_DEFAULT_ENCODING" tool="SpotBugs" severity="3">
 <class name="com.github.sanity4j.report.JavaSourceWriter">
-<diag id="301"/>
+<diag id="306"/>
 </class>
 </rule>
-<rule name="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED" tool="Findbugs" severity="2">
+<rule name="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED" tool="SpotBugs" severity="2">
 <class name="com.github.sanity4j.report.ExtractStaticContent">
-<diag id="298"/>
+<diag id="303"/>
 </class>
 </rule>
 <rule name="DoNotCopyAndPasteCode" tool="PMD-CPD" severity="1">
 <class name="com.github.sanity4j.report.CategoryWriter">
-<diag id="904"/>
+<diag id="759"/>
 </class>
 <class name="com.github.sanity4j.report.ChartFactory">
-<diag id="888"/>
+<diag id="747"/>
 </class>
 <class name="com.github.sanity4j.report.CrossProjectChartCreator">
-<diag id="889"/>
+<diag id="748"/>
 </class>
 <class name="com.github.sanity4j.report.ExportWriter">
-<diag id="890"/>
-<diag id="894"/>
-<diag id="895"/>
-<diag id="896"/>
+<diag id="749"/>
+<diag id="753"/>
+<diag id="754"/>
+<diag id="755"/>
 </class>
 <class name="com.github.sanity4j.report.PackageWriter">
-<diag id="891"/>
-<diag id="892"/>
-<diag id="893"/>
-<diag id="897"/>
-<diag id="905"/>
+<diag id="750"/>
+<diag id="751"/>
+<diag id="752"/>
+<diag id="756"/>
+<diag id="760"/>
 </class>
 </rule>
 <rule name="ExcessiveMethodLength" tool="PMD" severity="0">
 <class name="com.github.sanity4j.report.ExportWriter">
-<diag id="481"/>
+<diag id="461"/>
 </class>
 <class name="com.github.sanity4j.report.JavaSourceWriter">
-<diag id="498"/>
+<diag id="478"/>
 </class>
 </rule>
 <rule name="GodClass" tool="PMD" severity="2">
 <class name="com.github.sanity4j.report.PackageWriter">
-<diag id="501"/>
-</class>
-</rule>
-<rule name="ImportFromSamePackage" tool="PMD" severity="1">
-<class name="com.github.sanity4j.report.ChartFactory_Test">
-<diag id="464"/>
-</class>
-<class name="com.github.sanity4j.report.ReportUtil_Test">
-<diag id="543"/>
+<diag id="481"/>
 </class>
 </rule>
 <rule name="InsufficientStringBufferDeclaration" tool="PMD" severity="1">
 <class name="com.github.sanity4j.report.CategoryWriter">
-<diag id="456"/>
+<diag id="437"/>
 </class>
 <class name="com.github.sanity4j.report.ExportWriter">
-<diag id="479"/>
+<diag id="459"/>
 </class>
 <class name="com.github.sanity4j.report.PackageWriter">
+<diag id="489"/>
+<diag id="503"/>
 <diag id="509"/>
-<diag id="523"/>
-<diag id="529"/>
 </class>
 <class name="com.github.sanity4j.report.ReportWriter">
-<diag id="552"/>
+<diag id="531"/>
 </class>
 </rule>
 <rule name="JavadocPackageCheck" tool="Checkstyle" severity="1">
 <class name="com.github.sanity4j.report.CategoryWriter">
-<diag id="210"/>
+<diag id="208"/>
 </class>
 </rule>
 <rule name="NPathComplexity" tool="PMD" severity="0">
 <class name="com.github.sanity4j.report.ExportWriter">
-<diag id="483"/>
+<diag id="463"/>
 </class>
 <class name="com.github.sanity4j.report.JavaSourceWriter">
-<diag id="500"/>
+<diag id="480"/>
 </class>
 <class name="com.github.sanity4j.report.PackageWriter">
-<diag id="520"/>
+<diag id="500"/>
 </class>
 </rule>
-<rule name="OS_OPEN_STREAM" tool="Findbugs" severity="0">
+<rule name="OS_OPEN_STREAM" tool="SpotBugs" severity="0">
 <class name="com.github.sanity4j.report.ExtractStaticContent">
-<diag id="300"/>
+<diag id="305"/>
 </class>
 <class name="com.github.sanity4j.report.JavaSourceWriter">
-<diag id="302"/>
+<diag id="307"/>
 </class>
 </rule>
 <rule name="TooManyMethods" tool="PMD" severity="0">
 <class name="com.github.sanity4j.report.PackageWriter">
-<diag id="503"/>
+<diag id="483"/>
 </class>
 </rule>
 <rule name="UseVarargs" tool="PMD" severity="1">
 <class name="com.github.sanity4j.report.ChartFactory">
-<diag id="462"/>
+<diag id="443"/>
 </class>
 <class name="com.github.sanity4j.report.CrossProjectChartCreator">
-<diag id="469"/>
+<diag id="449"/>
 </class>
 </rule>
 <rule name="UselessParentheses" tool="PMD" severity="1">
 <class name="com.github.sanity4j.report.CategoryWriter">
-<diag id="455"/>
+<diag id="436"/>
 </class>
 <class name="com.github.sanity4j.report.PackageWriter">
+<diag id="488"/>
+<diag id="501"/>
+<diag id="502"/>
 <diag id="508"/>
-<diag id="521"/>
-<diag id="522"/>
-<diag id="528"/>
 </class>
 </rule>
 </packageByRule>

@@ -1,37 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.model.coverage" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<issueSummary high="0" significant="0" moderate="0" low="7" info="0">
-<category name="All categories" high="0" significant="0" moderate="0" low="0" info="0">
-<category name="Code style" high="0" significant="0" moderate="0" low="6" info="0"/>
-</category>
-<tool name="PMD" high="0" significant="0" moderate="0" low="6" info="0"/>
+<packageSummary packageName="com.github.sanity4j.model.coverage" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<issueSummary high="0" significant="0" moderate="0" low="1" info="0">
+<category name="All categories" high="0" significant="0" moderate="0" low="0" info="0"/>
 <tool name="Checkstyle" high="0" significant="0" moderate="0" low="1" info="0"/>
 </issueSummary>
 <qualitySummary>
-<package name="com.github.sanity4j.model.coverage" classes="8" lineCount="879" high="0" significant="0" moderate="0" low="7" info="0" quality="98">
-<testCoverage lineCoveragePct="97" branchCoveragePct="93" lineCount="266" coveredLineCount="260" branchCount="15" coveredBranchCount="14"/>
+<package name="com.github.sanity4j.model.coverage" classes="8" lineCount="905" high="0" significant="0" moderate="0" low="1" info="0" quality="99">
+<testCoverage lineCoveragePct="99" branchCoveragePct="93" lineCount="266" coveredLineCount="264" branchCount="15" coveredBranchCount="14"/>
 </package>
 <class name="AbstractCoverage" high="0" significant="0" moderate="0" low="1" info="0" quality="95">
 <testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="7" coveredLineCount="7" branchCount="0" coveredBranchCount="0"/>
 </class>
 <class name="ClassCoverage" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="83" branchCoveragePct="80" lineCount="24" coveredLineCount="20" branchCount="5" coveredBranchCount="4"/>
+<testCoverage lineCoveragePct="91" branchCoveragePct="80" lineCount="24" coveredLineCount="22" branchCount="5" coveredBranchCount="4"/>
 </class>
-<class name="ClassCoverage_Test" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<class name="ClassCoverage_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 <testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="51" coveredLineCount="51" branchCount="0" coveredBranchCount="0"/>
 </class>
 <class name="Coverage" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="97" branchCoveragePct="91" lineCount="34" coveredLineCount="33" branchCount="6" coveredBranchCount="6"/>
+<testCoverage lineCoveragePct="100" branchCoveragePct="91" lineCount="34" coveredLineCount="34" branchCount="6" coveredBranchCount="6"/>
 </class>
 <class name="CoverageItf" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
-<class name="Coverage_Test" high="0" significant="0" moderate="0" low="3" info="0" quality="95">
+<class name="Coverage_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 <testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="61" coveredLineCount="61" branchCount="0" coveredBranchCount="0"/>
 </class>
 <class name="PackageCoverage" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
-<testCoverage lineCoveragePct="96" branchCoveragePct="100" lineCount="30" coveredLineCount="29" branchCount="4" coveredBranchCount="4"/>
+<testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="30" coveredLineCount="30" branchCount="4" coveredBranchCount="4"/>
 </class>
-<class name="PackageCoverage_Test" high="0" significant="0" moderate="0" low="2" info="0" quality="96">
+<class name="PackageCoverage_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 <testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="59" coveredLineCount="59" branchCount="0" coveredBranchCount="0"/>
 </class>
 </qualitySummary>

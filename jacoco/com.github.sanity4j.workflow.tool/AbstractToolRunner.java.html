@@ -142,7 +142,7 @@ public abstract class AbstractToolRunner implements WorkUnit
 <span class="nc" id="L142">            toolConfig = paramMap.get(toolConfigParam);</span>
         }
 
-<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (FileUtil.hasValue(toolConfig))</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (!StringUtil.empty(toolConfig))</span>
         {
 <span class="nc" id="L147">            InputStream stream = this.getClass().getResourceAsStream(&quot;/&quot; + toolConfig);</span>
 
@@ -171,7 +171,7 @@ public abstract class AbstractToolRunner implements WorkUnit
         }
         
         // Add the class path for this tool to the javaArgs.
-<span class="nc" id="L174">        StringBuffer javaArgsBuf = new StringBuffer();</span>
+<span class="nc" id="L174">        StringBuilder javaArgsBuf = new StringBuilder();</span>
 <span class="nc" id="L175">        javaArgsBuf.append(paramMap.get(&quot;javaArgs&quot;));</span>
 <span class="nc" id="L176">        List&lt;String&gt; toolJars = getToolJars();</span>
 <span class="nc" id="L177">        String classPath = StringUtil.concatList(toolJars, File.pathSeparator);</span>
@@ -202,14 +202,15 @@ public abstract class AbstractToolRunner implements WorkUnit
      * The entry point for the work unit. This implementation looks up the command line necessary to run the tool, then
      * calls {@link #runTool(String)}.
      */
+    @Override
     public void run()
     {
-<span class="nc" id="L207">        Map&lt;String, String&gt; params = getParameterMap();</span>
-<span class="nc" id="L208">        String auxClasspath = params.get(&quot;auxClasspath&quot;);</span>
-<span class="nc" id="L209">        String toolCommandLine = config.getToolCommandLine(tool.getId(), toolVersion);</span>
-<span class="nc" id="L210">        toolCommandLine = QaUtil.replaceTokens(toolCommandLine, getParameterMap(), config, auxClasspath);</span>
-<span class="nc" id="L211">        runTool(toolCommandLine);</span>
-<span class="nc" id="L212">    }</span>
+<span class="nc" id="L208">        Map&lt;String, String&gt; params = getParameterMap();</span>
+<span class="nc" id="L209">        String auxClasspath = params.get(&quot;auxClasspath&quot;);</span>
+<span class="nc" id="L210">        String toolCommandLine = config.getToolCommandLine(tool.getId(), toolVersion);</span>
+<span class="nc" id="L211">        toolCommandLine = QaUtil.replaceTokens(toolCommandLine, getParameterMap(), config, auxClasspath);</span>
+<span class="nc" id="L212">        runTool(toolCommandLine);</span>
+<span class="nc" id="L213">    }</span>
 
     /**
      * Sets the QA configuration for the current run.
@@ -218,8 +219,8 @@ public abstract class AbstractToolRunner implements WorkUnit
      */
     public void setConfig(final QAConfig config)
     {
-<span class="nc" id="L221">        this.config = config;</span>
-<span class="nc" id="L222">    }</span>
+<span class="nc" id="L222">        this.config = config;</span>
+<span class="nc" id="L223">    }</span>
 
     /**
      * Sets the tool version to use.
@@ -228,7 +229,7 @@ public abstract class AbstractToolRunner implements WorkUnit
      */
     public void setToolVersion(final String toolVersion)
     {
-<span class="nc" id="L231">        this.toolVersion = toolVersion;</span>
-<span class="nc" id="L232">    }</span>
+<span class="nc" id="L232">        this.toolVersion = toolVersion;</span>
+<span class="nc" id="L233">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.ExternalProcessRunner_Test" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="0" low="2" info="0" lineCoverage="82" branchCoverage="50" quality="92"/>
+<classDetails className="com.github.sanity4j.util.ExternalProcessRunner_Test" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="82" branchCoverage="50" quality="100"/>
 <source>
 <line>package com.github.sanity4j.util; </line>
 <line/>
 <line>import java.io.ByteArrayOutputStream;</line>
 <line>import java.io.File;</line>
 <line/>
-<line sev="1"><diag id="680"/>import com.github.sanity4j.util.ExternalProcessRunner;</line>
-<line sev="1"><diag id="681"/>import com.github.sanity4j.util.QAException;</line>
-<line/>
-<line>import junit.framework.TestCase;</line>
+<line>import org.junit.Assert;</line>
+<line>import org.junit.Test;</line>
 <line/>
 <line>/** </line>
 <line> * ExternalProcessRunner_Test - unit tests for ExternalProcessRunner.</line>
@@ -19,8 +17,9 @@
 <line> * @author Yiannis Paschalidis </line>
 <line> * @since Sanity4J 1.0</line>
 <line> */</line>
-<line covered="yes">public class ExternalProcessRunner_Test extends TestCase</line>
+<line covered="yes">public class ExternalProcessRunner_Test</line>
 <line>{</line>
+<line>    @Test</line>
 <line>    public void testRunProcess()</line>
 <line>    {</line>
 <line covered="yes">        ByteArrayOutputStream stdout = new ByteArrayOutputStream();</line>
@@ -35,33 +34,25 @@
 <line covered="yes">            String[] args = new String[]{&quot;ExternalProcessRunner_Test.fail&quot;};           </line>
 <line covered="no">            ExternalProcessRunner.runProcess(args, stdout, stderr);</line>
 <line/>
-<line covered="no">            fail(&quot;Should have thrown a QAException&quot;);</line>
+<line covered="no">            Assert.fail(&quot;Should have thrown a QAException&quot;);</line>
 <line>        }</line>
 <line covered="yes">        catch (QAException expected)</line>
 <line>        {</line>
-<line covered="yes">            assertNotNull(&quot;Thrown exception should have a message&quot;, expected.getMessage());</line>
+<line covered="yes">            Assert.assertNotNull(&quot;Thrown exception should have a message&quot;, expected.getMessage());</line>
 <line covered="no">        }</line>
 <line/>
 <line>        // Test with response code == 0</line>
 <line covered="yes">        String[] args = new String[]{javaExecutable, &quot;-version&quot;};</line>
 <line/>
 <line covered="yes">        int result = ExternalProcessRunner.runProcess(args, stdout, stderr);        </line>
-<line covered="yes">        assertEquals(&quot;Result code should be zero (ok)&quot;, 0, result);</line>
+<line covered="yes">        Assert.assertEquals(&quot;Result code should be zero (ok)&quot;, 0, result);</line>
 <line/>
 <line>        // Test with response code != 0</line>
 <line covered="yes">        args = new String[]{javaExecutable, &quot;-ExternalProcessRunner.fail&quot;};</line>
 <line/>
 <line covered="yes">        result = ExternalProcessRunner.runProcess(args, stdout, stderr);</line>
-<line covered="partial">        assertFalse(&quot;Result code should be non-zero (failure)&quot;, result == 0);        </line>
+<line covered="partial">        Assert.assertFalse(&quot;Result code should be non-zero (failure)&quot;, result == 0);        </line>
 <line covered="yes">    }</line>
 <line>}</line>
 </source>
-<diags first="false">
-<diag id="680" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
-</diag>
-<diag id="681" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
-</diag>
-</diags>
 </classDetails>

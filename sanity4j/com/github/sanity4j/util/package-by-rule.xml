@@ -1,274 +1,230 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/package-by-rule.xsl"?>
-<packageByRule packageName="com.github.sanity4j.util" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<packageByRule packageName="com.github.sanity4j.util" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <rule name="AbstractNaming" tool="PMD" severity="1">
 <class name="com.github.sanity4j.util.QaLogger">
-<diag id="720"/>
+<diag id="599"/>
 </class>
 </rule>
 <rule name="AssignmentInOperand" tool="PMD" severity="2">
+<class name="com.github.sanity4j.util.ExtractStats_Test">
+<diag id="586"/>
+</class>
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="727"/>
+<diag id="606"/>
 </class>
 </rule>
 <rule name="AvoidCatchingGenericException" tool="PMD" severity="3">
 <class name="com.github.sanity4j.util.ExternalProcessRunner">
-<diag id="679"/>
+<diag id="568"/>
 </class>
 <class name="com.github.sanity4j.util.JaxbMarshaller">
-<diag id="705"/>
-<diag id="708"/>
+<diag id="588"/>
+<diag id="591"/>
 </class>
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="731"/>
-<diag id="746"/>
+<diag id="612"/>
+<diag id="627"/>
 </class>
 <class name="com.github.sanity4j.util.math.InfixExpression">
-<diag id="778"/>
+<diag id="649"/>
 </class>
 <class name="com.github.sanity4j.util.math.PostfixExpression">
-<diag id="787"/>
+<diag id="658"/>
 </class>
 </rule>
 <rule name="AvoidDeeplyNestedIfStmts" tool="PMD" severity="0">
 <class name="com.github.sanity4j.util.RegexpReplaceInputStream">
-<diag id="763"/>
-<diag id="764"/>
+<diag id="641"/>
+<diag id="642"/>
 </class>
 </rule>
 <rule name="AvoidInstantiatingObjectsInLoops" tool="PMD" severity="0">
 <class name="com.github.sanity4j.util.ExtractStats">
-<diag id="690"/>
-<diag id="694"/>
+<diag id="577"/>
+<diag id="581"/>
+</class>
+<class name="com.github.sanity4j.util.ExtractStats_Test">
+<diag id="583"/>
+<diag id="584"/>
+<diag id="585"/>
 </class>
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="742"/>
-<diag id="743"/>
-<diag id="744"/>
-<diag id="745"/>
+<diag id="623"/>
+<diag id="624"/>
+<diag id="625"/>
+<diag id="626"/>
 </class>
 <class name="com.github.sanity4j.util.math.InfixExpression">
-<diag id="777"/>
+<diag id="648"/>
 </class>
 <class name="com.github.sanity4j.util.math.PostfixExpression">
-<diag id="785"/>
-<diag id="786"/>
+<diag id="656"/>
+<diag id="657"/>
 </class>
 </rule>
 <rule name="AvoidLiteralsInIfCondition" tool="PMD" severity="1">
 <class name="com.github.sanity4j.util.ExtractStats">
-<diag id="688"/>
+<diag id="575"/>
 </class>
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="730"/>
+<diag id="611"/>
 </class>
 <class name="com.github.sanity4j.util.StringUtil">
-<diag id="765"/>
+<diag id="643"/>
 </class>
 <class name="com.github.sanity4j.util.math.PostfixExpression">
-<diag id="784"/>
-<diag id="788"/>
+<diag id="655"/>
+<diag id="659"/>
 </class>
 </rule>
 <rule name="CompareObjectsWithEquals" tool="PMD" severity="3">
 <class name="com.github.sanity4j.util.JaxbMarshaller">
-<diag id="707"/>
+<diag id="590"/>
 </class>
 </rule>
 <rule name="ConfusingTernary" tool="PMD" severity="1">
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="736"/>
+<diag id="608"/>
+<diag id="609"/>
+<diag id="617"/>
 </class>
 </rule>
 <rule name="CyclomaticComplexity" tool="PMD" severity="1">
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="724"/>
-<diag id="729"/>
-<diag id="733"/>
-<diag id="738"/>
+<diag id="603"/>
+<diag id="610"/>
+<diag id="614"/>
+<diag id="619"/>
 </class>
 <class name="com.github.sanity4j.util.math.InfixExpression">
-<diag id="770"/>
-<diag id="774"/>
+<diag id="644"/>
+<diag id="647"/>
 </class>
 <class name="com.github.sanity4j.util.math.PostfixExpression">
-<diag id="779"/>
-<diag id="782"/>
+<diag id="650"/>
+<diag id="653"/>
 </class>
 </rule>
-<rule name="DM_DEFAULT_ENCODING" tool="Findbugs" severity="3">
-<class name="com.github.sanity4j.util.JaxbMarshaller$1">
-<diag id="311"/>
-</class>
-</rule>
-<rule name="EI_EXPOSE_REP" tool="Findbugs" severity="0">
+<rule name="EI_EXPOSE_REP" tool="SpotBugs" severity="0">
 <class name="com.github.sanity4j.util.ExtractStats">
-<diag id="306"/>
+<diag id="311"/>
 </class>
 </rule>
 <rule name="EmptyCatchBlock" tool="PMD" severity="2">
 <class name="com.github.sanity4j.util.PipeInputThread">
-<diag id="717"/>
-<diag id="718"/>
+<diag id="597"/>
+<diag id="598"/>
 </class>
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="747"/>
-</class>
-<class name="com.github.sanity4j.util.RegexpReplaceInputStream">
-<diag id="762"/>
+<diag id="628"/>
 </class>
 </rule>
 <rule name="ExcessiveMethodLength" tool="PMD" severity="0">
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="737"/>
+<diag id="618"/>
 </class>
 <class name="com.github.sanity4j.util.math.InfixExpression">
-<diag id="773"/>
+<diag id="646"/>
 </class>
 </rule>
 <rule name="FieldDeclarationsShouldBeAtStartOfClass" tool="PMD" severity="1">
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="725"/>
-<diag id="726"/>
-<diag id="732"/>
-</class>
-<class name="com.github.sanity4j.util.StringUtil_Test">
-<diag id="767"/>
-<diag id="768"/>
+<diag id="604"/>
+<diag id="605"/>
+<diag id="613"/>
 </class>
 </rule>
 <rule name="GodClass" tool="PMD" severity="2">
 <class name="com.github.sanity4j.util.ExtractStats">
-<diag id="682"/>
+<diag id="569"/>
 </class>
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="723"/>
-</class>
-</rule>
-<rule name="ImportFromSamePackage" tool="PMD" severity="1">
-<class name="com.github.sanity4j.util.ExternalProcessRunner_Test">
-<diag id="680"/>
-<diag id="681"/>
-</class>
-<class name="com.github.sanity4j.util.ExtractStats_Test">
-<diag id="695"/>
-<diag id="696"/>
-<diag id="697"/>
-<diag id="698"/>
-</class>
-<class name="com.github.sanity4j.util.FileUtil_Test">
-<diag id="702"/>
-</class>
-<class name="com.github.sanity4j.util.JaxbMarshaller_Test">
-<diag id="709"/>
-<diag id="710"/>
-<diag id="711"/>
-</class>
-<class name="com.github.sanity4j.util.PipeInputThread_Test">
-<diag id="719"/>
-</class>
-<class name="com.github.sanity4j.util.StringUtil_Test">
-<diag id="766"/>
-</class>
-</rule>
-<rule name="InefficientEmptyStringCheck" tool="PMD" severity="2">
-<class name="com.github.sanity4j.util.FileUtil">
-<diag id="700"/>
+<diag id="602"/>
 </class>
 </rule>
 <rule name="JavadocPackageCheck" tool="Checkstyle" severity="1">
 <class name="com.github.sanity4j.util.ExternalProcessRunner">
-<diag id="233"/>
+<diag id="231"/>
 </class>
 <class name="com.github.sanity4j.util.math.InfixExpression">
-<diag id="271"/>
+<diag id="278"/>
 </class>
 </rule>
 <rule name="MethodReturnsInternalArray" tool="PMD" severity="1">
 <class name="com.github.sanity4j.util.ExtractStats">
-<diag id="689"/>
+<diag id="576"/>
 </class>
 </rule>
-<rule name="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" tool="Findbugs" severity="0">
+<rule name="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" tool="SpotBugs" severity="0">
 <class name="com.github.sanity4j.util.ExtractStats">
-<diag id="307"/>
+<diag id="312"/>
 </class>
 <class name="com.github.sanity4j.util.FileUtil">
-<diag id="309"/>
+<diag id="314"/>
 </class>
 </rule>
 <rule name="NPathComplexity" tool="PMD" severity="0">
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="734"/>
-<diag id="739"/>
+<diag id="615"/>
+<diag id="620"/>
+</class>
+</rule>
+<rule name="NoWhitespaceBeforeCheck" tool="Checkstyle" severity="1">
+<class name="com.github.sanity4j.util.ExtractStats_Test">
+<diag id="235"/>
+<diag id="236"/>
+<diag id="237"/>
+<diag id="238"/>
 </class>
 </rule>
 <rule name="OneDeclarationPerLine" tool="PMD" severity="2">
 <class name="com.github.sanity4j.util.math.PostfixExpression">
-<diag id="783"/>
+<diag id="654"/>
 </class>
 </rule>
 <rule name="PrematureDeclaration" tool="PMD" severity="1">
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="735"/>
+<diag id="616"/>
 </class>
 </rule>
-<rule name="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" tool="Findbugs" severity="2">
+<rule name="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" tool="SpotBugs" severity="2">
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="312"/>
-<diag id="313"/>
+<diag id="316"/>
+<diag id="317"/>
 </class>
 </rule>
-<rule name="REC_CATCH_EXCEPTION" tool="Findbugs" severity="3">
+<rule name="REC_CATCH_EXCEPTION" tool="SpotBugs" severity="3">
 <class name="com.github.sanity4j.util.ExternalProcessRunner">
-<diag id="305"/>
+<diag id="310"/>
 </class>
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="314"/>
-</class>
-</rule>
-<rule name="SimplifiedTernary" tool="PMD" severity="2">
-<class name="com.github.sanity4j.util.FileUtil">
-<diag id="701"/>
+<diag id="318"/>
 </class>
 </rule>
 <rule name="SimplifyStartsWith" tool="PMD" severity="1">
 <class name="com.github.sanity4j.util.QaUtil">
-<diag id="728"/>
-</class>
-</rule>
-<rule name="UnnecessaryFullyQualifiedName" tool="PMD" severity="1">
-<class name="com.github.sanity4j.util.JaxbMarshaller">
-<diag id="703"/>
+<diag id="607"/>
 </class>
 </rule>
 <rule name="UseVarargs" tool="PMD" severity="1">
 <class name="com.github.sanity4j.util.ExtractStats">
-<diag id="693"/>
+<diag id="580"/>
 </class>
 <class name="com.github.sanity4j.util.math.PostfixExpression">
-<diag id="781"/>
-<diag id="789"/>
+<diag id="652"/>
+<diag id="660"/>
 </class>
 </rule>
 <rule name="UselessParentheses" tool="PMD" severity="1">
 <class name="com.github.sanity4j.util.ExtractStats">
-<diag id="691"/>
-<diag id="692"/>
-</class>
-<class name="com.github.sanity4j.util.RegexpReplaceInputStream">
-<diag id="760"/>
-<diag id="761"/>
-</class>
-<class name="com.github.sanity4j.util.math.InfixExpression">
-<diag id="772"/>
-<diag id="775"/>
-<diag id="776"/>
+<diag id="578"/>
+<diag id="579"/>
 </class>
 </rule>
-<rule name="WMI_WRONG_MAP_ITERATOR" tool="Findbugs" severity="0">
+<rule name="WMI_WRONG_MAP_ITERATOR" tool="SpotBugs" severity="0">
 <class name="com.github.sanity4j.util.ExtractStats">
-<diag id="308"/>
+<diag id="313"/>
 </class>
 </rule>
 </packageByRule>

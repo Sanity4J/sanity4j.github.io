@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.model.diagnostic.DiagnosticFactory" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="1" moderate="0" low="2" info="0" lineCoverage="100" branchCoverage="0" quality="76"/>
+<classDetails className="com.github.sanity4j.model.diagnostic.DiagnosticFactory" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="1" moderate="0" low="0" info="0" lineCoverage="100" branchCoverage="0" quality="80"/>
 <source>
 <line>package com.github.sanity4j.model.diagnostic;</line>
 <line/>
@@ -20,10 +20,9 @@
 <line>{</line>
 <line>    /**</line>
 <line>     * The &lt;b&gt;default&lt;/b&gt; {@link DiagnosticFactory} instance properties. These properties control the severities,</line>
-<line>     * exclusions and categorisation of the {@link Diagnostic} messages created by the default {@link DiagnosticFactory}</line>
-<line>     * .</line>
+<line>     * exclusions and categorisation of the {@link Diagnostic} messages created by the default {@link DiagnosticFactory}.</line>
 <line>     */</line>
-<line sev="3" covered="yes"><diag id="106"/><diag id="294"/>    private static final Properties properties = QaUtil.getProperties(&quot;/com/github/sanity4j/model/diagnostic/Diagnostic.properties&quot;);</line>
+<line sev="3" covered="yes"><diag id="300"/>    private static final Properties PROPERTIES = QaUtil.getProperties(&quot;/com/github/sanity4j/model/diagnostic/Diagnostic.properties&quot;);</line>
 <line/>
 <line>    /**</line>
 <line>     * The default {@link DiagnosticFactory} instance.</line>
@@ -47,7 +46,7 @@
 <line>     */</line>
 <line>    private DiagnosticFactory(final Properties properties)</line>
 <line covered="yes">    {</line>
-<line covered="yes">        DiagnosticFactory.properties.putAll(properties);</line>
+<line covered="yes">        DiagnosticFactory.PROPERTIES.putAll(properties);</line>
 <line covered="yes">    }</line>
 <line/>
 <line>    /**</line>
@@ -67,7 +66,7 @@
 <line>     *            {@link DiagnosticFactory}.</line>
 <line>     * @return a {@link DiagnosticFactory} with the specified set of &lt;em&gt;properties&lt;/em&gt;</line>
 <line>     */</line>
-<line sev="1"><diag id="107"/>    public static DiagnosticFactory getInstance(final Properties properties)</line>
+<line>    public static DiagnosticFactory getInstance(final Properties properties)</line>
 <line>    {</line>
 <line covered="yes">        return new DiagnosticFactory(properties);</line>
 <line>    }</line>
@@ -91,7 +90,7 @@
 <line>     */</line>
 <line>    public String getProperty(final String key)</line>
 <line>    {</line>
-<line covered="yes">        return properties.getProperty(key);</line>
+<line covered="yes">        return PROPERTIES.getProperty(key);</line>
 <line>    }</line>
 <line/>
 <line>    /**</line>
@@ -102,13 +101,11 @@
 <line>     */</line>
 <line>    public void setProperty(final String key, final String value)</line>
 <line>    {</line>
-<line covered="yes">        properties.setProperty(key, value);</line>
+<line covered="yes">        PROPERTIES.setProperty(key, value);</line>
 <line covered="yes">    }</line>
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="106" sev="1" tool="Checkstyle" rule="ConstantNameCheck">Name 'properties' must match pattern '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$|^log$'.</diag>
-<diag id="294" sev="3" tool="Findbugs" rule="DMI_HARDCODED_ABSOLUTE_FILENAME">Hard coded reference to an absolute pathname in com.github.sanity4j.model.diagnostic.DiagnosticFactory.&lt;static initializer for DiagnosticFactory&gt;()</diag>
-<diag id="107" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'properties' hides a field.</diag>
+<diag id="300" sev="3" tool="SpotBugs" rule="DMI_HARDCODED_ABSOLUTE_FILENAME">Hard coded reference to an absolute pathname in com.github.sanity4j.model.diagnostic.DiagnosticFactory.&lt;static initializer for DiagnosticFactory&gt;()</diag>
 </diags>
 </classDetails>

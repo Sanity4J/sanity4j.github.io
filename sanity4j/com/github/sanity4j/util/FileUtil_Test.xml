@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.FileUtil_Test" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="0" low="1" info="0" lineCoverage="100" branchCoverage="25" quality="97"/>
+<classDetails className="com.github.sanity4j.util.FileUtil_Test" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="100" branchCoverage="25" quality="100"/>
 <source>
 <line>package com.github.sanity4j.util; </line>
 <line/>
@@ -10,9 +10,8 @@
 <line>import java.util.ArrayList;</line>
 <line>import java.util.List;</line>
 <line/>
-<line sev="1"><diag id="702"/>import com.github.sanity4j.util.FileUtil;</line>
-<line/>
-<line>import junit.framework.TestCase;</line>
+<line>import org.junit.Assert;</line>
+<line>import org.junit.Test;</line>
 <line/>
 <line>/**</line>
 <line> * FileUtil_Test - unit tests for {@link FileUtil}. </line>
@@ -20,8 +19,9 @@
 <line> * @author Yiannis Paschalidis </line>
 <line> * @since Sanity4J 1.0</line>
 <line> */</line>
-<line covered="yes">public class FileUtil_Test extends TestCase</line>
+<line covered="yes">public class FileUtil_Test</line>
 <line>{</line>
+<line>    @Test</line>
 <line>    public void testCreateDir() throws IOException</line>
 <line>    {</line>
 <line covered="yes">        File tempDir = getTempDir();</line>
@@ -29,15 +29,16 @@
 <line>        try</line>
 <line>        {</line>
 <line covered="yes">            FileUtil.createDir(tempDir.getPath());</line>
-<line covered="yes">            assertTrue(&quot;Failed to create directory&quot;, tempDir.isDirectory());</line>
+<line covered="yes">            Assert.assertTrue(&quot;Failed to create directory&quot;, tempDir.isDirectory());</line>
 <line>        }</line>
 <line>        finally</line>
 <line>        {</line>
 <line covered="yes">            tempDir.delete();</line>
-<line covered="yes">            assertFalse(&quot;Failed to delete temp dir &quot; + tempDir.getPath(), tempDir.exists());</line>
+<line covered="yes">            Assert.assertFalse(&quot;Failed to delete temp dir &quot; + tempDir.getPath(), tempDir.exists());</line>
 <line covered="yes">        }</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testFindJars() throws IOException</line>
 <line>    {</line>
 <line covered="yes">        List&lt;String&gt; jars = new ArrayList&lt;String&gt;();</line>
@@ -46,7 +47,7 @@
 <line>        try</line>
 <line>        {</line>
 <line covered="yes">            tempDir.mkdirs();</line>
-<line covered="yes">            assertTrue(&quot;Failed to create directory&quot;, tempDir.isDirectory());</line>
+<line covered="yes">            Assert.assertTrue(&quot;Failed to create directory&quot;, tempDir.isDirectory());</line>
 <line/>
 <line covered="yes">            File jar1 = new File(tempDir, &quot;file1.jar&quot;);</line>
 <line covered="yes">            jar1.createNewFile();</line>
@@ -65,10 +66,10 @@
 <line covered="yes">            jar3.createNewFile();</line>
 <line/>
 <line covered="yes">            FileUtil.findJars(tempDir, jars);</line>
-<line covered="yes">            assertEquals(&quot;Incorrect number of jars found&quot;, 3, jars.size());</line>
-<line covered="yes">            assertTrue(&quot;Missing jar at top level&quot;, jars.contains(jar1.getPath()));</line>
-<line covered="yes">            assertTrue(&quot;Missing jar at subdirectory level&quot;, jars.contains(jar2.getPath()));</line>
-<line covered="yes">            assertTrue(&quot;Missing jar at nested subdirectory level&quot;, jars.contains(jar3.getPath()));</line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect number of jars found&quot;, 3, jars.size());</line>
+<line covered="yes">            Assert.assertTrue(&quot;Missing jar at top level&quot;, jars.contains(jar1.getPath()));</line>
+<line covered="yes">            Assert.assertTrue(&quot;Missing jar at subdirectory level&quot;, jars.contains(jar2.getPath()));</line>
+<line covered="yes">            Assert.assertTrue(&quot;Missing jar at nested subdirectory level&quot;, jars.contains(jar3.getPath()));</line>
 <line>        }</line>
 <line>        finally</line>
 <line>        {</line>
@@ -76,7 +77,7 @@
 <line covered="partial">            if (tempDir.exists())</line>
 <line>            {</line>
 <line covered="yes">                FileUtil.delete(tempDir);</line>
-<line covered="yes">                assertFalse(&quot;FileUtil.delete failed to delete &quot; + tempDir, tempDir.exists());</line>
+<line covered="yes">                Assert.assertFalse(&quot;FileUtil.delete failed to delete &quot; + tempDir, tempDir.exists());</line>
 <line>            }</line>
 <line>        }</line>
 <line covered="yes">    }</line>
@@ -86,15 +87,10 @@
 <line>        // Alternatively, could read system property java.io.tmpdir ...</line>
 <line covered="yes">        File file = File.createTempFile(&quot;FileUtil_Test&quot;, &quot;tmp&quot;);</line>
 <line covered="yes">        file.delete();</line>
-<line covered="yes">        assertFalse(&quot;Failed to delete temp file &quot; + file.getPath(), file.exists());</line>
+<line covered="yes">        Assert.assertFalse(&quot;Failed to delete temp file &quot; + file.getPath(), file.exists());</line>
 <line/>
 <line covered="yes">        return file;</line>
 <line>    }</line>
 <line>}</line>
 </source>
-<diags first="false">
-<diag id="702" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
-</diag>
-</diags>
 </classDetails>

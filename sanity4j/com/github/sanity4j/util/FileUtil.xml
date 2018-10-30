@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.FileUtil" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="2" low="0" info="1" lineCoverage="32" branchCoverage="37" quality="95"/>
+<classDetails className="com.github.sanity4j.util.FileUtil" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="1" lineCoverage="31" branchCoverage="34" quality="100"/>
 <source>
 <line>package com.github.sanity4j.util; </line>
 <line/>
@@ -84,7 +84,7 @@
 <line>    {</line>
 <line covered="yes">        if (file.isDirectory())</line>
 <line>        {</line>
-<line sev="0" covered="yes"><diag id="309"/>            File[] files = file.listFiles();</line>
+<line sev="0" covered="yes"><diag id="314"/>            File[] files = file.listFiles();</line>
 <line/>
 <line covered="yes">            for (int i = 0; i &lt; files.length; i++)</line>
 <line>            {</line>
@@ -218,7 +218,7 @@
 <line>        }</line>
 <line>        else</line>
 <line>        {</line>
-<line covered="no">	        StringBuffer buf = new StringBuffer(); </line>
+<line covered="no">	        StringBuilder buf = new StringBuilder(); </line>
 <line/>
 <line covered="no">        	if (classpath != null)</line>
 <line>        	{</line>
@@ -239,26 +239,9 @@
 <line covered="no">        	return buf.toString();</line>
 <line>        }</line>
 <line>    }</line>
-<line/>
-<line>    /**</line>
-<line>     * Evaluates a string for emptiness.</line>
-<line>     * </line>
-<line>     * @param str the string to evaluate.</line>
-<line>     * @return true if the string is non-null and has a trimmed length greater than zero.</line>
-<line>     */</line>
-<line>    public static boolean hasValue(final String str)</line>
-<line>    {</line>
-<line sev="2" covered="partial"><diag id="700"/><diag id="701"/>    	return str == null ? false : str.trim().length() &gt; 0;</line>
-<line>    }</line>
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="309" sev="0" tool="Findbugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.util.FileUtil.delete(File) due to return value of called method</diag>
-<diag id="700" sev="2" tool="PMD" rule="InefficientEmptyStringCheck">
-String.trim().length()==0 is an inefficient way to validate an empty String.
-</diag>
-<diag id="701" sev="2" tool="PMD" rule="SimplifiedTernary">
-Ternary operators that can be simplified with || or &amp;&amp;
-</diag>
+<diag id="314" sev="0" tool="SpotBugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.util.FileUtil.delete(File) due to return value of called method</diag>
 </diags>
 </classDetails>

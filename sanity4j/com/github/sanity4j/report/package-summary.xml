@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.report" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<issueSummary high="0" significant="2" moderate="3" low="65" info="32">
+<packageSummary packageName="com.github.sanity4j.report" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<issueSummary high="0" significant="2" moderate="3" low="63" info="32">
 <category name="All categories" high="0" significant="0" moderate="1" low="0" info="6">
 <category name="Correctness" high="0" significant="2" moderate="1" low="0" info="0"/>
-<category name="Code style" high="0" significant="0" moderate="2" low="20" info="20"/>
+<category name="Code style" high="0" significant="0" moderate="2" low="18" info="20"/>
 <category name="Performance" high="0" significant="0" moderate="0" low="26" info="19"/>
 <category name="Complexity" high="0" significant="0" moderate="0" low="6" info="5">
 <category name="Code size" high="0" significant="0" moderate="0" low="0" info="2"/>
 </category>
 </category>
-<tool name="Findbugs" high="0" significant="2" moderate="1" low="0" info="2"/>
-<tool name="PMD" high="0" significant="0" moderate="2" low="52" info="30"/>
+<tool name="SpotBugs" high="0" significant="2" moderate="1" low="0" info="2"/>
+<tool name="PMD" high="0" significant="0" moderate="2" low="50" info="30"/>
 <tool name="PMD-CPD" high="0" significant="0" moderate="0" low="12" info="0"/>
 <tool name="Checkstyle" high="0" significant="0" moderate="0" low="1" info="0"/>
 </issueSummary>
 <qualitySummary>
-<package name="com.github.sanity4j.report" classes="12" lineCount="2954" high="0" significant="2" moderate="3" low="65" info="32" quality="93">
+<package name="com.github.sanity4j.report" classes="12" lineCount="2952" high="0" significant="2" moderate="3" low="63" info="32" quality="93">
 <testCoverage lineCoveragePct="90" branchCoveragePct="100" lineCount="214" coveredLineCount="193" branchCount="12" coveredBranchCount="12"/>
 </package>
 <class name="CategoryWriter" high="0" significant="0" moderate="0" low="7" info="2" quality="92"/>
 <class name="ChartFactory" high="0" significant="0" moderate="0" low="2" info="1" quality="97">
 <testCoverage lineCoveragePct="93" branchCoveragePct="66" lineCount="43" coveredLineCount="40" branchCount="5" coveredBranchCount="5"/>
 </class>
-<class name="ChartFactory_Test" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<class name="ChartFactory_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 <testCoverage lineCoveragePct="96" branchCoveragePct="0" lineCount="55" coveredLineCount="53" branchCount="0" coveredBranchCount="0"/>
 </class>
 <class name="CrossProjectChartCreator" high="0" significant="0" moderate="0" low="2" info="7" quality="98"/>
@@ -34,7 +34,7 @@
 <class name="ReportUtil" high="0" significant="1" moderate="1" low="0" info="1" quality="87">
 <testCoverage lineCoveragePct="77" branchCoveragePct="100" lineCount="59" coveredLineCount="46" branchCount="7" coveredBranchCount="7"/>
 </class>
-<class name="ReportUtil_Test" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<class name="ReportUtil_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 <testCoverage lineCoveragePct="94" branchCoveragePct="0" lineCount="57" coveredLineCount="54" branchCount="0" coveredBranchCount="0"/>
 </class>
 <class name="ReportWriter" high="0" significant="0" moderate="0" low="1" info="2" quality="99"/>

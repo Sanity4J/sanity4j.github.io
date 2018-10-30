@@ -1,0 +1,16 @@
+com.github.sanity4j.ant.taskdef
+com.github.sanity4j.gen.checkstyle_4_4
+com.github.sanity4j.gen.jacoco_0_7_9
+com.github.sanity4j.gen.pmd_4_2_1
+com.github.sanity4j.gen.pmdcpd_4_2_1
+com.github.sanity4j.gen.spotbugs_3_1_6
+com.github.sanity4j.maven.plugin
+com.github.sanity4j.model.coverage
+com.github.sanity4j.model.diagnostic
+com.github.sanity4j.model.summary
+com.github.sanity4j.report
+com.github.sanity4j.ui
+com.github.sanity4j.util
+com.github.sanity4j.util.math
+com.github.sanity4j.workflow
+com.github.sanity4j.workflow.tool

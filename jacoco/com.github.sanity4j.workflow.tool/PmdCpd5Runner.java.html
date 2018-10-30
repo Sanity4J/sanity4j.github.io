@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import com.github.sanity4j.util.ExternalProcessRunner;
@@ -11,6 +12,7 @@ import com.github.sanity4j.util.FileUtil;
 import com.github.sanity4j.util.QAException;
 import com.github.sanity4j.util.QaLogger;
 import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.util.StringUtil;
 import com.github.sanity4j.util.Tool;
 
 /**
@@ -26,8 +28,8 @@ public class PmdCpd5Runner extends AbstractToolRunner
      */
     public PmdCpd5Runner()
     {
-<span class="nc" id="L29">        super(Tool.PMD_CPD);</span>
-<span class="nc" id="L30">    }</span>
+<span class="nc" id="L31">        super(Tool.PMD_CPD);</span>
+<span class="nc" id="L32">    }</span>
 
     /**
      * Runs PMD-CPD.
@@ -36,44 +38,44 @@ public class PmdCpd5Runner extends AbstractToolRunner
     @Override
     public void runTool(final String commandLine)
     {
-<span class="nc" id="L39">        File pmdCpdXmlFile = getConfig().getToolResultFile(Tool.PMD_CPD);</span>
-<span class="nc" id="L40">        FileUtil.createDir(pmdCpdXmlFile.getParentFile().getPath());</span>
+<span class="nc" id="L41">        File pmdCpdXmlFile = getConfig().getToolResultFile(Tool.PMD_CPD);</span>
+<span class="nc" id="L42">        FileUtil.createDir(pmdCpdXmlFile.getParentFile().getPath());</span>
         
-<span class="nc" id="L42">        FileOutputStream stdout = null;</span>
-<span class="nc" id="L43">        ByteArrayOutputStream stderr = new ByteArrayOutputStream();</span>
+<span class="nc" id="L44">        FileOutputStream stdout = null;</span>
+<span class="nc" id="L45">        ByteArrayOutputStream stderr = new ByteArrayOutputStream();</span>
         
         try
         {
             // Run the process
             // PMD CPD sends its output to standard out, so we need to intercept it and write it to a file ourselves
-<span class="nc" id="L49">            stdout = new FileOutputStream(pmdCpdXmlFile);</span>
+<span class="nc" id="L51">            stdout = new FileOutputStream(pmdCpdXmlFile);</span>
             
-<span class="nc" id="L51">            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</span>
+<span class="nc" id="L53">            int result = ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</span>
 
             // Result code 4 is &quot;DUPLICATE_CODE_FOUND&quot;, and is ok.
-<span class="nc bnc" id="L54" title="All 4 branches missed.">            if (result != 0 &amp;&amp; result != 4)</span>
+<span class="nc bnc" id="L56" title="All 4 branches missed.">            if (result != 0 &amp;&amp; result != 4)</span>
             {
-<span class="nc" id="L56">                throw new QAException(&quot;PMD CPD returned error code &quot; + result);</span>
+<span class="nc" id="L58">                throw new QAException(&quot;PMD CPD returned error code &quot; + result);</span>
             }
 
-<span class="nc" id="L59">            String stderrString = new String(stderr.toByteArray());</span>
+<span class="nc" id="L61">            String stderrString = new String(stderr.toByteArray(), Charset.defaultCharset());</span>
 
-<span class="nc bnc" id="L61" title="All 2 branches missed.">            if (FileUtil.hasValue(stderrString))</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">            if (!StringUtil.empty(stderrString))</span>
             {
-<span class="nc" id="L63">                QaLogger.getInstance().error(stderrString);</span>
+<span class="nc" id="L65">                QaLogger.getInstance().error(stderrString);</span>
             }
         }
-<span class="nc" id="L66">        catch (IOException e)</span>
+<span class="nc" id="L68">        catch (IOException e)</span>
         {
-<span class="nc" id="L68">            String err = new String(stderr.toByteArray());</span>
-<span class="nc" id="L69">            throw new QAException(&quot;PMD CPD Command [&quot; + commandLine + &quot;] failed : [&quot; + err + &quot;]&quot;, e);</span>
+<span class="nc" id="L70">            String err = new String(stderr.toByteArray(), Charset.defaultCharset());</span>
+<span class="nc" id="L71">            throw new QAException(&quot;PMD CPD Command [&quot; + commandLine + &quot;] failed : [&quot; + err + &quot;]&quot;, e);</span>
         }
         finally
         {
-<span class="nc" id="L73">            QaUtil.safeClose(stdout);</span>
-<span class="nc" id="L74">            QaUtil.safeClose(stderr);</span>
-<span class="nc" id="L75">        }</span>
-<span class="nc" id="L76">    }</span>
+<span class="nc" id="L75">            QaUtil.safeClose(stdout);</span>
+<span class="nc" id="L76">            QaUtil.safeClose(stderr);</span>
+<span class="nc" id="L77">        }</span>
+<span class="nc" id="L78">    }</span>
 
     /**
      * Subclasses may override this method to add any additional parameters specific to the tool.
@@ -85,27 +87,28 @@ public class PmdCpd5Runner extends AbstractToolRunner
     @Override
     protected Map&lt;String, String&gt; getParameterMap()
     {
-<span class="nc" id="L88">        Map&lt;String, String&gt; params = super.getParameterMap();</span>
+<span class="nc" id="L90">        Map&lt;String, String&gt; params = super.getParameterMap();</span>
         
         try
         {
-<span class="nc" id="L92">            String srcDir = params.get(&quot;source&quot;);</span>
-<span class="nc" id="L93">            params.put(&quot;source&quot;, new File(srcDir).getCanonicalPath());</span>
+<span class="nc" id="L94">            String srcDir = params.get(&quot;source&quot;);</span>
+<span class="nc" id="L95">            params.put(&quot;source&quot;, new File(srcDir).getCanonicalPath());</span>
         }
-<span class="nc" id="L95">        catch (IOException e)</span>
+<span class="nc" id="L97">        catch (IOException e)</span>
         {
-<span class="nc" id="L97">            throw new QAException(&quot;Failed to get canonical path for src dir&quot;, e);</span>
-<span class="nc" id="L98">        }</span>
+<span class="nc" id="L99">            throw new QAException(&quot;Failed to get canonical path for src dir&quot;, e);</span>
+<span class="nc" id="L100">        }</span>
         
-<span class="nc" id="L100">        return params;</span>
+<span class="nc" id="L102">        return params;</span>
     }
     
     /**
      * @return the description of this WorkUnit.
      */
+    @Override
     public String getDescription()
     {
-<span class="nc" id="L108">        return &quot;Running PMD CPD&quot;;</span>
+<span class="nc" id="L111">        return &quot;Running PMD CPD&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

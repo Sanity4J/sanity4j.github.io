@@ -73,7 +73,7 @@ public final class QaUtil
     {
 <span class="fc" id="L74">        Properties properties = new Properties();</span>
         
-<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if (FileUtil.hasValue(resourcePath))</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if (!StringUtil.empty(resourcePath))</span>
         {
             String resourceFile;
             
@@ -124,7 +124,7 @@ public final class QaUtil
 <span class="fc" id="L124">        Properties stringProperties = new Properties();</span>
         
         // Parse the properties string as if it were a properties file.
-<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (FileUtil.hasValue(propertiesString))</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (!StringUtil.empty(propertiesString))</span>
         {
 <span class="nc" id="L129">            InputStream stringStream = null;</span>
             try 
@@ -182,7 +182,7 @@ public final class QaUtil
         // Apply overrides
         
         // Look for the external properties on the classpath first.
-<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        if (FileUtil.hasValue(externalPropertiesPath))</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        if (!StringUtil.empty(externalPropertiesPath))</span>
         {
 <span class="nc bnc" id="L187" title="All 2 branches missed.">            String resource = externalPropertiesPath.startsWith(&quot;/&quot;) ? externalPropertiesPath : &quot;/&quot; + externalPropertiesPath;</span>
             
@@ -231,7 +231,7 @@ public final class QaUtil
     {
 <span class="fc" id="L232">        File propertiesFile = null;</span>
 
-<span class="pc bpc" id="L234" title="1 of 2 branches missed.">        if (FileUtil.hasValue(externalPropertiesPath))</span>
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">        if (!StringUtil.empty(externalPropertiesPath))</span>
         {
 <span class="nc" id="L236">            File externalProperties = new File(externalPropertiesPath);</span>
 
@@ -271,7 +271,7 @@ public final class QaUtil
         // not the full pathname. Then we use that name to check if the
         // named file exists in the user home directory.
         
-<span class="pc bpc" id="L274" title="1 of 2 branches missed.">        if (FileUtil.hasValue(externalPropertiesPath))</span>
+<span class="pc bpc" id="L274" title="1 of 2 branches missed.">        if (!StringUtil.empty(externalPropertiesPath))</span>
         {
 <span class="nc" id="L276">            File externalProperties = new File(externalPropertiesPath);</span>
 
@@ -365,7 +365,7 @@ public final class QaUtil
     public static String getPackageForSourceFile(final File file)
     {
 <span class="nc" id="L367">        final String token = &quot;package &quot;;</span>
-<span class="nc" id="L368">        StringBuffer packageName = new StringBuffer();</span>
+<span class="nc" id="L368">        StringBuilder packageName = new StringBuilder();</span>
 <span class="nc" id="L369">        FileInputStream fis = null;</span>
 
         try
@@ -520,7 +520,7 @@ public final class QaUtil
 <span class="nc" id="L520">            return string;</span>
         }
 
-<span class="nc" id="L523">        StringBuffer result = new StringBuffer(string.length());</span>
+<span class="nc" id="L523">        StringBuilder result = new StringBuilder(string.length());</span>
 
 <span class="nc bnc" id="L525" title="All 4 branches missed.">        while (tokenStart != -1 &amp;&amp; tokenStart &lt; string.length() - TOKENLENGTH)</span>
         {

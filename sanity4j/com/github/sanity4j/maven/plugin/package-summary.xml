@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.maven.plugin" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<packageSummary packageName="com.github.sanity4j.maven.plugin" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <issueSummary high="0" significant="6" moderate="1" low="19" info="27">
 <category name="All categories" high="0" significant="0" moderate="0" low="0" info="1">
 <category name="Correctness" high="0" significant="6" moderate="0" low="7" info="0"/>
@@ -10,7 +10,7 @@
 </category>
 <category name="Performance" high="0" significant="0" moderate="0" low="0" info="14"/>
 </category>
-<tool name="Findbugs" high="0" significant="1" moderate="0" low="0" info="6"/>
+<tool name="SpotBugs" high="0" significant="1" moderate="0" low="0" info="6"/>
 <tool name="PMD" high="0" significant="5" moderate="1" low="15" info="21"/>
 <tool name="Checkstyle" high="0" significant="0" moderate="0" low="4" info="0"/>
 </issueSummary>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PmdResultReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sanity4J</a> &gt; <a href="index.source.html" class="el_package">com.github.sanity4j.workflow.tool</a> &gt; <span class="el_source">PmdResultReader.java</span></div><h1>PmdResultReader.java</h1><pre class="source lang-java linenums">package com.github.sanity4j.workflow.tool;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
@@ -12,6 +12,7 @@ import com.github.sanity4j.model.diagnostic.Diagnostic;
 import com.github.sanity4j.model.diagnostic.DiagnosticFactory;
 import com.github.sanity4j.model.diagnostic.DiagnosticSet;
 import com.github.sanity4j.util.ExtractStats;
+import com.github.sanity4j.util.FileUtil;
 import com.github.sanity4j.util.JaxbMarshaller;
 import com.github.sanity4j.util.QAException;
 
@@ -25,13 +26,10 @@ import com.github.sanity4j.gen.pmd_4_2_1.Violation;
  * @author Yiannis Paschalidis
  * @since Sanity4J 1.0
  */
-<span class="fc" id="L28">public final class PmdResultReader implements ResultReader</span>
+<span class="fc" id="L29">public final class PmdResultReader implements ResultReader</span>
 {
-    /** The size of the internal copy buffer. */
-    private static final int BUFFER_SIZE = 4096;
-    
     /** The properties used to configure this {@link ResultReader}. */
-<span class="fc" id="L34">    private final Properties properties = new Properties();</span>
+<span class="fc" id="L32">    private final Properties properties = new Properties();</span>
 
     /** The ExtractStats to add the results to. */
     private ExtractStats stats;
@@ -48,161 +46,135 @@ import com.github.sanity4j.gen.pmd_4_2_1.Violation;
      */
     private static String fileToString(final File file)
     {
-<span class="nc" id="L51">        String string = &quot;&quot;;</span>
-<span class="nc" id="L52">        FileInputStream fis = null;</span>
-        
         try
         {
-<span class="nc" id="L56">            byte[] buffer = new byte[BUFFER_SIZE];</span>
-<span class="nc" id="L57">            fis = new FileInputStream(file);</span>
-<span class="nc" id="L58">            ByteArrayOutputStream baos = new ByteArrayOutputStream();</span>
-<span class="nc" id="L59">            int read = fis.read(buffer);</span>
-            
-<span class="nc bnc" id="L61" title="All 2 branches missed.">            while (read &gt; 0)</span>
-            {
-<span class="nc" id="L63">                baos.write(buffer, 0, read);</span>
-<span class="nc" id="L64">                read = fis.read(buffer);</span>
-            }
-        
-<span class="nc" id="L67">            string = new String(baos.toByteArray());</span>
+<span class="nc" id="L51">            return new String(FileUtil.read(file), Charset.defaultCharset());</span>
         }
-<span class="nc" id="L69">        catch (IOException ioe)</span>
+<span class="nc" id="L53">        catch (IOException ioe)</span>
         {
-<span class="nc" id="L71">            ByteArrayOutputStream baos = new ByteArrayOutputStream();</span>
-<span class="nc" id="L72">            PrintStream stream = new PrintStream(baos);</span>
-<span class="nc" id="L73">            stream.flush();</span>
-<span class="nc" id="L74">            string = new String(baos.toByteArray());</span>
+<span class="nc" id="L55">            StringWriter writer = new StringWriter();</span>
+<span class="nc" id="L56">            ioe.printStackTrace(new PrintWriter(writer));        </span>
+<span class="nc" id="L57">            return writer.toString();</span>
         }
-        finally 
-        {
-<span class="nc bnc" id="L78" title="All 6 branches missed.">            if (fis != null)</span>
-            {
-                try
-                {
-<span class="nc" id="L82">                    fis.close();</span>
-                }
-<span class="nc" id="L84">                catch (IOException ioe)</span>
-                {
-                    // Ignore
-<span class="nc" id="L87">                }</span>
-            }
-        }
-        
-<span class="nc" id="L91">        return string;</span>
     }
     
     /** {@inheritDoc} */
+    @Override
     public void setProperties(final Properties properties)
     {
-<span class="nc" id="L97">        this.properties.putAll(properties);</span>
-<span class="nc" id="L98">    }</span>
+<span class="nc" id="L65">        this.properties.putAll(properties);</span>
+<span class="nc" id="L66">    }</span>
 
     /** {@inheritDoc} */
+    @Override
     public void setResultFile(final File resultFile)
     {
-<span class="fc" id="L103">        this.pmdResultFile = resultFile;</span>
-<span class="fc" id="L104">    }</span>
+<span class="fc" id="L72">        this.pmdResultFile = resultFile;</span>
+<span class="fc" id="L73">    }</span>
 
     /** {@inheritDoc} */
+    @Override
     public void setStats(final ExtractStats stats)
     {
-<span class="fc" id="L109">        this.stats = stats;</span>
-<span class="fc" id="L110">    }</span>
+<span class="fc" id="L79">        this.stats = stats;</span>
+<span class="fc" id="L80">    }</span>
 
     /**
      * Extracts the PMD statistics from the pmdResultFile.
      */
+    @Override
     public void run()
     {
-<span class="fc" id="L117">        DiagnosticFactory diagnosticFactory = DiagnosticFactory.getInstance(properties);</span>
-<span class="fc" id="L118">        DiagnosticSet diagnostics = stats.getDiagnostics();</span>
-
-<span class="fc" id="L120">        Pmd result = null;</span>
+<span class="fc" id="L88">        Pmd result = null;</span>
         
         try
         {
-<span class="fc" id="L124">            result = (Pmd) JaxbMarshaller.unmarshal(pmdResultFile, &quot;com.github.sanity4j.gen.pmd_4_2_1&quot;,</span>
+<span class="fc" id="L92">            result = (Pmd) JaxbMarshaller.unmarshal(pmdResultFile, &quot;com.github.sanity4j.gen.pmd_4_2_1&quot;,</span>
                                                     &quot;http://com.github.sanity4j/namespace/pmd-4.2.1&quot;);
         }
-<span class="nc" id="L127">        catch (Exception e)</span>
+<span class="nc" id="L95">        catch (Exception e)</span>
         {
-<span class="nc" id="L129">            String content = fileToString(pmdResultFile);</span>
-<span class="nc" id="L130">            throw new QAException(&quot;Error parsing PMD Result file [&quot; + pmdResultFile + &quot;] [&quot; + content + &quot;]&quot;, e);</span>
-<span class="fc" id="L131">        }</span>
+<span class="nc" id="L97">            String content = fileToString(pmdResultFile);</span>
+<span class="nc" id="L98">            throw new QAException(&quot;Error parsing PMD Result file [&quot; + pmdResultFile + &quot;] [&quot; + content + &quot;]&quot;, e);</span>
+<span class="fc" id="L99">        }</span>
         
-<span class="fc" id="L133">        List&lt;com.github.sanity4j.gen.pmd_4_2_1.File&gt; files = result.getFile();</span>
+<span class="fc" id="L101">        List&lt;com.github.sanity4j.gen.pmd_4_2_1.File&gt; files = result.getFile();</span>
 
-<span class="fc bfc" id="L135" title="All 2 branches covered.">        for (com.github.sanity4j.gen.pmd_4_2_1.File file : files)</span>
+<span class="fc" id="L103">        DiagnosticFactory diagnosticFactory = DiagnosticFactory.getInstance(properties);</span>
+<span class="fc" id="L104">        DiagnosticSet diagnostics = stats.getDiagnostics();</span>
+        
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        for (com.github.sanity4j.gen.pmd_4_2_1.File file : files)</span>
         {
-<span class="fc bfc" id="L137" title="All 2 branches covered.">            for (Violation violation : file.getViolation())</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">            for (Violation violation : file.getViolation())</span>
             {
-<span class="fc" id="L139">                Diagnostic diagnostic = diagnosticFactory.getDiagnostic();</span>
-<span class="fc" id="L140">                diagnostic.setSource(Diagnostic.SOURCE_PMD);</span>
+<span class="fc" id="L110">                Diagnostic diagnostic = diagnosticFactory.getDiagnostic();</span>
+<span class="fc" id="L111">                diagnostic.setSource(Diagnostic.SOURCE_PMD);</span>
 
                 try
                 {
-<span class="fc" id="L144">                    diagnostic.setFileName(stats.getCanonicalPath(file.getName()));</span>
+<span class="fc" id="L115">                    diagnostic.setFileName(stats.getCanonicalPath(file.getName()));</span>
                 }
-<span class="nc" id="L146">                catch (IOException e)</span>
+<span class="nc" id="L117">                catch (IOException e)</span>
                 {
-<span class="nc" id="L148">                    throw new QAException(&quot;Failed to obtain canonical path for &quot; + file.getName(), e);</span>
-<span class="fc" id="L149">                }</span>
+<span class="nc" id="L119">                    throw new QAException(&quot;Failed to obtain canonical path for &quot; + file.getName(), e);</span>
+<span class="fc" id="L120">                }</span>
 
-<span class="fc" id="L151">                diagnostic.setStartLine(violation.getBeginline().intValue());</span>
-<span class="fc" id="L152">                diagnostic.setEndLine(violation.getEndline().intValue());</span>
-<span class="fc" id="L153">                diagnostic.setStartColumn(violation.getBegincolumn().intValue());</span>
-<span class="fc" id="L154">                diagnostic.setEndColumn(violation.getEndcolumn().intValue());</span>
-<span class="fc" id="L155">                diagnostic.setRuleName(violation.getRule());</span>
-<span class="fc" id="L156">                diagnostic.setMessage(violation.getValue());</span>
-<span class="fc" id="L157">                diagnostic.calcSeverity();</span>
+<span class="fc" id="L122">                diagnostic.setStartLine(violation.getBeginline().intValue());</span>
+<span class="fc" id="L123">                diagnostic.setEndLine(violation.getEndline().intValue());</span>
+<span class="fc" id="L124">                diagnostic.setStartColumn(violation.getBegincolumn().intValue());</span>
+<span class="fc" id="L125">                diagnostic.setEndColumn(violation.getEndcolumn().intValue());</span>
+<span class="fc" id="L126">                diagnostic.setRuleName(violation.getRule());</span>
+<span class="fc" id="L127">                diagnostic.setMessage(violation.getValue());</span>
+<span class="fc" id="L128">                diagnostic.calcSeverity();</span>
 
                 // Some diagnostics don't include the class name,
                 // but we can determine it from the source name.
-<span class="pc bpc" id="L161" title="1 of 2 branches missed.">                if (violation.getClassName() == null)</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">                if (violation.getClassName() == null)</span>
                 {
-<span class="fc" id="L163">                    String className = stats.getClassNameForSourcePath(diagnostic.getFileName());</span>
-<span class="fc" id="L164">                    diagnostic.setClassName(className);</span>
-<span class="fc" id="L165">                }</span>
+<span class="fc" id="L134">                    String className = stats.getClassNameForSourcePath(diagnostic.getFileName());</span>
+<span class="fc" id="L135">                    diagnostic.setClassName(className);</span>
+<span class="fc" id="L136">                }</span>
                 else
                 {
-<span class="nc" id="L168">                    diagnostic.setClassName(violation.getPackage() + '.' + violation.getClassName());</span>
+<span class="nc" id="L139">                    diagnostic.setClassName(violation.getPackage() + '.' + violation.getClassName());</span>
                 }
 
-<span class="fc" id="L171">                diagnostics.add(diagnostic);</span>
-<span class="fc" id="L172">            }</span>
-<span class="fc" id="L173">        }</span>
+<span class="fc" id="L142">                diagnostics.add(diagnostic);</span>
+<span class="fc" id="L143">            }</span>
+<span class="fc" id="L144">        }</span>
 
         // Do not suppress violations
-<span class="pc bpc" id="L176" title="1 of 2 branches missed.">        for (Suppressedviolation violation : result.getSuppressedviolation())</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">        for (Suppressedviolation violation : result.getSuppressedviolation())</span>
         {
-<span class="nc" id="L178">            Diagnostic diagnostic = diagnosticFactory.getDiagnostic();</span>
+<span class="nc" id="L149">            Diagnostic diagnostic = diagnosticFactory.getDiagnostic();</span>
 
             try
             {
-<span class="nc" id="L182">                diagnostic.setFileName(stats.getCanonicalPath(violation.getFilename()));</span>
+<span class="nc" id="L153">                diagnostic.setFileName(stats.getCanonicalPath(violation.getFilename()));</span>
             }
-<span class="nc" id="L184">            catch (IOException e)</span>
+<span class="nc" id="L155">            catch (IOException e)</span>
             {
-<span class="nc" id="L186">                throw new QAException(&quot;Failed to obtain canonical path for &quot; + violation.getFilename(), e);</span>
-<span class="nc" id="L187">            }</span>
+<span class="nc" id="L157">                throw new QAException(&quot;Failed to obtain canonical path for &quot; + violation.getFilename(), e);</span>
+<span class="nc" id="L158">            }</span>
 
-<span class="nc" id="L189">            diagnostic.setSource(Diagnostic.SOURCE_OTHER);</span>
-<span class="nc" id="L190">            diagnostic.setRuleName(&quot;DoNotSuppressWarnings&quot;);</span>
-<span class="nc" id="L191">            diagnostic.setMessage(&quot;Do not use the SuppressWarnings annotation&quot;);</span>
-<span class="nc" id="L192">            diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</span>
-<span class="nc" id="L193">            diagnostic.calcSeverity();</span>
-<span class="nc" id="L194">            diagnostic.setStartLine(1);</span>
-<span class="nc" id="L195">            diagnostic.setEndLine(1);</span>
-<span class="nc" id="L196">            diagnostics.add(diagnostic);</span>
-<span class="nc" id="L197">        }</span>
-<span class="fc" id="L198">    }</span>
+<span class="nc" id="L160">            diagnostic.setSource(Diagnostic.SOURCE_OTHER);</span>
+<span class="nc" id="L161">            diagnostic.setRuleName(&quot;DoNotSuppressWarnings&quot;);</span>
+<span class="nc" id="L162">            diagnostic.setMessage(&quot;Do not use the SuppressWarnings annotation&quot;);</span>
+<span class="nc" id="L163">            diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</span>
+<span class="nc" id="L164">            diagnostic.calcSeverity();</span>
+<span class="nc" id="L165">            diagnostic.setStartLine(1);</span>
+<span class="nc" id="L166">            diagnostic.setEndLine(1);</span>
+<span class="nc" id="L167">            diagnostics.add(diagnostic);</span>
+<span class="nc" id="L168">        }</span>
+<span class="fc" id="L169">    }</span>
 
     /**
      * @return the description of this WorkUnit
      */
+    @Override
     public String getDescription()
     {
-<span class="nc" id="L205">        return &quot;Reading PMD results&quot;;</span>
+<span class="nc" id="L177">        return &quot;Reading PMD results&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

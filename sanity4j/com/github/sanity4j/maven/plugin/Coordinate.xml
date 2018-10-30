@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.maven.plugin.Coordinate" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.maven.plugin.Coordinate" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="0" low="9" info="0" quality="93"/>
 <source>
 <line sev="1"><diag id="2"/>package com.github.sanity4j.maven.plugin;</line>
@@ -48,7 +48,7 @@
 <line>     */</line>
 <line>    public Coordinate(final String line)</line>
 <line>    {</line>
-<line sev="1"><diag id="333"/>        parse(line);</line>
+<line sev="1"><diag id="327"/>        parse(line);</line>
 <line>    }</line>
 <line/>
 <line>    /**</line>
@@ -58,12 +58,12 @@
 <line>     */</line>
 <line>    public Coordinate(final Coordinate coordinate)</line>
 <line>    {</line>
-<line sev="1"><diag id="334"/>        setGroupId(coordinate.getGroupId());</line>
-<line sev="1"><diag id="335"/>        setArtifactId(coordinate.getArtifactId());</line>
-<line sev="1"><diag id="336"/>        setVersion(coordinate.getVersion());</line>
-<line sev="1"><diag id="337"/>        setPackaging(coordinate.getPackaging());</line>
-<line sev="1"><diag id="338"/>        setClassifier(coordinate.getClassifier());</line>
-<line sev="1"><diag id="339"/>        setScope(coordinate.getScope());</line>
+<line sev="1"><diag id="328"/>        setGroupId(coordinate.getGroupId());</line>
+<line sev="1"><diag id="329"/>        setArtifactId(coordinate.getArtifactId());</line>
+<line sev="1"><diag id="330"/>        setVersion(coordinate.getVersion());</line>
+<line sev="1"><diag id="331"/>        setPackaging(coordinate.getPackaging());</line>
+<line sev="1"><diag id="332"/>        setClassifier(coordinate.getClassifier());</line>
+<line sev="1"><diag id="333"/>        setScope(coordinate.getScope());</line>
 <line>    }</line>
 <line/>
 <line>    /**</line>
@@ -165,7 +165,7 @@
 <line>    /**</line>
 <line>     * The Pattern for parsing the Maven Coordinate.</line>
 <line>     */</line>
-<line sev="1"><diag id="340"/>    private static final String COORDINATE_PATTERN = &quot;(?:([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?&quot;;</line>
+<line sev="1"><diag id="334"/>    private static final String COORDINATE_PATTERN = &quot;(?:([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?(?:[:]([^: ]+))?&quot;;</line>
 <line/>
 <line>    /**</line>
 <line>     * Parse a line interpreting it as a Maven artifact.</line>
@@ -303,28 +303,28 @@
 </source>
 <diags first="false">
 <diag id="2" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="333" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
+<diag id="327" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
 Overridable method 'parse' called during object construction
 </diag>
-<diag id="334" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
+<diag id="328" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
 Overridable method 'setGroupId' called during object construction
 </diag>
-<diag id="335" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
+<diag id="329" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
 Overridable method 'setArtifactId' called during object construction
 </diag>
-<diag id="336" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
+<diag id="330" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
 Overridable method 'setVersion' called during object construction
 </diag>
-<diag id="337" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
+<diag id="331" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
 Overridable method 'setPackaging' called during object construction
 </diag>
-<diag id="338" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
+<diag id="332" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
 Overridable method 'setClassifier' called during object construction
 </diag>
-<diag id="339" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
+<diag id="333" sev="1" tool="PMD" rule="ConstructorCallsOverridableMethod">
 Overridable method 'setScope' called during object construction
 </diag>
-<diag id="340" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+<diag id="334" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
 Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
 </diag>
 </diags>

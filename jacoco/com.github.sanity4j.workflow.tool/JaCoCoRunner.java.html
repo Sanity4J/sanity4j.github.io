@@ -5,8 +5,10 @@ import com.github.sanity4j.util.Tool;
 /**
  * JaCoCoRunner - work unit which produces a JaCoCo report.
  * 
- * Note: JaCoCo CLI is coming in a pending pull request - https://github.com/jacoco/jacoco/pull/525 . For now, we use the API directly
-* 
+ * This needs to be re-written to use the new JaCoCo CLI ( https://github.com/jacoco/jacoco/pull/525 ).
+ * Full documentation is available at https://www.jacoco.org/jacoco/trunk/doc/cli.html
+ * For now, we use the API directly
+ * 
  * @author Yiannis Paschalidis
  * @since Sanity4J 1.8
  */
@@ -17,8 +19,8 @@ public class JaCoCoRunner extends AbstractToolRunner
     */
    public JaCoCoRunner()
    {
-<span class="nc" id="L20">      super(Tool.JACOCO);</span>
-<span class="nc" id="L21">   }</span>
+<span class="nc" id="L22">      super(Tool.JACOCO);</span>
+<span class="nc" id="L23">   }</span>
    
    /**
     * Future point to run JaCoco. Does nothing for now.
@@ -29,8 +31,8 @@ public class JaCoCoRunner extends AbstractToolRunner
    {
       // TODO: Does nothing
       // TODO: Hack - pass the config to the reader.
-<span class="nc" id="L32">      JaCoCoResultReader.setConfig(getConfig());</span>
-<span class="nc" id="L33">   }</span>
+<span class="nc" id="L34">      JaCoCoResultReader.setConfig(getConfig());</span>
+<span class="nc" id="L35">   }</span>
    
    /**
     * @return the description of this WorkUnit.
@@ -38,7 +40,7 @@ public class JaCoCoRunner extends AbstractToolRunner
    @Override
    public String getDescription()
    {
-<span class="nc" id="L41">       return &quot;Running JaCoco report&quot;;</span>
+<span class="nc" id="L43">       return &quot;Running JaCoco report&quot;;</span>
    }   
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

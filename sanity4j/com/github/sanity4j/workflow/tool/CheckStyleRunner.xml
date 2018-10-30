@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.workflow.tool.CheckStyleRunner" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="1" moderate="0" low="0" info="0" quality="77"/>
+<classDetails className="com.github.sanity4j.workflow.tool.CheckStyleRunner" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
 <source>
 <line>package com.github.sanity4j.workflow.tool;</line>
 <line/>
 <line>import java.io.ByteArrayOutputStream;</line>
 <line>import java.io.File;</line>
+<line>import java.nio.charset.Charset;</line>
 <line/>
 <line>import com.github.sanity4j.util.ExternalProcessRunner;</line>
 <line>import com.github.sanity4j.util.FileUtil;</line>
 <line>import com.github.sanity4j.util.QAException;</line>
 <line>import com.github.sanity4j.util.QaLogger;</line>
 <line>import com.github.sanity4j.util.QaUtil;</line>
+<line>import com.github.sanity4j.util.StringUtil;</line>
 <line>import com.github.sanity4j.util.Tool;</line>
 <line/>
 <line>/**</line>
@@ -35,6 +37,7 @@
 <line>     * Runs CheckStyle.</line>
 <line>     * @param commandLine the CheckStyle command line.</line>
 <line>     */</line>
+<line>    @Override</line>
 <line>    protected void runTool(final String commandLine)</line>
 <line>    {</line>
 <line>        File resultFile = getConfig().getToolResultFile(Tool.CHECKSTYLE);</line>
@@ -51,16 +54,16 @@
 <line/>
 <line>            ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</line>
 <line/>
-<line>            String stdoutString = new String(stdout.toByteArray());</line>
+<line>            String stdoutString = new String(stdout.toByteArray(), Charset.defaultCharset());</line>
 <line/>
-<line>            if (FileUtil.hasValue(stdoutString))</line>
+<line>            if (!StringUtil.empty(stdoutString))</line>
 <line>            {</line>
 <line>                QaLogger.getInstance().info(stdoutString);</line>
 <line>            }</line>
 <line/>
-<line>            String stderrString = new String(stderr.toByteArray());</line>
+<line>            String stderrString = new String(stderr.toByteArray(), Charset.defaultCharset());</line>
 <line/>
-<line>            if (FileUtil.hasValue(stderrString))</line>
+<line>            if (!StringUtil.empty(stderrString))</line>
 <line>            {</line>
 <line>                QaLogger.getInstance().error(stderrString);</line>
 <line>            }</line>
@@ -76,8 +79,8 @@
 <line>        // the output file has been created successfully</line>
 <line>        if (!resultFile.exists() || resultFile.length() == 0)</line>
 <line>        {</line>
-<line>            String out = new String(stdout.toByteArray());</line>
-<line sev="3"><diag id="319"/>            String err = new String(stderr.toByteArray());</line>
+<line>            String out = new String(stdout.toByteArray(), Charset.defaultCharset());</line>
+<line>            String err = new String(stderr.toByteArray(), Charset.defaultCharset());</line>
 <line>            throw new QAException(&quot;Checkstyle Command [&quot; + commandLine + &quot;] failed to generate output: [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</line>
 <line>        }</line>
 <line>    }</line>
@@ -85,13 +88,11 @@
 <line>    /**</line>
 <line>     * @return the description of this WorkUnit</line>
 <line>     */</line>
+<line>    @Override</line>
 <line>    public String getDescription()</line>
 <line>    {</line>
 <line>        return &quot;Running CheckStyle&quot;;</line>
 <line>    }</line>
 <line>}</line>
 </source>
-<diags first="false">
-<diag id="319" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.CheckStyleRunner.runTool(String): new String(byte[])</diag>
-</diags>
 </classDetails>

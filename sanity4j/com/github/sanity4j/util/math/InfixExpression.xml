@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.math.InfixExpression" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="1" moderate="0" low="6" info="2" lineCoverage="77" branchCoverage="72" quality="84"/>
+<classDetails className="com.github.sanity4j.util.math.InfixExpression" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="1" moderate="0" low="3" info="2" lineCoverage="77" branchCoverage="72" quality="87"/>
 <source>
-<line sev="1"><diag id="271"/>package com.github.sanity4j.util.math;</line>
+<line sev="1"><diag id="278"/>package com.github.sanity4j.util.math;</line>
 <line/>
 <line>import java.util.ArrayList;</line>
 <line>import java.util.List;</line>
@@ -17,7 +17,7 @@
 <line> * @version 1.0 02/01/2008</line>
 <line> * @author Yiannis Paschalidis</line>
 <line> */</line>
-<line sev="1"><diag id="770"/>public final class InfixExpression</line>
+<line sev="1"><diag id="644"/>public final class InfixExpression</line>
 <line sev="1">{</line>
 <line sev="1">    /** The transformed postfix expression which is used in evaluation. */</line>
 <line sev="1">    private final PostfixExpression postFix;</line>
@@ -67,7 +67,7 @@
 <line sev="1">     */</line>
 <line sev="1">    private static boolean charIn(final char operator, final String operators)</line>
 <line sev="1">    {</line>
-<line sev="1" covered="yes"><diag id="772"/>        return (operators.indexOf(operator) != -1);</line>
+<line sev="1" covered="yes">        return operators.indexOf(operator) != -1;</line>
 <line sev="1">    }</line>
 <line sev="1"/>
 <line sev="1">    /**</line>
@@ -91,9 +91,9 @@
 <line sev="1">     * </line>
 <line sev="1">     * @throws SyntaxException Thrown if a problem occurs.</line>
 <line sev="1">     */</line>
-<line sev="1"><diag id="773"/><diag id="774"/>    public static String[] parseInfixToPostfix(final String inval) throws SyntaxException</line>
+<line sev="1"><diag id="646"/><diag id="647"/>    public static String[] parseInfixToPostfix(final String inval) throws SyntaxException</line>
 <line sev="1">    {</line>
-<line sev="1" covered="yes">        StringBuffer opString = new StringBuffer();</line>
+<line sev="1" covered="yes">        StringBuilder opString = new StringBuilder();</line>
 <line sev="1" covered="yes">        char ltr = ' ';</line>
 <line sev="1" covered="yes">        List&lt;String&gt; postfixOp = new ArrayList&lt;String&gt;();</line>
 <line sev="1" covered="yes">        boolean unary = true; // determines whether operand is unary - used for -ve</line>
@@ -117,7 +117,7 @@
 <line sev="1" covered="yes">                        break;</line>
 <line sev="1"/>
 <line sev="1">                    case ')':</line>
-<line sev="1" covered="partial"><diag id="775"/><diag id="776"/>                        while ((opString.length() &gt; 0) &amp;&amp; (opString.charAt(opString.length() - 1) != '('))</line>
+<line sev="1" covered="partial">                        while (opString.length() &gt; 0 &amp;&amp; opString.charAt(opString.length() - 1) != '(')</line>
 <line sev="1">                        {</line>
 <line sev="1" covered="yes">                            postfixOp.add(opString.substring(opString.length() - 1));</line>
 <line sev="1" covered="yes">                            opString.setLength(opString.length() - 1);</line>
@@ -168,7 +168,7 @@
 <line sev="1"/>
 <line sev="1">                    default: // is number/text</line>
 <line sev="1"/>
-<line sev="1" covered="yes"><diag id="777"/>                        StringBuffer numString = new StringBuffer();</line>
+<line sev="1" covered="yes"><diag id="648"/>                        StringBuilder numString = new StringBuilder();</line>
 <line sev="1" covered="yes">                        numString.append(ltr);</line>
 <line sev="1"/>
 <line sev="1" covered="partial">                        while (i + 1 &lt; inval.length())</line>
@@ -207,7 +207,7 @@
 <line sev="1"/>
 <line sev="1" covered="yes">            return result;</line>
 <line sev="1">        }</line>
-<line sev="3" covered="no"><diag id="778"/>        catch (Exception e)</line>
+<line sev="3" covered="no"><diag id="649"/>        catch (Exception e)</line>
 <line sev="1">        {</line>
 <line sev="1" covered="no">            throw new SyntaxException(&quot;Error parsing expression: &quot; + e.getMessage(), e);</line>
 <line sev="1">        }</line>
@@ -215,29 +215,20 @@
 <line sev="1">}</line>
 </source>
 <diags first="false">
-<diag id="271" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="770" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="278" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="644" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The class 'InfixExpression' has a Cyclomatic Complexity of 5 (Highest = 24).
 </diag>
-<diag id="772" sev="1" tool="PMD" rule="UselessParentheses">
-Useless parentheses.
-</diag>
-<diag id="773" sev="0" tool="PMD" rule="ExcessiveMethodLength">
+<diag id="646" sev="0" tool="PMD" rule="ExcessiveMethodLength">
 Avoid really long methods.
 </diag>
-<diag id="774" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="647" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The method 'parseInfixToPostfix' has a Cyclomatic Complexity of 24.
 </diag>
-<diag id="775" sev="1" tool="PMD" rule="UselessParentheses">
-Useless parentheses.
-</diag>
-<diag id="776" sev="1" tool="PMD" rule="UselessParentheses">
-Useless parentheses.
-</diag>
-<diag id="777" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="648" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="778" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+<diag id="649" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </diag>
 </diags>

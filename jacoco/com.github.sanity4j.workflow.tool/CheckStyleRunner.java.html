@@ -2,12 +2,14 @@
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.charset.Charset;
 
 import com.github.sanity4j.util.ExternalProcessRunner;
 import com.github.sanity4j.util.FileUtil;
 import com.github.sanity4j.util.QAException;
 import com.github.sanity4j.util.QaLogger;
 import com.github.sanity4j.util.QaUtil;
+import com.github.sanity4j.util.StringUtil;
 import com.github.sanity4j.util.Tool;
 
 /**
@@ -23,66 +25,68 @@ public class CheckStyleRunner extends AbstractToolRunner
      */
     public CheckStyleRunner()
     {
-<span class="nc" id="L26">        super(Tool.CHECKSTYLE);</span>
-<span class="nc" id="L27">    }</span>
+<span class="nc" id="L28">        super(Tool.CHECKSTYLE);</span>
+<span class="nc" id="L29">    }</span>
 
     /**
      * Runs CheckStyle.
      * @param commandLine the CheckStyle command line.
      */
+    @Override
     protected void runTool(final String commandLine)
     {
-<span class="nc" id="L35">        File resultFile = getConfig().getToolResultFile(Tool.CHECKSTYLE);</span>
-<span class="nc" id="L36">        FileUtil.createDir(resultFile.getParentFile().getPath());</span>
+<span class="nc" id="L38">        File resultFile = getConfig().getToolResultFile(Tool.CHECKSTYLE);</span>
+<span class="nc" id="L39">        FileUtil.createDir(resultFile.getParentFile().getPath());</span>
 
         // Run the process
-<span class="nc" id="L39">        ByteArrayOutputStream stdout = null; </span>
-<span class="nc" id="L40">        ByteArrayOutputStream stderr = null; </span>
+<span class="nc" id="L42">        ByteArrayOutputStream stdout = null; </span>
+<span class="nc" id="L43">        ByteArrayOutputStream stderr = null; </span>
 
         try
         {
-<span class="nc" id="L44">            stdout = new ByteArrayOutputStream();</span>
-<span class="nc" id="L45">            stderr = new ByteArrayOutputStream();</span>
+<span class="nc" id="L47">            stdout = new ByteArrayOutputStream();</span>
+<span class="nc" id="L48">            stderr = new ByteArrayOutputStream();</span>
             
-<span class="nc" id="L47">            ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</span>
+<span class="nc" id="L50">            ExternalProcessRunner.runProcess(commandLine, stdout, stderr);</span>
             
-<span class="nc" id="L49">            String stdoutString = new String(stdout.toByteArray());</span>
+<span class="nc" id="L52">            String stdoutString = new String(stdout.toByteArray(), Charset.defaultCharset());</span>
 
-<span class="nc bnc" id="L51" title="All 2 branches missed.">            if (FileUtil.hasValue(stdoutString))</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">            if (!StringUtil.empty(stdoutString))</span>
             {
-<span class="nc" id="L53">                QaLogger.getInstance().info(stdoutString);</span>
+<span class="nc" id="L56">                QaLogger.getInstance().info(stdoutString);</span>
             }
             
-<span class="nc" id="L56">            String stderrString = new String(stderr.toByteArray());</span>
+<span class="nc" id="L59">            String stderrString = new String(stderr.toByteArray(), Charset.defaultCharset());</span>
 
-<span class="nc bnc" id="L58" title="All 2 branches missed.">            if (FileUtil.hasValue(stderrString))</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">            if (!StringUtil.empty(stderrString))</span>
             {
-<span class="nc" id="L60">                QaLogger.getInstance().error(stderrString);</span>
+<span class="nc" id="L63">                QaLogger.getInstance().error(stderrString);</span>
             }
         }
         finally
         {
-<span class="nc" id="L65">            QaUtil.safeClose(stdout);</span>
-<span class="nc" id="L66">            QaUtil.safeClose(stderr);</span>
-<span class="nc" id="L67">        }</span>
+<span class="nc" id="L68">            QaUtil.safeClose(stdout);</span>
+<span class="nc" id="L69">            QaUtil.safeClose(stderr);</span>
+<span class="nc" id="L70">        }</span>
 
         // The checkstyle result is the number of errors found, so
         // the only way to determine if it succeeded is to check if
         // the output file has been created successfully
-<span class="nc bnc" id="L72" title="All 4 branches missed.">        if (!resultFile.exists() || resultFile.length() == 0)</span>
+<span class="nc bnc" id="L75" title="All 4 branches missed.">        if (!resultFile.exists() || resultFile.length() == 0)</span>
         {
-<span class="nc" id="L74">            String out = new String(stdout.toByteArray());</span>
-<span class="nc" id="L75">            String err = new String(stderr.toByteArray());</span>
-<span class="nc" id="L76">            throw new QAException(&quot;Checkstyle Command [&quot; + commandLine + &quot;] failed to generate output: [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</span>
+<span class="nc" id="L77">            String out = new String(stdout.toByteArray(), Charset.defaultCharset());</span>
+<span class="nc" id="L78">            String err = new String(stderr.toByteArray(), Charset.defaultCharset());</span>
+<span class="nc" id="L79">            throw new QAException(&quot;Checkstyle Command [&quot; + commandLine + &quot;] failed to generate output: [&quot; + out  + &quot;] [&quot; + err + &quot;]&quot;);</span>
         }
-<span class="nc" id="L78">    }</span>
+<span class="nc" id="L81">    }</span>
 
     /**
      * @return the description of this WorkUnit
      */
+    @Override
     public String getDescription()
     {
-<span class="nc" id="L85">        return &quot;Running CheckStyle&quot;;</span>
+<span class="nc" id="L89">        return &quot;Running CheckStyle&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

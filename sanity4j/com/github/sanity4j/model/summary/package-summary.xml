@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.model.summary" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<issueSummary high="0" significant="1" moderate="0" low="4" info="3">
+<packageSummary packageName="com.github.sanity4j.model.summary" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<issueSummary high="0" significant="0" moderate="0" low="1" info="3">
 <category name="All categories" high="0" significant="0" moderate="0" low="0" info="0">
-<category name="Code style" high="0" significant="0" moderate="0" low="3" info="3"/>
-<category name="Correctness" high="0" significant="1" moderate="0" low="0" info="0"/>
+<category name="Code style" high="0" significant="0" moderate="0" low="0" info="3"/>
 <category name="Performance" high="0" significant="0" moderate="0" low="0" info="1"/>
 </category>
-<tool name="Findbugs" high="0" significant="1" moderate="0" low="0" info="2"/>
-<tool name="PMD" high="0" significant="0" moderate="0" low="3" info="1"/>
+<tool name="SpotBugs" high="0" significant="0" moderate="0" low="0" info="2"/>
+<tool name="PMD" high="0" significant="0" moderate="0" low="0" info="1"/>
 <tool name="Checkstyle" high="0" significant="0" moderate="0" low="1" info="0"/>
 </issueSummary>
 <qualitySummary>
-<package name="com.github.sanity4j.model.summary" classes="4" lineCount="736" high="0" significant="1" moderate="0" low="4" info="3" quality="96">
-<testCoverage lineCoveragePct="92" branchCoveragePct="100" lineCount="251" coveredLineCount="233" branchCount="9" coveredBranchCount="9"/>
+<package name="com.github.sanity4j.model.summary" classes="4" lineCount="701" high="0" significant="0" moderate="0" low="1" info="3" quality="99">
+<testCoverage lineCoveragePct="94" branchCoveragePct="100" lineCount="239" coveredLineCount="225" branchCount="7" coveredBranchCount="7"/>
 </package>
 <class name="PackageSummary" high="0" significant="0" moderate="0" low="1" info="2" quality="99">
 <testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="31" coveredLineCount="31" branchCount="0" coveredBranchCount="0"/>
 </class>
-<class name="PackageSummary_Test" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<class name="PackageSummary_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 <testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="51" coveredLineCount="51" branchCount="0" coveredBranchCount="0"/>
 </class>
-<class name="SummaryCsvMarshaller" high="0" significant="1" moderate="0" low="0" info="1" quality="91">
-<testCoverage lineCoveragePct="80" branchCoveragePct="77" lineCount="90" coveredLineCount="72" branchCount="8" coveredBranchCount="8"/>
+<class name="SummaryCsvMarshaller" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
+<testCoverage lineCoveragePct="82" branchCoveragePct="85" lineCount="78" coveredLineCount="64" branchCount="6" coveredBranchCount="6"/>
 </class>
-<class name="SummaryCsvMarshaller_Test" high="0" significant="0" moderate="0" low="2" info="0" quality="97">
+<class name="SummaryCsvMarshaller_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
 <testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="79" coveredLineCount="79" branchCount="1" coveredBranchCount="1"/>
 </class>
 </qualitySummary>

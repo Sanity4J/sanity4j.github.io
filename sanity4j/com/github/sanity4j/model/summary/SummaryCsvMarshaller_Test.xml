@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.model.summary.SummaryCsvMarshaller_Test" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="0" low="2" info="0" lineCoverage="100" branchCoverage="100" quality="97"/>
+<classDetails className="com.github.sanity4j.model.summary.SummaryCsvMarshaller_Test" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="100" branchCoverage="100" quality="100"/>
 <source>
 <line>package com.github.sanity4j.model.summary; </line>
 <line/>
@@ -11,10 +11,8 @@
 <line>import java.util.Calendar;</line>
 <line>import java.util.GregorianCalendar;</line>
 <line/>
-<line sev="1"><diag id="451"/>import com.github.sanity4j.model.summary.PackageSummary;</line>
-<line sev="1"><diag id="452"/>import com.github.sanity4j.model.summary.SummaryCsvMarshaller;</line>
-<line/>
-<line>import junit.framework.TestCase;</line>
+<line>import org.junit.Assert;</line>
+<line>import org.junit.Test;</line>
 <line/>
 <line>/** </line>
 <line> * SummaryCsvMarshaller_Test - unit tests for {@link SummaryCsvMarshaller}. </line>
@@ -22,7 +20,7 @@
 <line> * @author Yiannis Paschalidis</line>
 <line> * @since Sanity4J 1.0</line>
 <line> */</line>
-<line covered="yes">public class SummaryCsvMarshaller_Test extends TestCase</line>
+<line covered="yes">public class SummaryCsvMarshaller_Test</line>
 <line>{</line>
 <line>    /** The tolerance for comparing doubles (as floating point arithmetic is imprecise) - 0.01%. */</line>
 <line>    private static final double DOUBLE_FIELD_TOLERANCE = 0.0001;</line>
@@ -31,6 +29,7 @@
 <line>     * Tests summary marshalling by writing/reading in a set of summaries</line>
 <line>     * and comparing the original and read data.</line>
 <line>     */</line>
+<line>    @Test</line>
 <line>    public void testMarshalling() throws Exception</line>
 <line>    {</line>
 <line covered="yes">        PackageSummary[] summaries = new PackageSummary[]</line>
@@ -54,46 +53,47 @@
 <line covered="yes">        marshaller = new SummaryCsvMarshaller();</line>
 <line covered="yes">        PackageSummary[] readSummaries = marshaller.read(tempFile);</line>
 <line/>
-<line covered="yes">        assertNotNull(&quot;Read summaries were null&quot;, readSummaries);</line>
-<line covered="yes">        assertEquals(&quot;Incorrect number of summaries read&quot;, </line>
+<line covered="yes">        Assert.assertNotNull(&quot;Read summaries were null&quot;, readSummaries);</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect number of summaries read&quot;, </line>
 <line>                     summaries.length, readSummaries.length);</line>
 <line/>
 <line covered="yes">        for (int i = 0; i &lt; summaries.length; i++)</line>
 <line>        {</line>
-<line covered="yes">            assertEquals(&quot;Incorrect run date read&quot;, </line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect run date read&quot;, </line>
 <line covered="yes">                         summaries[i].getRunDate(), readSummaries[i].getRunDate());</line>
 <line/>
-<line covered="yes">            assertEquals(&quot;Incorrect package name read&quot;, </line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect package name read&quot;, </line>
 <line covered="yes">                         summaries[i].getPackageName(), readSummaries[i].getPackageName());</line>
 <line/>
-<line covered="yes">            assertEquals(&quot;Incorrect line coverage read&quot;, </line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect line coverage read&quot;, </line>
 <line covered="yes">                         summaries[i].getLineCoverage(), readSummaries[i].getLineCoverage(), DOUBLE_FIELD_TOLERANCE);</line>
 <line/>
-<line covered="yes">            assertEquals(&quot;Incorrect branch coverage read&quot;, </line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect branch coverage read&quot;, </line>
 <line covered="yes">                         summaries[i].getBranchCoverage(), readSummaries[i].getBranchCoverage(), DOUBLE_FIELD_TOLERANCE);</line>
 <line/>
-<line covered="yes">            assertEquals(&quot;Incorrect Line count read&quot;, </line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect Line count read&quot;, </line>
 <line covered="yes">                         summaries[i].getLineCount(), readSummaries[i].getLineCount());</line>
 <line/>
-<line covered="yes">            assertEquals(&quot;Incorrect Info count read&quot;, </line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect Info count read&quot;, </line>
 <line covered="yes">                         summaries[i].getInfoCount(), readSummaries[i].getInfoCount());</line>
 <line/>
-<line covered="yes">            assertEquals(&quot;Incorrect Low count read&quot;, </line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect Low count read&quot;, </line>
 <line covered="yes">                         summaries[i].getLowCount(), readSummaries[i].getLowCount());</line>
 <line/>
-<line covered="yes">            assertEquals(&quot;Incorrect Moderate cound read&quot;, </line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect Moderate cound read&quot;, </line>
 <line covered="yes">                         summaries[i].getModerateCount(), readSummaries[i].getModerateCount());</line>
 <line/>
-<line covered="yes">            assertEquals(&quot;Incorrect Significant count read&quot;, </line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect Significant count read&quot;, </line>
 <line covered="yes">                         summaries[i].getSignificantCount(), readSummaries[i].getSignificantCount());</line>
 <line/>
-<line covered="yes">            assertEquals(&quot;Incorrect High count read&quot;, </line>
+<line covered="yes">            Assert.assertEquals(&quot;Incorrect High count read&quot;, </line>
 <line covered="yes">                         summaries[i].getHighCount(), readSummaries[i].getHighCount());</line>
 <line>        }</line>
 <line/>
 <line covered="yes">        tempFile.delete();</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testTruncatedAndBadData() throws Exception</line>
 <line>    {</line>
 <line covered="yes">        File tempFile = File.createTempFile(&quot;SummaryCsvMarshaller_Test&quot;, &quot;csv&quot;);</line>
@@ -128,8 +128,8 @@
 <line covered="yes">        marshaller = new SummaryCsvMarshaller();</line>
 <line covered="yes">        PackageSummary[] readSummaries = marshaller.read(tempFile);</line>
 <line/>
-<line covered="yes">        assertNotNull(&quot;Read summaries were null&quot;, readSummaries);</line>
-<line covered="yes">        assertEquals(&quot;Incorrect number of summaries read&quot;, </line>
+<line covered="yes">        Assert.assertNotNull(&quot;Read summaries were null&quot;, readSummaries);</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect number of summaries read&quot;, </line>
 <line>                     2, readSummaries.length);        </line>
 <line covered="yes">    }</line>
 <line/>
@@ -185,12 +185,4 @@
 <line covered="yes">    }</line>
 <line>}</line>
 </source>
-<diags first="false">
-<diag id="451" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
-</diag>
-<diag id="452" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
-</diag>
-</diags>
 </classDetails>

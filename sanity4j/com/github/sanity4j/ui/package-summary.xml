@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.ui" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<issueSummary high="0" significant="2" moderate="0" low="24" info="63">
-<category name="All categories" high="0" significant="0" moderate="0" low="0" info="57">
-<category name="Code style" high="0" significant="0" moderate="0" low="18" info="1"/>
-<category name="Complexity" high="0" significant="0" moderate="0" low="4" info="5">
-<category name="Code size" high="0" significant="0" moderate="0" low="0" info="1"/>
-</category>
-<category name="Correctness" high="0" significant="2" moderate="0" low="1" info="0"/>
+<packageSummary packageName="com.github.sanity4j.ui" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<issueSummary high="0" significant="1" moderate="0" low="4" info="9">
+<category name="All categories" high="0" significant="0" moderate="0" low="0" info="7">
+<category name="Code style" high="0" significant="0" moderate="0" low="1" info="0"/>
+<category name="Complexity" high="0" significant="0" moderate="0" low="2" info="2"/>
 <category name="Exception handling" high="0" significant="1" moderate="0" low="0" info="0"/>
+<category name="Correctness" high="0" significant="1" moderate="0" low="0" info="0"/>
 </category>
-<tool name="PMD" high="0" significant="2" moderate="0" low="23" info="63"/>
+<tool name="PMD" high="0" significant="1" moderate="0" low="3" info="9"/>
 <tool name="Checkstyle" high="0" significant="0" moderate="0" low="1" info="0"/>
 </issueSummary>
 <qualitySummary>
-<package name="com.github.sanity4j.ui" classes="5" lineCount="1251" high="0" significant="2" moderate="0" low="24" info="63" quality="92"/>
+<package name="com.github.sanity4j.ui" classes="4" lineCount="655" high="0" significant="1" moderate="0" low="4" info="9" quality="95"/>
 <class name="FieldLabel" high="0" significant="0" moderate="0" low="2" info="0" quality="84"/>
 <class name="FileInput" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
-<class name="QaApp" high="0" significant="2" moderate="0" low="2" info="9" quality="90"/>
-<class name="QaConfigFrame" high="0" significant="0" moderate="0" low="20" info="54" quality="92"/>
+<class name="QaApp" high="0" significant="1" moderate="0" low="2" info="9" quality="94"/>
 <class name="QaLoggerJTextAreaImpl" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
 </qualitySummary>
 <graphs>

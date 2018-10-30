@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.workflow.tool.JaCoCoMergeReader" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.workflow.tool.JaCoCoMergeReader" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
 <source>
 <line>package com.github.sanity4j.workflow.tool; </line>
@@ -22,19 +22,19 @@
 <line>	/** The properties used to configure this {@link ResultReader}. */</line>
 <line>	private final Properties properties = new Properties();</line>
 <line/>
-<line>	/** {@inheritDoc} */</line>
-<line>	@Override</line>
-<line>   public void setProperties(final Properties properties) </line>
-<line>	{</line>
-<line>		this.properties.putAll(properties);</line>
-<line>	}</line>
+<line>    /** {@inheritDoc} */</line>
+<line>    @Override</line>
+<line>    public void setProperties(final Properties properties) </line>
+<line>    {</line>
+<line>        this.properties.putAll(properties);</line>
+<line>    }</line>
 <line/>
 <line>    /**</line>
 <line>     * Do nothing.</line>
 <line>     * @param resultFile the result file.</line>
 <line>     */</line>
 <line>    @Override</line>
-<line>   public void setResultFile(final File resultFile)</line>
+<line>    public void setResultFile(final File resultFile)</line>
 <line>    {</line>
 <line>        // Do nothing.</line>
 <line>    }</line>
@@ -44,7 +44,7 @@
 <line>     * @param stats the extract stats.</line>
 <line>     */</line>
 <line>    @Override</line>
-<line>   public void setStats(final ExtractStats stats)</line>
+<line>    public void setStats(final ExtractStats stats)</line>
 <line>    {</line>
 <line>        // Do nothing.</line>
 <line>    }</line>
@@ -53,7 +53,7 @@
 <line>     * @return null</line>
 <line>     */</line>
 <line>    @Override</line>
-<line>   public String getDescription()</line>
+<line>    public String getDescription()</line>
 <line>    {</line>
 <line>        return null;</line>
 <line>    }</line>
@@ -62,7 +62,7 @@
 <line>     * Do nothing.</line>
 <line>     */</line>
 <line>    @Override</line>
-<line>   public void run()</line>
+<line>    public void run()</line>
 <line>    {</line>
 <line>        // Do nothing.</line>
 <line>    }</line>

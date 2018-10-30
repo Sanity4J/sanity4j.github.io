@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j" pathToRoot="../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<issueSummary high="0" significant="41" moderate="23" low="231" info="167">
-<category name="All categories" high="0" significant="0" moderate="1" low="8" info="70">
-<category name="Correctness" high="0" significant="39" moderate="10" low="8" info="0"/>
-<category name="Code style" high="0" significant="0" moderate="16" low="107" info="73"/>
-<category name="Exception handling" high="0" significant="3" moderate="5" low="0" info="0"/>
-<category name="Complexity" high="0" significant="0" moderate="0" low="28" info="24">
-<category name="Code size" high="0" significant="0" moderate="0" low="0" info="7"/>
+<packageSummary packageName="com.github.sanity4j" pathToRoot="../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<issueSummary high="0" significant="27" moderate="20" low="170" info="117">
+<category name="All categories" high="0" significant="0" moderate="1" low="11" info="20">
+<category name="Correctness" high="0" significant="25" moderate="9" low="7" info="0"/>
+<category name="Code style" high="0" significant="0" moderate="16" low="50" info="74"/>
+<category name="Exception handling" high="0" significant="3" moderate="3" low="0" info="0"/>
+<category name="Complexity" high="0" significant="0" moderate="0" low="24" info="23">
+<category name="Code size" high="0" significant="0" moderate="0" low="0" info="6"/>
 </category>
-<category name="Performance" high="0" significant="0" moderate="2" low="28" info="58"/>
+<category name="Performance" high="0" significant="0" moderate="1" low="28" info="60"/>
 </category>
-<tool name="Findbugs" high="0" significant="21" moderate="4" low="0" info="15"/>
-<tool name="PMD" high="0" significant="20" moderate="19" low="179" info="152"/>
-<tool name="PMD-CPD" high="0" significant="0" moderate="0" low="28" info="0"/>
-<tool name="Checkstyle" high="0" significant="0" moderate="0" low="24" info="0"/>
+<tool name="SpotBugs" high="0" significant="9" moderate="4" low="0" info="15"/>
+<tool name="PMD" high="0" significant="18" moderate="16" low="120" info="102"/>
+<tool name="PMD-CPD" high="0" significant="0" moderate="0" low="24" info="0"/>
+<tool name="Checkstyle" high="0" significant="0" moderate="0" low="26" info="0"/>
 </issueSummary>
 <qualitySummary>
-<package name="com.github.sanity4j" classes="1" lineCount="67" high="0" significant="0" moderate="0" low="1" info="0" quality="97"/>
+<package name="com.github.sanity4j" classes="1" lineCount="57" high="0" significant="0" moderate="0" low="1" info="0" quality="96"/>
 <package name="com.github.sanity4j.ant.taskdef" path="ant/taskdef" classes="1" lineCount="368" high="0" significant="0" moderate="0" low="1" info="0" quality="99"/>
 <package name="com.github.sanity4j.maven.plugin" path="maven/plugin" classes="2" lineCount="1570" high="0" significant="6" moderate="1" low="19" info="27" quality="89"/>
-<package name="com.github.sanity4j.model.coverage" path="model/coverage" classes="8" lineCount="879" high="0" significant="0" moderate="0" low="7" info="0" quality="98">
-<testCoverage lineCoveragePct="97" branchCoveragePct="93" lineCount="266" coveredLineCount="260" branchCount="15" coveredBranchCount="14"/>
+<package name="com.github.sanity4j.model.coverage" path="model/coverage" classes="8" lineCount="905" high="0" significant="0" moderate="0" low="1" info="0" quality="99">
+<testCoverage lineCoveragePct="99" branchCoveragePct="93" lineCount="266" coveredLineCount="264" branchCount="15" coveredBranchCount="14"/>
 </package>
-<package name="com.github.sanity4j.model.diagnostic" path="model/diagnostic" classes="7" lineCount="2277" high="0" significant="2" moderate="2" low="23" info="1" quality="95">
-<testCoverage lineCoveragePct="97" branchCoveragePct="91" lineCount="877" coveredLineCount="855" branchCount="72" coveredBranchCount="66"/>
+<package name="com.github.sanity4j.model.diagnostic" path="model/diagnostic" classes="7" lineCount="2228" high="0" significant="1" moderate="2" low="16" info="3" quality="97">
+<testCoverage lineCoveragePct="97" branchCoveragePct="91" lineCount="862" coveredLineCount="840" branchCount="70" coveredBranchCount="64"/>
 </package>
-<package name="com.github.sanity4j.model.summary" path="model/summary" classes="4" lineCount="736" high="0" significant="1" moderate="0" low="4" info="3" quality="96">
-<testCoverage lineCoveragePct="92" branchCoveragePct="100" lineCount="251" coveredLineCount="233" branchCount="9" coveredBranchCount="9"/>
+<package name="com.github.sanity4j.model.summary" path="model/summary" classes="4" lineCount="701" high="0" significant="0" moderate="0" low="1" info="3" quality="99">
+<testCoverage lineCoveragePct="94" branchCoveragePct="100" lineCount="239" coveredLineCount="225" branchCount="7" coveredBranchCount="7"/>
 </package>
-<package name="com.github.sanity4j.report" path="report" classes="12" lineCount="2954" high="0" significant="2" moderate="3" low="65" info="32" quality="93">
+<package name="com.github.sanity4j.report" path="report" classes="12" lineCount="2952" high="0" significant="2" moderate="3" low="63" info="32" quality="93">
 <testCoverage lineCoveragePct="90" branchCoveragePct="100" lineCount="214" coveredLineCount="193" branchCount="12" coveredBranchCount="12"/>
 </package>
-<package name="com.github.sanity4j.ui" path="ui" classes="5" lineCount="1251" high="0" significant="2" moderate="0" low="24" info="63" quality="92"/>
-<package name="com.github.sanity4j.util" path="util" classes="21" lineCount="3587" high="0" significant="9" moderate="11" low="36" info="15" quality="91">
-<testCoverage lineCoveragePct="64" branchCoveragePct="57" lineCount="1006" coveredLineCount="648" branchCount="161" coveredBranchCount="93"/>
+<package name="com.github.sanity4j.ui" path="ui" classes="4" lineCount="655" high="0" significant="1" moderate="0" low="4" info="9" quality="95"/>
+<package name="com.github.sanity4j.util" path="util" classes="21" lineCount="3538" high="0" significant="8" moderate="9" low="25" info="18" quality="92">
+<testCoverage lineCoveragePct="61" branchCoveragePct="57" lineCount="984" coveredLineCount="602" branchCount="162" coveredBranchCount="93"/>
 </package>
-<package name="com.github.sanity4j.util.math" path="util/math" classes="3" lineCount="431" high="0" significant="2" moderate="1" low="12" info="4" quality="83">
+<package name="com.github.sanity4j.util.math" path="util/math" classes="3" lineCount="431" high="0" significant="2" moderate="1" low="9" info="4" quality="85">
 <testCoverage lineCoveragePct="75" branchCoveragePct="94" lineCount="120" coveredLineCount="91" branchCount="19" coveredBranchCount="18"/>
 </package>
-<package name="com.github.sanity4j.workflow" path="workflow" classes="12" lineCount="2080" high="0" significant="3" moderate="2" low="20" info="10" quality="94">
-<testCoverage lineCoveragePct="7" branchCoveragePct="2" lineCount="247" coveredLineCount="18" branchCount="41" coveredBranchCount="1"/>
+<package name="com.github.sanity4j.workflow" path="workflow" classes="11" lineCount="2015" high="0" significant="2" moderate="2" low="19" info="10" quality="95">
+<testCoverage lineCoveragePct="12" branchCoveragePct="9" lineCount="247" coveredLineCount="30" branchCount="41" coveredBranchCount="4"/>
 </package>
-<package name="com.github.sanity4j.workflow.tool" path="workflow/tool" classes="25" lineCount="2683" high="0" significant="14" moderate="3" low="19" info="12" quality="87">
-<testCoverage lineCoveragePct="73" branchCoveragePct="91" lineCount="272" coveredLineCount="200" branchCount="34" coveredBranchCount="31"/>
+<package name="com.github.sanity4j.workflow.tool" path="workflow/tool" classes="15" lineCount="2005" high="0" significant="5" moderate="2" low="11" info="11" quality="93">
+<testCoverage lineCoveragePct="81" branchCoveragePct="97" lineCount="315" coveredLineCount="258" branchCount="39" coveredBranchCount="38"/>
 </package>
-<class name="Sanity4J_Suite" high="0" significant="0" moderate="0" low="1" info="0" quality="97"/>
+<class name="Sanity4J_Suite" high="0" significant="0" moderate="0" low="1" info="0" quality="96"/>
 </qualitySummary>
 <graphs>
 </graphs>

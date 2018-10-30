@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import com.github.sanity4j.util.FileUtil;
 import com.github.sanity4j.util.QaLogger;
+import com.github.sanity4j.util.StringUtil;
 import com.github.sanity4j.workflow.QAConfig;
 
 /**
@@ -217,7 +217,7 @@ public final class ExtractStaticContent
 <span class="nc" id="L217">            String version = config.getToolVersion(tool);</span>
 <span class="nc" id="L218">            String configClasspath = config.getToolConfigClasspath(tool, version);</span>
             
-<span class="nc bnc" id="L220" title="All 2 branches missed.">            if (FileUtil.hasValue(configClasspath))</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">            if (!StringUtil.empty(configClasspath))</span>
             {
 <span class="nc" id="L222">                URL[] urls = classpathToUrlArray(configClasspath);</span>
 <span class="nc" id="L223">                ClassLoader toolClassLoader = new URLClassLoader(urls);</span>

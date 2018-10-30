@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.workflow.AbstractFileCollector" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.workflow.AbstractFileCollector" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="0" low="3" info="5" quality="97"/>
 <source>
-<line sev="1"><diag id="276"/>package com.github.sanity4j.workflow; </line>
+<line sev="1"><diag id="283"/>package com.github.sanity4j.workflow; </line>
 <line/>
 <line>import java.io.File;</line>
 <line>import java.io.IOException;</line>
@@ -53,7 +53,7 @@
 <line/>
 <line>        for (String dir : sourceDirs)</line>
 <line>        {</line>
-<line sev="0"><diag id="793"/>            this.sourceDirs.add(new File(dir));</line>
+<line sev="0"><diag id="664"/>            this.sourceDirs.add(new File(dir));</line>
 <line>        }</line>
 <line>    }</line>
 <line/>
@@ -71,6 +71,7 @@
 <line>    /**</line>
 <line>     * Performs the file copying.</line>
 <line>     */</line>
+<line>    @Override</line>
 <line>    public void run()</line>
 <line>    {</line>
 <line>        QaLogger.getInstance().info(&quot;Creating combined &quot; + getItemType() + &quot; directory.&quot;);        </line>
@@ -103,7 +104,7 @@
 <line>     * </line>
 <line>     * @return the number of files copied</line>
 <line>     */</line>
-<line sev="1"><diag id="277"/>    private int copyFiles(final List&lt;File&gt; filePaths, final File destDir)</line>
+<line sev="1"><diag id="284"/>    private int copyFiles(final List&lt;File&gt; filePaths, final File destDir)</line>
 <line>    {</line>
 <line>        int count = 0;</line>
 <line/>
@@ -116,12 +117,12 @@
 <line>            // If it's a directory, recurse...</line>
 <line>            if (source.isDirectory())</line>
 <line>            {</line>
-<line sev="0"><diag id="315"/>                String[] containedNames = source.list();</line>
-<line sev="0"><diag id="794"/>                File[] containedFiles = new File[containedNames.length];</line>
+<line sev="0"><diag id="319"/>                String[] containedNames = source.list();</line>
+<line sev="0"><diag id="665"/>                File[] containedFiles = new File[containedNames.length];</line>
 <line/>
 <line>                for (int j = 0; j &lt; containedFiles.length; j++)</line>
 <line>                {</line>
-<line sev="0"><diag id="795"/>                    containedFiles[j] = new File(source, containedNames[j]);</line>
+<line sev="0"><diag id="666"/>                    containedFiles[j] = new File(source, containedNames[j]);</line>
 <line>                }</line>
 <line/>
 <line>                count += copyFiles(Arrays.asList(containedFiles), destDir);</line>
@@ -147,7 +148,7 @@
 <line>     * @param file the file to copy</line>
 <line>     * @param destDir the destination directory root.</line>
 <line>     */</line>
-<line sev="1"><diag id="278"/>    protected void copyFile(final File file, final File destDir)</line>
+<line sev="1"><diag id="285"/>    protected void copyFile(final File file, final File destDir)</line>
 <line>    {</line>
 <line>        try</line>
 <line>        {</line>
@@ -156,7 +157,7 @@
 <line>            if (packageName == null)</line>
 <line>            {</line>
 <line>                // Unable to determine package, use relative path from root.</line>
-<line>                StringBuffer relativePath = new StringBuffer(file.getName());</line>
+<line>                StringBuilder relativePath = new StringBuilder(file.getName());</line>
 <line>                File parent = null;</line>
 <line/>
 <line>                for (parent = file.getParentFile(); parent != null; parent = parent.getParentFile())</line>
@@ -164,7 +165,7 @@
 <line>                    if (sourceDirs.contains(parent))</line>
 <line>                    {</line>
 <line>                        // We've hit one of the top-level dirs, so copy using the relative path from this dir</line>
-<line sev="0"><diag id="796"/>                        File dest = new File(destDir, relativePath.toString());</line>
+<line sev="0"><diag id="667"/>                        File dest = new File(destDir, relativePath.toString());</line>
 <line>                        FileUtil.copy(file, dest);</line>
 <line>                        break;</line>
 <line>                    }</line>
@@ -207,20 +208,20 @@
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="276" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="793" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="283" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
+<diag id="664" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="277" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'destDir' hides a field.</diag>
-<diag id="315" sev="0" tool="Findbugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.workflow.AbstractFileCollector.copyFiles(List, File) due to return value of called method</diag>
-<diag id="794" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="284" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'destDir' hides a field.</diag>
+<diag id="319" sev="0" tool="SpotBugs" rule="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Possible null pointer dereference in com.github.sanity4j.workflow.AbstractFileCollector.copyFiles(List, File) due to return value of called method</diag>
+<diag id="665" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="795" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="666" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="278" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'destDir' hides a field.</diag>
-<diag id="796" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="285" sev="1" tool="Checkstyle" rule="HiddenFieldCheck">'destDir' hides a field.</diag>
+<diag id="667" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
 </diags>

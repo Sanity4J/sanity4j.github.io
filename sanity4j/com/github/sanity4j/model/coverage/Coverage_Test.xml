@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.model.coverage.Coverage_Test" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="0" low="3" info="0" lineCoverage="100" branchCoverage="0" quality="95"/>
+<classDetails className="com.github.sanity4j.model.coverage.Coverage_Test" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="100" branchCoverage="0" quality="100"/>
 <source>
 <line>package com.github.sanity4j.model.coverage; </line>
 <line/>
-<line sev="1"><diag id="419"/>import com.github.sanity4j.model.coverage.ClassCoverage;</line>
-<line sev="1"><diag id="420"/>import com.github.sanity4j.model.coverage.Coverage;</line>
-<line sev="1"><diag id="421"/>import com.github.sanity4j.model.coverage.PackageCoverage;</line>
-<line/>
-<line>import junit.framework.TestCase;</line>
+<line>import org.junit.Assert;</line>
+<line>import org.junit.Before;</line>
+<line>import org.junit.Test;</line>
 <line/>
 <line>/** </line>
 <line> * Coverage_Test - unit tests for {@link Coverage}. </line>
@@ -17,21 +15,22 @@
 <line> * @author Yiannis Paschalidis</line>
 <line> * @since Sanity4J 1.0</line>
 <line> */</line>
-<line covered="yes">public class Coverage_Test extends TestCase</line>
+<line covered="yes">public class Coverage_Test</line>
 <line>{</line>
-<line>	/** Dummy Package Name 1. */</line>
+<line>    /** Dummy Package Name 1. */</line>
 <line>    private static final String PACKAGE_NAME_1 = &quot;package.one&quot;;</line>
-<line>	/** Dummy Package Name 2. */</line>
+<line>    /** Dummy Package Name 2. */</line>
 <line>    private static final String PACKAGE_NAME_2 = &quot;package.two&quot;;</line>
-<line>	/** Dummy Class Name 1. */</line>
+<line>    /** Dummy Class Name 1. */</line>
 <line>    private static final String CLASS_NAME_1 = PACKAGE_NAME_1 + &quot;.DummyClass&quot;;</line>
-<line>	/** Dummy Class Name 2. */</line>
+<line>    /** Dummy Class Name 2. */</line>
 <line>    private static final String CLASS_NAME_2 = PACKAGE_NAME_2 + &quot;.AnotherDummyClass&quot;;</line>
 <line/>
 <line>    /** The Coverage to be tested. */</line>
-<line>	private Coverage coverage;</line>
+<line>    private Coverage coverage;</line>
 <line/>
-<line>	public void setUp()</line>
+<line>    @Before</line>
+<line>    public void setUp()</line>
 <line>    {</line>
 <line covered="yes">        coverage = new Coverage();</line>
 <line/>
@@ -50,98 +49,95 @@
 <line covered="yes">        coverage.addPackage(packageCoverage);</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testBranchCoverageAccessors()</line>
 <line>    {</line>
 <line covered="yes">        double branchCoverage = 12.3;</line>
 <line/>
 <line covered="yes">        coverage.setBranchCoverage(branchCoverage);</line>
-<line covered="yes">        assertEquals(&quot;branchCoverage accessor incorrect&quot;, branchCoverage, coverage.getBranchCoverage(), 0.0);</line>
+<line covered="yes">        Assert.assertEquals(&quot;branchCoverage accessor incorrect&quot;, branchCoverage, coverage.getBranchCoverage(), 0.0);</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testLineCoverageAccessors()</line>
 <line>    {</line>
 <line covered="yes">        double lineCoverage = 12.3;</line>
 <line/>
 <line covered="yes">        coverage.setLineCoverage(lineCoverage);</line>
-<line covered="yes">        assertEquals(&quot;lineCoverage accessor incorrect&quot;, lineCoverage, coverage.getLineCoverage(), 0.0);</line>
+<line covered="yes">        Assert.assertEquals(&quot;lineCoverage accessor incorrect&quot;, lineCoverage, coverage.getLineCoverage(), 0.0);</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testGetLineCount()</line>
 <line>    {</line>
-<line covered="yes">        assertEquals(&quot;Incorrect line count returned for empty coverage&quot;, </line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect line count returned for empty coverage&quot;, </line>
 <line covered="yes">                     0, new Coverage().getLineCount());</line>
 <line/>
-<line covered="yes">        assertEquals(&quot;Incorrect line count returned&quot;, </line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect line count returned&quot;, </line>
 <line covered="yes">                     4, coverage.getLineCount());</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testGetCoveredLineCount()</line>
 <line>    {</line>
-<line covered="yes">        assertEquals(&quot;Incorrect covered line count returned for empty coverage&quot;, </line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect covered line count returned for empty coverage&quot;, </line>
 <line covered="yes">                     0, new Coverage().getCoveredLineCount());</line>
 <line/>
-<line covered="yes">        assertEquals(&quot;Incorrect covered line count returned&quot;, </line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect covered line count returned&quot;, </line>
 <line covered="yes">                     2, coverage.getCoveredLineCount());</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testGetBranchCount()</line>
 <line>    {</line>
-<line covered="yes">        assertEquals(&quot;Incorrect branch count returned for empty coverage&quot;, </line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect branch count returned for empty coverage&quot;, </line>
 <line covered="yes">                     0, new Coverage().getBranchCount());</line>
 <line/>
-<line covered="yes">        assertEquals(&quot;Incorrect branch count returned&quot;, </line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect branch count returned&quot;, </line>
 <line covered="yes">                     2, coverage.getBranchCount());</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testGetCoveredBranchCount()</line>
 <line>    {</line>
-<line covered="yes">        assertEquals(&quot;Incorrect covered branch count returned for empty coverage&quot;, </line>
-<line covered="yes">        			 0, new Coverage().getBranchCount());</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect covered branch count returned for empty coverage&quot;, </line>
+<line covered="yes">                     0, new Coverage().getBranchCount());</line>
 <line/>
-<line covered="yes">        assertEquals(&quot;Incorrect covered branch count returned&quot;, </line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect covered branch count returned&quot;, </line>
 <line covered="yes">                     1, coverage.getCoveredBranchCount());</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testGetPackageCoverage()</line>
 <line>    {</line>
-<line covered="yes">        assertNull(&quot;Class coverage returned for empty coverage&quot;, </line>
+<line covered="yes">        Assert.assertNull(&quot;Class coverage returned for empty coverage&quot;, </line>
 <line covered="yes">                   new Coverage().getPackageCoverage(PACKAGE_NAME_1));</line>
 <line/>
-<line covered="yes">        assertNotNull(&quot;Class coverage for package 1 missing&quot;, </line>
+<line covered="yes">        Assert.assertNotNull(&quot;Class coverage for package 1 missing&quot;, </line>
 <line covered="yes">                      coverage.getPackageCoverage(PACKAGE_NAME_1));</line>
 <line/>
-<line covered="yes">        assertNotNull(&quot;Class coverage for package 2 missing&quot;, </line>
+<line covered="yes">        Assert.assertNotNull(&quot;Class coverage for package 2 missing&quot;, </line>
 <line covered="yes">                      coverage.getPackageCoverage(PACKAGE_NAME_2));</line>
 <line/>
-<line covered="yes">        assertNull(&quot;Class coverage returned for incorrect package name&quot;, </line>
+<line covered="yes">        Assert.assertNull(&quot;Class coverage returned for incorrect package name&quot;, </line>
 <line covered="yes">                   coverage.getClassCoverage(PACKAGE_NAME_1 + PACKAGE_NAME_2));</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testGetClassCoverage()</line>
 <line>    {</line>
-<line covered="yes">        assertNull(&quot;Class coverage returned for empty coverage&quot;, </line>
-<line covered="yes">        		   new Coverage().getClassCoverage(CLASS_NAME_1));</line>
+<line covered="yes">        Assert.assertNull(&quot;Class coverage returned for empty coverage&quot;, </line>
+<line covered="yes">                   new Coverage().getClassCoverage(CLASS_NAME_1));</line>
 <line/>
-<line covered="yes">        assertNotNull(&quot;Class coverage for class 1 missing&quot;, </line>
-<line covered="yes">        		      coverage.getClassCoverage(CLASS_NAME_1));</line>
+<line covered="yes">        Assert.assertNotNull(&quot;Class coverage for class 1 missing&quot;, </line>
+<line covered="yes">                      coverage.getClassCoverage(CLASS_NAME_1));</line>
 <line/>
-<line covered="yes">        assertNotNull(&quot;Class coverage for class 2 missing&quot;, </line>
-<line covered="yes">        		      coverage.getClassCoverage(CLASS_NAME_2));</line>
+<line covered="yes">        Assert.assertNotNull(&quot;Class coverage for class 2 missing&quot;, </line>
+<line covered="yes">                      coverage.getClassCoverage(CLASS_NAME_2));</line>
 <line/>
-<line covered="yes">        assertNull(&quot;Class coverage returned for incorrect class name&quot;, </line>
-<line covered="yes">        		   coverage.getClassCoverage(CLASS_NAME_1 + CLASS_NAME_2));</line>
+<line covered="yes">        Assert.assertNull(&quot;Class coverage returned for incorrect class name&quot;, </line>
+<line covered="yes">                   coverage.getClassCoverage(CLASS_NAME_1 + CLASS_NAME_2));</line>
 <line covered="yes">    }</line>
 <line>}</line>
 </source>
-<diags first="false">
-<diag id="419" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
-</diag>
-<diag id="420" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
-</diag>
-<diag id="421" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
-</diag>
-</diags>
 </classDetails>

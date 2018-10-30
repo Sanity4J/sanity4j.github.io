@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.model.diagnostic" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<issueSummary high="0" significant="2" moderate="2" low="23" info="1">
+<packageSummary packageName="com.github.sanity4j.model.diagnostic" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<issueSummary high="0" significant="1" moderate="2" low="16" info="3">
 <category name="All categories" high="0" significant="0" moderate="0" low="0" info="0">
-<category name="Correctness" high="0" significant="2" moderate="0" low="0" info="0"/>
+<category name="Correctness" high="0" significant="1" moderate="0" low="0" info="0"/>
 <category name="Performance" high="0" significant="0" moderate="1" low="0" info="1"/>
-<category name="Code style" high="0" significant="0" moderate="2" low="7" info="1"/>
+<category name="Code style" high="0" significant="0" moderate="2" low="2" info="1"/>
+<category name="Complexity" high="0" significant="0" moderate="0" low="0" info="2"/>
 </category>
-<tool name="Findbugs" high="0" significant="1" moderate="0" low="0" info="0"/>
-<tool name="PMD" high="0" significant="1" moderate="2" low="7" info="1"/>
+<tool name="SpotBugs" high="0" significant="1" moderate="0" low="0" info="0"/>
+<tool name="PMD" high="0" significant="0" moderate="2" low="2" info="3"/>
 <tool name="PMD-CPD" high="0" significant="0" moderate="0" low="12" info="0"/>
-<tool name="Checkstyle" high="0" significant="0" moderate="0" low="4" info="0"/>
+<tool name="Checkstyle" high="0" significant="0" moderate="0" low="2" info="0"/>
 </issueSummary>
 <qualitySummary>
-<package name="com.github.sanity4j.model.diagnostic" classes="7" lineCount="2277" high="0" significant="2" moderate="2" low="23" info="1" quality="95">
-<testCoverage lineCoveragePct="97" branchCoveragePct="91" lineCount="877" coveredLineCount="855" branchCount="72" coveredBranchCount="66"/>
+<package name="com.github.sanity4j.model.diagnostic" classes="7" lineCount="2228" high="0" significant="1" moderate="2" low="16" info="3" quality="97">
+<testCoverage lineCoveragePct="97" branchCoveragePct="91" lineCount="862" coveredLineCount="840" branchCount="70" coveredBranchCount="64"/>
 </package>
 <class name="Diagnostic" high="0" significant="0" moderate="1" low="2" info="0" quality="98">
 <testCoverage lineCoveragePct="85" branchCoveragePct="57" lineCount="102" coveredLineCount="87" branchCount="14" coveredBranchCount="8"/>
@@ -22,19 +23,19 @@
 <class name="DiagnosticCategory" high="0" significant="0" moderate="0" low="1" info="1" quality="99">
 <testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="51" coveredLineCount="51" branchCount="11" coveredBranchCount="11"/>
 </class>
-<class name="DiagnosticCategory_Test" high="0" significant="0" moderate="0" low="2" info="0" quality="97">
-<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="93" coveredLineCount="93" branchCount="0" coveredBranchCount="0"/>
+<class name="DiagnosticCategory_Test" high="0" significant="0" moderate="0" low="0" info="0" quality="100">
+<testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="92" coveredLineCount="92" branchCount="0" coveredBranchCount="0"/>
 </class>
-<class name="DiagnosticFactory" high="0" significant="1" moderate="0" low="2" info="0" quality="76">
+<class name="DiagnosticFactory" high="0" significant="1" moderate="0" low="0" info="0" quality="80">
 <testCoverage lineCoveragePct="100" branchCoveragePct="0" lineCount="13" coveredLineCount="13" branchCount="0" coveredBranchCount="0"/>
 </class>
-<class name="DiagnosticSet" high="0" significant="1" moderate="1" low="0" info="0" quality="94">
-<testCoverage lineCoveragePct="99" branchCoveragePct="82" lineCount="113" coveredLineCount="112" branchCount="33" coveredBranchCount="33"/>
+<class name="DiagnosticSet" high="0" significant="0" moderate="1" low="0" info="0" quality="98">
+<testCoverage lineCoveragePct="98" branchCoveragePct="82" lineCount="99" coveredLineCount="98" branchCount="31" coveredBranchCount="31"/>
 </class>
-<class name="DiagnosticSet_Test" high="0" significant="0" moderate="0" low="15" info="0" quality="95">
+<class name="DiagnosticSet_Test" high="0" significant="0" moderate="0" low="13" info="1" quality="96">
 <testCoverage lineCoveragePct="98" branchCoveragePct="100" lineCount="422" coveredLineCount="416" branchCount="12" coveredBranchCount="12"/>
 </class>
-<class name="Diagnostic_Test" high="0" significant="0" moderate="0" low="1" info="0" quality="98">
+<class name="Diagnostic_Test" high="0" significant="0" moderate="0" low="0" info="1" quality="100">
 <testCoverage lineCoveragePct="100" branchCoveragePct="100" lineCount="83" coveredLineCount="83" branchCount="2" coveredBranchCount="2"/>
 </class>
 </qualitySummary>

@@ -44,14 +44,14 @@ public final class ToolRunnerGroup extends WorkUnitGroup
             
             // Special case for coverage targets - only run them if a coverage data file has been provided
             // TODO: Generalise this to properties file to include cases where source and/or classes are not available
-            // ie. CheckStyle, PMD &amp; PMD-CPD require source, FindBugs requires classes &amp; libs.
-<span class="nc bnc" id="L48" title="All 6 branches missed.">            if ((Tool.COBERTURA.equals(tool) || Tool.JACOCO.equals(tool)) &amp;&amp; config.getCoverageDataFile() == null)</span>
+            // ie. CheckStyle, PMD &amp; PMD-CPD require source, SpotBugs requires classes &amp; libs.
+<span class="nc bnc" id="L48" title="All 4 branches missed.">            if (Tool.JACOCO.equals(tool) &amp;&amp; config.getCoverageDataFile() == null)</span>
             {
 <span class="nc" id="L50">                String message = tool.getName() + &quot; included in tools to run, but no coverage file available - skipping.&quot;;</span>
 <span class="nc" id="L51">                QaLogger.getInstance().warn(message);</span>
 <span class="nc" id="L52">                continue;</span>
             }
-<span class="nc bnc" id="L54" title="All 6 branches missed.">            else if ((Tool.COBERTURA_MERGE.equals(tool) || Tool.JACOCO_MERGE.equals(tool)) &amp;&amp; config.getCoverageDataFileCount() &lt;= 1)</span>
+<span class="nc bnc" id="L54" title="All 4 branches missed.">            else if (Tool.JACOCO_MERGE.equals(tool) &amp;&amp; config.getCoverageDataFileCount() &lt;= 1)</span>
             {
 <span class="nc" id="L56">                String message = tool.getName() + &quot; not required.&quot;;</span>
 <span class="nc" id="L57">                QaLogger.getInstance().info(message);</span>

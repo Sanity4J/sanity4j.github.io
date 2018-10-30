@@ -91,7 +91,7 @@ import java.io.StringWriter;
 <span class="nc" id="L91">        throwable.printStackTrace(new PrintWriter(writer));        </span>
 <span class="nc" id="L92">        String stackTrace = writer.toString();</span>
         
-<span class="nc" id="L94">        StringBuffer msgBuffer = new StringBuffer();        </span>
+<span class="nc" id="L94">        StringBuilder msgBuffer = new StringBuilder();        </span>
 <span class="nc" id="L95">        msgBuffer.append(message);</span>
 <span class="nc" id="L96">        msgBuffer.append('\n');</span>
 <span class="nc" id="L97">        msgBuffer.append(throwable.getMessage());</span>

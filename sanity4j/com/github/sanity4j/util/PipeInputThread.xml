@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.PipeInputThread" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.util.PipeInputThread" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="2" low="0" info="0" lineCoverage="77" branchCoverage="100" quality="87"/>
 <source>
 <line>package com.github.sanity4j.util;</line>
@@ -57,7 +57,7 @@
 <line covered="yes">                outStream.write(buf, 0, len);</line>
 <line>            }</line>
 <line>        }</line>
-<line sev="2" covered="no"><diag id="717"/>        catch (IOException ignored)</line>
+<line sev="2" covered="no"><diag id="597"/>        catch (IOException ignored)</line>
 <line sev="2">        {</line>
 <line sev="2">            // One of the pipes has been closed unexpectedly,</line>
 <line sev="2">            // so stop the thread.</line>
@@ -68,7 +68,7 @@
 <line>            {</line>
 <line covered="yes">                outStream.flush();</line>
 <line>            }</line>
-<line sev="2" covered="no"><diag id="718"/>            catch (IOException ignored)</line>
+<line sev="2" covered="no"><diag id="598"/>            catch (IOException ignored)</line>
 <line sev="2">            {</line>
 <line sev="2">                // don't care </line>
 <line sev="2" covered="yes">            }</line>
@@ -85,10 +85,10 @@
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="717" sev="2" tool="PMD" rule="EmptyCatchBlock">
+<diag id="597" sev="2" tool="PMD" rule="EmptyCatchBlock">
 Avoid empty catch blocks
 </diag>
-<diag id="718" sev="2" tool="PMD" rule="EmptyCatchBlock">
+<diag id="598" sev="2" tool="PMD" rule="EmptyCatchBlock">
 Avoid empty catch blocks
 </diag>
 </diags>

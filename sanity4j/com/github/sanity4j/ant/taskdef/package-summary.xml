@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.ant.taskdef" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<packageSummary packageName="com.github.sanity4j.ant.taskdef" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <issueSummary high="0" significant="0" moderate="0" low="1" info="0">
 <category name="All categories" high="0" significant="0" moderate="0" low="0" info="0"/>
 <tool name="Checkstyle" high="0" significant="0" moderate="0" low="1" info="0"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.report.ReportWriter" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.report.ReportWriter" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="0" low="1" info="2" quality="99"/>
 <source>
 <line>package com.github.sanity4j.report;</line>
@@ -166,12 +166,12 @@
 <line/>
 <line>                    sources.add(filePath);</line>
 <line/>
-<line sev="0"><diag id="550"/>                    if (!packageAdded)</line>
+<line sev="0"><diag id="529"/>                    if (!packageAdded)</line>
 <line sev="0">                    {</line>
 <line sev="0">                        packages.add(packageName);</line>
 <line sev="0">                        packageAdded = true;</line>
 <line sev="0"/>
-<line sev="0"><diag id="551"/>                        sourcesForPackage = new ArrayList&lt;String&gt;();</line>
+<line sev="0"><diag id="530"/>                        sourcesForPackage = new ArrayList&lt;String&gt;();</line>
 <line sev="0">                        sourcesByPackage.put(packageName, sourcesForPackage);</line>
 <line sev="0">                    }</line>
 <line/>
@@ -193,7 +193,7 @@
 <line>     */</line>
 <line>    private void writePackagesFrame() throws IOException</line>
 <line>    {</line>
-<line sev="1"><diag id="552"/>        StringBuffer html = new StringBuffer();</line>
+<line sev="1"><diag id="531"/>        StringBuilder html = new StringBuilder();</line>
 <line/>
 <line>        // Write top-level package summary info        </line>
 <line>        html.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;</line>
@@ -223,13 +223,13 @@
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="550" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">
+<diag id="529" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">
 Deeply nested if..then statements are hard to read
 </diag>
-<diag id="551" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="530" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="552" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">
+<diag id="531" sev="1" tool="PMD" rule="InsufficientStringBufferDeclaration">
 StringBuffer constructor is initialized with size 16, but has at least 250 characters appended.
 </diag>
 </diags>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.model.diagnostic.Diagnostic" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.model.diagnostic.Diagnostic" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="1" low="2" info="0" lineCoverage="85" branchCoverage="57" quality="98"/>
 <source>
 <line sev="1"><diag id="68"/>package com.github.sanity4j.model.diagnostic;</line>
@@ -35,8 +35,8 @@
 <line>    /** A Diagnostic sourced from an undefined tool. Should not occur. */</line>
 <line>    public static final int SOURCE_OTHER = 0;</line>
 <line/>
-<line>    /** A Diagnostic sourced from FindBugs. */</line>
-<line>    public static final int SOURCE_FINDBUGS = 1;</line>
+<line>    /** A Diagnostic sourced from SpotBugs. */</line>
+<line>    public static final int SOURCE_SPOTBUGS = 1;</line>
 <line/>
 <line>    /** A Diagnostic sourced from PMD. */</line>
 <line>    public static final int SOURCE_PMD = 2;</line>
@@ -117,7 +117,7 @@
 <line covered="yes">    }</line>
 <line/>
 <line>    /** @return the next id in the id sequence. */</line>
-<line sev="2"><diag id="429"/>    private static synchronized int nextId()</line>
+<line sev="2"><diag id="417"/>    private static synchronized int nextId()</line>
 <line sev="2">    {</line>
 <line sev="2" covered="yes">        return idCounter++;</line>
 <line sev="2">    }</line>
@@ -375,8 +375,8 @@
 <line>            case SOURCE_OTHER:</line>
 <line covered="yes">                return &quot;Other&quot;;</line>
 <line/>
-<line>            case SOURCE_FINDBUGS:</line>
-<line covered="yes">                return &quot;Findbugs&quot;;</line>
+<line>            case SOURCE_SPOTBUGS:</line>
+<line covered="yes">                return &quot;SpotBugs&quot;;</line>
 <line/>
 <line>            case SOURCE_PMD:</line>
 <line covered="yes">                return &quot;PMD&quot;;</line>
@@ -444,7 +444,7 @@
 <line covered="yes">        String keyBase = sourceName + '.' + ruleName;</line>
 <line/>
 <line covered="yes">        String includes = diagnosticFactory.getProperty(keyBase + &quot;.includes&quot;);</line>
-<line sev="1" covered="yes"><diag id="430"/>        String excludes = diagnosticFactory.getProperty(keyBase + &quot;.excludes&quot;);</line>
+<line sev="1" covered="yes"><diag id="418"/>        String excludes = diagnosticFactory.getProperty(keyBase + &quot;.excludes&quot;);</line>
 <line/>
 <line>        // Is the file included by at least one include?</line>
 <line covered="partial">        if (includes != null)</line>
@@ -484,10 +484,10 @@
 </source>
 <diags first="false">
 <diag id="68" sev="1" tool="Checkstyle" rule="JavadocPackageCheck">Missing package-info.java file.</diag>
-<diag id="429" sev="2" tool="PMD" rule="AvoidSynchronizedAtMethodLevel">
+<diag id="417" sev="2" tool="PMD" rule="AvoidSynchronizedAtMethodLevel">
 Use block level rather than method level synchronization
 </diag>
-<diag id="430" sev="1" tool="PMD" rule="PrematureDeclaration">
+<diag id="418" sev="1" tool="PMD" rule="PrematureDeclaration">
 Avoid declaring a variable if it is unreferenced before a possible exit point.
 </diag>
 </diags>

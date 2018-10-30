@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.report.ChartFactory" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.report.ChartFactory" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="0" low="2" info="1" lineCoverage="93" branchCoverage="66" quality="97"/>
 <source>
 <line>package com.github.sanity4j.report; </line>
@@ -58,7 +58,7 @@
 <line>     * @param summaries the PackageSummaries for the current and historical runs </line>
 <line>     * @return the chart Dataset</line>
 <line>     */</line>
-<line sev="1"><diag id="462"/>    private static XYDataset createDataset(final PackageSummary[] summaries)</line>
+<line sev="1"><diag id="443"/>    private static XYDataset createDataset(final PackageSummary[] summaries)</line>
 <line>    {</line>
 <line covered="yes">        TimeSeries lineCoverage = new TimeSeries(&quot;Line coverage&quot;, Second.class);</line>
 <line covered="yes">        TimeSeries branchCoverage = new TimeSeries(&quot;Branch coverage&quot;, Second.class);</line>
@@ -66,7 +66,7 @@
 <line/>
 <line covered="yes">        for (int i = 0; i &lt; summaries.length; i++)</line>
 <line>        {</line>
-<line sev="0" covered="yes"><diag id="463"/>            Second second = new Second(summaries[i].getRunDate());</line>
+<line sev="0" covered="yes"><diag id="444"/>            Second second = new Second(summaries[i].getRunDate());</line>
 <line/>
 <line covered="yes">            lineCoverage.addOrUpdate(second, HUNDRED * summaries[i].getLineCoverage());</line>
 <line covered="yes">            branchCoverage.addOrUpdate(second, HUNDRED * summaries[i].getBranchCoverage());</line>
@@ -98,7 +98,7 @@
 <line covered="yes">        String title = packageName.length() == 0 ? &quot;Summary for all packages&quot;</line>
 <line>                                                 : &quot;Summary for &quot; + packageName + '*';</line>
 <line/>
-<line sev="1" covered="yes"><diag id="888"/>        JFreeChart chart = org.jfree.chart.ChartFactory.createTimeSeriesChart(</line>
+<line sev="1" covered="yes"><diag id="747"/>        JFreeChart chart = org.jfree.chart.ChartFactory.createTimeSeriesChart(</line>
 <line sev="1">          title,	  // title</line>
 <line sev="1">          &quot;Date&quot;,     // x-axis label</line>
 <line sev="1">          &quot;%&quot;,   	  // y-axis label</line>
@@ -161,13 +161,13 @@
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="462" sev="1" tool="PMD" rule="UseVarargs">
+<diag id="443" sev="1" tool="PMD" rule="UseVarargs">
 Consider using varargs for methods or constructors which take an array the last parameter.
 </diag>
-<diag id="463" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="444" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="888" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com/github/sanity4j/report/CrossProjectChartCreator.java:
+<diag id="747" sev="1" tool="PMD-CPD" rule="DoNotCopyAndPasteCode">Duplicate of com\github\sanity4j\report\CrossProjectChartCreator.java:
         JFreeChart chart = org.jfree.chart.ChartFactory.createTimeSeriesChart(
           title,	  // title
           &quot;Date&quot;,     // x-axis label

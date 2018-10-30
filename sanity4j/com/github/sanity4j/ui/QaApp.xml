@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.ui.QaApp" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="2" moderate="0" low="2" info="9" quality="90"/>
+<classDetails className="com.github.sanity4j.ui.QaApp" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="1" moderate="0" low="2" info="9" quality="94"/>
 <source>
 <line>package com.github.sanity4j.ui; </line>
 <line/>
+<line>import java.awt.Desktop;</line>
 <line>import java.awt.Dimension;</line>
 <line>import java.awt.GridBagConstraints;</line>
 <line>import java.awt.GridBagLayout;</line>
@@ -43,8 +44,8 @@
 <line> * @author Yiannis Paschalidis </line>
 <line> * @since Sanity4J 1.0</line>
 <line> */</line>
-<line sev="1"><diag id="562"/>public final class QaApp extends JFrame</line>
-<line sev="1"><diag id="563"/>{</line>
+<line sev="1"><diag id="541"/>public final class QaApp extends JFrame</line>
+<line sev="1"><diag id="542"/>{</line>
 <line sev="1">    /** The file name that configuration data is saved in, in the user's home directory. */</line>
 <line sev="1">    private static final String PROPERTIES_FILE_NAME = &quot;sanity4j-ui.properties&quot;;</line>
 <line sev="1"/>
@@ -78,15 +79,8 @@
 <line sev="1">    /** Controls whether to open the report on successful completion. */</line>
 <line sev="1">    private final JCheckBox openReportOnCompletion = new JCheckBox(&quot;Open report on completion&quot;);</line>
 <line sev="1"/>
-<line sev="1">    ///** The button which displays the {@link QaConfigFrame}. */</line>
-<line sev="1">    //private final JButton advancedButton = new JButton(&quot;Advanced&quot;);</line>
-<line sev="1"/>
 <line sev="1">    /** The configuration used by the sanity4j application. */</line>
 <line sev="1">    private final QAProcessor processor = new QAProcessor();</line>
-<line sev="1"/>
-<line sev="1">    // Disable the advanced button for now</line>
-<line sev="1">    ///** A frame used to modify the {@link QAConfig}. */</line>
-<line sev="1">    //private final QaConfigFrame qaConfigFrame = new QaConfigFrame(processor);</line>
 <line sev="1"/>
 <line sev="1">    /** The button which starts the analysis. */</line>
 <line sev="1">    private final JButton runButton = new JButton(&quot;Analyse&quot;);</line>
@@ -116,30 +110,16 @@
 <line sev="1">            @Override</line>
 <line sev="1">            public void windowClosing(final WindowEvent event)</line>
 <line sev="1">            {</line>
-<line sev="1"><diag id="577"/>                writeConfig();</line>
+<line sev="1"><diag id="556"/>                writeConfig();</line>
 <line sev="1">            }</line>
 <line sev="1">        });</line>
 <line sev="1"/>
-<line sev="1">        // Disable the &quot;Advanced&quot; button for now.</line>
-<line sev="1">        //advancedButton.addActionListener(new ActionListener()</line>
-<line sev="1">        //{</line>
-<line sev="1">        //    public void actionPerformed(final ActionEvent event)</line>
-<line sev="1">        //    {</line>
-<line sev="1">        //        if (!validateInput())</line>
-<line sev="1">        //        {</line>
-<line sev="1">        //            return;</line>
-<line sev="1">        //        }</line>
-<line sev="1">        //</line>
-<line sev="1">        //        saveConfig();</line>
-<line sev="1">        //        qaConfigFrame.setVisible(true);</line>
-<line sev="1">        //    }</line>
-<line sev="1">        //});</line>
-<line sev="1"/>
 <line sev="1">        runButton.addActionListener(new ActionListener()</line>
 <line sev="1">        {</line>
+<line sev="1">            @Override</line>
 <line sev="1">            public void actionPerformed(final ActionEvent event)</line>
 <line sev="1">            {</line>
-<line sev="1"><diag id="578"/>                runQA();</line>
+<line sev="1"><diag id="557"/>                runQA();</line>
 <line sev="1">            }</line>
 <line sev="1">        });</line>
 <line sev="1"/>
@@ -196,9 +176,6 @@
 <line sev="1">        add(new FieldLabel(&quot;Summary data CSV export file&quot;, false), 0, gridy, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </line>
 <line sev="1">        add(summaryOutputFile, 1, gridy++, 1, 1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);</line>
 <line sev="1"/>
-<line sev="1">        // Disable the &quot;Advanced&quot; button for now.</line>
-<line sev="1">        //add(advancedButton, 0, gridy++, 2, 1, GridBagConstraints.EAST, GridBagConstraints.NONE); </line>
-<line sev="1"/>
 <line sev="1">        try</line>
 <line sev="1">        {</line>
 <line sev="1">            Class.forName(&quot;java.awt.Desktop&quot;);</line>
@@ -220,7 +197,7 @@
 <line sev="1">     * Validates the input which has been entered, returning false on error.</line>
 <line sev="1">     * @return true if the input is valid, false otherwise.</line>
 <line sev="1">     */</line>
-<line sev="1"><diag id="579"/><diag id="580"/>    private boolean validateInput()</line>
+<line sev="1"><diag id="558"/><diag id="559"/>    private boolean validateInput()</line>
 <line sev="1">    {</line>
 <line sev="1">        if (productsDir.getFile() == null || !productsDir.getFile().exists())</line>
 <line sev="1">        {</line>
@@ -288,39 +265,22 @@
 <line sev="1">            {</line>
 <line sev="1">                try</line>
 <line sev="1">                {</line>
-<line sev="1"><diag id="582"/>                    processor.run();</line>
+<line sev="1"><diag id="561"/>                    processor.run();</line>
 <line sev="1"/>
-<line sev="1"><diag id="583"/><diag id="584"/>                    if (openReportOnCompletion.isVisible() &amp;&amp; openReportOnCompletion.isSelected())</line>
+<line sev="1"><diag id="562"/><diag id="563"/>                    if (openReportOnCompletion.isVisible() &amp;&amp; openReportOnCompletion.isSelected())</line>
 <line sev="1">                    {</line>
-<line sev="1"><diag id="585"/>                        File index = new File(reportDir.getFile(), &quot;index.html&quot;);</line>
-<line sev="1"/>
-<line sev="1">                        // Use of reflections here is required as we still need to compile under java 1.5.</line>
-<line sev="1">                        //Desktop.getDesktop().open(index);</line>
-<line sev="1">                        try</line>
-<line sev="1">                        {</line>
-<line sev="1">                            Class&lt;?&gt; clazz = Class.forName(&quot;java.awt.Desktop&quot;);</line>
-<line sev="1">                            Object instance = clazz.getMethod(&quot;getDesktop&quot;).invoke(null);</line>
-<line sev="1">                            clazz.getMethod(&quot;open&quot;, File.class).invoke(instance, index);</line>
-<line sev="1">                        }</line>
-<line sev="1">                        catch (ClassNotFoundException ex)</line>
-<line sev="1">                        {</line>
-<line sev="1">                            // Pre-java 1.6</line>
-<line sev="1">                            QaLogger.getInstance().error(&quot;Open document failed, Requires java 1.6+&quot;, ex);</line>
-<line sev="1">                        }</line>
-<line sev="3"><diag id="586"/>                        catch (Exception ex)</line>
-<line sev="1">                        {</line>
-<line sev="1">                            QaLogger.getInstance().error(&quot;Failed to open report&quot;, ex);</line>
-<line sev="1">                        }</line>
+<line sev="1"><diag id="564"/>                        File index = new File(reportDir.getFile(), &quot;index.html&quot;);</line>
+<line sev="1">                        Desktop.getDesktop().open(index);</line>
 <line sev="1">                    }</line>
 <line sev="1">                }</line>
-<line sev="3"><diag id="587"/>                catch (Throwable ex)</line>
+<line sev="3"><diag id="565"/>                catch (Throwable ex)</line>
 <line sev="1">                {</line>
 <line sev="1">                    // Need to catch throwable rather than exception, to e.g. catch JAXB LinkageErrors.</line>
 <line sev="1">                    QaLogger.getInstance().error(&quot;QA failed&quot;, ex);</line>
 <line sev="1">                }</line>
 <line sev="1">                finally</line>
 <line sev="1">                {</line>
-<line sev="1"><diag id="588"/>                    runButton.setEnabled(true);</line>
+<line sev="1"><diag id="566"/>                    runButton.setEnabled(true);</line>
 <line sev="1">                }</line>
 <line sev="1">            }</line>
 <line sev="1">        } .start();</line>
@@ -479,43 +439,40 @@
 <line sev="1">}</line>
 </source>
 <diags first="false">
-<diag id="562" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="541" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The class 'QaApp' has a Cyclomatic Complexity of 5 (Highest = 15).
 </diag>
-<diag id="563" sev="0" tool="PMD" rule="TooManyMethods">
+<diag id="542" sev="0" tool="PMD" rule="TooManyMethods">
 This class has too many methods, consider refactoring it.
 </diag>
-<diag id="577" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+<diag id="556" sev="0" tool="PMD" rule="AccessorMethodGeneration">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </diag>
-<diag id="578" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+<diag id="557" sev="0" tool="PMD" rule="AccessorMethodGeneration">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </diag>
-<diag id="579" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="558" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The method 'validateInput' has a Cyclomatic Complexity of 15.
 </diag>
-<diag id="580" sev="0" tool="PMD" rule="NPathComplexity">
+<diag id="559" sev="0" tool="PMD" rule="NPathComplexity">
 The method validateInput() has an NPath complexity of 2187
 </diag>
-<diag id="582" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+<diag id="561" sev="0" tool="PMD" rule="AccessorMethodGeneration">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </diag>
-<diag id="583" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+<diag id="562" sev="0" tool="PMD" rule="AccessorMethodGeneration">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </diag>
-<diag id="584" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+<diag id="563" sev="0" tool="PMD" rule="AccessorMethodGeneration">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </diag>
-<diag id="585" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+<diag id="564" sev="0" tool="PMD" rule="AccessorMethodGeneration">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </diag>
-<diag id="586" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
-Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
-</diag>
-<diag id="587" sev="3" tool="PMD" rule="AvoidCatchingThrowable">
+<diag id="565" sev="3" tool="PMD" rule="AvoidCatchingThrowable">
 A catch statement should never catch throwable since it includes errors.
 </diag>
-<diag id="588" sev="0" tool="PMD" rule="AccessorMethodGeneration">
+<diag id="566" sev="0" tool="PMD" rule="AccessorMethodGeneration">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </diag>
 </diags>

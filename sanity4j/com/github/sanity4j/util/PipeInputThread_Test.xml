@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.PipeInputThread_Test" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="0" low="1" info="0" lineCoverage="83" branchCoverage="50" quality="96"/>
+<classDetails className="com.github.sanity4j.util.PipeInputThread_Test" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="83" branchCoverage="50" quality="100"/>
 <source>
 <line>package com.github.sanity4j.util; </line>
 <line/>
@@ -10,9 +10,8 @@
 <line>import java.util.Arrays;</line>
 <line>import java.util.Random;</line>
 <line/>
-<line sev="1"><diag id="719"/>import com.github.sanity4j.util.PipeInputThread;</line>
-<line/>
-<line>import junit.framework.TestCase;</line>
+<line>import org.junit.Assert;</line>
+<line>import org.junit.Test;</line>
 <line/>
 <line>/** </line>
 <line> * PipeInputStream_Test - unit test for PipeInputStream.</line>
@@ -20,13 +19,15 @@
 <line> * @author Yiannis Paschalidis</line>
 <line> * @since Sanity4J 1.0</line>
 <line> */</line>
-<line covered="yes">public class PipeInputThread_Test extends TestCase</line>
+<line covered="yes">public class PipeInputThread_Test</line>
 <line>{</line>
 <line>    /** Should complete in far less than 1 second. */</line>
 <line>    private static final int SLEEP_TIME = 100;</line>
+<line/>
 <line>    /** Retry count. */</line>
 <line>    private static final int RETRY_COUNT = 10;</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testPipeInput()</line>
 <line>    {</line>
 <line>        // Test with a fair amount of data that would </line>
@@ -54,20 +55,15 @@
 <line>            }</line>
 <line covered="no">            catch (InterruptedException e)</line>
 <line>            {</line>
-<line covered="no">                fail(&quot;Interrupted&quot;);</line>
+<line covered="no">                Assert.fail(&quot;Interrupted&quot;);</line>
 <line covered="no">            }</line>
 <line>        }</line>
 <line/>
 <line covered="yes">        byte[] dataOut = baos.toByteArray();</line>
 <line/>
-<line covered="yes">        assertEquals(&quot;Incorrect amount of data read&quot;, dataIn.length, dataOut.length);</line>
-<line covered="yes">        assertTrue(&quot;Incorrect data read&quot;, Arrays.equals(dataIn, dataOut));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect amount of data read&quot;, dataIn.length, dataOut.length);</line>
+<line covered="yes">        Assert.assertTrue(&quot;Incorrect data read&quot;, Arrays.equals(dataIn, dataOut));</line>
 <line covered="yes">    }</line>
 <line>}</line>
 </source>
-<diags first="false">
-<diag id="719" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
-</diag>
-</diags>
 </classDetails>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.report.ReportUtil_Test" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="0" low="1" info="0" lineCoverage="94" branchCoverage="0" quality="98"/>
+<classDetails className="com.github.sanity4j.report.ReportUtil_Test" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="94" branchCoverage="0" quality="100"/>
 <source>
 <line>package com.github.sanity4j.report;</line>
 <line/>
@@ -9,10 +9,10 @@
 <line>import java.util.List;</line>
 <line>import java.util.Map;</line>
 <line/>
-<line>import com.github.sanity4j.model.diagnostic.Diagnostic;</line>
-<line sev="1"><diag id="543"/>import com.github.sanity4j.report.ReportUtil;</line>
+<line>import org.junit.Assert;</line>
+<line>import org.junit.Test;</line>
 <line/>
-<line>import junit.framework.TestCase;</line>
+<line>import com.github.sanity4j.model.diagnostic.Diagnostic;</line>
 <line/>
 <line>/**</line>
 <line> * TestReportUtil - unit tests for ReportUtil. </line>
@@ -20,32 +20,35 @@
 <line> * @author Yiannis Paschalidis</line>
 <line> * @since Sanity4J 1.0</line>
 <line> */</line>
-<line covered="yes">public class ReportUtil_Test extends TestCase</line>
+<line covered="yes">public class ReportUtil_Test</line>
 <line>{</line>
+<line>    @Test</line>
 <line>    public void testGetHtmlPathToRoot()</line>
 <line>    {</line>
-<line covered="yes">        assertEquals(&quot;Incorrect path to root for foo.html&quot;, &quot;&quot;, ReportUtil.getHtmlPathToRoot(&quot;foo.html&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect path to root for bar/foo.html&quot;, &quot;../&quot;, ReportUtil.getHtmlPathToRoot(&quot;bar/foo.html&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect path to root for bar/bar/foo.html&quot;, &quot;../../&quot;, ReportUtil.getHtmlPathToRoot(&quot;bar/bar/foo.html&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect path to root for foo.html&quot;, &quot;&quot;, ReportUtil.getHtmlPathToRoot(&quot;foo.html&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect path to root for bar/foo.html&quot;, &quot;../&quot;, ReportUtil.getHtmlPathToRoot(&quot;bar/foo.html&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect path to root for bar/bar/foo.html&quot;, &quot;../../&quot;, ReportUtil.getHtmlPathToRoot(&quot;bar/bar/foo.html&quot;));</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testHtmlEscape()</line>
 <line>    {</line>
-<line covered="yes">        assertEquals(&quot;Incorrect html escape for null string&quot;, null, ReportUtil.htmlEscape(null));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect html escape for empty string&quot;, &quot;&quot;, ReportUtil.htmlEscape(&quot;&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect html escape for safe string&quot;, &quot;abc&quot;, ReportUtil.htmlEscape(&quot;abc&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect html escape for ampersand&quot;, &quot;&amp;amp;&quot;, ReportUtil.htmlEscape(&quot;&amp;&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect html escape for less than&quot;, &quot;&amp;lt;&quot;, ReportUtil.htmlEscape(&quot;&lt;&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect html escape for greater than&quot;, &quot;&amp;gt;&quot;, ReportUtil.htmlEscape(&quot;&gt;&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect html escape for double quote&quot;, &quot;&amp;quot;&quot;, ReportUtil.htmlEscape(&quot;\&quot;&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect html escape for mixed string&quot;, </line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect html escape for null string&quot;, null, ReportUtil.htmlEscape(null));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect html escape for empty string&quot;, &quot;&quot;, ReportUtil.htmlEscape(&quot;&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect html escape for safe string&quot;, &quot;abc&quot;, ReportUtil.htmlEscape(&quot;abc&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect html escape for ampersand&quot;, &quot;&amp;amp;&quot;, ReportUtil.htmlEscape(&quot;&amp;&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect html escape for less than&quot;, &quot;&amp;lt;&quot;, ReportUtil.htmlEscape(&quot;&lt;&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect html escape for greater than&quot;, &quot;&amp;gt;&quot;, ReportUtil.htmlEscape(&quot;&gt;&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect html escape for double quote&quot;, &quot;&amp;quot;&quot;, ReportUtil.htmlEscape(&quot;\&quot;&quot;));</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect html escape for mixed string&quot;, </line>
 <line covered="yes">                     &quot;&amp;lt;hello &amp;amp; world!&amp;gt;&quot;, ReportUtil.htmlEscape(&quot;&lt;hello &amp; world!&gt;&quot;));</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testMapDiagnosticsByClassName()</line>
 <line>    {</line>
 <line covered="yes">        Map&lt;String, List&lt;Diagnostic&gt;&gt; map = ReportUtil.mapDiagnosticsByClassName(new ArrayList&lt;Diagnostic&gt;(0));</line>
-<line covered="yes">        assertTrue(&quot;Map should be empty if there are no diagnostics&quot;, map.isEmpty());</line>
+<line covered="yes">        Assert.assertTrue(&quot;Map should be empty if there are no diagnostics&quot;, map.isEmpty());</line>
 <line/>
 <line>        // Add three diagnostics for class 1, and two for class 2</line>
 <line covered="yes">        String className1 = &quot;package.subpackage1.ClassName&quot;; </line>
@@ -73,44 +76,40 @@
 <line covered="yes">        diagnostics.add(class2Diag2);</line>
 <line/>
 <line covered="yes">        map = ReportUtil.mapDiagnosticsByClassName(diagnostics);</line>
-<line covered="yes">        assertEquals(&quot;Map should have two entries&quot;, 2, map.size());</line>
+<line covered="yes">        Assert.assertEquals(&quot;Map should have two entries&quot;, 2, map.size());</line>
 <line/>
 <line covered="yes">        List&lt;Diagnostic&gt; diagsForClass1 = map.get(className1);</line>
 <line covered="yes">        List&lt;Diagnostic&gt; diagsForClass2 = map.get(className2);</line>
 <line/>
-<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for class 1&quot;, 3, diagsForClass1.size());</line>
-<line covered="yes">        assertEquals(&quot;Incorrect number of diagnostics for class 2&quot;, 2, diagsForClass2.size());</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect number of diagnostics for class 1&quot;, 3, diagsForClass1.size());</line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect number of diagnostics for class 2&quot;, 2, diagsForClass2.size());</line>
 <line/>
-<line covered="yes">        assertTrue(&quot;Map for class one missing diagnostic 1&quot;, diagsForClass1.contains(class1Diag1));</line>
-<line covered="yes">        assertTrue(&quot;Map for class one missing diagnostic 2&quot;, diagsForClass1.contains(class1Diag2));</line>
-<line covered="yes">        assertTrue(&quot;Map for class one missing diagnostic 3&quot;, diagsForClass1.contains(class1Diag3));</line>
+<line covered="yes">        Assert.assertTrue(&quot;Map for class one missing diagnostic 1&quot;, diagsForClass1.contains(class1Diag1));</line>
+<line covered="yes">        Assert.assertTrue(&quot;Map for class one missing diagnostic 2&quot;, diagsForClass1.contains(class1Diag2));</line>
+<line covered="yes">        Assert.assertTrue(&quot;Map for class one missing diagnostic 3&quot;, diagsForClass1.contains(class1Diag3));</line>
 <line/>
-<line covered="yes">        assertTrue(&quot;Map for class two missing diagnostic 1&quot;, diagsForClass2.contains(class2Diag1));</line>
-<line covered="yes">        assertTrue(&quot;Map for class two missing diagnostic 2&quot;, diagsForClass2.contains(class2Diag2));</line>
+<line covered="yes">        Assert.assertTrue(&quot;Map for class two missing diagnostic 1&quot;, diagsForClass2.contains(class2Diag1));</line>
+<line covered="yes">        Assert.assertTrue(&quot;Map for class two missing diagnostic 2&quot;, diagsForClass2.contains(class2Diag2));</line>
 <line covered="yes">    }</line>
 <line/>
+<line>    @Test</line>
 <line>    public void testGetRelativeSourcePath()</line>
 <line>    {</line>
-<line covered="yes">        assertEquals(&quot;Incorrect relative path for src/foo.java&quot;, </line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect relative path for src/foo.java&quot;, </line>
 <line covered="yes">                     &quot;foo.xml&quot;, ReportUtil.getRelativeSourcePath(&quot;src&quot;, &quot;src/foo.java&quot;));</line>
-<line covered="yes">        assertEquals(&quot;Incorrect path to root for src/bar/foo.java&quot;, </line>
+<line covered="yes">        Assert.assertEquals(&quot;Incorrect path to root for src/bar/foo.java&quot;, </line>
 <line covered="yes">                     &quot;bar/foo.xml&quot;, ReportUtil.getRelativeSourcePath(&quot;src&quot;, &quot;src/bar/foo.java&quot;));</line>
 <line/>
 <line>        try</line>
 <line>        {</line>
 <line covered="no">            ReportUtil.getRelativeSourcePath(&quot;src&quot;, &quot;bar/bar/foo.html&quot;);</line>
-<line covered="no">            fail(&quot;Should throw an IllegalArgumentException for files outside the source directory&quot;);</line>
+<line covered="no">            Assert.fail(&quot;Should throw an IllegalArgumentException for files outside the source directory&quot;);</line>
 <line>        }</line>
 <line covered="yes">        catch (IllegalArgumentException expected)</line>
 <line>        {            </line>
-<line covered="yes">            assertNotNull(&quot;Thrown exception should have a message&quot;, expected.getMessage());</line>
+<line covered="yes">            Assert.assertNotNull(&quot;Thrown exception should have a message&quot;, expected.getMessage());</line>
 <line covered="no">        }</line>
 <line covered="yes">    }</line>
 <line>}</line>
 </source>
-<diags first="false">
-<diag id="543" sev="1" tool="PMD" rule="ImportFromSamePackage">
-No need to import a type that lives in the same package
-</diag>
-</diags>
 </classDetails>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.workflow.ReportProducer" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.workflow.ReportProducer" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="0" low="1" info="0" quality="97"/>
 <source>
 <line>package com.github.sanity4j.workflow;</line>
@@ -48,7 +48,7 @@
 <line>     */</line>
 <line>    public void run()</line>
 <line>    {</line>
-<line sev="1"><diag id="826"/>        long start = System.currentTimeMillis();</line>
+<line sev="1"><diag id="695"/>        long start = System.currentTimeMillis();</line>
 <line>        FileUtil.createDir(config.getReportDir());</line>
 <line/>
 <line>        try</line>
@@ -75,7 +75,7 @@
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="826" sev="1" tool="PMD" rule="PrematureDeclaration">
+<diag id="695" sev="1" tool="PMD" rule="PrematureDeclaration">
 Avoid declaring a variable if it is unreferenced before a possible exit point.
 </diag>
 </diags>

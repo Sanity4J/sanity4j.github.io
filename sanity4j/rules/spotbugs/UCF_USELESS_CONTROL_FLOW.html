@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head><title>UCF_USELESS_CONTROL_FLOW</title></head>
+<body>
+<h3>UCF: Useless control flow (UCF_USELESS_CONTROL_FLOW)</h3>
+<p> This method contains a useless control flow statement, where
+control flow continues onto the same place regardless of whether or not
+the branch is taken. For example,
+this is caused by having an empty statement
+block for an <code>if</code> statement:</p>
+<pre>
+    if (argv.length == 0) {
+    // TODO: handle this case
+    }
+</pre>
+</body>
+</html>

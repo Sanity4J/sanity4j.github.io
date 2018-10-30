@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.util.QaUtil" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="3" moderate="5" low="11" info="7" lineCoverage="20" branchCoverage="7" quality="85"/>
+<classDetails className="com.github.sanity4j.util.QaUtil" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="3" moderate="5" low="13" info="7" lineCoverage="20" branchCoverage="7" quality="85"/>
 <source>
-<line sev="2"><diag id="723"/>package com.github.sanity4j.util;</line>
+<line sev="2"><diag id="602"/>package com.github.sanity4j.util;</line>
 <line sev="2"/>
 <line sev="2">import java.io.ByteArrayInputStream;</line>
 <line sev="2">import java.io.Closeable;</line>
@@ -34,7 +34,7 @@
 <line sev="2"> * @author Yiannis Paschalidis</line>
 <line sev="2"> * @since Sanity4J 1.0</line>
 <line sev="2"> */</line>
-<line sev="2"><diag id="724"/>public final class QaUtil</line>
+<line sev="2"><diag id="603"/>public final class QaUtil</line>
 <line sev="2">{</line>
 <line sev="2">    /** No instance methods here. */</line>
 <line sev="2">    private QaUtil()</line>
@@ -43,10 +43,10 @@
 <line sev="2" covered="no">    }</line>
 <line sev="2"/>
 <line sev="2">    /** The path location to the external properties file. */</line>
-<line sev="2"><diag id="725"/>    private static String externalPropertiesPath;</line>
+<line sev="2"><diag id="604"/>    private static String externalPropertiesPath;</line>
 <line sev="2"/>
 <line sev="2">    /** The size of the internal &quot;copy&quot; buffer. */</line>
-<line sev="2"><diag id="726"/>    private static final int BUFFER_SIZE = 4096;</line>
+<line sev="2"><diag id="605"/>    private static final int BUFFER_SIZE = 4096;</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
 <line sev="2">     * This method copies the contents of an &lt;b&gt;InputStream&lt;/b&gt; to an &lt;b&gt;OutputStream&lt;/b&gt;.</line>
@@ -60,7 +60,7 @@
 <line sev="2" covered="no">        byte[] buffer = new byte[BUFFER_SIZE];</line>
 <line sev="2">        int read;</line>
 <line sev="2"/>
-<line sev="2" covered="no"><diag id="727"/>        while ((read = inputStream.read(buffer, 0, buffer.length)) &gt; 0)</line>
+<line sev="2" covered="no"><diag id="606"/>        while ((read = inputStream.read(buffer, 0, buffer.length)) &gt; 0)</line>
 <line sev="2">        {</line>
 <line sev="2" covered="no">            outputStream.write(buffer, 0, read);</line>
 <line sev="2">        }</line>
@@ -78,7 +78,7 @@
 <line sev="2">    {</line>
 <line sev="2" covered="yes">        Properties properties = new Properties();</line>
 <line sev="2"/>
-<line sev="2" covered="partial">        if (FileUtil.hasValue(resourcePath))</line>
+<line sev="2" covered="partial">        if (!StringUtil.empty(resourcePath))</line>
 <line sev="2">        {</line>
 <line sev="2">            String resourceFile;</line>
 <line sev="2"/>
@@ -129,7 +129,7 @@
 <line sev="2" covered="yes">        Properties stringProperties = new Properties();</line>
 <line sev="2"/>
 <line sev="2">        // Parse the properties string as if it were a properties file.</line>
-<line sev="2" covered="partial">        if (FileUtil.hasValue(propertiesString))</line>
+<line sev="2" covered="partial">        if (!StringUtil.empty(propertiesString))</line>
 <line sev="2">        {</line>
 <line sev="2" covered="no">            InputStream stringStream = null;</line>
 <line sev="2">            try </line>
@@ -187,9 +187,9 @@
 <line sev="2">        // Apply overrides</line>
 <line sev="2"/>
 <line sev="2">        // Look for the external properties on the classpath first.</line>
-<line sev="2" covered="partial">        if (FileUtil.hasValue(externalPropertiesPath))</line>
+<line sev="2" covered="partial">        if (!StringUtil.empty(externalPropertiesPath))</line>
 <line sev="2">        {</line>
-<line sev="2" covered="no"><diag id="728"/>            String resource = externalPropertiesPath.startsWith(&quot;/&quot;) ? externalPropertiesPath : &quot;/&quot; + externalPropertiesPath;</line>
+<line sev="2" covered="no"><diag id="607"/>            String resource = externalPropertiesPath.startsWith(&quot;/&quot;) ? externalPropertiesPath : &quot;/&quot; + externalPropertiesPath;</line>
 <line sev="2"/>
 <line sev="2" covered="no">            Properties resourceProperties = readResourceProperties(resource);</line>
 <line sev="2" covered="no">            properties.putAll(resourceProperties);</line>
@@ -236,7 +236,7 @@
 <line sev="2">    {</line>
 <line sev="2" covered="yes">        File propertiesFile = null;</line>
 <line sev="2"/>
-<line sev="2" covered="partial">        if (FileUtil.hasValue(externalPropertiesPath))</line>
+<line sev="2" covered="partial"><diag id="608"/>        if (!StringUtil.empty(externalPropertiesPath))</line>
 <line sev="2">        {</line>
 <line sev="2" covered="no">            File externalProperties = new File(externalPropertiesPath);</line>
 <line sev="2"/>
@@ -276,7 +276,7 @@
 <line sev="2">        // not the full pathname. Then we use that name to check if the</line>
 <line sev="2">        // named file exists in the user home directory.</line>
 <line sev="2"/>
-<line sev="2" covered="partial">        if (FileUtil.hasValue(externalPropertiesPath))</line>
+<line sev="2" covered="partial"><diag id="609"/>        if (!StringUtil.empty(externalPropertiesPath))</line>
 <line sev="2">        {</line>
 <line sev="2" covered="no">            File externalProperties = new File(externalPropertiesPath);</line>
 <line sev="2"/>
@@ -367,10 +367,10 @@
 <line sev="2">     * @param file the source file</line>
 <line sev="2">     * @return the package name for the given source file, or null on error.</line>
 <line sev="2">     */</line>
-<line sev="2"><diag id="729"/>    public static String getPackageForSourceFile(final File file)</line>
+<line sev="2"><diag id="610"/>    public static String getPackageForSourceFile(final File file)</line>
 <line sev="2">    {</line>
 <line sev="2" covered="no">        final String token = &quot;package &quot;;</line>
-<line sev="2" covered="no">        StringBuffer packageName = new StringBuffer();</line>
+<line sev="2" covered="no">        StringBuilder packageName = new StringBuilder();</line>
 <line sev="2" covered="no">        FileInputStream fis = null;</line>
 <line sev="2"/>
 <line sev="2">        try</line>
@@ -413,7 +413,7 @@
 <line sev="2">                    }</line>
 <line sev="2">                    else</line>
 <line sev="2">                    {</line>
-<line sev="2" covered="no"><diag id="730"/>                        if (read == ';')</line>
+<line sev="2" covered="no"><diag id="611"/>                        if (read == ';')</line>
 <line sev="2">                        {</line>
 <line sev="2" covered="no">                            return packageName.length() == 0 ? null : packageName.toString();</line>
 <line sev="2">                        }</line>
@@ -453,7 +453,7 @@
 <line sev="2" covered="no">            JavaClass javaClass = new ClassParser(file.getPath()).parse();</line>
 <line sev="2" covered="no">            return javaClass.getPackageName();</line>
 <line sev="2">        }</line>
-<line sev="3" covered="no"><diag id="731"/>        catch (Exception e)</line>
+<line sev="3" covered="no"><diag id="612"/>        catch (Exception e)</line>
 <line sev="2">        {</line>
 <line sev="2" covered="no">            QaLogger.getInstance().error(&quot;Error reading class &quot; + file.getPath(), e);</line>
 <line sev="2">        }</line>
@@ -502,7 +502,7 @@
 <line sev="2" covered="no">    }</line>
 <line sev="2"/>
 <line sev="2">    /** The length of the 3 special tokens ${}. */</line>
-<line sev="2"><diag id="732"/>    private static final int TOKENLENGTH = 3;</line>
+<line sev="2"><diag id="613"/>    private static final int TOKENLENGTH = 3;</line>
 <line sev="2"/>
 <line sev="2">    /**</line>
 <line sev="2">     * Replaces parameter tokens in the given String with their equivalents from the given map, </line>
@@ -514,9 +514,9 @@
 <line sev="2">     * @param auxClasspath an optional auxillary class path to search for resources.</line>
 <line sev="2">     * @return the modified String</line>
 <line sev="2">     */</line>
-<line sev="2"><diag id="733"/><diag id="734"/>    public static String replaceTokens(final String string, final Map&lt;String, String&gt; paramMap, final QAConfig config, final String auxClasspath)</line>
+<line sev="2"><diag id="614"/><diag id="615"/>    public static String replaceTokens(final String string, final Map&lt;String, String&gt; paramMap, final QAConfig config, final String auxClasspath)</line>
 <line sev="2">    {</line>
-<line sev="2" covered="no"><diag id="735"/>        int lastTokenEnd = -1;</line>
+<line sev="2" covered="no"><diag id="616"/>        int lastTokenEnd = -1;</line>
 <line sev="2" covered="no">        int tokenStart = ((string == null) ? -1 : string.indexOf('$'));</line>
 <line sev="2"/>
 <line sev="2">        // No tokens, just return the string</line>
@@ -525,7 +525,7 @@
 <line sev="2" covered="no">            return string;</line>
 <line sev="2">        }</line>
 <line sev="2"/>
-<line sev="2" covered="no">        StringBuffer result = new StringBuffer(string.length());</line>
+<line sev="2" covered="no">        StringBuilder result = new StringBuilder(string.length());</line>
 <line sev="2"/>
 <line sev="2" covered="no">        while (tokenStart != -1 &amp;&amp; tokenStart &lt; string.length() - TOKENLENGTH)</line>
 <line sev="2">        {</line>
@@ -547,7 +547,7 @@
 <line sev="2" covered="no">                    result.append(paramMap.get(paramKey));</line>
 <line sev="2">                }</line>
 <line sev="2">                // Next try a system property</line>
-<line sev="2" covered="no"><diag id="736"/>                else if (System.getProperty(paramKey) != null)</line>
+<line sev="2" covered="no"><diag id="617"/>                else if (System.getProperty(paramKey) != null)</line>
 <line sev="2">                {</line>
 <line sev="2" covered="no">                    result.append(System.getProperty(paramKey));</line>
 <line sev="2">                }</line>
@@ -624,7 +624,7 @@
 <line sev="2">     * @return the path to the extracted resource, or null if nothing was extracted</line>
 <line sev="2">     * @throws IOException if there is an error extracting the resource.</line>
 <line sev="2">     */</line>
-<line sev="2"><diag id="737"/><diag id="738"/><diag id="739"/>    public static File extractResource(final QAConfig config, final String resourceName, final String auxClasspath) throws IOException</line>
+<line sev="2"><diag id="618"/><diag id="619"/><diag id="620"/>    public static File extractResource(final QAConfig config, final String resourceName, final String auxClasspath) throws IOException</line>
 <line sev="2">    {</line>
 <line sev="2">        // Search for the Resource on the filesystem. </line>
 <line sev="2" covered="no">        File resourceFile = new File(resourceName);</line>
@@ -663,13 +663,13 @@
 <line sev="2"/>
 <line sev="2" covered="no">                while (tok.hasMoreTokens())</line>
 <line sev="2">                {</line>
-<line sev="2" covered="no"><diag id="742"/>                    File pathElem = new File(tok.nextToken());</line>
+<line sev="2" covered="no"><diag id="623"/>                    File pathElem = new File(tok.nextToken());</line>
 <line sev="2"/>
 <line sev="2" covered="no">                    if (pathElem.canRead())</line>
 <line sev="2">                    {</line>
 <line sev="2" covered="no">                        if (pathElem.isDirectory())</line>
 <line sev="2">                        {</line>
-<line sev="2" covered="no"><diag id="743"/>                            resourceFile = new File(pathElem, resourceName.replace('/', File.separatorChar));</line>
+<line sev="2" covered="no"><diag id="624"/>                            resourceFile = new File(pathElem, resourceName.replace('/', File.separatorChar));</line>
 <line sev="2"/>
 <line sev="2" covered="no">                            if (resourceFile.exists())</line>
 <line sev="2">                            {</line>
@@ -683,17 +683,17 @@
 <line sev="2" covered="no">                            JarFile jar = null;</line>
 <line sev="2">                            try</line>
 <line sev="2">                            {</line>
-<line sev="2" covered="no"><diag id="744"/>                                jar = new JarFile(pathElem);</line>
+<line sev="2" covered="no"><diag id="625"/>                                jar = new JarFile(pathElem);</line>
 <line sev="2" covered="no">                                ZipEntry entry = jar.getEntry(resourceName);</line>
 <line sev="2"/>
 <line sev="2" covered="no">                                if (entry != null)</line>
 <line sev="2">                                {</line>
-<line sev="2" covered="no"><diag id="745"/>                                    resourceUrl = new URL(&quot;jar:&quot; + pathElem.toURI().toURL().toString() + &quot;!/&quot; + resourceName);</line>
+<line sev="2" covered="no"><diag id="626"/>                                    resourceUrl = new URL(&quot;jar:&quot; + pathElem.toURI().toURL().toString() + &quot;!/&quot; + resourceName);</line>
 <line sev="2" covered="no">                                    QaLogger.getInstance().debug(&quot;Resource: &quot; + resourceUrl);</line>
 <line sev="2">                                    break;</line>
 <line sev="2">                                }</line>
 <line sev="2">                            }</line>
-<line sev="3" covered="no"><diag id="314"/><diag id="746"/><diag id="747"/>                            catch (Exception e)</line>
+<line sev="3" covered="no"><diag id="318"/><diag id="627"/><diag id="628"/>                            catch (Exception e)</line>
 <line sev="2">                            {</line>
 <line sev="2">                                // Not a jar file, or could not read.</line>
 <line sev="2">                            }</line>
@@ -716,13 +716,13 @@
 <line sev="2">                {</line>
 <line sev="2" covered="no">                    inStream = resourceUrl.openConnection().getInputStream();</line>
 <line sev="2"/>
-<line sev="2" covered="no"><diag id="313"/>                    if (inStream == null)</line>
+<line sev="2" covered="no"><diag id="317"/>                    if (inStream == null)</line>
 <line sev="2">                    {</line>
 <line sev="2">                        // If not found, try loading from the current classloader. </line>
 <line sev="2" covered="no">                        inStream = QaUtil.class.getClassLoader().getResourceAsStream(resourceName);</line>
 <line sev="2">                    }</line>
 <line sev="2"/>
-<line sev="2" covered="no"><diag id="312"/>                    if (inStream == null)</line>
+<line sev="2" covered="no"><diag id="316"/>                    if (inStream == null)</line>
 <line sev="2">                    {</line>
 <line sev="2" covered="no">                        throw new IllegalArgumentException(&quot;Resource [&quot; + resourceName + &quot;] doesn't exist&quot;);</line>
 <line sev="2">                    }</line>
@@ -760,77 +760,83 @@
 <line sev="2">}</line>
 </source>
 <diags first="false">
-<diag id="723" sev="2" tool="PMD" rule="GodClass">
+<diag id="602" sev="2" tool="PMD" rule="GodClass">
 Possible God class (WMC=91, ATFD=29, TCC=0.06666666666666667)
 </diag>
-<diag id="724" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="603" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The class 'QaUtil' has a Cyclomatic Complexity of 5 (Highest = 21).
 </diag>
-<diag id="725" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+<diag id="604" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
 Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
 </diag>
-<diag id="726" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+<diag id="605" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
 Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
 </diag>
-<diag id="727" sev="2" tool="PMD" rule="AssignmentInOperand">
+<diag id="606" sev="2" tool="PMD" rule="AssignmentInOperand">
 Avoid assignments in operands
 </diag>
-<diag id="728" sev="1" tool="PMD" rule="SimplifyStartsWith">
+<diag id="607" sev="1" tool="PMD" rule="SimplifyStartsWith">
 This call to String.startsWith can be rewritten using String.charAt(0)
 </diag>
-<diag id="729" sev="1" tool="PMD" rule="CyclomaticComplexity">
-The method 'getPackageForSourceFile' has a Cyclomatic Complexity of 20.
-</diag>
-<diag id="730" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
-Avoid using Literals in Conditional Statements
-</diag>
-<diag id="731" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
-Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
-</diag>
-<diag id="732" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
-Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
-</diag>
-<diag id="733" sev="1" tool="PMD" rule="CyclomaticComplexity">
-The method 'replaceTokens' has a Cyclomatic Complexity of 13.
-</diag>
-<diag id="734" sev="0" tool="PMD" rule="NPathComplexity">
-The method replaceTokens() has an NPath complexity of 360
-</diag>
-<diag id="735" sev="1" tool="PMD" rule="PrematureDeclaration">
-Avoid declaring a variable if it is unreferenced before a possible exit point.
-</diag>
-<diag id="736" sev="1" tool="PMD" rule="ConfusingTernary">
+<diag id="608" sev="1" tool="PMD" rule="ConfusingTernary">
 Avoid if (x != y) ..; else ..;
 </diag>
-<diag id="737" sev="0" tool="PMD" rule="ExcessiveMethodLength">
-Avoid really long methods.
+<diag id="609" sev="1" tool="PMD" rule="ConfusingTernary">
+Avoid if (x != y) ..; else ..;
 </diag>
-<diag id="738" sev="1" tool="PMD" rule="CyclomaticComplexity">
-The method 'extractResource' has a Cyclomatic Complexity of 21.
+<diag id="610" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The method 'getPackageForSourceFile' has a Cyclomatic Complexity of 20.
 </diag>
-<diag id="739" sev="0" tool="PMD" rule="NPathComplexity">
-The method extractResource() has an NPath complexity of 3121
+<diag id="611" sev="1" tool="PMD" rule="AvoidLiteralsInIfCondition">
+Avoid using Literals in Conditional Statements
 </diag>
-<diag id="742" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
-Avoid instantiating new objects inside loops
-</diag>
-<diag id="743" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
-Avoid instantiating new objects inside loops
-</diag>
-<diag id="744" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
-Avoid instantiating new objects inside loops
-</diag>
-<diag id="745" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
-Avoid instantiating new objects inside loops
-</diag>
-<diag id="314" sev="3" tool="Findbugs" rule="REC_CATCH_EXCEPTION">Exception is caught when Exception is not thrown in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
-<diag id="746" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+<diag id="612" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </diag>
-<diag id="747" sev="2" tool="PMD" rule="EmptyCatchBlock">
+<diag id="613" sev="1" tool="PMD" rule="FieldDeclarationsShouldBeAtStartOfClass">
+Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+</diag>
+<diag id="614" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The method 'replaceTokens' has a Cyclomatic Complexity of 13.
+</diag>
+<diag id="615" sev="0" tool="PMD" rule="NPathComplexity">
+The method replaceTokens() has an NPath complexity of 360
+</diag>
+<diag id="616" sev="1" tool="PMD" rule="PrematureDeclaration">
+Avoid declaring a variable if it is unreferenced before a possible exit point.
+</diag>
+<diag id="617" sev="1" tool="PMD" rule="ConfusingTernary">
+Avoid if (x != y) ..; else ..;
+</diag>
+<diag id="618" sev="0" tool="PMD" rule="ExcessiveMethodLength">
+Avoid really long methods.
+</diag>
+<diag id="619" sev="1" tool="PMD" rule="CyclomaticComplexity">
+The method 'extractResource' has a Cyclomatic Complexity of 21.
+</diag>
+<diag id="620" sev="0" tool="PMD" rule="NPathComplexity">
+The method extractResource() has an NPath complexity of 3121
+</diag>
+<diag id="623" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="624" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="625" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="626" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+Avoid instantiating new objects inside loops
+</diag>
+<diag id="318" sev="3" tool="SpotBugs" rule="REC_CATCH_EXCEPTION">Exception is caught when Exception is not thrown in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
+<diag id="627" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</diag>
+<diag id="628" sev="2" tool="PMD" rule="EmptyCatchBlock">
 Avoid empty catch blocks
 </diag>
-<diag id="313" sev="2" tool="Findbugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of inStream, which is known to be non-null in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
-<diag id="312" sev="2" tool="Findbugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of inStream, which is known to be non-null in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
+<diag id="317" sev="2" tool="SpotBugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of inStream, which is known to be non-null in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
+<diag id="316" sev="2" tool="SpotBugs" rule="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Redundant nullcheck of inStream, which is known to be non-null in com.github.sanity4j.util.QaUtil.extractResource(QAConfig, String, String)</diag>
 </diags>
 </classDetails>

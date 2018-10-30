@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/package-frame.xsl"?>
-<packageClasses packageName="com.github.sanity4j.ui" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<packageClasses packageName="com.github.sanity4j.ui" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <class name="com.github.sanity4j.ui.FieldLabel" high="0" significant="0" moderate="0" low="2" info="0"/>
 <class name="com.github.sanity4j.ui.FileInput" high="0" significant="0" moderate="0" low="0" info="0"/>
-<class name="com.github.sanity4j.ui.QaApp" high="0" significant="2" moderate="0" low="2" info="9"/>
-<class name="com.github.sanity4j.ui.QaConfigFrame" high="0" significant="0" moderate="0" low="20" info="54"/>
+<class name="com.github.sanity4j.ui.QaApp" high="0" significant="1" moderate="0" low="2" info="9"/>
 <class name="com.github.sanity4j.ui.QaLoggerJTextAreaImpl" high="0" significant="0" moderate="0" low="0" info="0"/>
 </packageClasses>

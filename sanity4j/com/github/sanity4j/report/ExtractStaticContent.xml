@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.report.ExtractStaticContent" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.report.ExtractStaticContent" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="0" moderate="1" low="0" info="5" quality="97"/>
 <source>
 <line>package com.github.sanity4j.report;</line>
@@ -18,8 +18,8 @@
 <line>import java.util.Properties;</line>
 <line>import java.util.StringTokenizer;</line>
 <line/>
-<line>import com.github.sanity4j.util.FileUtil;</line>
 <line>import com.github.sanity4j.util.QaLogger;</line>
+<line>import com.github.sanity4j.util.StringUtil;</line>
 <line>import com.github.sanity4j.workflow.QAConfig;</line>
 <line/>
 <line>/**</line>
@@ -58,7 +58,7 @@
 <line>        if (inStream == null)</line>
 <line>        {</line>
 <line>            // If not found, try loading from the default. </line>
-<line sev="0"><diag id="300"/>            inStream = ExtractStaticContent.class.getResourceAsStream(resourcePath);</line>
+<line sev="0"><diag id="305"/>            inStream = ExtractStaticContent.class.getResourceAsStream(resourcePath);</line>
 <line>        }</line>
 <line/>
 <line>        if (inStream == null)</line>
@@ -160,18 +160,18 @@
 <line/>
 <line>                try</line>
 <line>                {</line>
-<line sev="0"><diag id="486"/>                    url = new URL(stringUrl);</line>
+<line sev="0"><diag id="466"/>                    url = new URL(stringUrl);</line>
 <line>                }</line>
 <line>                catch (MalformedURLException mue)</line>
 <line>                {</line>
 <line>                    // Assume the URL is a local file.</line>
 <line>                    if (stringUrl.toUpperCase().endsWith(&quot;.JAR&quot;))</line>
 <line>                    {</line>
-<line sev="0"><diag id="487"/>                        url = new URL(&quot;jar:file:///&quot; + stringUrl + &quot;!/&quot;);</line>
+<line sev="0"><diag id="467"/>                        url = new URL(&quot;jar:file:///&quot; + stringUrl + &quot;!/&quot;);</line>
 <line>                    }</line>
 <line>                    else</line>
 <line>                    {</line>
-<line sev="0"><diag id="488"/>                        url = new URL(&quot;file:///&quot; + stringUrl);</line>
+<line sev="0"><diag id="468"/>                        url = new URL(&quot;file:///&quot; + stringUrl);</line>
 <line>                    }</line>
 <line>                }</line>
 <line/>
@@ -222,10 +222,10 @@
 <line>            String version = config.getToolVersion(tool);</line>
 <line>            String configClasspath = config.getToolConfigClasspath(tool, version);</line>
 <line/>
-<line>            if (FileUtil.hasValue(configClasspath))</line>
+<line>            if (!StringUtil.empty(configClasspath))</line>
 <line>            {</line>
 <line>                URL[] urls = classpathToUrlArray(configClasspath);</line>
-<line sev="2"><diag id="298"/><diag id="490"/>                ClassLoader toolClassLoader = new URLClassLoader(urls);</line>
+<line sev="2"><diag id="303"/><diag id="470"/>                ClassLoader toolClassLoader = new URLClassLoader(urls);</line>
 <line>                resourceEnum = toolClassLoader.getResources(propertiesFile);</line>
 <line/>
 <line>                while (resourceEnum.hasMoreElements())</line>
@@ -243,18 +243,18 @@
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="300" sev="0" tool="Findbugs" rule="OS_OPEN_STREAM">com.github.sanity4j.report.ExtractStaticContent.copyResource(ClassLoader, String, File, String) may fail to close stream</diag>
-<diag id="486" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="305" sev="0" tool="SpotBugs" rule="OS_OPEN_STREAM">com.github.sanity4j.report.ExtractStaticContent.copyResource(ClassLoader, String, File, String) may fail to close stream</diag>
+<diag id="466" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="487" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="467" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="488" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="468" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="298" sev="2" tool="Findbugs" rule="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED">com.github.sanity4j.report.ExtractStaticContent.extractContent(QAConfig, File, String) creates a java.net.URLClassLoader classloader, which should be performed within a doPrivileged block</diag>
-<diag id="490" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="303" sev="2" tool="SpotBugs" rule="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED">com.github.sanity4j.report.ExtractStaticContent.extractContent(QAConfig, File, String) creates a java.net.URLClassLoader classloader, which should be performed within a doPrivileged block</diag>
+<diag id="470" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
 </diags>

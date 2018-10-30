@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="xslt/overview-frame.xsl"?>
-<packages qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<package name="com.github.sanity4j" high="0" significant="41" moderate="23" low="231" info="167"/>
+<packages qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<package name="com.github.sanity4j" high="0" significant="27" moderate="20" low="170" info="117"/>
 <package name="com.github.sanity4j.ant.taskdef" high="0" significant="0" moderate="0" low="1" info="0"/>
 <package name="com.github.sanity4j.maven.plugin" high="0" significant="6" moderate="1" low="19" info="27"/>
-<package name="com.github.sanity4j.model.coverage" high="0" significant="0" moderate="0" low="7" info="0"/>
-<package name="com.github.sanity4j.model.diagnostic" high="0" significant="2" moderate="2" low="23" info="1"/>
-<package name="com.github.sanity4j.model.summary" high="0" significant="1" moderate="0" low="4" info="3"/>
-<package name="com.github.sanity4j.report" high="0" significant="2" moderate="3" low="65" info="32"/>
-<package name="com.github.sanity4j.ui" high="0" significant="2" moderate="0" low="24" info="63"/>
-<package name="com.github.sanity4j.util" high="0" significant="11" moderate="12" low="48" info="19"/>
-<package name="com.github.sanity4j.util.math" high="0" significant="2" moderate="1" low="12" info="4"/>
-<package name="com.github.sanity4j.workflow" high="0" significant="17" moderate="5" low="39" info="22"/>
-<package name="com.github.sanity4j.workflow.tool" high="0" significant="14" moderate="3" low="19" info="12"/>
+<package name="com.github.sanity4j.model.coverage" high="0" significant="0" moderate="0" low="1" info="0"/>
+<package name="com.github.sanity4j.model.diagnostic" high="0" significant="1" moderate="2" low="16" info="3"/>
+<package name="com.github.sanity4j.model.summary" high="0" significant="0" moderate="0" low="1" info="3"/>
+<package name="com.github.sanity4j.report" high="0" significant="2" moderate="3" low="63" info="32"/>
+<package name="com.github.sanity4j.ui" high="0" significant="1" moderate="0" low="4" info="9"/>
+<package name="com.github.sanity4j.util" high="0" significant="10" moderate="10" low="34" info="22"/>
+<package name="com.github.sanity4j.util.math" high="0" significant="2" moderate="1" low="9" info="4"/>
+<package name="com.github.sanity4j.workflow" high="0" significant="7" moderate="4" low="30" info="21"/>
+<package name="com.github.sanity4j.workflow.tool" high="0" significant="5" moderate="2" low="11" info="11"/>
 </packages>

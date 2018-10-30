@@ -73,7 +73,7 @@ public class JavaSourceWriter
 <span class="nc" id="L73">        File destFile = new File(reportDir, relativeDestPath);</span>
 
         // Buffer and diagnostics for this source file
-<span class="nc" id="L76">        StringBuffer html = new StringBuffer((int) sourceFile.length());</span>
+<span class="nc" id="L76">        StringBuilder html = new StringBuilder((int) sourceFile.length());</span>
 <span class="nc" id="L77">        DiagnosticSet diags = stats.getDiagnostics().getDiagnosticsForFile(sourcePath);</span>
 <span class="nc" id="L78">        List&lt;Diagnostic&gt; orderedDiags = sortDiags(diags);</span>
 
@@ -125,7 +125,7 @@ public class JavaSourceWriter
      * 
      * @throws IOException if there is an error reading from the source file
      */
-    private void writeSourceLines(final File sourceFile, final DiagnosticSet diags, final List&lt;Diagnostic&gt; orderedDiags, final ClassCoverage coverage, final StringBuffer html) throws IOException
+    private void writeSourceLines(final File sourceFile, final DiagnosticSet diags, final List&lt;Diagnostic&gt; orderedDiags, final ClassCoverage coverage, final StringBuilder html) throws IOException
     {
 <span class="nc" id="L130">        FileInputStream fis = new FileInputStream(sourceFile);</span>
         
@@ -236,7 +236,7 @@ public class JavaSourceWriter
      */
     private void writeErrorsSummary(final List&lt;Diagnostic&gt; orderedDiags, 
                                     final boolean diagsFirst,
-                                    final StringBuffer html)
+                                    final StringBuilder html)
     {
 <span class="nc bnc" id="L241" title="All 4 branches missed.">        if (orderedDiags != null &amp;&amp; !orderedDiags.isEmpty())</span>
         {
@@ -294,14 +294,15 @@ public class JavaSourceWriter
          *         first argument is less than, equal to, or greater than the
          *         second. 
          */
+        @Override
         public int compare(final Diagnostic diag1, final Diagnostic diag2)
         {
-<span class="nc bnc" id="L299" title="All 2 branches missed.">            if (diag1 == null)</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">            if (diag1 == null)</span>
             {
-<span class="nc bnc" id="L301" title="All 2 branches missed.">                return diag2 == null ? 0 : -1;</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">                return diag2 == null ? 0 : -1;</span>
             }
             
-<span class="nc" id="L304">            return diag1.getStartLine() - diag2.getStartLine();</span>
+<span class="nc" id="L305">            return diag1.getStartLine() - diag2.getStartLine();</span>
         }
     }
 }

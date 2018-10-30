@@ -2,7 +2,7 @@
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -159,28 +159,21 @@ public class RegexpReplaceInputStream extends InputStream
      */
     private void updateMatchOffset()
     {
-        try
+<span class="pc bpc" id="L162" title="1 of 4 branches missed.">        if (lookaheadRemaining &gt; 0 &amp;&amp; matchOffset == -1)</span>
         {
-<span class="pc bpc" id="L164" title="1 of 4 branches missed.">            if ((lookaheadRemaining &gt; 0) &amp;&amp; (matchOffset == -1))</span>
+<span class="fc" id="L164">            String buffer = new String(lookahead, lookaheadOffset, lookaheadRemaining - lookaheadOffset, StandardCharsets.UTF_8);</span>
+
+<span class="fc" id="L166">            Matcher matcher = pattern.matcher(buffer);</span>
+
+<span class="pc bpc" id="L168" title="2 of 4 branches missed.">            if (matcher.find() &amp;&amp; matcher.start() &lt; lookaheadLength)</span>
             {
-<span class="fc" id="L166">                String buffer = new String(lookahead, lookaheadOffset, lookaheadRemaining - lookaheadOffset, &quot;UTF-8&quot;);</span>
-
-<span class="fc" id="L168">                Matcher matcher = pattern.matcher(buffer);</span>
-
-<span class="pc bpc" id="L170" title="2 of 4 branches missed.">                if (matcher.find() &amp;&amp; matcher.start() &lt; lookaheadLength)</span>
-                {
-<span class="fc" id="L172">                    matchOffset = lookaheadOffset + matcher.start();</span>
-<span class="fc" id="L173">                    matchFinishOffset = lookaheadOffset + matcher.end();</span>
-                    
-<span class="fc" id="L175">                    replace = buffer.substring(matcher.start(), matcher.end()).replaceFirst(pattern.pattern(), replaceRegexp);</span>
-                }
+<span class="fc" id="L170">                matchOffset = lookaheadOffset + matcher.start();</span>
+<span class="fc" id="L171">                matchFinishOffset = lookaheadOffset + matcher.end();</span>
+                
+<span class="fc" id="L173">                replace = buffer.substring(matcher.start(), matcher.end()).replaceFirst(pattern.pattern(), replaceRegexp);</span>
             }
         }
-<span class="nc" id="L179">        catch (UnsupportedEncodingException uue)</span>
-        {
-            // Should never happen, java has to support UTF-8.
-<span class="fc" id="L182">        }</span>
-<span class="fc" id="L183">    }</span>
+<span class="fc" id="L176">    }</span>
 
     /**
      * This method is used to read in another &quot;chunk&quot; from the underlying &lt;b&gt;InputStream&lt;/b&gt;. It shuffles the last half
@@ -192,37 +185,37 @@ public class RegexpReplaceInputStream extends InputStream
     private void getLookahead() throws IOException
     {
         // Copy the 2nd half to the 1st half.
-<span class="pc bpc" id="L195" title="1 of 2 branches missed.">        if (lookaheadRemaining &gt; lookaheadLength)</span>
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">        if (lookaheadRemaining &gt; lookaheadLength)</span>
         {
-<span class="fc" id="L197">            System.arraycopy(lookahead, lookaheadLength, lookahead, 0, lookaheadLength);</span>
-<span class="fc" id="L198">            lookaheadRemaining -= lookaheadLength;</span>
-<span class="fc" id="L199">            lookaheadOffset -= lookaheadLength;</span>
+<span class="fc" id="L190">            System.arraycopy(lookahead, lookaheadLength, lookahead, 0, lookaheadLength);</span>
+<span class="fc" id="L191">            lookaheadRemaining -= lookaheadLength;</span>
+<span class="fc" id="L192">            lookaheadOffset -= lookaheadLength;</span>
 
-<span class="pc bpc" id="L201" title="1 of 2 branches missed.">            if (matchOffset != -1)</span>
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">            if (matchOffset != -1)</span>
             {
-<span class="pc bpc" id="L203" title="1 of 2 branches missed.">                if (matchOffset - lookaheadLength &gt;= 0)</span>
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">                if (matchOffset - lookaheadLength &gt;= 0)</span>
                 {
-<span class="nc" id="L205">                    matchOffset -= lookaheadLength;</span>
+<span class="nc" id="L198">                    matchOffset -= lookaheadLength;</span>
                 }
 
-<span class="pc bpc" id="L208" title="1 of 2 branches missed.">                if (matchFinishOffset - lookaheadLength &gt;= 0)</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">                if (matchFinishOffset - lookaheadLength &gt;= 0)</span>
                 {
-<span class="nc" id="L210">                    matchFinishOffset -= lookaheadLength;</span>
+<span class="nc" id="L203">                    matchFinishOffset -= lookaheadLength;</span>
                 }
             }
         }
 
         // Read in a new 2nd half.
-<span class="fc bfc" id="L216" title="All 2 branches covered.">        if (lookaheadRemaining == lookaheadLength)</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">        if (lookaheadRemaining == lookaheadLength)</span>
         {
-<span class="fc" id="L218">            int read = backing.read(lookahead, lookaheadLength, lookaheadLength);</span>
+<span class="fc" id="L211">            int read = backing.read(lookahead, lookaheadLength, lookaheadLength);</span>
 
-<span class="pc bpc" id="L220" title="1 of 2 branches missed.">            if (read != -1)</span>
+<span class="pc bpc" id="L213" title="1 of 2 branches missed.">            if (read != -1)</span>
             {
-<span class="fc" id="L222">                lookaheadRemaining += read;</span>
+<span class="fc" id="L215">                lookaheadRemaining += read;</span>
             }
         }
-<span class="fc" id="L225">    }</span>
+<span class="fc" id="L218">    }</span>
 
     /**
      * This method is used to perform a read after a match has been found in the underlying InputStream. The processing
@@ -233,36 +226,36 @@ public class RegexpReplaceInputStream extends InputStream
      */
     private int readMatch() throws IOException
     {
-<span class="fc bfc" id="L236" title="All 2 branches covered.">        if (lookaheadOffset &gt;= lookaheadRemaining)</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">        if (lookaheadOffset &gt;= lookaheadRemaining)</span>
         {
-<span class="fc" id="L238">            return backing.read();</span>
+<span class="fc" id="L231">            return backing.read();</span>
         }
-<span class="fc bfc" id="L240" title="All 2 branches covered.">        else if (lookaheadOffset &lt; matchOffset)</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">        else if (lookaheadOffset &lt; matchOffset)</span>
         {
-<span class="fc" id="L242">            return lookahead[lookaheadOffset++];</span>
+<span class="fc" id="L235">            return lookahead[lookaheadOffset++];</span>
         }
-<span class="fc bfc" id="L244" title="All 2 branches covered.">        else if (lookaheadOffset &lt; matchFinishOffset)</span>
+<span class="fc bfc" id="L237" title="All 2 branches covered.">        else if (lookaheadOffset &lt; matchFinishOffset)</span>
         {
-<span class="fc" id="L246">            int chr = replace.charAt(replaceOffset++);</span>
+<span class="fc" id="L239">            int chr = replace.charAt(replaceOffset++);</span>
 
-<span class="fc bfc" id="L248" title="All 2 branches covered.">            if (replaceOffset &gt;= replace.length())</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">            if (replaceOffset &gt;= replace.length())</span>
             {
-<span class="fc" id="L250">                lookaheadOffset = matchFinishOffset;</span>
-<span class="fc" id="L251">                matchFinishOffset = -1;</span>
+<span class="fc" id="L243">                lookaheadOffset = matchFinishOffset;</span>
+<span class="fc" id="L244">                matchFinishOffset = -1;</span>
 
-<span class="pc bpc" id="L253" title="1 of 2 branches missed.">                if (replaceAll)</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">                if (replaceAll)</span>
                 {
-<span class="nc" id="L255">                    matchOffset = -1;</span>
-<span class="nc" id="L256">                    replaceOffset = 0;</span>
-<span class="nc" id="L257">                    updateMatchOffset();</span>
+<span class="nc" id="L248">                    matchOffset = -1;</span>
+<span class="nc" id="L249">                    replaceOffset = 0;</span>
+<span class="nc" id="L250">                    updateMatchOffset();</span>
                 }
             }
 
-<span class="fc" id="L261">            return chr;</span>
+<span class="fc" id="L254">            return chr;</span>
         }
         else
         {
-<span class="fc" id="L265">            return lookahead[lookaheadOffset++];</span>
+<span class="fc" id="L258">            return lookahead[lookaheadOffset++];</span>
         }
     }
 
@@ -273,25 +266,26 @@ public class RegexpReplaceInputStream extends InputStream
      * @return The character read from the underlying stream, or -1 if we have reached the end of the stream.
      * @throws IOException if there is an error reading from the backing stream.
      */
+    @Override
     public int read() throws IOException
     {
-<span class="fc bfc" id="L278" title="All 2 branches covered.">        if (lookaheadOffset &gt;= lookaheadLength)</span>
+<span class="fc bfc" id="L272" title="All 2 branches covered.">        if (lookaheadOffset &gt;= lookaheadLength)</span>
         {
-<span class="fc" id="L280">            getLookahead();</span>
-<span class="fc" id="L281">            updateMatchOffset();</span>
+<span class="fc" id="L274">            getLookahead();</span>
+<span class="fc" id="L275">            updateMatchOffset();</span>
         }
 
-<span class="pc bpc" id="L284" title="1 of 2 branches missed.">        if (matchOffset != -1)</span>
+<span class="pc bpc" id="L278" title="1 of 2 branches missed.">        if (matchOffset != -1)</span>
         {
-<span class="fc" id="L286">            return readMatch();</span>
+<span class="fc" id="L280">            return readMatch();</span>
         }
 
-<span class="nc bnc" id="L289" title="All 2 branches missed.">        if (lookaheadOffset &gt; lookaheadRemaining - 1)</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">        if (lookaheadOffset &gt; lookaheadRemaining - 1)</span>
         {
-<span class="nc" id="L291">            return -1;</span>
+<span class="nc" id="L285">            return -1;</span>
         }
 
-<span class="nc" id="L294">        return lookahead[lookaheadOffset++];</span>
+<span class="nc" id="L288">        return lookahead[lookaheadOffset++];</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

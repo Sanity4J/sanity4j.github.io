@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head><title>MWN_MISMATCHED_NOTIFY</title></head>
+<body>
+<h3>MWN: Mismatched notify() (MWN_MISMATCHED_NOTIFY)</h3>
+<p> This method calls Object.notify() or Object.notifyAll() without obviously holding a lock
+on the object.&nbsp;  Calling notify() or notifyAll() without a lock held will result in
+an <code>IllegalMonitorStateException</code> being thrown.</p>
+</body>
+</html>

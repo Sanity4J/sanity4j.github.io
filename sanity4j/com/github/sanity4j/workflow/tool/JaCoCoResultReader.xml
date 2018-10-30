@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.workflow.tool.JaCoCoResultReader" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="1" moderate="2" low="3" info="8" quality="87"/>
+<classDetails className="com.github.sanity4j.workflow.tool.JaCoCoResultReader" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="1" moderate="2" low="3" info="8" lineCoverage="93" branchCoverage="86" quality="87"/>
 <source>
 <line>package com.github.sanity4j.workflow.tool;</line>
 <line/>
@@ -38,40 +38,40 @@
 <line> * @author Yiannis Paschalidis</line>
 <line> * @since Sanity4J 1.8</line>
 <line> */</line>
-<line sev="1"><diag id="854"/>public class JaCoCoResultReader implements ResultReader</line>
+<line sev="1" covered="yes"><diag id="709"/>public class JaCoCoResultReader implements ResultReader</line>
 <line sev="1">{</line>
 <line sev="1">    /** The config for the current run. */</line>
 <line sev="1">    private static QAConfig config;</line>
 <line sev="1"/>
 <line sev="1">    /** The properties used to configure this {@link ResultReader}. */</line>
-<line sev="1">    private final Properties properties = new Properties();</line>
+<line sev="1" covered="yes">    private final Properties properties = new Properties();</line>
 <line sev="1"/>
 <line sev="1">    /** The ExtractStats to add the results to. */</line>
 <line sev="1">    private ExtractStats stats;</line>
 <line sev="1"/>
 <line sev="1">    /** The JaCoCo result file to read from. */</line>
-<line sev="2"><diag id="857"/><diag id="859"/>    private File jacocoResultFile;</line>
+<line sev="2"><diag id="712"/><diag id="714"/>    private File jacocoResultFile;</line>
 <line sev="1"/>
 <line sev="1">    /** {@inheritDoc} */</line>
 <line sev="1">    @Override</line>
 <line sev="1">    public void setProperties(final Properties properties) </line>
 <line sev="1">    {</line>
-<line sev="1">        this.properties.putAll(properties);</line>
-<line sev="1">    }</line>
+<line sev="1" covered="no">        this.properties.putAll(properties);</line>
+<line sev="1" covered="no">    }</line>
 <line sev="1"/>
 <line sev="1">    /** {@inheritDoc} */</line>
 <line sev="1">    @Override</line>
 <line sev="1">    public void setResultFile(final File resultFile)</line>
 <line sev="1">    {</line>
-<line sev="2"><diag id="323"/>        this.jacocoResultFile = resultFile;</line>
-<line sev="1">    }</line>
+<line sev="2" covered="yes"><diag id="322"/>        this.jacocoResultFile = resultFile;</line>
+<line sev="1" covered="yes">    }</line>
 <line sev="1"/>
 <line sev="1">    /** {@inheritDoc} */</line>
 <line sev="1">    @Override</line>
 <line sev="1">    public void setStats(final ExtractStats stats)</line>
 <line sev="1">    {</line>
-<line sev="1">        this.stats = stats;</line>
-<line sev="1">    }</line>
+<line sev="1" covered="yes">        this.stats = stats;</line>
+<line sev="1" covered="yes">    }</line>
 <line sev="1"/>
 <line sev="1">    /**</line>
 <line sev="1">     * Extracts the Coverage statistics from the jacocoResultFile.</line>
@@ -79,57 +79,57 @@
 <line sev="1">    @Override</line>
 <line sev="1">    public void run()</line>
 <line sev="1">    {</line>
-<line sev="1">       Coverage coverage = stats.getCoverage();</line>
+<line sev="1" covered="yes">       Coverage coverage = stats.getCoverage();</line>
 <line sev="1"/>
 <line sev="1">       // Read coverage data</line>
-<line sev="1">       ExecutionDataStore executionData = new ExecutionDataStore();</line>
-<line sev="1">       final Set&lt;String&gt; classes = new HashSet&lt;String&gt;();</line>
-<line sev="1">       readExecutionFiles(executionData, classes);</line>
+<line sev="1" covered="yes">       ExecutionDataStore executionData = new ExecutionDataStore();</line>
+<line sev="1" covered="yes">       final Set&lt;String&gt; classes = new HashSet&lt;String&gt;();</line>
+<line sev="1" covered="yes">       readExecutionFiles(executionData, classes);</line>
 <line sev="1"/>
 <line sev="1">       // Process individual classes</line>
-<line sev="1">       for (String clazz : classes)</line>
+<line sev="1" covered="yes">       for (String clazz : classes)</line>
 <line sev="1">       {</line>
-<line sev="1">          processClass(clazz, executionData, coverage);</line>
-<line sev="1">       }</line>
+<line sev="1" covered="yes">          processClass(clazz, executionData, coverage);</line>
+<line sev="1" covered="yes">       }</line>
 <line sev="1"/>
 <line sev="1">       // Produce summarised package info</line>
-<line sev="1">       int globalCoveredLines = 0;</line>
-<line sev="1">       int globalTotalLines = 0;</line>
-<line sev="1">       int globalCoveredBranches = 0;</line>
-<line sev="1">       int globalTotalBranches = 0;</line>
+<line sev="1" covered="yes">       int globalCoveredLines = 0;</line>
+<line sev="1" covered="yes">       int globalTotalLines = 0;</line>
+<line sev="1" covered="yes">       int globalCoveredBranches = 0;</line>
+<line sev="1" covered="yes">       int globalTotalBranches = 0;</line>
 <line sev="1"/>
-<line sev="1">       for (String packageName : coverage.getPackageNames())</line>
+<line sev="1" covered="yes">       for (String packageName : coverage.getPackageNames())</line>
 <line sev="1">       {</line>
-<line sev="1">          int packageCoveredLines = 0;</line>
-<line sev="1">          int packageTotalLines = 0;</line>
-<line sev="1">          int packageCoveredBranches = 0;</line>
-<line sev="1">          int packageTotalBranches = 0;</line>
+<line sev="1" covered="yes">          int packageCoveredLines = 0;</line>
+<line sev="1" covered="yes">          int packageTotalLines = 0;</line>
+<line sev="1" covered="yes">          int packageCoveredBranches = 0;</line>
+<line sev="1" covered="yes">          int packageTotalBranches = 0;</line>
 <line sev="1"/>
-<line sev="1">          PackageCoverage packageCoverage = coverage.getPackageCoverage(packageName);</line>
+<line sev="1" covered="yes">          PackageCoverage packageCoverage = coverage.getPackageCoverage(packageName);</line>
 <line sev="1"/>
-<line sev="1">          for (String className : packageCoverage.getClassNames())</line>
+<line sev="1" covered="yes">          for (String className : packageCoverage.getClassNames())</line>
 <line sev="1">          {</line>
-<line sev="1">             ClassCoverage classCoverage = packageCoverage.getClassCoverage(className);</line>
+<line sev="1" covered="yes">             ClassCoverage classCoverage = packageCoverage.getClassCoverage(className);</line>
 <line sev="1"/>
-<line sev="1">             packageCoveredLines += classCoverage.getCoveredLineCount();</line>
-<line sev="1">             packageTotalLines += classCoverage.getLineCount();</line>
+<line sev="1" covered="yes">             packageCoveredLines += classCoverage.getCoveredLineCount();</line>
+<line sev="1" covered="yes">             packageTotalLines += classCoverage.getLineCount();</line>
 <line sev="1"/>
-<line sev="1">             packageCoveredBranches += classCoverage.getCoveredBranchCount();</line>
-<line sev="1">             packageTotalBranches += classCoverage.getBranchCount();</line>
-<line sev="1">          }</line>
+<line sev="1" covered="yes">             packageCoveredBranches += classCoverage.getCoveredBranchCount();</line>
+<line sev="1" covered="yes">             packageTotalBranches += classCoverage.getBranchCount();</line>
+<line sev="1" covered="yes">          }</line>
 <line sev="1"/>
-<line sev="1">          packageCoverage.setLineCoverage(packageCoveredLines / (double) packageTotalLines);</line>
-<line sev="1">          packageCoverage.setBranchCoverage(packageCoveredBranches / (double) packageTotalBranches);</line>
+<line sev="1" covered="yes">          packageCoverage.setLineCoverage(packageCoveredLines / (double) packageTotalLines);</line>
+<line sev="1" covered="yes">          packageCoverage.setBranchCoverage(packageCoveredBranches / (double) packageTotalBranches);</line>
 <line sev="1"/>
-<line sev="1">          globalCoveredLines += packageCoveredLines;</line>
-<line sev="1">          globalTotalLines += packageTotalLines;</line>
-<line sev="1">          globalCoveredBranches += packageCoveredBranches;</line>
-<line sev="1">          globalTotalBranches += packageTotalBranches;</line>
-<line sev="1">       }</line>
+<line sev="1" covered="yes">          globalCoveredLines += packageCoveredLines;</line>
+<line sev="1" covered="yes">          globalTotalLines += packageTotalLines;</line>
+<line sev="1" covered="yes">          globalCoveredBranches += packageCoveredBranches;</line>
+<line sev="1" covered="yes">          globalTotalBranches += packageTotalBranches;</line>
+<line sev="1" covered="yes">       }</line>
 <line sev="1"/>
-<line sev="1">       coverage.setLineCoverage(globalCoveredLines / (double) globalTotalLines);</line>
-<line sev="1">       coverage.setBranchCoverage(globalCoveredBranches / (double) globalTotalBranches);</line>
-<line sev="1">    }</line>
+<line sev="1" covered="yes">       coverage.setLineCoverage(globalCoveredLines / (double) globalTotalLines);</line>
+<line sev="1" covered="yes">       coverage.setBranchCoverage(globalCoveredBranches / (double) globalTotalBranches);</line>
+<line sev="1" covered="yes">    }</line>
 <line sev="1"/>
 <line sev="1">    /**</line>
 <line sev="1">     * Process an individual class.</line>
@@ -138,99 +138,99 @@
 <line sev="1">     * @param executionData The execution data.</line>
 <line sev="1">     * @param coverage The coverage.</line>
 <line sev="1">     */</line>
-<line sev="1"><diag id="860"/><diag id="861"/>    private void processClass(final String clazz, final ExecutionDataStore executionData, final Coverage coverage)</line>
+<line sev="1"><diag id="715"/><diag id="716"/>    private void processClass(final String clazz, final ExecutionDataStore executionData, final Coverage coverage)</line>
 <line sev="1">    {</line>
-<line sev="1">       FileInputStream inputStream = null;</line>
+<line sev="1" covered="yes">       FileInputStream inputStream = null;</line>
 <line sev="1"/>
 <line sev="1">       try</line>
 <line sev="1">       {</line>
-<line sev="1">          File classFile = new File(config.getCombinedClassDir(), clazz.replace('.', '/') + &quot;.class&quot;);</line>
+<line sev="1" covered="yes">          File classFile = new File(config.getCombinedClassDir(), clazz.replace('.', '/') + &quot;.class&quot;);</line>
 <line sev="1"/>
-<line sev="1">          if (classFile.exists())</line>
+<line sev="1" covered="yes">          if (classFile.exists())</line>
 <line sev="1">          {</line>
-<line sev="1">             inputStream = new FileInputStream(classFile);</line>
-<line sev="1">             final CoverageBuilder coverageBuilder = new CoverageBuilder();</line>
-<line sev="1">             final Analyzer analyzer = new Analyzer(executionData, coverageBuilder);</line>
-<line sev="1">             analyzer.analyzeClass(inputStream, clazz);</line>
+<line sev="1" covered="yes">             inputStream = new FileInputStream(classFile);</line>
+<line sev="1" covered="yes">             final CoverageBuilder coverageBuilder = new CoverageBuilder();</line>
+<line sev="1" covered="yes">             final Analyzer analyzer = new Analyzer(executionData, coverageBuilder);</line>
+<line sev="1" covered="yes">             analyzer.analyzeClass(inputStream, clazz);</line>
 <line sev="1"/>
 <line sev="1">             // Read class info</line>
-<line sev="1">             for (final IClassCoverage cc : coverageBuilder.getClasses()) </line>
+<line sev="1" covered="yes">             for (final IClassCoverage cc : coverageBuilder.getClasses()) </line>
 <line sev="1">             {</line>
-<line sev="1">                final String className = cc.getName().replace('/', '.');</line>
-<line sev="1">                final String enclosingClass = className.replaceAll(&quot;\\$.*&quot;, &quot;&quot;);</line>
-<line sev="1">                final int dotIndex = enclosingClass.lastIndexOf('.');</line>
-<line sev="1">                final String packageName = dotIndex == -1 ? &quot;&quot; : enclosingClass.substring(0, dotIndex);</line>
+<line sev="1" covered="yes">                final String className = cc.getName().replace('/', '.');</line>
+<line sev="1" covered="yes">                final String enclosingClass = className.replaceAll(&quot;\\$.*&quot;, &quot;&quot;);</line>
+<line sev="1" covered="yes">                final int dotIndex = enclosingClass.lastIndexOf('.');</line>
+<line sev="1" covered="partial">                final String packageName = dotIndex == -1 ? &quot;&quot; : enclosingClass.substring(0, dotIndex);</line>
 <line sev="1"/>
-<line sev="1">                PackageCoverage packageCoverage = coverage.getPackageCoverage(packageName);</line>
+<line sev="1" covered="yes">                PackageCoverage packageCoverage = coverage.getPackageCoverage(packageName);</line>
 <line sev="1"/>
-<line sev="1">                if (packageCoverage == null)</line>
+<line sev="1" covered="partial">                if (packageCoverage == null)</line>
 <line sev="1">                {</line>
-<line sev="1"><diag id="862"/>                   packageCoverage = new PackageCoverage(packageName);</line>
-<line sev="1">                   coverage.addPackage(packageCoverage);</line>
+<line sev="1" covered="yes"><diag id="717"/>                   packageCoverage = new PackageCoverage(packageName);</line>
+<line sev="1" covered="yes">                   coverage.addPackage(packageCoverage);</line>
 <line sev="1">                }</line>
 <line sev="1"/>
-<line sev="1">                ClassCoverage classCoverage = packageCoverage.getClassCoverage(enclosingClass);</line>
+<line sev="1" covered="yes">                ClassCoverage classCoverage = packageCoverage.getClassCoverage(enclosingClass);</line>
 <line sev="1"/>
-<line sev="1">                if (classCoverage == null)</line>
+<line sev="1" covered="partial">                if (classCoverage == null)</line>
 <line sev="1">                {</line>
-<line sev="1"><diag id="863"/>                    classCoverage = new ClassCoverage(enclosingClass);</line>
-<line sev="1">                    packageCoverage.addClass(classCoverage);</line>
+<line sev="1" covered="yes"><diag id="718"/>                    classCoverage = new ClassCoverage(enclosingClass);</line>
+<line sev="1" covered="yes">                    packageCoverage.addClass(classCoverage);</line>
 <line sev="1">                }</line>
 <line sev="1"/>
-<line sev="1">                int coveredBranchCount = 0;</line>
-<line sev="1">                int totalBranchCount = 0;</line>
-<line sev="1">                int coveredLineCount = 0;</line>
-<line sev="1">                int totalLineCount = 0;</line>
+<line sev="1" covered="yes">                int coveredBranchCount = 0;</line>
+<line sev="1" covered="yes">                int totalBranchCount = 0;</line>
+<line sev="1" covered="yes">                int coveredLineCount = 0;</line>
+<line sev="1" covered="yes">                int totalLineCount = 0;</line>
 <line sev="1"/>
-<line sev="1">                for (int lineNum = cc.getFirstLine(); lineNum &lt;= cc.getLastLine(); lineNum++) </line>
+<line sev="1" covered="yes">                for (int lineNum = cc.getFirstLine(); lineNum &lt;= cc.getLastLine(); lineNum++) </line>
 <line sev="1">                {</line>
-<line sev="1">                   ILine line = cc.getLine(lineNum);</line>
+<line sev="1" covered="yes">                   ILine line = cc.getLine(lineNum);</line>
 <line sev="1"/>
-<line sev="1">                   if (line.getStatus() != ICounter.EMPTY)</line>
+<line sev="1" covered="yes">                   if (line.getStatus() != ICounter.EMPTY)</line>
 <line sev="1">                   {</line>
-<line sev="1">                      totalLineCount++;</line>
-<line sev="1">                      boolean isBranch = line.getBranchCounter().getTotalCount() + line.getBranchCounter().getMissedCount() &gt; 1;</line>
+<line sev="1" covered="yes">                      totalLineCount++;</line>
+<line sev="1" covered="yes">                      boolean isBranch = line.getBranchCounter().getTotalCount() + line.getBranchCounter().getMissedCount() &gt; 1;</line>
 <line sev="1"/>
-<line sev="1">                      switch (line.getStatus()) </line>
+<line sev="1" covered="partial">                      switch (line.getStatus()) </line>
 <line sev="1">                      {</line>
 <line sev="1">                         case ICounter.NOT_COVERED:</line>
-<line sev="1">                            classCoverage.addLineCoverage(lineNum, 0, isBranch);</line>
-<line sev="1">                            break;</line>
+<line sev="1" covered="yes">                            classCoverage.addLineCoverage(lineNum, 0, isBranch);</line>
+<line sev="1" covered="yes">                            break;</line>
 <line sev="1"/>
 <line sev="1">                         case ICounter.PARTLY_COVERED:</line>
 <line sev="1">                        	 // fall through.</line>
 <line sev="1">                         case ICounter.FULLY_COVERED:</line>
-<line sev="1">                            classCoverage.addLineCoverage(lineNum, 1, isBranch);</line>
-<line sev="1">                            coveredLineCount++;</line>
-<line sev="1">                            break;</line>
+<line sev="1" covered="yes">                            classCoverage.addLineCoverage(lineNum, 1, isBranch);</line>
+<line sev="1" covered="yes">                            coveredLineCount++;</line>
+<line sev="1" covered="yes">                            break;</line>
 <line sev="1">                        default:</line>
 <line sev="1">                        	break;</line>
 <line sev="1">                      }</line>
 <line sev="1"/>
-<line sev="1"><diag id="864"/>                      if (isBranch)</line>
+<line sev="1" covered="yes"><diag id="719"/>                      if (isBranch)</line>
 <line sev="1">                      {</line>
-<line sev="1">                         totalBranchCount += line.getBranchCounter().getTotalCount();</line>
-<line sev="1">                         coveredBranchCount += line.getBranchCounter().getCoveredCount();</line>
-<line sev="1">                         classCoverage.addBranchCoverage(lineNum, line.getBranchCounter().getCoveredRatio());</line>
+<line sev="1" covered="yes">                         totalBranchCount += line.getBranchCounter().getTotalCount();</line>
+<line sev="1" covered="yes">                         coveredBranchCount += line.getBranchCounter().getCoveredCount();</line>
+<line sev="1" covered="yes">                         classCoverage.addBranchCoverage(lineNum, line.getBranchCounter().getCoveredRatio());</line>
 <line sev="1">                      }</line>
 <line sev="1">                   }</line>
 <line sev="1">                }</line>
 <line sev="1"/>
 <line sev="1">                // Summarise class info</line>
-<line sev="1">                classCoverage.setLineCoverage(coveredLineCount / (double) totalLineCount);</line>
-<line sev="1">                classCoverage.setBranchCoverage(coveredBranchCount / (double) totalBranchCount);</line>
-<line sev="1">             }</line>
+<line sev="1" covered="yes">                classCoverage.setLineCoverage(coveredLineCount / (double) totalLineCount);</line>
+<line sev="1" covered="yes">                classCoverage.setBranchCoverage(coveredBranchCount / (double) totalBranchCount);</line>
+<line sev="1" covered="yes">             }</line>
 <line sev="1">          }</line>
 <line sev="1">       }</line>
-<line sev="1">       catch (IOException e)</line>
+<line sev="1" covered="no">       catch (IOException e)</line>
 <line sev="1">       {</line>
-<line sev="1">          throw new QAException(&quot;Failed to analyse class: &quot; + clazz, e);</line>
+<line sev="1" covered="no">          throw new QAException(&quot;Failed to analyse class: &quot; + clazz, e);</line>
 <line sev="1">       }</line>
 <line sev="1">       finally</line>
 <line sev="1">       {</line>
-<line sev="1">          QaUtil.safeClose(inputStream);</line>
-<line sev="1">       }</line>
-<line sev="1">    }</line>
+<line sev="1" covered="yes">          QaUtil.safeClose(inputStream);</line>
+<line sev="1" covered="yes">       }</line>
+<line sev="1" covered="yes">    }</line>
 <line sev="1"/>
 <line sev="1">    /**</line>
 <line sev="1">     * Reads in the JaCoCo execution data files and adds them to the combined data store.</line>
@@ -240,48 +240,48 @@
 <line sev="1">     */</line>
 <line sev="1">    private static void readExecutionFiles(final ExecutionDataStore executionData, final Set&lt;String&gt; classes)</line>
 <line sev="1">    {</line>
-<line sev="1">       for (String file : config.getCoverageMergeDataFileList())</line>
+<line sev="1" covered="yes">       for (String file : config.getCoverageMergeDataFileList())</line>
 <line sev="1">       {</line>
-<line sev="1">          FileInputStream inputStream = null;</line>
+<line sev="1" covered="yes">          FileInputStream inputStream = null;</line>
 <line sev="1"/>
 <line sev="1">          try</line>
 <line sev="1">          {</line>
-<line sev="1"><diag id="865"/>             inputStream = new FileInputStream(file);</line>
+<line sev="1" covered="yes"><diag id="720"/>             inputStream = new FileInputStream(file);</line>
 <line sev="1"/>
-<line sev="1"><diag id="866"/>             final ExecutionDataReader reader = new ExecutionDataReader(inputStream);</line>
+<line sev="1" covered="yes"><diag id="721"/>             final ExecutionDataReader reader = new ExecutionDataReader(inputStream);</line>
 <line sev="1"/>
-<line sev="1"><diag id="867"/>             reader.setSessionInfoVisitor(new ISessionInfoVisitor()</line>
-<line sev="1">             {</line>
+<line sev="1" covered="yes"><diag id="722"/>             reader.setSessionInfoVisitor(new ISessionInfoVisitor()</line>
+<line sev="1" covered="yes">             {</line>
 <line sev="1">                 @Override</line>
 <line sev="1">                 public void visitSessionInfo(final SessionInfo info)</line>
 <line sev="1">                 { </line>
 <line sev="1">                     // Does nothing, but required by JaCoCo</line>
-<line sev="1">                 }</line>
+<line sev="1" covered="yes">                 }</line>
 <line sev="1">             });</line>
 <line sev="1"/>
-<line sev="1"><diag id="868"/>             reader.setExecutionDataVisitor(new IExecutionDataVisitor()</line>
-<line sev="1">             {</line>
+<line sev="1" covered="yes"><diag id="723"/>             reader.setExecutionDataVisitor(new IExecutionDataVisitor()</line>
+<line sev="1" covered="yes">             {</line>
 <line sev="1">                 @Override</line>
 <line sev="1">                 public void visitClassExecution(final ExecutionData data)</line>
 <line sev="1">                 {</line>
-<line sev="1">                     classes.add(data.getName());</line>
-<line sev="1">                     executionData.put(data);</line>
-<line sev="1">                 }</line>
+<line sev="1" covered="yes">                     classes.add(data.getName());</line>
+<line sev="1" covered="yes">                     executionData.put(data);</line>
+<line sev="1" covered="yes">                 }</line>
 <line sev="1">             });</line>
 <line sev="1"/>
-<line sev="1">             reader.read();</line>
-<line sev="1">             inputStream.close();</line>
+<line sev="1" covered="yes">             reader.read();</line>
+<line sev="1" covered="yes">             inputStream.close();</line>
 <line sev="1">          }</line>
-<line sev="3"><diag id="869"/>          catch (Exception e)</line>
+<line sev="3" covered="no"><diag id="724"/>          catch (Exception e)</line>
 <line sev="1">          {</line>
-<line sev="1">             throw new QAException(&quot;Error reading JaCoco Result file [&quot; + file + &quot;]&quot;, e);</line>
+<line sev="1" covered="no">             throw new QAException(&quot;Error reading JaCoco Result file [&quot; + file + &quot;]&quot;, e);</line>
 <line sev="1">          }</line>
 <line sev="1">          finally</line>
 <line sev="1">          {</line>
-<line sev="1">             QaUtil.safeClose(inputStream);</line>
-<line sev="1">          }</line>
-<line sev="1">       }</line>
-<line sev="1">   }</line>
+<line sev="1" covered="yes">             QaUtil.safeClose(inputStream);</line>
+<line sev="1" covered="yes">          }</line>
+<line sev="1" covered="yes">       }</line>
+<line sev="1" covered="yes">   }</line>
 <line sev="1"/>
 <line sev="1">    /**</line>
 <line sev="1">     * @return the description of this WorkUnit</line>
@@ -289,7 +289,7 @@
 <line sev="1">    @Override</line>
 <line sev="1">    public String getDescription()</line>
 <line sev="1">    {</line>
-<line sev="1">        return &quot;Reading JaCoco results&quot;;</line>
+<line sev="1" covered="no">        return &quot;Reading JaCoco results&quot;;</line>
 <line sev="1">    }</line>
 <line sev="1"/>
 <line sev="1">    /**</line>
@@ -298,49 +298,49 @@
 <line sev="1">     */</line>
 <line sev="1">    public static void setConfig(final QAConfig config)</line>
 <line sev="1">    {</line>
-<line sev="1">        JaCoCoResultReader.config = config;</line>
-<line sev="1">    }</line>
+<line sev="1" covered="yes">        JaCoCoResultReader.config = config;</line>
+<line sev="1" covered="yes">    }</line>
 <line sev="1">}</line>
 </source>
 <diags first="false">
-<diag id="854" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="709" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The class 'JaCoCoResultReader' has a Cyclomatic Complexity of 3 (Highest = 12).
 </diag>
-<diag id="857" sev="2" tool="PMD" rule="UnusedPrivateField">
+<diag id="712" sev="2" tool="PMD" rule="UnusedPrivateField">
 Avoid unused private fields such as 'jacocoResultFile'.
 </diag>
-<diag id="859" sev="1" tool="PMD" rule="SingularField">
+<diag id="714" sev="1" tool="PMD" rule="SingularField">
 Perhaps 'jacocoResultFile' could be replaced by a local variable.
 </diag>
-<diag id="323" sev="2" tool="Findbugs" rule="URF_UNREAD_FIELD">Unread field: com.github.sanity4j.workflow.tool.JaCoCoResultReader.jacocoResultFile</diag>
-<diag id="860" sev="1" tool="PMD" rule="CyclomaticComplexity">
+<diag id="322" sev="2" tool="SpotBugs" rule="URF_UNREAD_FIELD">Unread field: com.github.sanity4j.workflow.tool.JaCoCoResultReader.jacocoResultFile</diag>
+<diag id="715" sev="1" tool="PMD" rule="CyclomaticComplexity">
 The method 'processClass' has a Cyclomatic Complexity of 12.
 </diag>
-<diag id="861" sev="0" tool="PMD" rule="NPathComplexity">
+<diag id="716" sev="0" tool="PMD" rule="NPathComplexity">
 The method processClass() has an NPath complexity of 204
 </diag>
-<diag id="862" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="717" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="863" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="718" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="864" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">
+<diag id="719" sev="0" tool="PMD" rule="AvoidDeeplyNestedIfStmts">
 Deeply nested if..then statements are hard to read
 </diag>
-<diag id="865" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="720" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="866" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="721" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="867" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="722" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="868" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="723" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
-<diag id="869" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
+<diag id="724" sev="3" tool="PMD" rule="AvoidCatchingGenericException">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </diag>
 </diags>

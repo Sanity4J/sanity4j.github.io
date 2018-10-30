@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/package-summary.xsl"?>
-<packageSummary packageName="com.github.sanity4j.workflow" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<issueSummary high="0" significant="17" moderate="5" low="39" info="22">
-<category name="All categories" high="0" significant="0" moderate="0" low="7" info="3">
-<category name="Correctness" high="0" significant="17" moderate="2" low="0" info="0"/>
-<category name="Code style" high="0" significant="0" moderate="4" low="11" info="16"/>
-<category name="Performance" high="0" significant="0" moderate="0" low="1" info="14"/>
-<category name="Complexity" high="0" significant="0" moderate="0" low="8" info="5"/>
-<category name="Exception handling" high="0" significant="0" moderate="1" low="0" info="0"/>
+<packageSummary packageName="com.github.sanity4j.workflow" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<issueSummary high="0" significant="7" moderate="4" low="30" info="21">
+<category name="All categories" high="0" significant="0" moderate="0" low="8" info="3">
+<category name="Correctness" high="0" significant="7" moderate="1" low="0" info="0"/>
+<category name="Code style" high="0" significant="0" moderate="4" low="7" info="15"/>
+<category name="Performance" high="0" significant="0" moderate="0" low="1" info="13"/>
+<category name="Complexity" high="0" significant="0" moderate="0" low="6" info="5"/>
 </category>
-<tool name="Findbugs" high="0" significant="13" moderate="1" low="0" info="1"/>
-<tool name="PMD" high="0" significant="4" moderate="4" low="27" info="21"/>
-<tool name="PMD-CPD" high="0" significant="0" moderate="0" low="4" info="0"/>
+<tool name="SpotBugs" high="0" significant="3" moderate="1" low="0" info="1"/>
+<tool name="PMD" high="0" significant="4" moderate="3" low="22" info="20"/>
 <tool name="Checkstyle" high="0" significant="0" moderate="0" low="8" info="0"/>
 </issueSummary>
 <qualitySummary>
-<package name="com.github.sanity4j.workflow" classes="12" lineCount="2080" high="0" significant="3" moderate="2" low="20" info="10" quality="94">
-<testCoverage lineCoveragePct="7" branchCoveragePct="2" lineCount="247" coveredLineCount="18" branchCount="41" coveredBranchCount="1"/>
+<package name="com.github.sanity4j.workflow" classes="11" lineCount="2015" high="0" significant="2" moderate="2" low="19" info="10" quality="95">
+<testCoverage lineCoveragePct="12" branchCoveragePct="9" lineCount="247" coveredLineCount="30" branchCount="41" coveredBranchCount="4"/>
 </package>
-<package name="com.github.sanity4j.workflow.tool" path="tool" classes="25" lineCount="2683" high="0" significant="14" moderate="3" low="19" info="12" quality="87">
-<testCoverage lineCoveragePct="73" branchCoveragePct="91" lineCount="272" coveredLineCount="200" branchCount="34" coveredBranchCount="31"/>
+<package name="com.github.sanity4j.workflow.tool" path="tool" classes="15" lineCount="2005" high="0" significant="5" moderate="2" low="11" info="11" quality="93">
+<testCoverage lineCoveragePct="81" branchCoveragePct="97" lineCount="315" coveredLineCount="258" branchCount="39" coveredBranchCount="38"/>
 </package>
 <class name="AbstractFileCollector" high="0" significant="0" moderate="0" low="3" info="5" quality="97"/>
 <class name="ClassFileCollector" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
 <class name="FileCopier" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
-<class name="JavaVersionCheck" high="0" significant="1" moderate="0" low="1" info="0" quality="66"/>
 <class name="LibraryFileCollector" high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
 <class name="QAConfig" high="0" significant="2" moderate="2" low="13" info="3" quality="92">
-<testCoverage lineCoveragePct="7" branchCoveragePct="1" lineCount="247" coveredLineCount="18" branchCount="41" coveredBranchCount="1"/>
+<testCoverage lineCoveragePct="12" branchCoveragePct="6" lineCount="247" coveredLineCount="30" branchCount="41" coveredBranchCount="4"/>
 </class>
 <class name="QAProcessor" high="0" significant="0" moderate="0" low="1" info="2" quality="99"/>
 <class name="ReportProducer" high="0" significant="0" moderate="0" low="1" info="0" quality="97"/>

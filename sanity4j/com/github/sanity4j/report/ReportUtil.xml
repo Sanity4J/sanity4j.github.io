@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.report.ReportUtil" pathToRoot="../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
+<classDetails className="com.github.sanity4j.report.ReportUtil" pathToRoot="../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
 <summary high="0" significant="1" moderate="1" low="0" info="1" lineCoverage="77" branchCoverage="100" quality="87"/>
 <source>
 <line>package com.github.sanity4j.report; </line>
@@ -30,7 +30,7 @@
 <line>public final class ReportUtil</line>
 <line>{</line>
 <line>    /** The reporting properties, such as metrics. */</line>
-<line sev="3" covered="yes"><diag id="303"/>    private static Properties properties = QaUtil.getProperties(&quot;/com/github/sanity4j/report/report.properties&quot;);</line>
+<line sev="3" covered="yes"><diag id="308"/>    private static Properties properties = QaUtil.getProperties(&quot;/com/github/sanity4j/report/report.properties&quot;);</line>
 <line/>
 <line>    /** ReportUtil should not be instantiated. */</line>
 <line>    private ReportUtil()</line>
@@ -45,12 +45,12 @@
 <line>     */</line>
 <line>    public static String getHtmlPathToRoot(final String relativeFileName)</line>
 <line>    {</line>
-<line covered="yes">        StringBuffer pathToRoot = new StringBuffer();</line>
+<line covered="yes">        StringBuilder pathToRoot = new StringBuilder();</line>
 <line/>
 <line>        // For the path com/bar/foo/Foobar.html, we need &quot;../../../&quot;</line>
 <line covered="yes">        int depth = new StringTokenizer(relativeFileName, &quot;/\\&quot;).countTokens();</line>
 <line/>
-<line sev="2" covered="yes"><diag id="541"/>        while (--depth &gt; 0)</line>
+<line sev="2" covered="yes"><diag id="521"/>        while (--depth &gt; 0)</line>
 <line>        {</line>
 <line covered="yes">            pathToRoot.append(&quot;../&quot;);</line>
 <line>        }</line>
@@ -72,7 +72,7 @@
 <line>        }</line>
 <line/>
 <line covered="yes">        final int len = text.length();</line>
-<line covered="yes">        StringBuffer out = new StringBuffer(len);</line>
+<line covered="yes">        StringBuilder out = new StringBuilder(len);</line>
 <line/>
 <line covered="yes">        for (int i = 0; i &lt; len; i++)</line>
 <line>        {</line>
@@ -117,7 +117,7 @@
 <line/>
 <line covered="yes">            if (list == null)</line>
 <line>            {</line>
-<line sev="0" covered="yes"><diag id="542"/>                list = new ArrayList&lt;Diagnostic&gt;();</line>
+<line sev="0" covered="yes"><diag id="522"/>                list = new ArrayList&lt;Diagnostic&gt;();</line>
 <line covered="yes">                diagnosticsByClassName.put(diagnostic.getClassName(), list);</line>
 <line>            }</line>
 <line/>
@@ -212,11 +212,11 @@
 <line>}</line>
 </source>
 <diags first="false">
-<diag id="303" sev="3" tool="Findbugs" rule="DMI_HARDCODED_ABSOLUTE_FILENAME">Hard coded reference to an absolute pathname in com.github.sanity4j.report.ReportUtil.&lt;static initializer for ReportUtil&gt;()</diag>
-<diag id="541" sev="2" tool="PMD" rule="AssignmentInOperand">
+<diag id="308" sev="3" tool="SpotBugs" rule="DMI_HARDCODED_ABSOLUTE_FILENAME">Hard coded reference to an absolute pathname in com.github.sanity4j.report.ReportUtil.&lt;static initializer for ReportUtil&gt;()</diag>
+<diag id="521" sev="2" tool="PMD" rule="AssignmentInOperand">
 Avoid assignments in operands
 </diag>
-<diag id="542" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
+<diag id="522" sev="0" tool="PMD" rule="AvoidInstantiatingObjectsInLoops">
 Avoid instantiating new objects inside loops
 </diag>
 </diags>

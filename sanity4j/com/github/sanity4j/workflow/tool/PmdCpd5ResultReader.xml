@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.workflow.tool.PmdCpd5ResultReader" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
+<classDetails className="com.github.sanity4j.workflow.tool.PmdCpd5ResultReader" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="0" lineCoverage="86" branchCoverage="58" quality="100"/>
 <source>
 <line>package com.github.sanity4j.workflow.tool;</line>
 <line/>
 <line>import java.io.File;</line>
+<line>import java.io.IOException;</line>
+<line>import java.util.List;</line>
+<line>import java.util.Properties;</line>
+<line/>
+<line>import com.github.sanity4j.gen.pmdcpd_4_2_1.Duplication;</line>
+<line>import com.github.sanity4j.gen.pmdcpd_4_2_1.PmdCpd;</line>
+<line>import com.github.sanity4j.model.diagnostic.Diagnostic;</line>
+<line>import com.github.sanity4j.model.diagnostic.DiagnosticFactory;</line>
+<line>import com.github.sanity4j.model.diagnostic.DiagnosticSet;</line>
+<line>import com.github.sanity4j.util.ExtractStats;</line>
+<line>import com.github.sanity4j.util.JaxbMarshaller;</line>
+<line>import com.github.sanity4j.util.QAException;</line>
 <line/>
 <line>/**</line>
 <line> * PmdCpdResultReader - Translates PMD CPD 5.x results into the common format used by the QA tool.</line>
@@ -13,29 +25,129 @@
 <line> * @author Yiannis Paschalidis</line>
 <line> * @since Sanity4J 1.1</line>
 <line> */</line>
-<line>public final class PmdCpd5ResultReader extends PmdCpd4ResultReader</line>
+<line covered="yes">public final class PmdCpd5ResultReader implements ResultReader</line>
 <line>{</line>
-<line>    /** {@inheritDoc} */</line>
-<line>    @Override</line>
-<line>    public void run()</line>
-<line>    {</line>
-<line>        File pmdCpdResultFile = getResultFile();</line>
+<line>   /** The rule name to use for Diagnostics, as PMD-CPD doesn't have rules. */</line>
+<line>   private static final String PMD_CPD_RULE_NAME = &quot;DoNotCopyAndPasteCode&quot;;</line>
 <line/>
-<line>        if (pmdCpdResultFile.exists() &amp;&amp; pmdCpdResultFile.length() == 0)</line>
-<line>        {</line>
-<line>            // PMD-CPD 5.x doesn't output the empty &lt;pmd-cpd&gt; element if there are no results</line>
-<line>            return;</line>
-<line>        }</line>
+<line>   /** The properties used to configure this {@link ResultReader}. */</line>
+<line covered="yes">   private final Properties properties = new Properties();</line>
 <line/>
-<line>        if (pmdCpdResultFile.exists() &amp;&amp; pmdCpdResultFile.length() &lt; 60)</line>
-<line>        {</line>
-<line>            // PMD-CPD 5.6.x outputs the empty &lt;pmd-cpd&gt; element as self-closing, which blows up jaxb with:</line>
-<line>            // SAXParseException pmd-cpd must be followed by either attribute specifications, &quot;&gt;&quot; or &quot;/&gt;&quot;. </line>
-<line>            return;</line>
-<line>        }</line>
+<line>   /** The ExtractStats to add the results to. */</line>
+<line>   private ExtractStats stats;</line>
 <line/>
-<line>        super.run();</line>
-<line>    }</line>
+<line>   /** The PMD CPD XML result file to read from. */</line>
+<line>   private File pmdCpdResultFile;</line>
+<line/>
+<line>   /** The threshold for severity. */</line>
+<line>   private static final int SEVERITY_THRESHOLD = 100;</line>
+<line/>
+<line>   /** {@inheritDoc} */</line>
+<line>   @Override</line>
+<line>   public void setProperties(final Properties properties) </line>
+<line>   {</line>
+<line covered="no">       this.properties.putAll(properties);</line>
+<line covered="no">   }</line>
+<line/>
+<line>   /** {@inheritDoc} */</line>
+<line>   @Override</line>
+<line>   public void setResultFile(final File resultFile)</line>
+<line>   {</line>
+<line covered="yes">       this.pmdCpdResultFile = resultFile;</line>
+<line covered="yes">   }</line>
+<line/>
+<line>   /** {@inheritDoc} */</line>
+<line>   @Override</line>
+<line>   public void setStats(final ExtractStats stats)</line>
+<line>   {</line>
+<line covered="yes">       this.stats = stats;</line>
+<line covered="yes">   }</line>
+<line/>
+<line>   /**</line>
+<line>    * Extracts PMD statistics from the pmdCpdResultFile.</line>
+<line>    */</line>
+<line>   @Override</line>
+<line>   public void run()</line>
+<line>   {</line>
+<line covered="partial">       if (pmdCpdResultFile.exists() &amp;&amp; pmdCpdResultFile.length() == 0)</line>
+<line>       {</line>
+<line>          // PMD-CPD 5.x doesn't output the empty &lt;pmd-cpd&gt; element if there are no results</line>
+<line covered="no">          return;</line>
+<line>       }</line>
+<line/>
+<line covered="partial">       if (pmdCpdResultFile.exists() &amp;&amp; pmdCpdResultFile.length() &lt; 60)</line>
+<line>       {</line>
+<line>          // PMD-CPD 5.6.x outputs the empty &lt;pmd-cpd&gt; element as self-closing, which blows up jaxb with:</line>
+<line>          // SAXParseException pmd-cpd must be followed by either attribute specifications, &quot;&gt;&quot; or &quot;/&gt;&quot;. </line>
+<line covered="no">          return;</line>
+<line>       }</line>
+<line/>
+<line covered="yes">       DiagnosticFactory diagnosticFactory = DiagnosticFactory.getInstance(properties);</line>
+<line covered="yes">       DiagnosticSet diagnostics = stats.getDiagnostics();</line>
+<line/>
+<line covered="yes">       PmdCpd result = (PmdCpd)</line>
+<line covered="yes">           JaxbMarshaller.unmarshal(pmdCpdResultFile, &quot;com.github.sanity4j.gen.pmdcpd_4_2_1&quot;, &quot;http://com.github.sanity4j/namespace/pmdcpd-4.2.1&quot;);</line>
+<line/>
+<line covered="yes">       List&lt;Duplication&gt; duplications = result.getDuplication();</line>
+<line/>
+<line covered="yes">       for (Duplication duplication : duplications)</line>
+<line>       {</line>
+<line>           try</line>
+<line>           {</line>
+<line covered="yes">               com.github.sanity4j.gen.pmdcpd_4_2_1.File file1 = duplication.getFile().get(0);</line>
+<line covered="yes">               com.github.sanity4j.gen.pmdcpd_4_2_1.File file2 = duplication.getFile().get(1);</line>
+<line covered="yes">               String fileName1 = stats.getCanonicalPath(file1.getPath()).substring(stats.getSourceDirectory().length() + 1);</line>
+<line covered="yes">               String fileName2 = stats.getCanonicalPath(file2.getPath()).substring(stats.getSourceDirectory().length() + 1);</line>
+<line/>
+<line>               // severity is based on the size of the duplication</line>
+<line covered="partial">               int severity = duplication.getLines().intValue() &lt; SEVERITY_THRESHOLD</line>
+<line>                              ? Diagnostic.SEVERITY_LOW</line>
+<line>                              : Diagnostic.SEVERITY_MODERATE;</line>
+<line/>
+<line covered="yes">               Diagnostic diagnostic = diagnosticFactory.getDiagnostic();</line>
+<line covered="yes">               diagnostic.setSource(Diagnostic.SOURCE_PMD_CPD);</line>
+<line covered="yes">               diagnostic.setRuleName(PMD_CPD_RULE_NAME);</line>
+<line covered="yes">               diagnostic.setSeverity(severity);</line>
+<line covered="yes">               diagnostic.setFileName(stats.getCanonicalPath(file1.getPath()));</line>
+<line covered="yes">               diagnostic.setStartLine(file1.getLine().intValue());</line>
+<line covered="yes">               diagnostic.setEndLine(file1.getLine().intValue() + duplication.getLines().intValue());</line>
+<line covered="yes">               diagnostic.setMessage(&quot;Duplicate of &quot; + fileName2 + &quot;:\n&quot; + duplication.getCodefragment());</line>
+<line/>
+<line>               // CPD is source file based, so guess the class name</line>
+<line covered="yes">               diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</line>
+<line/>
+<line covered="yes">               diagnostics.add(diagnostic);</line>
+<line/>
+<line covered="yes">               diagnostic = diagnosticFactory.getDiagnostic();</line>
+<line covered="yes">               diagnostic.setSource(Diagnostic.SOURCE_PMD_CPD);</line>
+<line covered="yes">               diagnostic.setRuleName(PMD_CPD_RULE_NAME);</line>
+<line covered="yes">               diagnostic.setSeverity(severity);</line>
+<line covered="yes">               diagnostic.setFileName(stats.getCanonicalPath(file2.getPath()));</line>
+<line covered="yes">               diagnostic.setStartLine(file2.getLine().intValue());</line>
+<line covered="yes">               diagnostic.setEndLine(file2.getLine().intValue() + duplication.getLines().intValue());</line>
+<line covered="yes">               diagnostic.setMessage(&quot;Duplicate of &quot; + fileName1 + &quot;:\n&quot; + duplication.getCodefragment());</line>
+<line covered="yes">               diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</line>
+<line/>
+<line>               // CPD is source file based, so guess the class name</line>
+<line covered="yes">               diagnostic.setClassName(stats.getClassNameForSourcePath(diagnostic.getFileName()));</line>
+<line/>
+<line covered="yes">               diagnostics.add(diagnostic);</line>
+<line>           }</line>
+<line covered="no">           catch (IOException e)</line>
+<line>           {</line>
+<line covered="no">               throw new QAException(&quot;Failed to obtain canonical path&quot;, e);</line>
+<line covered="yes">           }</line>
+<line covered="yes">       }</line>
+<line covered="yes">   }</line>
+<line/>
+<line>   /**</line>
+<line>    * @return the description of this WorkUnit</line>
+<line>    */</line>
+<line>   @Override</line>
+<line>   public String getDescription()</line>
+<line>   {</line>
+<line covered="no">       return &quot;Reading PMD CPD results&quot;;</line>
+<line>   }</line>
 <line>}</line>
 </source>
 </classDetails>

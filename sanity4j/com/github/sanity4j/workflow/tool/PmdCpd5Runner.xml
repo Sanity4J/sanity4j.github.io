@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../../../../../xslt/source-code.xsl"?>
-<classDetails className="com.github.sanity4j.workflow.tool.PmdCpd5Runner" pathToRoot="../../../../../" qaVersion="1.8.1" runDate="Mon May 29 13:41:29 AEST 2017">
-<summary high="0" significant="1" moderate="0" low="0" info="0" quality="81"/>
+<classDetails className="com.github.sanity4j.workflow.tool.PmdCpd5Runner" pathToRoot="../../../../../" qaVersion="1.8.2" runDate="Tue Oct 30 11:02:22 AEDT 2018">
+<summary high="0" significant="0" moderate="0" low="0" info="0" quality="100"/>
 <source>
 <line>package com.github.sanity4j.workflow.tool;</line>
 <line/>
@@ -9,6 +9,7 @@
 <line>import java.io.File;</line>
 <line>import java.io.FileOutputStream;</line>
 <line>import java.io.IOException;</line>
+<line>import java.nio.charset.Charset;</line>
 <line>import java.util.Map;</line>
 <line/>
 <line>import com.github.sanity4j.util.ExternalProcessRunner;</line>
@@ -16,6 +17,7 @@
 <line>import com.github.sanity4j.util.QAException;</line>
 <line>import com.github.sanity4j.util.QaLogger;</line>
 <line>import com.github.sanity4j.util.QaUtil;</line>
+<line>import com.github.sanity4j.util.StringUtil;</line>
 <line>import com.github.sanity4j.util.Tool;</line>
 <line/>
 <line>/**</line>
@@ -61,16 +63,16 @@
 <line>                throw new QAException(&quot;PMD CPD returned error code &quot; + result);</line>
 <line>            }</line>
 <line/>
-<line>            String stderrString = new String(stderr.toByteArray());</line>
+<line>            String stderrString = new String(stderr.toByteArray(), Charset.defaultCharset());</line>
 <line/>
-<line>            if (FileUtil.hasValue(stderrString))</line>
+<line>            if (!StringUtil.empty(stderrString))</line>
 <line>            {</line>
 <line>                QaLogger.getInstance().error(stderrString);</line>
 <line>            }</line>
 <line>        }</line>
 <line>        catch (IOException e)</line>
 <line>        {</line>
-<line sev="3"><diag id="327"/>            String err = new String(stderr.toByteArray());</line>
+<line>            String err = new String(stderr.toByteArray(), Charset.defaultCharset());</line>
 <line>            throw new QAException(&quot;PMD CPD Command [&quot; + commandLine + &quot;] failed : [&quot; + err + &quot;]&quot;, e);</line>
 <line>        }</line>
 <line>        finally</line>
@@ -108,13 +110,11 @@
 <line>    /**</line>
 <line>     * @return the description of this WorkUnit.</line>
 <line>     */</line>
+<line>    @Override</line>
 <line>    public String getDescription()</line>
 <line>    {</line>
 <line>        return &quot;Running PMD CPD&quot;;</line>
 <line>    }</line>
 <line>}</line>
 </source>
-<diags first="false">
-<diag id="327" sev="3" tool="Findbugs" rule="DM_DEFAULT_ENCODING">Found reliance on default encoding in com.github.sanity4j.workflow.tool.PmdCpd5Runner.runTool(String): new String(byte[])</diag>
-</diags>
 </classDetails>
